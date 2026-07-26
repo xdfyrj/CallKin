@@ -18,9 +18,9 @@ gt_bin/family_graph_01.O3S.gt.bin
 
 ```text
 shared_recursive
-  -> FUN_00113e20
-  -> FUN_00113f00
-  -> FUN_00113f80
+  -> FUN_00113c00
+  -> FUN_00113ce0
+  -> FUN_00113d60
 ```
 
 이 파일은 scoring에서만 사용한다.
@@ -200,14 +200,14 @@ Ground truth member ID는 fixture와 같은 규칙을 써야 한다.
 raw symbol address = 0x13e20
 id bias            = 0x100000
 result             = 0x113e20
-member ID          = FUN_00113e20
+member ID          = FUN_00113c00
 ```
 
 이 변환 덕분에 다음 두 파일이 같은 ID로 join된다.
 
 ```text
-GT member       = FUN_00113e20
-fixture user ID = FUN_00113e20
+GT member       = FUN_00113c00
+fixture user ID = FUN_00113c00
 ```
 
 Bias는 주소의 의미를 바꾸지 않고 ID 문자열 표현만 바꾼다.
@@ -231,15 +231,15 @@ Bias는 주소의 의미를 바꾸지 않고 ID 문자열 표현만 바꾼다.
 
 ```text
 shared_recursive = {
-  FUN_00113e20,
-  FUN_00113f00,
-  FUN_00113f80
+  FUN_00113c00,
+  FUN_00113ce0,
+  FUN_00113d60
 }
 
 process = {
-  FUN_00114460,
-  FUN_00114640,
-  FUN_00114880
+  FUN_00114240,
+  FUN_00114420,
+  FUN_00114660
 }
 ```
 
@@ -261,7 +261,7 @@ Origin은 첫 member address 순서로 정렬되고, 각 origin의 member도 add
 Member는 한 번만 기록한다.
 
 ```text
-FUN_00113e20
+FUN_00113c00
 ```
 
 두 원래 symbol 문자열은 `symbols` 목록에 보존하고 GT `note`에 duplicate 처리를 기록한다.
@@ -278,7 +278,7 @@ FUN_00113e20
 현재 구현은 어느 origin을 임의로 선택하지 않고 실패한다.
 
 ```text
-cross-origin address alias at FUN_00113e20
+cross-origin address alias at FUN_00113c00
 ```
 
 이 정책은 잘못된 partition을 조용히 생성하는 것을 막는다. 다만 compiler merging이나 linker ICF를 상태로 측정하는 기능은 아직 없다.
@@ -298,14 +298,14 @@ Schema version은 3이다.
     {
       "origin": "shared_recursive",
       "members": [
-        "FUN_00113e20",
-        "FUN_00113f00",
-        "FUN_00113f80"
+        "FUN_00113c00",
+        "FUN_00113ce0",
+        "FUN_00113d60"
       ]
     }
   ],
   "symbols": {
-    "FUN_00113e20": [
+    "FUN_00113c00": [
       "family_graph_01::shared_recursive"
     ]
   }
@@ -372,12 +372,12 @@ fixture의 scored=true node ID
 Fg01의 경우 양쪽 모두 다음 여섯 ID여야 한다.
 
 ```text
-FUN_00113e20
-FUN_00113f00
-FUN_00113f80
-FUN_00114460
-FUN_00114640
-FUN_00114880
+FUN_00113c00
+FUN_00113ce0
+FUN_00113d60
+FUN_00114240
+FUN_00114420
+FUN_00114660
 ```
 
 하나라도 다르면 scoring universe가 달라지므로 중단한다.

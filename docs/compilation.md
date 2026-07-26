@@ -169,11 +169,13 @@ Known suffix `.rs`를 제거한 stem과 `--build`를 조합해 같은 canonical 
 -C opt-level=3
 -C codegen-units=1
 -C lto=off
--C panic=unwind
+-C panic=abort
 -C debuginfo=0
 -C debug-assertions=off
 -C overflow-checks=off
 ```
+
+CallKin의 canonical profile은 rust-loss의 O3 설정을 기반으로 하지만 panic strategy는 의도적으로 `abort`를 사용한다. 따라서 panic 발생 시 stack unwinding을 수행하지 않으며, rust-loss의 `panic=unwind` binary와 byte-identical한 재현을 목표로 하지 않는다.
 
 O3K는 여기에 다음을 추가한다.
 
@@ -215,7 +217,7 @@ rustc src/family_graph_03.rs \
   -C opt-level=3 \
   -C codegen-units=1 \
   -C lto=off \
-  -C panic=unwind \
+  -C panic=abort \
   -C debuginfo=0 \
   -C debug-assertions=off \
   -C overflow-checks=off \

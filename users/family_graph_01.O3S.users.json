@@ -5,11 +5,11 @@
   "source": "gt_bin/family_graph_01.O3S.gt.bin",
   "prefix": "family_graph_01::",
   "addresses": [
-    "0x13e20",
-    "0x13f00",
-    "0x13f80",
-    "0x14460",
-    "0x14640",
-    "0x14880"
+    "0x13c00",
+    "0x13ce0",
+    "0x13d60",
+    "0x14240",
+    "0x14420",
+    "0x14660"
   ]
 }

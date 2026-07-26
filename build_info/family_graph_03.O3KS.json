@@ -2,16 +2,16 @@
   "artifacts": {
     "non_stripped": {
       "path": "gt_bin/family_graph_03.O3KS.gt.bin",
-      "sha256": "f4db880c136e319c8fa4f3368e94fd473be1c07c27cb881b45e2dd8ee030a8a0"
+      "sha256": "099e5b7b34e502f570753e5929abfeddf6e6d0902849ee3ed4a018fa4611b8c0"
     },
     "stripped": {
       "path": "bin/family_graph_03.O3KS.fixture.bin",
-      "sha256": "eef1d556460cf8fe98d77348a113b152f8a70e7ccfeb49532d2662895a19dfd9",
-      "stripped_from_sha256": "f4db880c136e319c8fa4f3368e94fd473be1c07c27cb881b45e2dd8ee030a8a0"
+      "sha256": "6f4b1310ee94899e6b0af89ebd06b3de68dd0fadd2f7508d0252e61a5329be0c",
+      "stripped_from_sha256": "099e5b7b34e502f570753e5929abfeddf6e6d0902849ee3ed4a018fa4611b8c0"
     }
   },
   "build": "O3KS",
-  "build_id": "6a83fc4096984d99a44eec55283f1f19",
+  "build_id": "956e96a316e9433087f926450d16128d",
   "case": "family_graph_03",
   "compiler": {
     "command": [
@@ -24,7 +24,7 @@
       "-C",
       "lto=off",
       "-C",
-      "panic=unwind",
+      "panic=abort",
       "-C",
       "debuginfo=0",
       "-C",
@@ -43,7 +43,7 @@
       "x86_64-unknown-linux-gnu",
       "--emit=link",
       "-o",
-      "/tmp/family_graph_03.O3KS.5yk30a8t/.non-stripped.bin.nr_icbtt.tmp"
+      "/tmp/family_graph_03.O3KS.xlq4uh12/.non-stripped.bin.ucy3u43p.tmp"
     ],
     "compiler_binary_path": "/home/xdfyrj/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc",
     "flags": [
@@ -54,7 +54,7 @@
       "-C",
       "lto=off",
       "-C",
-      "panic=unwind",
+      "panic=abort",
       "-C",
       "debuginfo=0",
       "-C",
@@ -81,7 +81,7 @@
     "command": [
       "strip",
       "--strip-all",
-      "/tmp/family_graph_03.O3KS.5yk30a8t/.stripped.bin.10v3kdaq.tmp"
+      "/tmp/family_graph_03.O3KS.xlq4uh12/.stripped.bin.4wm9eu76.tmp"
     ],
     "flags": [
       "--strip-all"

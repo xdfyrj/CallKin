@@ -17,9 +17,9 @@ fn process<T>(value: T) { /* ... */ }
 컴파일 후 세 instance가 다음 주소에 생존할 수 있다.
 
 ```text
-FUN_00114460  process instance 1
-FUN_00114640  process instance 2
-FUN_00114880  process instance 3
+FUN_00114240  process instance 1
+FUN_00114420  process instance 2
+FUN_00114660  process instance 3
 ```
 
 `engine.py`는 `process`라는 이름을 받지 않는다. 각 함수가 누구를 몇 번 호출하고 누구에게 호출되는지만 보고 세 주소를 같은 cluster로 묶으려 한다.
@@ -80,12 +80,12 @@ fixture의 한 user node는 다음처럼 생겼다.
 
 ```json
 {
-  "id": "FUN_00114460",
+  "id": "FUN_00114240",
   "type": "user",
   "scored": true,
   "calls": [
     {
-      "target": "FUN_00113f00",
+      "target": "FUN_00113ce0",
       "count": 5
     }
   ]
@@ -95,7 +95,7 @@ fixture의 한 user node는 다음처럼 생겼다.
 이 입력은 다음 사실만 말한다.
 
 ```text
-FUN_00114460이 FUN_00113f00을 정적으로 5곳에서 호출한다.
+FUN_00114240이 FUN_00113ce0을 정적으로 5곳에서 호출한다.
 ```
 
 `process`, generic type, origin 같은 정답 정보는 fixture에 없다.
@@ -108,9 +108,9 @@ Ground-truth side는 non-stripped binary의 compiler symbol을 사용한다.
 {
   "origin": "process",
   "members": [
-    "FUN_00114460",
-    "FUN_00114640",
-    "FUN_00114880"
+    "FUN_00114240",
+    "FUN_00114420",
+    "FUN_00114660"
   ]
 }
 ```

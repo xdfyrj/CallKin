@@ -28,25 +28,25 @@ from compile import (
 from paths import build_manifest_for
 
 
-# Exact flag strings from rust-loss scripts/lib_build.sh profile_flags().
-# The corpus provenance depends on these staying byte-identical.
-RUST_LOSS_O3_FLAGS = (
-    "-C opt-level=3 -C codegen-units=1 -C lto=off -C panic=unwind "
+# Canonical CallKin profile. It is derived from rust-loss but intentionally
+# changes the panic strategy from unwind to abort.
+EXPECTED_O3_FLAGS = (
+    "-C opt-level=3 -C codegen-units=1 -C lto=off -C panic=abort "
     "-C debuginfo=0 -C debug-assertions=off -C overflow-checks=off"
 )
-RUST_LOSS_O3K_FLAGS = RUST_LOSS_O3_FLAGS + " --cfg keep"
+EXPECTED_O3K_FLAGS = EXPECTED_O3_FLAGS + " --cfg keep"
 
 
 def main() -> int:
-    if " ".join(PROFILE_FLAGS["O3"]) != RUST_LOSS_O3_FLAGS:
+    if " ".join(PROFILE_FLAGS["O3"]) != EXPECTED_O3_FLAGS:
         print(
-            f"FAIL O3 flags diverged from rust-loss: {' '.join(PROFILE_FLAGS['O3'])}"
+            f"FAIL canonical O3 flags: {' '.join(PROFILE_FLAGS['O3'])}"
         )
         return 1
 
-    if " ".join(PROFILE_FLAGS["O3K"]) != RUST_LOSS_O3K_FLAGS:
+    if " ".join(PROFILE_FLAGS["O3K"]) != EXPECTED_O3K_FLAGS:
         print(
-            f"FAIL O3K flags diverged from rust-loss: {' '.join(PROFILE_FLAGS['O3K'])}"
+            f"FAIL canonical O3K flags: {' '.join(PROFILE_FLAGS['O3K'])}"
         )
         return 1
 

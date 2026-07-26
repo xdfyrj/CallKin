@@ -52,7 +52,7 @@ nodes=7
 
 ```text
 6 user/scored nodes
-1 root anchor: FUN_00114020
+1 root anchor: FUN_00113e00
 ```
 
 ## 3. 전체 함수 호출 순서
@@ -148,7 +148,7 @@ FUN_<8자리 hexadecimal>
 raw address = 0x13e20
 id bias     = 0x100000
 sum         = 0x113e20
-fixture ID  = FUN_00113e20
+fixture ID  = FUN_00113c00
 ```
 
 이 bias는 현재 Ghidra-style hand fixture와 ID를 맞추기 위한 표현 규칙이다. Call graph 의미나 실제 binary address를 바꾸지 않는다.
@@ -204,7 +204,7 @@ call std::rt::lang_start_internal
 
 ```bash
 python3 binary_extractor.py family_graph_01 --list-functions
-python3 binary_extractor.py family_graph_01 --root FUN_00114020
+python3 binary_extractor.py family_graph_01 --root FUN_00113e00
 ```
 
 ## 8. Call edge 추출
@@ -233,7 +233,7 @@ Bias를 적용한 fixture edge는 다음과 같다.
 
 ```json
 {
-  "target": "FUN_00113f00",
+  "target": "FUN_00113ce0",
   "count": 1
 }
 ```
@@ -242,7 +242,7 @@ Bias를 적용한 fixture edge는 다음과 같다.
 
 ```json
 {
-  "target": "FUN_00113f00",
+  "target": "FUN_00113ce0",
   "count": 5
 }
 ```
@@ -393,23 +393,23 @@ Users JSON 없이 직접 실행하면 root-reachable closure 전체를 선택하
   "schema_version": 1,
   "nodes": [
     {
-      "id": "FUN_00113e20",
+      "id": "FUN_00113c00",
       "type": "user",
       "scored": true,
       "calls": [
         {
-          "target": "FUN_00113e20",
+          "target": "FUN_00113c00",
           "count": 1
         }
       ]
     },
     {
-      "id": "FUN_00114020",
+      "id": "FUN_00113e00",
       "type": "anchor",
       "scored": false,
       "calls": [
         {
-          "target": "FUN_00113e20",
+          "target": "FUN_00113c00",
           "count": 2
         }
       ]
@@ -437,7 +437,7 @@ Self-call도 일반 call edge 형태로 JSON에 기록한다. `engine.py`가 fix
 | positional `output` | fixture 출력 경로 | `fixtures/custom.fixture.json` |
 | `--case` | JSON case override | `--case custom_case` |
 | `--build` | build label | `--build O3KS` |
-| `--root` | root name/ID/address | `--root FUN_00114020` |
+| `--root` | root name/ID/address | `--root FUN_00113e00` |
 | `--users` | users JSON 경로 | `--users users/custom.users.json` |
 | `--score-root` | root도 user/scored로 처리 | canonical pipeline에서는 사용하지 않음 |
 | `--include-imports` | import stub 포함 | debugging option |

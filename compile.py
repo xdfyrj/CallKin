@@ -29,15 +29,13 @@ RUSTC_EDITION = "2024"
 RUSTC_TARGET = BUILD_TARGET
 STRIP_FLAGS = ["--strip-all"]
 
-# Exact per-profile rustc flags from rust-loss scripts/lib_build.sh.
-# The checked-in corpus binaries were built with these flags; keep them
-# byte-for-byte identical so local rebuilds reproduce the same binaries
-# under the same rustc version.
+# Controlled evaluation flags derived from rust-loss scripts/lib_build.sh.
+# CallKin intentionally uses panic=abort instead of rust-loss's panic=unwind.
 _O3_FLAGS = [
     "-C", "opt-level=3",
     "-C", "codegen-units=1",
     "-C", "lto=off",
-    "-C", "panic=unwind",
+    "-C", "panic=abort",
     "-C", "debuginfo=0",
     "-C", "debug-assertions=off",
     "-C", "overflow-checks=off",

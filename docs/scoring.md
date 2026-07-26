@@ -93,14 +93,14 @@ GT schema version은 3이다.
     {
       "origin": "share",
       "members": [
-        "FUN_00114690",
-        "FUN_00114a10",
-        "FUN_00114d70"
+        "FUN_00114470",
+        "FUN_001147f0",
+        "FUN_00114b50"
       ]
     }
   ],
   "symbols": {
-    "FUN_00114690": ["family_graph_03::share"]
+    "FUN_00114470": ["family_graph_03::share"]
   }
 }
 ```
@@ -126,9 +126,9 @@ Loader는 다음을 검사한다.
 
 ```python
 {
-    "FUN_00114690": "share",
-    "FUN_00114a10": "share",
-    "FUN_00114d70": "share",
+    "FUN_00114470": "share",
+    "FUN_001147f0": "share",
+    "FUN_00114b50": "share",
 }
 ```
 
@@ -394,14 +394,14 @@ Node pair 자체가 없거나 partition denominator가 퇴화하면 ARI를 `1.0`
 
 ```text
 C1:
-  FUN_00114690 | share | origin=share
-  FUN_00114a10 | share | origin=share
+  FUN_00114470 | share | origin=share
+  FUN_001147f0 | share | origin=share
 ```
 
 각 member는 다음 정보를 가진다.
 
 ```text
-id      = FUN_00114690
+id      = FUN_00114470
 symbols = [share]
 origin  = share
 ```

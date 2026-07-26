@@ -30,9 +30,9 @@ source code
 예를 들어 초기 특징이 같은 세 함수는 같은 문자열 color를 받는다.
 
 ```text
-FUN_00113e20 -> USER:self=1:distinct_out=0
-FUN_00113f00 -> USER:self=1:distinct_out=0
-FUN_00113f80 -> USER:self=1:distinct_out=0
+FUN_00113c00 -> USER:self=1:distinct_out=0
+FUN_00113ce0 -> USER:self=1:distinct_out=0
+FUN_00113d60 -> USER:self=1:distinct_out=0
 ```
 
 세 함수는 같은 color이므로 같은 class에 있다. 다음 refinement에서 이웃 color pattern이 달라지면 서로 다른 새 color를 받을 수 있다.
@@ -54,11 +54,11 @@ Case(
 
 ```python
 Node(
-    id="FUN_00114460",
+    id="FUN_00114240",
     type="user",
     scored=True,
     calls=[
-        Call(target="FUN_00113f00", count=5),
+        Call(target="FUN_00113ce0", count=5),
     ],
 )
 ```
@@ -100,9 +100,9 @@ distinct_in_caller_count
 
 ```json
 {
-  "id": "FUN_00113e20",
+  "id": "FUN_00113c00",
   "calls": [
-    {"target": "FUN_00113e20", "count": 1}
+    {"target": "FUN_00113c00", "count": 1}
   ]
 }
 ```
@@ -110,9 +110,9 @@ distinct_in_caller_count
 Graph view에서는 다음이 된다.
 
 ```text
-self_call_count[FUN_00113e20] = 1
-outgoing[FUN_00113e20]        = []
-incoming[FUN_00113e20]        = []
+self_call_count[FUN_00113c00] = 1
+outgoing[FUN_00113c00]        = []
+incoming[FUN_00113c00]        = []
 ```
 
 Self edge는 별도 seed 특징으로 올리고 OUT/IN neighbor multiset에는 넣지 않는다.
@@ -122,14 +122,14 @@ Self edge는 별도 seed 특징으로 올리고 OUT/IN neighbor multiset에는 �
 다음 edge:
 
 ```text
-FUN_00114460 -> FUN_00113f00 x5
+FUN_00114240 -> FUN_00113ce0 x5
 ```
 
 Graph view:
 
 ```python
-outgoing["FUN_00114460"] = [("FUN_00113f00", 5)]
-incoming["FUN_00113f00"] = [("FUN_00114460", 5)]
+outgoing["FUN_00114240"] = [("FUN_00113ce0", 5)]
+incoming["FUN_00113ce0"] = [("FUN_00114240", 5)]
 ```
 
 ### 5.3 Distinct count
@@ -154,7 +154,7 @@ distinct_out_callee_count[A] = 2
 각 anchor는 자기 ID가 들어간 고정 color를 받는다.
 
 ```text
-FUN_00114020 -> ANCHOR:FUN_00114020
+FUN_00113e00 -> ANCHOR:FUN_00113e00
 FUN_00152600 -> ANCHOR:FUN_00152600
 ```
 
@@ -269,7 +269,7 @@ Tuple을 정렬하므로 dictionary나 edge 순서와 무관하게 같은 multis
 (
     "USER:self=0:distinct_out=1",
     (("C:2", 5),),
-    (("ANCHOR:FUN_00114020", 2),),
+    (("ANCHOR:FUN_00113e00", 2),),
 )
 ```
 
@@ -396,12 +396,12 @@ Fg01 `full` mode 결과:
 
 ```python
 [
-    ["FUN_00113e20", "FUN_00113f00", "FUN_00113f80"],
-    ["FUN_00114460", "FUN_00114640", "FUN_00114880"],
+    ["FUN_00113c00", "FUN_00113ce0", "FUN_00113d60"],
+    ["FUN_00114240", "FUN_00114420", "FUN_00114660"],
 ]
 ```
 
-Root anchor `FUN_00114020`은 refinement에는 참여했지만 final cluster에는 없다.
+Root anchor `FUN_00113e00`은 refinement에는 참여했지만 final cluster에는 없다.
 
 Cluster와 member는 ID 기준으로 정렬해 출력 순서를 안정화한다.
 
@@ -419,9 +419,9 @@ trace (`--trace`를 요청한 경우)
 
 ```python
 {
-    "FUN_00113e20": 0,
-    "FUN_00113f00": 0,
-    "FUN_00113f80": 0,
+    "FUN_00113c00": 0,
+    "FUN_00113ce0": 0,
+    "FUN_00113d60": 0,
 }
 ```
 
@@ -448,7 +448,7 @@ python3 engine.py family_graph_03 --mode out-in
 ```text
 full
 2
-[['FUN_00114690', 'FUN_00114a10'], ['FUN_00114d70'], ...]
+[['FUN_00114470', 'FUN_001147f0'], ['FUN_00114b50'], ...]
 ```
 
 모든 mode를 GT와 함께 비교하려면 scorer를 사용한다.
