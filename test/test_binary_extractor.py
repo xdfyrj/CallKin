@@ -11,6 +11,15 @@ from binary_extractor import (
     make_fixture_json,
     select_user_context,
 )
+from provenance import BuildProvenance
+
+
+PROVENANCE = BuildProvenance(
+    build_id="test-build",
+    source_sha256="1" * 64,
+    non_stripped_sha256="2" * 64,
+    stripped_sha256="3" * 64,
+)
 
 
 class FakeR2:
@@ -69,6 +78,7 @@ def check_rust_startup_main_detection() -> int:
                 {"opcode": "call qword [rip + 0x4091b]", "type": "ircall"},
                 {"opcode": "ret", "type": "ret"},
             ],
+            "pdfj @ 84944": {},
         }
     )
 
@@ -82,6 +92,67 @@ def check_rust_startup_main_detection() -> int:
     rust_main_addr = extractor._rust_main_from_start_wrapper(wrapper_addr)
     if rust_main_addr != 0x14020:
         print("FAIL: Rust startup wrapper first main argument was not detected")
+        return 1
+
+    return 0
+
+
+def check_rust_startup_rdi_tail_detection() -> int:
+    extractor = BinaryExtractor.__new__(BinaryExtractor)
+    extractor.r2 = FakeR2(
+        {
+            "pdj 64 @ 84928": [
+                {"opcode": "mov rdx, rsi", "type": "mov"},
+                {
+                    "opcode": "lea rdi, [rip - 0xb8d]",
+                    "disasm": "lea rdi, [0x00014040]",
+                    "ptr": 0x14040,
+                    "type": "lea",
+                },
+                {"opcode": "xor ecx, ecx", "type": "xor"},
+                {"opcode": "jmp 0x14be0", "jump": 0x14BE0, "type": "jmp"},
+            ],
+            "pdfj @ 84928": {},
+        }
+    )
+
+    rust_main_addr = extractor._rust_main_from_start_wrapper(0x14BC0)
+    if rust_main_addr != 0x14040:
+        print("FAIL: rdi/tail-call Rust main argument was not detected")
+        return 1
+
+    return 0
+
+
+def check_rust_startup_lto_trampoline_detection() -> int:
+    extractor = BinaryExtractor.__new__(BinaryExtractor)
+    extractor.r2 = FakeR2(
+        {
+            "pdfj @ 61696": {
+                "ops": [
+                    {
+                        "opcode": "lea rdi, [rip - 0xfe0]",
+                        "ptr": 0xE570,
+                        "type": "lea",
+                    },
+                    {
+                        "opcode": "call 0xf0f0",
+                        "jump": 0xF0F0,
+                        "type": "call",
+                    },
+                ],
+            },
+            "pdj 8 @ 61680": [
+                {"opcode": "push rax", "type": "push"},
+                {"opcode": "call rdi", "type": "rcall"},
+                {"opcode": "ret", "type": "ret"},
+            ],
+        }
+    )
+
+    rust_main_addr = extractor._rust_main_from_start_wrapper(0xF100)
+    if rust_main_addr != 0xE570:
+        print("FAIL: LTO inlined startup trampoline did not reveal Rust main")
         return 1
 
     return 0
@@ -114,9 +185,24 @@ def check_user_address_mode() -> int:
         )
         return 1
 
+    disconnected_selected = select_user_context(
+        graph,
+        root_addr=0x1000,
+        user_addrs={0x2000, 0x4000},
+        allowed_addrs=set(functions),
+        score_root=False,
+    )
+    if disconnected_selected != {0x1000, 0x2000, 0x3000, 0x4000}:
+        print(
+            "FAIL listed users must remain authoritative when root reachability "
+            f"is incomplete, got {sorted(disconnected_selected)}"
+        )
+        return 1
+
     fixture = make_fixture_json(
         case="fg-test",
         build="O3S",
+        profile="plain",
         binary_path="bin/test.bin",
         root=functions[0x1000],
         functions=functions,
@@ -126,6 +212,7 @@ def check_user_address_mode() -> int:
         user_addrs={0x2000},
         users_path="users/test.users.json",
         id_bias=0x100000,
+        provenance=PROVENANCE,
     )
 
     nodes = {node["id"]: node for node in fixture["nodes"]}
@@ -166,14 +253,56 @@ def check_user_address_mode() -> int:
     return 0
 
 
+def check_symbol_extent_call_extraction() -> int:
+    extractor = BinaryExtractor.__new__(BinaryExtractor)
+    extractor.r2 = FakeR2({
+        "p8j 32 @ 4096": [
+            0xE8, 0xFB, 0x0F, 0x00, 0x00,
+            *([0x90] * 11),
+            0xE8, 0xEB, 0x0F, 0x00, 0x00,
+            *([0x90] * 11),
+        ],
+    })
+    extractor.include_imports = False
+    extractor.id_bias = 0x100000
+    extractor._call_cache = {}
+    caller = R2Function(addr=0x1000, name="truncated_main", size=0x10, kind="fcn")
+    callee = R2Function(addr=0x2000, name="user_fn", size=0x20, kind="fcn")
+    extractor.functions = [caller, callee]
+    extractor.by_addr = {caller.addr: caller, callee.addr: callee}
+
+    calls = extractor.direct_calls(caller, symbol_size=0x20)
+    if calls != Counter({0x2000: 2}):
+        print(f"FAIL symbol extent should recover calls after r2 boundary, got {calls}")
+        return 1
+
+    mismatches = extractor.boundary_mismatches({0x1000: 0x20})
+    expected = [{
+        "id": "FUN_00101000",
+        "address": "0x1000",
+        "symbol_size": 0x20,
+        "radare2_size": 0x10,
+    }]
+    if mismatches != expected:
+        print(f"FAIL expected boundary mismatch {expected}, got {mismatches}")
+        return 1
+    return 0
+
+
 def main() -> int:
     if check_missing_radare2_error() != 0:
         return 1
 
     if check_rust_startup_main_detection() != 0:
         return 1
+    if check_rust_startup_rdi_tail_detection() != 0:
+        return 1
+    if check_rust_startup_lto_trampoline_detection() != 0:
+        return 1
 
     if check_user_address_mode() != 0:
+        return 1
+    if check_symbol_extent_call_extraction() != 0:
         return 1
 
     extractor = BinaryExtractor.__new__(BinaryExtractor)

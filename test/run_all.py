@@ -9,6 +9,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PYTHON_FILES = (
     "compile.py",
+    "build_profiles.py",
+    "build_manifest.py",
+    "provenance.py",
     "binary_extractor.py",
     "gt_extractor.py",
     "model.py",

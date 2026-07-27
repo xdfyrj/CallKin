@@ -1,0 +1,90 @@
+{
+  "artifacts": {
+    "non_stripped": {
+      "path": "gt_bin/plain/family_graph_01.O3S.gt.bin",
+      "sha256": "872b47d8fb3323334e8cd67fb081a45fdc3354cdf026841f31be689e6c73f71f"
+    },
+    "stripped": {
+      "path": "bin/plain/family_graph_01.O3S.fixture.bin",
+      "sha256": "dbab836138697518b9866e29036bd6836889760a5401e445654d2d86568cf056",
+      "stripped_from_sha256": "872b47d8fb3323334e8cd67fb081a45fdc3354cdf026841f31be689e6c73f71f"
+    }
+  },
+  "build": "O3S",
+  "build_id": "27c93937e458426591a6b9f288555646",
+  "case": "family_graph_01",
+  "compiler": {
+    "command": [
+      "rustc",
+      "src/family_graph_01.rs",
+      "-C",
+      "opt-level=3",
+      "-C",
+      "debuginfo=0",
+      "-C",
+      "debug-assertions=off",
+      "-C",
+      "overflow-checks=off",
+      "-C",
+      "codegen-units=16",
+      "-C",
+      "lto=false",
+      "-C",
+      "panic=unwind",
+      "--crate-type",
+      "bin",
+      "--crate-name",
+      "family_graph_01",
+      "--edition",
+      "2024",
+      "--target",
+      "x86_64-unknown-linux-gnu",
+      "--emit=link",
+      "-o",
+      "/tmp/family_graph_01.plain.O3S.becogiho/.non-stripped.bin.ujpiw3u2.tmp"
+    ],
+    "compiler_binary_path": "/home/xdfyrj/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc",
+    "flags": [
+      "-C",
+      "opt-level=3",
+      "-C",
+      "debuginfo=0",
+      "-C",
+      "debug-assertions=off",
+      "-C",
+      "overflow-checks=off",
+      "-C",
+      "codegen-units=16",
+      "-C",
+      "lto=false",
+      "-C",
+      "panic=unwind"
+    ],
+    "invoked_path": "/home/xdfyrj/.cargo/bin/rustc",
+    "resolved_path": "/home/xdfyrj/.cargo/bin/rustup",
+    "sysroot": "/home/xdfyrj/.rustup/toolchains/stable-x86_64-unknown-linux-gnu",
+    "verbose_version": "rustc 1.93.1 (01f6ddf75 2026-02-11)\nbinary: rustc\ncommit-hash: 01f6ddf7588f42ae2d7eb0a2f21d44e8e96674cf\ncommit-date: 2026-02-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.93.1\nLLVM version: 21.1.8"
+  },
+  "crate_name": "family_graph_01",
+  "edition": "2024",
+  "profile": "plain",
+  "schema_version": 2,
+  "source": {
+    "path": "src/family_graph_01.rs",
+    "sha256": "09fb7950f565fb81ab9bb980270bc8b15ec39e538bca7d6d1ae7b704a9721a6c"
+  },
+  "strip": {
+    "command": [
+      "strip",
+      "--strip-all",
+      "/tmp/family_graph_01.plain.O3S.becogiho/.stripped.bin.0uudxkct.tmp"
+    ],
+    "flags": [
+      "--strip-all"
+    ],
+    "invoked_path": "/usr/bin/strip",
+    "resolved_path": "/usr/bin/x86_64-linux-gnu-strip",
+    "version": "GNU strip (GNU Binutils for Ubuntu) 2.42\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis program is free software; you may redistribute it under the terms of\nthe GNU General Public License version 3 or (at your option) any later version.\nThis program has absolutely no warranty."
+  },
+  "target": "x86_64-unknown-linux-gnu"
+}

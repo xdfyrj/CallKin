@@ -1,0 +1,98 @@
+{
+  "case": "family_graph_03",
+  "build": "O3S",
+  "profile": "plain",
+  "schema_version": 5,
+  "provenance": {
+    "build_id": "40d95d97ec1146af8567f389564ef78e",
+    "source_sha256": "f619cb2cf6b96756592c955895dcef822081333d42c018fc5b9c5f7e204a8d4e",
+    "non_stripped_sha256": "e36fb58c0e1ac911d5f9ab13449429915a58229e9ac9fe13cf7a584b3489901c",
+    "stripped_sha256": "fa79faf3f4359e3ed083cd9222e2ae162b7f056d1363ea57391a6405e2212f80"
+  },
+  "origins": [
+    {
+      "origin": "share",
+      "members": [
+        "FUN_001146b0",
+        "FUN_00114a30",
+        "FUN_00114d90"
+      ]
+    },
+    {
+      "origin": "leaf_p",
+      "members": [
+        "FUN_00115280",
+        "FUN_001154f0"
+      ]
+    },
+    {
+      "origin": "decoy_a",
+      "members": [
+        "FUN_00115700"
+      ]
+    },
+    {
+      "origin": "decoy_b",
+      "members": [
+        "FUN_00115800"
+      ]
+    },
+    {
+      "origin": "drive_x",
+      "members": [
+        "FUN_00115980",
+        "FUN_00115bd0",
+        "FUN_00115e90"
+      ]
+    },
+    {
+      "origin": "drive_y",
+      "members": [
+        "FUN_00116020",
+        "FUN_00116350",
+        "FUN_001165b0"
+      ]
+    }
+  ],
+  "symbols": {
+    "FUN_001146b0": [
+      "family_graph_03::share"
+    ],
+    "FUN_00114a30": [
+      "family_graph_03::share"
+    ],
+    "FUN_00114d90": [
+      "family_graph_03::share"
+    ],
+    "FUN_00115280": [
+      "family_graph_03::leaf_p"
+    ],
+    "FUN_001154f0": [
+      "family_graph_03::leaf_p"
+    ],
+    "FUN_00115700": [
+      "family_graph_03::decoy_a"
+    ],
+    "FUN_00115800": [
+      "family_graph_03::decoy_b"
+    ],
+    "FUN_00115980": [
+      "family_graph_03::drive_x"
+    ],
+    "FUN_00115bd0": [
+      "family_graph_03::drive_x"
+    ],
+    "FUN_00115e90": [
+      "family_graph_03::drive_x"
+    ],
+    "FUN_00116020": [
+      "family_graph_03::drive_y"
+    ],
+    "FUN_00116350": [
+      "family_graph_03::drive_y"
+    ],
+    "FUN_001165b0": [
+      "family_graph_03::drive_y"
+    ]
+  }
+}

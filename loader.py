@@ -1,8 +1,14 @@
 import json
 from model import Call, Node, Case
+from paths import normalize_profile
+from provenance import parse_provenance
 
 
-REQUIRED_TOP_LEVEL_KEYS = {"case", "build", "schema_version", "nodes"}
+FIXTURE_SCHEMA_VERSION = 4
+
+REQUIRED_TOP_LEVEL_KEYS = {
+    "case", "build", "profile", "schema_version", "provenance", "extraction", "nodes"
+}
 ALLOWED_TOP_LEVEL_KEYS = REQUIRED_TOP_LEVEL_KEYS | {"note"}
 
 REQUIRED_NODE_KEYS = {"id", "type", "scored", "calls"}
@@ -25,6 +31,8 @@ def load_case(file_name: str) -> Case:
         build=data["build"],
         schema_version=data["schema_version"],
         nodes=[_parse_node(node) for node in data["nodes"]],
+        profile=data["profile"],
+        provenance=parse_provenance(data["provenance"], where="fixture.provenance"),
     )
 
 
@@ -62,19 +70,54 @@ def _validate_top_level(data: dict) -> None:
 
     _require_nonempty_str(data["case"], "case")
     _require_nonempty_str(data["build"], "build")
+    _require_nonempty_str(data["profile"], "profile")
+    normalize_profile(data["profile"])
     _require_exact_type(data["schema_version"], int, "schema_version")
+    parse_provenance(data["provenance"], where="fixture.provenance")
 
-    if data["schema_version"] != 1:
+    if data["schema_version"] != FIXTURE_SCHEMA_VERSION:
         raise ValueError(f"unsupported schema_version: {data['schema_version']}")
 
     if "note" in data and not isinstance(data["note"], str):
         raise ValueError("note must be a string when present")
+
+    _validate_extraction(data["extraction"])
 
     if not isinstance(data["nodes"], list):
         raise ValueError("nodes must be a list")
 
     if not data["nodes"]:
         raise ValueError("nodes must not be empty")
+
+
+def _validate_extraction(extraction) -> None:
+    if not isinstance(extraction, dict) or set(extraction) != {
+        "boundary_mode", "boundary_mismatches"
+    }:
+        raise ValueError(
+            "extraction must contain exactly boundary_mode/boundary_mismatches"
+        )
+    if extraction["boundary_mode"] not in {"radare2", "symbol-extent"}:
+        raise ValueError("invalid extraction.boundary_mode")
+    mismatches = extraction["boundary_mismatches"]
+    if not isinstance(mismatches, list):
+        raise ValueError("extraction.boundary_mismatches must be a list")
+    required = {"id", "address", "symbol_size", "radare2_size"}
+    for index, mismatch in enumerate(mismatches):
+        if not isinstance(mismatch, dict) or set(mismatch) != required:
+            raise ValueError(
+                f"boundary_mismatches[{index}] must contain exactly {sorted(required)}"
+            )
+        _require_nonempty_str(mismatch["id"], f"boundary_mismatches[{index}].id")
+        _require_nonempty_str(
+            mismatch["address"], f"boundary_mismatches[{index}].address"
+        )
+        for key in ("symbol_size", "radare2_size"):
+            _require_exact_type(
+                mismatch[key], int, f"boundary_mismatches[{index}].{key}"
+            )
+            if mismatch[key] < 0:
+                raise ValueError(f"boundary_mismatches[{index}].{key} must be non-negative")
 
 
 def _validate_nodes(nodes: list) -> None:

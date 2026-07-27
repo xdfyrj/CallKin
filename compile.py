@@ -9,59 +9,32 @@ import tempfile
 import uuid
 from pathlib import Path
 
+from build_profiles import (
+    BUILD_FLAGS,
+    BUILD_TARGET,
+    PROFILE_FLAGS,
+    RUSTC_EDITION,
+    STRIP_FLAGS,
+    compile_flags,
+)
 from build_manifest import (
     BUILD_MANIFEST_SCHEMA_VERSION,
-    BUILD_TARGET,
     sha256_file,
     write_manifest,
 )
 from paths import (
+    BUILD_PROFILES,
     DEFAULT_BUILD,
+    DEFAULT_PROFILE,
     build_manifest_for,
     fixture_binary_for,
     gt_binary_for,
+    normalize_profile,
     source_rs_for,
     split_case_build,
 )
 
-
-RUSTC_EDITION = "2024"
 RUSTC_TARGET = BUILD_TARGET
-STRIP_FLAGS = ["--strip-all"]
-
-# Controlled evaluation flags derived from rust-loss scripts/lib_build.sh.
-# CallKin intentionally uses panic=abort instead of rust-loss's panic=unwind.
-_O3_FLAGS = [
-    "-C", "opt-level=3",
-    "-C", "codegen-units=1",
-    "-C", "lto=off",
-    "-C", "panic=abort",
-    "-C", "debuginfo=0",
-    "-C", "debug-assertions=off",
-    "-C", "overflow-checks=off",
-]
-
-PROFILE_FLAGS: dict[str, list[str]] = {
-    "O3": _O3_FLAGS,
-    "O3K": _O3_FLAGS + ["--cfg", "keep"],
-}
-
-# Evaluation build -> compiled (non-stripped) source profile.
-# Mirrors rust-loss source_profile_for_stripped.
-COMPILED_PROFILE_BY_BUILD = {
-    "O3S": "O3",
-    "O3KS": "O3K",
-}
-
-
-def compiled_profile_for_build(build: str) -> str:
-    profile = COMPILED_PROFILE_BY_BUILD.get(build)
-    if profile is None:
-        raise ValueError(
-            f"unsupported build for compilation: {build}. "
-            f"Supported builds: {sorted(COMPILED_PROFILE_BY_BUILD)}"
-        )
-    return profile
 
 
 def rustc_command(
@@ -69,6 +42,7 @@ def rustc_command(
     source: str,
     case: str,
     profile: str,
+    build: str,
     output: str,
     rustc_tool: str = "rustc",
 ) -> list[str]:
@@ -78,7 +52,7 @@ def rustc_command(
     return [
         rustc_tool,
         source,
-        *PROFILE_FLAGS[profile],
+        *compile_flags(profile, build),
         "--crate-type", "bin",
         "--crate-name", case,
         "--edition", RUSTC_EDITION,
@@ -93,6 +67,7 @@ def compile_gt_binary(
     source: str,
     case: str,
     profile: str,
+    build: str,
     output: str,
     rustc_tool: str,
 ) -> list[str]:
@@ -105,6 +80,7 @@ def compile_gt_binary(
             source=source,
             case=case,
             profile=profile,
+            build=build,
             output=str(temporary),
             rustc_tool=rustc_tool,
         )
@@ -237,7 +213,7 @@ def make_build_manifest(
             "sysroot": rustc_sysroot,
             "compiler_binary_path": rustc_binary,
             "verbose_version": tool_output(rustc_tool, "-vV"),
-            "flags": PROFILE_FLAGS[profile],
+            "flags": compile_flags(profile, build),
             "command": rustc_command,
         },
         "strip": {
@@ -275,7 +251,8 @@ def _publish_file(source: Path, output: str) -> None:
 
 def compile_case(args: argparse.Namespace) -> list[str]:
     """Build and publish one matched non-stripped/stripped binary pair."""
-    profile = compiled_profile_for_build(args.build)
+    args.profile = normalize_profile(args.profile)
+    compile_flags(args.profile, args.build)
 
     # Validate the complete toolchain before replacing either binary.
     _require_tool(args.rustc_tool)
@@ -283,7 +260,9 @@ def compile_case(args: argparse.Namespace) -> list[str]:
 
     source_sha256 = sha256_file(args.source)
 
-    with tempfile.TemporaryDirectory(prefix=f"{args.case}.{args.build}.") as directory:
+    with tempfile.TemporaryDirectory(
+        prefix=f"{args.case}.{args.profile}.{args.build}."
+    ) as directory:
         staging = Path(directory)
         staged_gt = staging / "non-stripped.bin"
         staged_fixture = staging / "stripped.bin"
@@ -292,7 +271,8 @@ def compile_case(args: argparse.Namespace) -> list[str]:
         rustc_command_used = compile_gt_binary(
             source=args.source,
             case=args.case,
-            profile=profile,
+            profile=args.profile,
+            build=args.build,
             output=str(staged_gt),
             rustc_tool=args.rustc_tool,
         )
@@ -312,7 +292,7 @@ def compile_case(args: argparse.Namespace) -> list[str]:
             source_sha256=source_sha256,
             case=args.case,
             build=args.build,
-            profile=profile,
+            profile=args.profile,
             gt_binary=args.gt_binary,
             gt_sha256=gt_sha256,
             fixture_binary=args.fixture_binary,
@@ -344,9 +324,15 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--build",
         help=(
-            f"evaluation build. O3S compiles the O3 profile, O3KS compiles the "
-            f"O3K (--cfg keep) profile. Default: {DEFAULT_BUILD}"
+            f"evaluation build. O3KS adds --cfg keep before stripping. "
+            f"Default: {DEFAULT_BUILD}"
         ),
+    )
+    parser.add_argument(
+        "--profile",
+        choices=BUILD_PROFILES,
+        default=DEFAULT_PROFILE,
+        help=f"compiler profile. Default: {DEFAULT_PROFILE}",
     )
     parser.add_argument("--gt-binary", help="override non-stripped output path")
     parser.add_argument("--fixture-binary", help="override stripped output path")
@@ -375,9 +361,14 @@ def apply_cli_defaults(args: argparse.Namespace, parser: argparse.ArgumentParser
 
     args.case = args.case or case
     args.build = build
-    args.gt_binary = args.gt_binary or gt_binary_for(args.case, build)
-    args.fixture_binary = args.fixture_binary or fixture_binary_for(args.case, build)
-    args.manifest = args.manifest or build_manifest_for(args.case, build)
+    args.profile = normalize_profile(args.profile)
+    args.gt_binary = args.gt_binary or gt_binary_for(args.case, build, args.profile)
+    args.fixture_binary = (
+        args.fixture_binary or fixture_binary_for(args.case, build, args.profile)
+    )
+    args.manifest = (
+        args.manifest or build_manifest_for(args.case, build, args.profile)
+    )
 
 
 def main(argv: list[str] | None = None) -> int:

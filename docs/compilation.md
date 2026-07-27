@@ -13,7 +13,7 @@ Rust source
 -> 완성된 세 파일을 최종 경로에 배치
 ```
 
-`run_baseline.py`는 `compile.py`를 네 번 호출하는 상위 runner일 뿐이다. 컴파일 방법, profile flag, staging, strip, manifest 생성은 모두 `compile.py`가 결정한다.
+`run_baseline.py`는 두 profile의 네 case/build 조합에 대해 `compile.py`를 총 8번 호출하는 상위 runner다. 컴파일 방법, profile flag, staging, strip, manifest 생성은 모두 `compile.py`가 결정한다.
 
 ## 2. 가장 단순한 실행
 
@@ -27,27 +27,30 @@ python3 compile.py family_graph_03
 source         = src/family_graph_03.rs
 case           = family_graph_03
 build          = O3S
-profile        = O3
-gt_binary      = gt_bin/family_graph_03.O3S.gt.bin
-fixture_binary = bin/family_graph_03.O3S.fixture.bin
-manifest       = build_info/family_graph_03.O3S.json
+profile        = plain
+gt_binary      = gt_bin/plain/family_graph_03.O3S.gt.bin
+fixture_binary = bin/plain/family_graph_03.O3S.fixture.bin
+manifest       = build_info/plain/family_graph_03.O3S.json
 rustc_tool     = rustc
 strip_tool     = strip
 ```
 
-O3K control build에서 파생된 stripped pair를 만들려면 다음과 같이 실행한다.
+크기 지향 `min` profile을 만들려면 다음과 같이 실행한다.
 
 ```bash
-python3 compile.py family_graph_03 --build O3KS
+python3 compile.py family_graph_03 --profile min
 ```
 
 이때 핵심 값은 다음처럼 달라진다.
 
 ```text
-build   = O3KS
-profile = O3K
-extra compiler arguments = --cfg keep
+profile = min
+codegen-units = 1
+lto = true
+panic = abort
 ```
+
+`--build O3KS`는 profile과 독립적이며 선택한 profile에 `--cfg keep`만 추가한다.
 
 ## 3. `main()`에서 시작하는 호출 순서
 
@@ -59,7 +62,7 @@ main()
   -> parse_args()
   -> apply_cli_defaults()
   -> compile_case()
-       -> compiled_profile_for_build()
+       -> compile_flags()
        -> _require_tool()
        -> compile_gt_binary()
             -> rustc_command()
@@ -78,9 +81,9 @@ main()
 성공 예시 출력:
 
 ```text
-wrote gt_bin/family_graph_03.O3S.gt.bin
-wrote bin/family_graph_03.O3S.fixture.bin
-wrote build_info/family_graph_03.O3S.json
+wrote gt_bin/plain/family_graph_03.O3S.gt.bin
+wrote bin/plain/family_graph_03.O3S.fixture.bin
+wrote build_info/plain/family_graph_03.O3S.json
 ```
 
 실패하면 예외를 다음 형식으로 출력하고 `1`을 반환한다.
@@ -96,6 +99,7 @@ error: strip executable was not found. Install it before running compile.py.
 | `source` | `.rs` 경로 또는 case stem | `family_graph_03` 또는 `src/family_graph_03.rs` |
 | `--case` | crate name과 manifest case를 명시적으로 덮어씀 | `--case family_graph_03` |
 | `--build` | evaluation build | `O3S`, `O3KS` |
+| `--profile` | compiler optimization profile | `plain`, `min` |
 | `--gt-binary` | non-stripped 출력 경로 override | `gt_bin/custom.gt.bin` |
 | `--fixture-binary` | stripped 출력 경로 override | `bin/custom.fixture.bin` |
 | `--manifest` | manifest 출력 경로 override | `build_info/custom.json` |
@@ -110,9 +114,10 @@ error: strip executable was not found. Install it before running compile.py.
 python3 compile.py src/family_graph_03.rs \
   --case family_graph_03 \
   --build O3KS \
-  --gt-binary gt_bin/family_graph_03.O3KS.gt.bin \
-  --fixture-binary bin/family_graph_03.O3KS.fixture.bin \
-  --manifest build_info/family_graph_03.O3KS.json \
+  --profile min \
+  --gt-binary gt_bin/min/family_graph_03.O3KS.gt.bin \
+  --fixture-binary bin/min/family_graph_03.O3KS.fixture.bin \
+  --manifest build_info/min/family_graph_03.O3KS.json \
   --rustc-tool rustc \
   --strip-tool strip
 ```
@@ -134,14 +139,14 @@ src/family_graph_03.rs
 `paths.py`의 canonical naming 함수가 나머지 경로를 만든다.
 
 ```text
-gt_binary_for("family_graph_03", "O3S")
--> gt_bin/family_graph_03.O3S.gt.bin
+gt_binary_for("family_graph_03", "O3S", "plain")
+-> gt_bin/plain/family_graph_03.O3S.gt.bin
 
-fixture_binary_for("family_graph_03", "O3S")
--> bin/family_graph_03.O3S.fixture.bin
+fixture_binary_for("family_graph_03", "O3S", "plain")
+-> bin/plain/family_graph_03.O3S.fixture.bin
 
-build_manifest_for("family_graph_03", "O3S")
--> build_info/family_graph_03.O3S.json
+build_manifest_for("family_graph_03", "O3S", "plain")
+-> build_info/plain/family_graph_03.O3S.json
 ```
 
 다음처럼 실제 source 경로를 전달해도 된다.
@@ -152,32 +157,46 @@ python3 compile.py src/family_graph_03.rs --build O3KS
 
 Known suffix `.rs`를 제거한 stem과 `--build`를 조합해 같은 canonical 경로를 만든다.
 
-## 6. Build와 source profile
+## 6. Profile과 build
 
-사용자가 지정하는 이름은 evaluation build이고, rustc에 적용되는 것은 source profile이다.
+Profile은 최적화·크기 전략이고 build는 source의 `keep` control 여부다. 두 축은 독립적이다.
 
-| Evaluation build | Compiled profile | 처리 |
-|---|---|---|
-| `O3S` | `O3` | O3로 컴파일한 뒤 복사본 strip |
-| `O3KS` | `O3K` | O3 + `--cfg keep`으로 컴파일한 뒤 복사본 strip |
+| Profile | 핵심 설정 |
+|---|---|
+| `plain` | O3, codegen units 16, `lto=false`, panic unwind |
+| `min` | O3, codegen unit 1, fat LTO, panic abort |
 
-`O3`, `O3K`, `O0` 자체는 이 repository의 evaluation build 이름이 아니므로 `compile.py`가 거부한다.
+`plain`은 Cargo 자체를 실행하는 profile이 아니다. Cargo의 기본 release codegen
+설정을 근사한 direct-rustc controlled profile이다. 특히 `lto=false`는 LTO를
+완전히 끈다는 뜻이 아니며, rustc가 local crate의 codegen unit 사이에서 thin
+local LTO를 수행할 수 있다.
 
-공통 O3 flag는 다음과 같다.
+`min`은 O3, fat LTO, CGU 1, panic abort를 결합해 binary 크기와 cross-unit
+optimization 압력을 높인 stress profile이다. 특정 악성코드 build를 대표한다고
+주장하지 않으며, 연구에서는 malware-motivated robustness condition으로만
+해석한다.
+
+`plain`의 전체 flag는 다음과 같다.
 
 ```text
 -C opt-level=3
--C codegen-units=1
--C lto=off
--C panic=abort
 -C debuginfo=0
 -C debug-assertions=off
 -C overflow-checks=off
+-C codegen-units=16
+-C lto=false
+-C panic=unwind
 ```
 
-CallKin의 canonical profile은 rust-loss의 O3 설정을 기반으로 하지만 panic strategy는 의도적으로 `abort`를 사용한다. 따라서 panic 발생 시 stack unwinding을 수행하지 않으며, rust-loss의 `panic=unwind` binary와 byte-identical한 재현을 목표로 하지 않는다.
+`min`은 공통 O3 설정 뒤에 다음 값을 사용한다.
 
-O3K는 여기에 다음을 추가한다.
+```text
+-C codegen-units=1
+-C lto=true
+-C panic=abort
+```
+
+Build `O3S`는 추가 source cfg가 없고, `O3KS`는 어느 profile에서든 다음을 추가한다.
 
 ```text
 --cfg keep
@@ -206,7 +225,8 @@ family_graph_03::share
 ```text
 source  = src/family_graph_03.rs
 case    = family_graph_03
-profile = O3
+profile = plain
+build   = O3S
 output  = /tmp/.../non-stripped.bin
 ```
 
@@ -215,12 +235,12 @@ output  = /tmp/.../non-stripped.bin
 ```bash
 rustc src/family_graph_03.rs \
   -C opt-level=3 \
-  -C codegen-units=1 \
-  -C lto=off \
-  -C panic=abort \
   -C debuginfo=0 \
   -C debug-assertions=off \
   -C overflow-checks=off \
+  -C codegen-units=16 \
+  -C lto=false \
+  -C panic=unwind \
   --crate-type bin \
   --crate-name family_graph_03 \
   --edition 2024 \
@@ -238,13 +258,13 @@ rustc src/family_graph_03.rs \
 예를 들어 원하는 출력이 다음이라고 하자.
 
 ```text
-gt_bin/family_graph_03.O3S.gt.bin
+gt_bin/plain/family_graph_03.O3S.gt.bin
 ```
 
 함수는 같은 staging directory 안에 임시 파일을 만들고 rustc의 `-o`에 넘긴다.
 
 ```text
-/tmp/family_graph_03.O3S.xxxxx/non-stripped.bin
+/tmp/family_graph_03.plain.O3S.xxxxx/non-stripped.bin
 ```
 
 Rustc가 성공한 경우에만 임시 파일을 staging output으로 교체한다. 실패하면 임시 파일을 삭제한다.
@@ -276,7 +296,7 @@ strip --strip-all /tmp/.../stripped.bin
 `compile_case()`는 세 최종 파일을 곧바로 덮어쓰지 않는다. 먼저 하나의 temporary directory에서 전부 준비한다.
 
 ```text
-/tmp/family_graph_03.O3S.xxxxx/
+/tmp/family_graph_03.plain.O3S.xxxxx/
   non-stripped.bin
   stripped.bin
   build.json
@@ -314,7 +334,7 @@ Manifest 생성은 `compile.py`의 책임이고, JSON 작성 및 이후 검증 h
 {
   "case": "family_graph_01",
   "build": "O3S",
-  "profile": "O3",
+  "profile": "plain",
   "target": "x86_64-unknown-linux-gnu",
   "edition": "2024",
   "source": {
@@ -323,11 +343,11 @@ Manifest 생성은 `compile.py`의 책임이고, JSON 작성 및 이후 검증 h
   },
   "artifacts": {
     "non_stripped": {
-      "path": "gt_bin/family_graph_01.O3S.gt.bin",
+      "path": "gt_bin/plain/family_graph_01.O3S.gt.bin",
       "sha256": "2e71...a36"
     },
     "stripped": {
-      "path": "bin/family_graph_01.O3S.fixture.bin",
+      "path": "bin/plain/family_graph_01.O3S.fixture.bin",
       "sha256": "a90a...248",
       "stripped_from_sha256": "2e71...a36"
     }
@@ -346,6 +366,11 @@ Manifest 생성은 `compile.py`의 책임이고, JSON 작성 및 이후 검증 h
 
 Rustc version을 강제로 하나로 제한하지 않는다. 사용한 version을 manifest에 손실 없이 기록한다. 다른 compiler version의 결과를 동시에 보관하려면 canonical V0 경로와 분리된 출력 경로를 사용해야 한다.
 
+`load_and_verify_manifest()`는 hash와 identity뿐 아니라 `edition`, compiler flags,
+strip flags가 코드에 정의된 canonical profile과 정확히 같은지도 검사한다.
+검증된 `build_id`와 source/non-stripped/stripped SHA-256은 downstream JSON의
+`provenance`로 전달된다.
+
 ### Canonical V0에서 기록된 환경
 
 현재 checked-in manifest가 기록한 compiler 환경은 다음과 같다.
@@ -359,7 +384,7 @@ LLVM          : 21.1.8
 GNU strip     : 2.42
 ```
 
-Build는 Cargo가 아니라 direct `rustc` command를 사용한다. Source corpus와 profile flag recipe는 companion [rust-loss](https://github.com/xdfyrj/rust-loss) 저장소의 `scripts/lib_build.sh`에서 가져왔다. 이 repository는 grouping 실험에 필요한 linked binary만 생성하므로 rust-loss가 함께 생성하던 LLVM IR과 assembly는 출력하지 않는다.
+Build는 Cargo가 아니라 direct `rustc` command를 사용한다. Source corpus는 companion [rust-loss](https://github.com/xdfyrj/rust-loss) 저장소에서 가져왔고, `plain/min` profile은 CallKin이 비교를 위해 정의한다. 이 repository는 grouping 실험에 필요한 linked binary만 생성하므로 LLVM IR과 assembly는 출력하지 않는다.
 
 ## 12. Manifest 검증
 
@@ -370,6 +395,7 @@ Build는 Cargo가 아니라 direct `rustc` command를 사용한다. Source corpu
 ```text
 manifest case   == 요청 case
 manifest build  == 요청 build
+manifest profile == 요청 profile
 manifest target == x86_64-unknown-linux-gnu
 ```
 
@@ -418,7 +444,7 @@ Compile 전후 source hash가 다르면 새 build를 폐기한다.
 2. `build_arg_parser()`
 3. `apply_cli_defaults()`
 4. `compile_case()`
-5. `compiled_profile_for_build()`와 profile 상수
+5. `compile_flags()`와 `PROFILE_FLAGS`/`BUILD_FLAGS`
 6. `compile_gt_binary()`
 7. `rustc_command()`
 8. `derive_fixture_binary()`

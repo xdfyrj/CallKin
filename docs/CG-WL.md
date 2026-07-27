@@ -5,7 +5,7 @@
 CallKin의 `engine.py`는 fixture JSON의 call graph만 보고 scored user 함수를 cluster로 묶는다.
 
 ```text
-fixtures/family_graph_01.O3S.fixture.json
+fixtures/plain/family_graph_01.O3S.fixture.json
 -> loader.py
 -> engine.py
 -> predicted clusters
@@ -30,9 +30,9 @@ source code
 예를 들어 초기 특징이 같은 세 함수는 같은 문자열 color를 받는다.
 
 ```text
-FUN_00113c00 -> USER:self=1:distinct_out=0
-FUN_00113ce0 -> USER:self=1:distinct_out=0
-FUN_00113d60 -> USER:self=1:distinct_out=0
+FUN_00113e40 -> USER:self=1:distinct_out=0
+FUN_00113f20 -> USER:self=1:distinct_out=0
+FUN_00113fa0 -> USER:self=1:distinct_out=0
 ```
 
 세 함수는 같은 color이므로 같은 class에 있다. 다음 refinement에서 이웃 color pattern이 달라지면 서로 다른 새 color를 받을 수 있다.
@@ -45,7 +45,8 @@ Fixture는 `loader.py`를 거쳐 다음 구조가 된다.
 Case(
     case="family_graph_01",
     build="O3S",
-    schema_version=1,
+    profile="plain",
+    schema_version=4,
     nodes=[...],
 )
 ```
@@ -54,11 +55,11 @@ Case(
 
 ```python
 Node(
-    id="FUN_00114240",
+    id="FUN_00114480",
     type="user",
     scored=True,
     calls=[
-        Call(target="FUN_00113ce0", count=5),
+        Call(target="FUN_00113f20", count=5),
     ],
 )
 ```
@@ -100,9 +101,9 @@ distinct_in_caller_count
 
 ```json
 {
-  "id": "FUN_00113c00",
+  "id": "FUN_00113e40",
   "calls": [
-    {"target": "FUN_00113c00", "count": 1}
+    {"target": "FUN_00113e40", "count": 1}
   ]
 }
 ```
@@ -110,9 +111,9 @@ distinct_in_caller_count
 Graph view에서는 다음이 된다.
 
 ```text
-self_call_count[FUN_00113c00] = 1
-outgoing[FUN_00113c00]        = []
-incoming[FUN_00113c00]        = []
+self_call_count[FUN_00113e40] = 1
+outgoing[FUN_00113e40]        = []
+incoming[FUN_00113e40]        = []
 ```
 
 Self edge는 별도 seed 특징으로 올리고 OUT/IN neighbor multiset에는 넣지 않는다.
@@ -122,14 +123,14 @@ Self edge는 별도 seed 특징으로 올리고 OUT/IN neighbor multiset에는 �
 다음 edge:
 
 ```text
-FUN_00114240 -> FUN_00113ce0 x5
+FUN_00114480 -> FUN_00113f20 x5
 ```
 
 Graph view:
 
 ```python
-outgoing["FUN_00114240"] = [("FUN_00113ce0", 5)]
-incoming["FUN_00113ce0"] = [("FUN_00114240", 5)]
+outgoing["FUN_00114480"] = [("FUN_00113f20", 5)]
+incoming["FUN_00113f20"] = [("FUN_00114480", 5)]
 ```
 
 ### 5.3 Distinct count
@@ -369,7 +370,7 @@ rounds = 1
 기본 실행은 최종 partition과 `rounds`만 반환한다. `--trace`를 지정하면 `round 0` seed부터 마지막 fixpoint 확인까지 scored partition을 모두 기록하고 출력한다.
 
 ```bash
-python3 engine.py family_graph_02 --build O3S --trace
+python3 engine.py family_graph_02 --build O3S --profile plain --trace
 ```
 
 출력 형태:
@@ -396,8 +397,8 @@ Fg01 `full` mode 결과:
 
 ```python
 [
-    ["FUN_00113c00", "FUN_00113ce0", "FUN_00113d60"],
-    ["FUN_00114240", "FUN_00114420", "FUN_00114660"],
+    ["FUN_00113e40", "FUN_00113f20", "FUN_00113fa0"],
+    ["FUN_00114480", "FUN_00114660", "FUN_001148a0"],
 ]
 ```
 
@@ -419,9 +420,9 @@ trace (`--trace`를 요청한 경우)
 
 ```python
 {
-    "FUN_00113c00": 0,
-    "FUN_00113ce0": 0,
-    "FUN_00113d60": 0,
+    "FUN_00113e40": 0,
+    "FUN_00113f20": 0,
+    "FUN_00113fa0": 0,
 }
 ```
 
@@ -448,7 +449,7 @@ python3 engine.py family_graph_03 --mode out-in
 ```text
 full
 2
-[['FUN_00114470', 'FUN_001147f0'], ['FUN_00114b50'], ...]
+[['FUN_001146b0', 'FUN_00114a30'], ['FUN_00114d90'], ...]
 ```
 
 모든 mode를 GT와 함께 비교하려면 scorer를 사용한다.

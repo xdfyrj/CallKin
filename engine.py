@@ -9,7 +9,13 @@ from dataclasses import dataclass
 
 from loader import load_case
 from model import Case
-from paths import DEFAULT_BUILD, resolve_fixture_json, split_case_build
+from paths import (
+    BUILD_PROFILES,
+    DEFAULT_BUILD,
+    DEFAULT_PROFILE,
+    resolve_fixture_json,
+    split_case_build,
+)
 
 
 NodeId = str
@@ -419,7 +425,13 @@ def build_arg_parser() -> argparse.ArgumentParser:
         description="Run CG-WL on one fixture JSON."
     )
     parser.add_argument("fixture", help="fixture JSON path, or an example stem")
-    parser.add_argument("--build", help=f"build/profile. Default: {DEFAULT_BUILD}")
+    parser.add_argument("--build", help=f"build label. Default: {DEFAULT_BUILD}")
+    parser.add_argument(
+        "--profile",
+        choices=BUILD_PROFILES,
+        default=DEFAULT_PROFILE,
+        help=f"compiler profile. Default: {DEFAULT_PROFILE}",
+    )
     parser.add_argument(
         "--mode",
         choices=CG_WL_MODES,
@@ -441,7 +453,7 @@ def main(argv: list[str] | None = None) -> int:
         fixture_path = args.fixture
     else:
         case, build = split_case_build(args.fixture, args.build)
-        fixture_path = resolve_fixture_json(case, build)
+        fixture_path = resolve_fixture_json(case, build, args.profile)
 
     try:
         result = run_fixture_path(fixture_path, mode=args.mode, trace=args.trace)

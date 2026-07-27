@@ -5,4 +5,9 @@ v0-engine-py.zip
 results/
 !results/
 results/*
-!results/v0_baseline.json
+!results/plain/
+!results/min/
+results/plain/*
+results/min/*
+!results/plain/v0_baseline.json
+!results/min/v0_baseline.json

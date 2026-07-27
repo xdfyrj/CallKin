@@ -11,7 +11,7 @@ def check_relation_modes() -> int:
     case = Case(
         case="mode-test",
         build="unit",
-        schema_version=1,
+        schema_version=3,
         nodes=[
             Node("caller_a", "anchor", False, [Call("leaf_a", 1)]),
             Node("caller_b", "anchor", False, [Call("leaf_b", 1)]),

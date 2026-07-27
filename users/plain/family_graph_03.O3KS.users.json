@@ -1,0 +1,107 @@
+{
+  "case": "family_graph_03",
+  "build": "O3KS",
+  "profile": "plain",
+  "schema_version": 4,
+  "provenance": {
+    "build_id": "d41297ce80164cb0ac09978396901dcf",
+    "source_sha256": "f619cb2cf6b96756592c955895dcef822081333d42c018fc5b9c5f7e204a8d4e",
+    "non_stripped_sha256": "d6460699d9cb3c5723f7133dead7a1cd02b1f84ba72600f1c75a6bcb9ed5fcdd",
+    "stripped_sha256": "623ec2db63a4bbe3088e622910333e0bedaf9b072c4aae7b1e1fe7072959603e"
+  },
+  "source": "gt_bin/plain/family_graph_03.O3KS.gt.bin",
+  "prefix": "family_graph_03::",
+  "addresses": [
+    "0x14740",
+    "0x14900",
+    "0x14a50",
+    "0x14b40",
+    "0x14db0",
+    "0x14f10",
+    "0x15120",
+    "0x15270",
+    "0x15460",
+    "0x156a0",
+    "0x157a0",
+    "0x15920",
+    "0x15b70",
+    "0x15e30",
+    "0x15fc0",
+    "0x162f0",
+    "0x16550"
+  ],
+  "function_bounds": [
+    {
+      "address": "0x14090",
+      "size": 1704
+    },
+    {
+      "address": "0x14740",
+      "size": 437
+    },
+    {
+      "address": "0x14900",
+      "size": 324
+    },
+    {
+      "address": "0x14a50",
+      "size": 233
+    },
+    {
+      "address": "0x14b40",
+      "size": 621
+    },
+    {
+      "address": "0x14db0",
+      "size": 346
+    },
+    {
+      "address": "0x14f10",
+      "size": 523
+    },
+    {
+      "address": "0x15120",
+      "size": 329
+    },
+    {
+      "address": "0x15270",
+      "size": 490
+    },
+    {
+      "address": "0x15460",
+      "size": 567
+    },
+    {
+      "address": "0x156a0",
+      "size": 256
+    },
+    {
+      "address": "0x157a0",
+      "size": 383
+    },
+    {
+      "address": "0x15920",
+      "size": 590
+    },
+    {
+      "address": "0x15b70",
+      "size": 704
+    },
+    {
+      "address": "0x15e30",
+      "size": 393
+    },
+    {
+      "address": "0x15fc0",
+      "size": 815
+    },
+    {
+      "address": "0x162f0",
+      "size": 604
+    },
+    {
+      "address": "0x16550",
+      "size": 422
+    }
+  ]
+}

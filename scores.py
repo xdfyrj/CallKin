@@ -31,12 +31,21 @@ from engine import (
 )
 from loader import load_case
 from model import Case
-from paths import DEFAULT_BUILD, resolve_fixture_json, resolve_gt_json, split_case_build
+from paths import (
+    BUILD_PROFILES,
+    DEFAULT_BUILD,
+    DEFAULT_PROFILE,
+    normalize_profile,
+    resolve_fixture_json,
+    resolve_gt_json,
+    split_case_build,
+)
+from provenance import BuildProvenance, parse_provenance
 
 
 # ---------------------------------------------------------- ground truth model
 
-GROUND_TRUTH_SCHEMA_VERSION = 3
+GROUND_TRUTH_SCHEMA_VERSION = 5
 
 V0_BASELINE_JOBS: tuple[tuple[str, str], ...] = (
     ("family_graph_01", "O3S"),
@@ -56,9 +65,11 @@ class OriginGroup:
 class GroundTruth:
     case: str
     build: str
+    profile: str
     schema_version: int
     origins: tuple[OriginGroup, ...]
     symbols: dict[str, tuple[str, ...]]
+    provenance: BuildProvenance
 
     def origin_of(self) -> dict[str, str]:
         return {m: g.origin for g in self.origins for m in g.members}
@@ -73,6 +84,7 @@ def load_ground_truth(path: str) -> GroundTruth:
     return GroundTruth(
         case=data["case"],
         build=data["build"],
+        profile=data["profile"],
         schema_version=data["schema_version"],
         origins=tuple(
             OriginGroup(
@@ -85,6 +97,9 @@ def load_ground_truth(path: str) -> GroundTruth:
             member_id: tuple(symbols)
             for member_id, symbols in data["symbols"].items()
         },
+        provenance=parse_provenance(
+            data["provenance"], where="ground_truth.provenance"
+        ),
     )
 
 
@@ -92,7 +107,9 @@ def _validate_ground_truth(data) -> None:
     if not isinstance(data, dict):
         raise ValueError("ground truth root must be a JSON object")
 
-    required = {"case", "build", "schema_version", "origins", "symbols"}
+    required = {
+        "case", "build", "profile", "schema_version", "provenance", "origins", "symbols"
+    }
     allowed = required | {"note"}
     keys = set(data)
     if required - keys:
@@ -101,6 +118,8 @@ def _validate_ground_truth(data) -> None:
         raise ValueError(f"unknown field(s): {sorted(keys - allowed)}")
     if data["schema_version"] != GROUND_TRUTH_SCHEMA_VERSION:
         raise ValueError(f"unsupported schema_version: {data['schema_version']}")
+    normalize_profile(data["profile"])
+    parse_provenance(data["provenance"], where="ground_truth.provenance")
     if not isinstance(data["origins"], list) or not data["origins"]:
         raise ValueError("origins must be a non-empty list")
 
@@ -191,6 +210,7 @@ class OriginScore:
 class ScoreReport:
     case: str
     build: str
+    profile: str
     mode: CGWLMode
     candidate_count: int
     pair_count: int
@@ -198,6 +218,7 @@ class ScoreReport:
     clusters: tuple[PredictedCluster, ...]
     origins: tuple[OriginScore, ...]
     pairwise: PairwiseScore
+    provenance: BuildProvenance
     trace: tuple[CGWLRoundTrace, ...] = ()
 
 
@@ -242,6 +263,7 @@ def score_case(
     return ScoreReport(
         case=case.case,
         build=case.build,
+        profile=case.profile,
         mode=result.mode,
         candidate_count=len(scored_ids),
         pair_count=len(scored_ids) * (len(scored_ids) - 1) // 2,
@@ -249,6 +271,7 @@ def score_case(
         clusters=clusters,
         origins=origins,
         pairwise=pairwise,
+        provenance=gt.provenance,
         trace=result.trace,
     )
 
@@ -267,15 +290,17 @@ def score_all_modes(
 
 def score_v0_baseline(
     *,
+    profile: str = DEFAULT_PROFILE,
     mode: CGWLMode = DEFAULT_CG_WL_MODE,
     all_modes: bool = False,
     trace: bool = False,
 ) -> tuple[ScoreReport, ...]:
+    profile = normalize_profile(profile)
     reports = []
     modes = CG_WL_MODES if all_modes else (mode,)
     for case, build in V0_BASELINE_JOBS:
-        fixture_path = resolve_fixture_json(case, build)
-        gt_path = resolve_gt_json(case, build)
+        fixture_path = resolve_fixture_json(case, build, profile)
+        gt_path = resolve_gt_json(case, build, profile)
         reports.extend(
             score_case(fixture_path, gt_path, mode=mode, trace=trace)
             for mode in modes
@@ -312,11 +337,18 @@ def _adjusted_rand_index(tp: int, fp: int, fn: int, tn: int) -> float:
 
 
 def _check_join(case: Case, gt: GroundTruth) -> None:
-    if case.case != gt.case or case.build != gt.build:
+    if (
+        case.case != gt.case
+        or case.build != gt.build
+        or case.profile != gt.profile
+    ):
         raise ValueError(
-            f"case/build mismatch: fixture={case.case}/{case.build} "
-            f"vs ground_truth={gt.case}/{gt.build}"
+            "case/build/profile mismatch: "
+            f"fixture={case.case}/{case.build}/{case.profile} "
+            f"vs ground_truth={gt.case}/{gt.build}/{gt.profile}"
         )
+    if case.provenance != gt.provenance:
+        raise ValueError("fixture/ground-truth build provenance mismatch")
     scored_ids = {n.id for n in case.nodes if n.scored}
     gt_ids = {m for g in gt.origins for m in g.members}
     if scored_ids != gt_ids:
@@ -402,7 +434,7 @@ def _display_symbol(symbol: str, case: str) -> str:
 def format_report(r: ScoreReport) -> str:
     p = r.pairwise
     lines = [
-        f"case : {r.case} / {r.build}",
+        f"case : {r.case} / {r.build} / {r.profile}",
         f"mode: {r.mode}",
         f"candidates: {r.candidate_count}",
         f"candidate pairs: {r.pair_count}",
@@ -438,7 +470,9 @@ def score_report_to_dict(report: ScoreReport) -> dict:
     data = {
         "case": report.case,
         "build": report.build,
+        "profile": report.profile,
         "mode": report.mode,
+        "provenance": report.provenance.to_dict(),
         "candidate_count": report.candidate_count,
         "pair_count": report.pair_count,
         "rounds": report.rounds,
@@ -497,7 +531,7 @@ def score_report_to_dict(report: ScoreReport) -> dict:
 
 def reports_to_dict(reports: tuple[ScoreReport, ...]) -> dict:
     return {
-        "schema_version": 1,
+        "schema_version": 3,
         "results": [score_report_to_dict(report) for report in reports],
     }
 
@@ -525,7 +559,13 @@ def build_arg_parser() -> argparse.ArgumentParser:
         nargs="?",
         help="ground-truth JSON path",
     )
-    parser.add_argument("--build", help=f"build/profile. Default: {DEFAULT_BUILD}")
+    parser.add_argument("--build", help=f"build label. Default: {DEFAULT_BUILD}")
+    parser.add_argument(
+        "--profile",
+        choices=BUILD_PROFILES,
+        default=DEFAULT_PROFILE,
+        help=f"compiler profile. Default: {DEFAULT_PROFILE}",
+    )
     parser.add_argument(
         "--mode",
         choices=CG_WL_MODES,
@@ -540,7 +580,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--baseline",
         action="store_true",
-        help="score the four canonical V0 builds",
+        help="score the four canonical case/build combinations for one profile",
     )
     parser.add_argument(
         "--json-output",
@@ -565,6 +605,7 @@ def main(argv: list[str] | None = None) -> int:
                     "--baseline cannot be combined with fixture, ground_truth, or --build"
                 )
             reports = score_v0_baseline(
+                profile=args.profile,
                 mode=args.mode,
                 all_modes=args.all_modes,
                 trace=args.trace,
@@ -574,8 +615,8 @@ def main(argv: list[str] | None = None) -> int:
                 parser.error("fixture or --baseline is required")
             if args.ground_truth is None:
                 case, build = split_case_build(args.fixture, args.build)
-                fixture_path = resolve_fixture_json(case, build)
-                gt_path = resolve_gt_json(case, build)
+                fixture_path = resolve_fixture_json(case, build, args.profile)
+                gt_path = resolve_gt_json(case, build, args.profile)
             else:
                 fixture_path = args.fixture
                 gt_path = args.ground_truth

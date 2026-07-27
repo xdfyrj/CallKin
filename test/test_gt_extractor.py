@@ -8,32 +8,46 @@ from gt_extractor import (
     make_users_json,
     parse_nm_lines,
     user_addresses,
+    user_function_bounds,
+)
+from provenance import BuildProvenance
+
+
+PROVENANCE = BuildProvenance(
+    build_id="test-build",
+    source_sha256="1" * 64,
+    non_stripped_sha256="2" * 64,
+    stripped_sha256="3" * 64,
 )
 
 
 def main() -> int:
     symbols = parse_nm_lines([
-        "0000000000014000 t family_graph_02::process_beta",
-        "0000000000014120 t family_graph_02::process_beta::<i32>",
-        "0000000000014af0 t family_graph_02::c_process_alpha_i32",
-        "0000000000014af0 t family_graph_02::c_process_alpha_i32::<u64>",
-        "0000000000014c10 t family_graph_02::decoy_alpha",
-        "0000000000015030 t family_graph_02::main",
-        "0000000000099999 t core::fmt::something",
+        "0000000000014000 0000000000000100 t family_graph_02::process_beta",
+        "0000000000014120 0000000000000080 t family_graph_02::process_beta::<i32>",
+        "0000000000014af0 0000000000000060 t family_graph_02::c_process_alpha_i32",
+        "0000000000014af0 0000000000000060 t family_graph_02::c_process_alpha_i32::<u64>",
+        "0000000000014c10 0000000000000040 t family_graph_02::decoy_alpha",
+        "0000000000015030 0000000000000200 t family_graph_02::main",
+        "0000000000099999 0000000000000010 t core::fmt::something",
     ])
 
     gt = make_ground_truth(
         symbols=symbols,
         case="fg02",
         build="O3S",
+        profile="plain",
         prefix="family_graph_02::",
         id_bias=0x100000,
+        provenance=PROVENANCE,
     )
 
     expected = {
         "case": "fg02",
         "build": "O3S",
-        "schema_version": 3,
+        "profile": "plain",
+        "schema_version": 5,
+        "provenance": PROVENANCE.to_dict(),
         "origins": [
             {
                 "origin": "process_beta",
@@ -69,16 +83,18 @@ def main() -> int:
         return 1
 
     alias_symbols = parse_nm_lines([
-        "0000000000014000 t family_graph_02::first_origin",
-        "0000000000014000 t family_graph_02::second_origin",
+        "0000000000014000 0000000000000010 t family_graph_02::first_origin",
+        "0000000000014000 0000000000000010 t family_graph_02::second_origin",
     ])
     try:
         make_ground_truth(
             symbols=alias_symbols,
             case="fg02",
             build="O3S",
+            profile="plain",
             prefix="family_graph_02::",
             id_bias=0x100000,
+            provenance=PROVENANCE,
         )
     except ValueError as exc:
         if "cross-origin address alias" not in str(exc):
@@ -94,20 +110,44 @@ def main() -> int:
         print(f"FAIL expected user addresses {expected_addresses}, got {addresses}")
         return 1
 
+    bounds = user_function_bounds(symbols=symbols, prefix="family_graph_02::")
+    expected_bounds = {
+        0x14000: 0x100,
+        0x14120: 0x80,
+        0x14AF0: 0x60,
+        0x14C10: 0x40,
+        0x15030: 0x200,
+    }
+    if bounds != expected_bounds:
+        print(f"FAIL expected function bounds {expected_bounds}, got {bounds}")
+        return 1
+
     users_json = make_users_json(
         addresses=addresses,
+        function_bounds=bounds,
         case="fg02",
         build="O3S",
+        profile="plain",
         binary_path="gt_bin/family_graph_02.gt.bin",
         prefix="family_graph_02::",
+        provenance=PROVENANCE,
     )
     expected_users_json = {
         "case": "fg02",
         "build": "O3S",
-        "schema_version": 1,
+        "profile": "plain",
+        "schema_version": 4,
+        "provenance": PROVENANCE.to_dict(),
         "source": "gt_bin/family_graph_02.gt.bin",
         "prefix": "family_graph_02::",
         "addresses": ["0x14000", "0x14120", "0x14af0", "0x14c10"],
+        "function_bounds": [
+            {"address": "0x14000", "size": 0x100},
+            {"address": "0x14120", "size": 0x80},
+            {"address": "0x14af0", "size": 0x60},
+            {"address": "0x14c10", "size": 0x40},
+            {"address": "0x15030", "size": 0x200},
+        ],
     }
     if users_json != expected_users_json:
         print(f"FAIL expected users JSON {expected_users_json}, got {users_json}")

@@ -1,0 +1,104 @@
+{
+  "case": "family_graph_02",
+  "build": "O3S",
+  "profile": "min",
+  "schema_version": 5,
+  "provenance": {
+    "build_id": "91ad7bd292cd43a4b3cb39573a3bfd27",
+    "source_sha256": "ee46b32e80732e0226b3f443d3aac63d712bf1e19c625b155beb14098f7d60e6",
+    "non_stripped_sha256": "5f01ec9c81bcd305ada546bba34ae4efdbde24c7497c233881a8fad7ea06396c",
+    "stripped_sha256": "aad46cd96981b844d73e9b3ec8c4313382fc1d4634a6c540e9f10da651b61fec"
+  },
+  "origins": [
+    {
+      "origin": "process_beta",
+      "members": [
+        "FUN_0010e510",
+        "FUN_0010e630"
+      ]
+    },
+    {
+      "origin": "recurse_beta",
+      "members": [
+        "FUN_0010e890",
+        "FUN_0010ea10"
+      ]
+    },
+    {
+      "origin": "process_alpha",
+      "members": [
+        "FUN_0010ead0",
+        "FUN_0010ed30"
+      ]
+    },
+    {
+      "origin": "recurse_alpha",
+      "members": [
+        "FUN_0010ee50",
+        "FUN_0010eee0"
+      ]
+    },
+    {
+      "origin": "c_process_alpha_i32",
+      "members": [
+        "FUN_0010f000"
+      ]
+    },
+    {
+      "origin": "c_recurse_alpha_i32",
+      "members": [
+        "FUN_0010f120"
+      ]
+    },
+    {
+      "origin": "c_process_alpha_wide",
+      "members": [
+        "FUN_0010f1b0"
+      ]
+    },
+    {
+      "origin": "c_recurse_alpha_wide",
+      "members": [
+        "FUN_0010f420"
+      ]
+    }
+  ],
+  "symbols": {
+    "FUN_0010e510": [
+      "family_graph_02::process_beta"
+    ],
+    "FUN_0010e630": [
+      "family_graph_02::process_beta"
+    ],
+    "FUN_0010e890": [
+      "family_graph_02::recurse_beta"
+    ],
+    "FUN_0010ea10": [
+      "family_graph_02::recurse_beta"
+    ],
+    "FUN_0010ead0": [
+      "family_graph_02::process_alpha"
+    ],
+    "FUN_0010ed30": [
+      "family_graph_02::process_alpha"
+    ],
+    "FUN_0010ee50": [
+      "family_graph_02::recurse_alpha"
+    ],
+    "FUN_0010eee0": [
+      "family_graph_02::recurse_alpha"
+    ],
+    "FUN_0010f000": [
+      "family_graph_02::c_process_alpha_i32"
+    ],
+    "FUN_0010f120": [
+      "family_graph_02::c_recurse_alpha_i32"
+    ],
+    "FUN_0010f1b0": [
+      "family_graph_02::c_process_alpha_wide"
+    ],
+    "FUN_0010f420": [
+      "family_graph_02::c_recurse_alpha_wide"
+    ]
+  }
+}

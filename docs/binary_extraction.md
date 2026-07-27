@@ -5,10 +5,10 @@
 CallKin의 `binary_extractor.py`는 stripped binary를 radare2로 분석해 CG-WL 입력인 fixture JSON을 만든다.
 
 ```text
-bin/family_graph_01.O3S.fixture.bin
-+ users/family_graph_01.O3S.users.json
+bin/plain/family_graph_01.O3S.fixture.bin
++ users/plain/family_graph_01.O3S.users.json
 -> binary_extractor.py
--> fixtures/family_graph_01.O3S.fixture.json
+-> fixtures/plain/family_graph_01.O3S.fixture.json
 ```
 
 이 단계가 추출하는 것은 함수 body feature가 아니라 다음 Axis 1 정보다.
@@ -34,17 +34,18 @@ python3 binary_extractor.py family_graph_01
 기본값이 해석된 결과는 다음과 같다.
 
 ```text
-binary = bin/family_graph_01.O3S.fixture.bin
-users  = users/family_graph_01.O3S.users.json
+binary = bin/plain/family_graph_01.O3S.fixture.bin
+users  = users/plain/family_graph_01.O3S.users.json
 case   = family_graph_01
 build  = O3S
-output = fixtures/family_graph_01.O3S.fixture.json
+profile = plain
+output = fixtures/plain/family_graph_01.O3S.fixture.json
 ```
 
 실행 결과 예시:
 
 ```text
-wrote fixtures/family_graph_01.O3S.fixture.json
+wrote fixtures/plain/family_graph_01.O3S.fixture.json
 nodes=7
 ```
 
@@ -52,7 +53,7 @@ nodes=7
 
 ```text
 6 user/scored nodes
-1 root anchor: FUN_00113e00
+1 root anchor: FUN_00114040
 ```
 
 ## 3. 전체 함수 호출 순서
@@ -70,7 +71,6 @@ main()
        -> resolve_root()
        -> build_call_graph()
             -> direct_calls() for every discovered function
-       -> select_reachable()
        -> select_user_context()
        -> make_fixture_json()
   -> write_fixture()
@@ -119,7 +119,7 @@ aflj
 
 ```python
 R2Function(
-    addr=0x13e20,
+    addr=0x13e40,
     name="fcn.00013e20",
     size=224,
     kind="fcn",
@@ -145,10 +145,10 @@ FUN_<8자리 hexadecimal>
 실제 예시:
 
 ```text
-raw address = 0x13e20
+raw address = 0x13e40
 id bias     = 0x100000
-sum         = 0x113e20
-fixture ID  = FUN_00113c00
+sum         = 0x113e40
+fixture ID  = FUN_00113e40
 ```
 
 이 bias는 현재 Ghidra-style hand fixture와 ID를 맞추기 위한 표현 규칙이다. Call graph 의미나 실제 binary address를 바꾸지 않는다.
@@ -162,7 +162,7 @@ python3 binary_extractor.py family_graph_01 --id-bias 0
 그 경우 같은 함수 ID는 다음이 된다.
 
 ```text
-FUN_00013e20
+FUN_00013e40
 ```
 
 ## 7. Root 탐지
@@ -170,8 +170,8 @@ FUN_00013e20
 `resolve_root()`는 다음 순서로 root를 찾는다.
 
 1. 사용자가 `--root`로 지정한 함수
-2. 이름이 `main` 또는 `sym.main`인 함수
-3. Rust/glibc startup pattern에서 복구한 user main
+2. Rust/glibc startup pattern에서 복구한 user main
+3. 이름이 `main` 또는 `sym.main`인 함수
 4. 마지막 fallback인 `entry0`
 
 Canonical 실행에서는 startup wrapper를 따라 Rust user main을 찾는다.
@@ -209,13 +209,24 @@ python3 binary_extractor.py family_graph_01 --root FUN_00113e00
 
 ## 8. Call edge 추출
 
-`build_call_graph()`는 radare2가 발견한 각 함수에 `direct_calls()`를 실행한다.
+`build_call_graph()`는 함수 종류에 따라 두 경계 source를 사용한다.
 
-각 함수의 disassembly JSON은 다음 명령으로 얻는다.
+Canonical users mode에서 source namespace 함수와 source `main`은 users JSON의
+symbol extent를 사용한다. Stripped binary bytes를 다음 radare2 명령으로 읽고,
+Capstone x86-64 decoder로 `[start, start + size)` 전체를 선형 디코딩한다.
 
 ```text
-pdfj @ <function address>
+p8j <symbol size> @ <function address>
 ```
+
+따라서 radare2가 main을 실제보다 짧은 함수로 복구해도 뒤쪽 callsite를 버리지
+않는다. 예를 들어 symbol size가 1465 bytes인데 radare2 size가 951 bytes이면
+fixture의 `extraction.boundary_mismatches`에 차이를 기록하고 1465 bytes 전체를
+디코딩한다.
+
+Users가 직접 호출하는 one-hop library anchor는 symbol extent가 없으므로 기존처럼
+radare2 `pdfj @ <function address>`를 사용한다. Anchor는 terminal이므로 그 내부
+edge는 fixture에 기록하지 않는다.
 
 ### 8.1 Direct call
 
@@ -224,25 +235,25 @@ Instruction에 radare2의 direct `jump` target이 있고 operation이 call이면
 예시:
 
 ```text
-현재 함수: 0x14460
-instruction: call 0x13f00
-target function start: 0x13f00
+현재 함수: 0x14480
+instruction: call 0x13f20
+target function start: 0x13f20
 ```
 
 Bias를 적용한 fixture edge는 다음과 같다.
 
 ```json
 {
-  "target": "FUN_00113ce0",
+  "target": "FUN_00113f20",
   "count": 1
 }
 ```
 
-같은 함수 body에 `call 0x13f00`이 다섯 곳 있으면 `Counter`가 합산한다.
+같은 함수 body에 `call 0x13f20`이 다섯 곳 있으면 `Counter`가 합산한다.
 
 ```json
 {
-  "target": "FUN_00113ce0",
+  "target": "FUN_00113f20",
   "count": 5
 }
 ```
@@ -265,9 +276,9 @@ jmp target
 Extractor는 jump target이 **다른 함수의 정확한 시작 주소**일 때만 call edge로 센다.
 
 ```text
-current function start = 0x14460
-jump target            = 0x13f00
-known function start   = 0x13f00
+current function start = 0x14480
+jump target            = 0x13f20
+known function start   = 0x13f20
 => tail-call edge로 포함
 ```
 
@@ -293,38 +304,54 @@ GOT/PLT 형태도 radare2 결과에 직접 code target이 없으면 포함되지
 {
   "case": "family_graph_01",
   "build": "O3S",
+  "profile": "plain",
+  "schema_version": 4,
+  "provenance": {
+    "build_id": "...",
+    "source_sha256": "...",
+    "non_stripped_sha256": "...",
+    "stripped_sha256": "..."
+  },
+  "source": "gt_bin/plain/family_graph_01.O3S.gt.bin",
   "prefix": "family_graph_01::",
   "addresses": [
-    "0x13e20",
-    "0x13f00",
-    "0x13f80",
-    "0x14460",
-    "0x14640",
-    "0x14880"
+    "0x13e40",
+    "0x13f20",
+    "0x13fa0",
+    "0x14480",
+    "0x14660",
+    "0x148a0"
+  ],
+  "function_bounds": [
+    {"address": "0x13e40", "size": 212},
+    {"address": "0x14040", "size": 1075}
   ]
 }
 ```
 
-`load_users()`는 문자열 주소를 integer set으로 바꾼다.
+`load_users()`는 candidate 주소를 integer set으로, symbol extent를 address-to-size
+map으로 바꾼다. `function_bounds`에는 source `main`도 포함된다.
 
 ```python
 {
-    0x13e20,
-    0x13f00,
-    0x13f80,
-    0x14460,
-    0x14640,
-    0x14880,
+    0x13e40,
+    0x13f20,
+    0x13fa0,
+    0x14480,
+    0x14660,
+    0x148a0,
 }
 ```
 
-이 주소마다 stripped binary에서 radare2가 정확한 함수 시작점을 복구했는지 검사한다. 예를 들어 `0x14460`이 symbol side에는 있지만 `aflj` 함수 시작점에는 없으면 다음 유형의 오류로 중단한다.
+Candidate 주소마다 stripped binary에서 radare2가 정확한 함수 시작점을 복구했는지 검사한다. 예를 들어 `0x14480`이 symbol side에는 있지만 `aflj` 함수 시작점에는 없으면 다음 유형의 오류로 중단한다.
 
 ```text
-user address(es) are not radare2 function starts in stripped binary: 0x14460
+user address(es) are not radare2 function starts in stripped binary: 0x14480
 ```
 
-또한 모든 user 주소가 root에서 direct-call graph를 따라 reachable한지 검사한다.
+Root reachability는 candidate 필터로 사용하지 않는다. 대신 namespace 함수의
+relation은 symbol extent로 추출하며 radare2 size가 다르면 mismatch를 fixture에
+남긴다.
 
 ## 10. 어떤 node를 fixture에 넣는가
 
@@ -376,13 +403,15 @@ Node type과 scoring은 다음과 같다.
 
 따라서 anchor는 user의 call-graph 문맥을 보존하지만 점수 계산 대상은 아니다.
 
-`select_reachable()`은 root에서 전체 closure를 계산하지만, 정상 users mode에서 그 closure 전체를 emit하기 위한 것이 아니다. User 주소가 실제 root-reachable인지 확인하고 one-hop context 선택의 허용 범위를 정하기 위해 사용한다.
+정상 users mode에서는 users JSON의 주소 집합을 authoritative candidate set으로 사용한다. Root reachability를 candidate 필터로 다시 적용하지 않는다. 이는 radare2가 큰 함수의 경계를 일찍 끊더라도 symbol에서 확인된 user 함수를 누락시키지 않기 위해서다.
 
-Users JSON 없이 직접 실행하면 root-reachable closure 전체를 선택하는 fallback mode가 동작한다. 이것은 canonical 연구 pipeline이 아니다.
+`select_user_context()`는 root, 모든 listed user, 각 listed user가 직접 호출하는 함수만 선택한다. 따라서 library anchor의 callee로 더 내려가지 않는다.
+
+`select_reachable()`은 users JSON 없이 직접 실행하는 fallback mode에서만 root-reachable closure 전체를 선택한다. 이것은 canonical 연구 pipeline이 아니다.
 
 ## 11. Fixture JSON
 
-`make_fixture_json()`의 출력 schema version은 1이다.
+`make_fixture_json()`의 출력 schema version은 4다.
 
 실제 fg01 일부:
 
@@ -390,26 +419,37 @@ Users JSON 없이 직접 실행하면 root-reachable closure 전체를 선택하
 {
   "case": "family_graph_01",
   "build": "O3S",
-  "schema_version": 1,
+  "profile": "plain",
+  "schema_version": 4,
+  "provenance": {
+    "build_id": "...",
+    "source_sha256": "...",
+    "non_stripped_sha256": "...",
+    "stripped_sha256": "..."
+  },
+  "extraction": {
+    "boundary_mode": "symbol-extent",
+    "boundary_mismatches": []
+  },
   "nodes": [
     {
-      "id": "FUN_00113c00",
+      "id": "FUN_00113e40",
       "type": "user",
       "scored": true,
       "calls": [
         {
-          "target": "FUN_00113c00",
+          "target": "FUN_00113e40",
           "count": 1
         }
       ]
     },
     {
-      "id": "FUN_00113e00",
+      "id": "FUN_00114040",
       "type": "anchor",
       "scored": false,
       "calls": [
         {
-          "target": "FUN_00113c00",
+          "target": "FUN_00113e40",
           "count": 2
         }
       ]
@@ -437,8 +477,10 @@ Self-call도 일반 call edge 형태로 JSON에 기록한다. `engine.py`가 fix
 | positional `output` | fixture 출력 경로 | `fixtures/custom.fixture.json` |
 | `--case` | JSON case override | `--case custom_case` |
 | `--build` | build label | `--build O3KS` |
-| `--root` | root name/ID/address | `--root FUN_00113e00` |
-| `--users` | users JSON 경로 | `--users users/custom.users.json` |
+| `--profile` | compiler profile과 artifact directory | `--profile min` |
+| `--root` | root name/ID/address | `--root FUN_00114040` |
+| `--users` | users JSON 경로 | `--users users/min/custom.users.json` |
+| `--manifest` | build manifest override | `--manifest build_info/min/custom.json` |
 | `--score-root` | root도 user/scored로 처리 | canonical pipeline에서는 사용하지 않음 |
 | `--include-imports` | import stub 포함 | debugging option |
 | `--id-bias` | FUN ID address bias | `--id-bias 0` |
@@ -446,10 +488,11 @@ Self-call도 일반 call edge 형태로 JSON에 기록한다. `engine.py`가 fix
 
 ## 13. 한계의 정확한 의미
 
-- 함수 경계 정확도는 radare2 분석에 의존한다.
+- Source namespace 함수 경계는 non-stripped symbol extent를 oracle로 사용한다.
+- One-hop library anchor의 시작점과 범위 복구는 radare2 분석에 의존한다.
 - Immediate direct target이 없는 call은 복구하지 않는다.
 - Root 자동 탐지는 현재 Rust/glibc startup 형태에 맞춘 heuristic이다.
-- Users JSON은 compiler symbol namespace에서 얻은 controlled candidate 조건이다.
+- Users JSON은 compiler symbol namespace에서 얻은 controlled candidate와 boundary 조건이다.
 - Library/runtime 함수의 종류를 분류하지 않는다. User의 direct callee이면 동일하게 anchor다.
 - Anchor 내부를 계속 탐색하지 않으므로 library subgraph topology는 feature에 들어가지 않는다.
 - Fixture의 call count는 dynamic execution frequency가 아니다.
@@ -462,7 +505,7 @@ Self-call도 일반 call edge 형태로 JSON에 기록한다. `engine.py`가 fix
 4. `BinaryExtractor.analyze()`와 `_refresh_functions()`
 5. `resolve_root()`와 startup helper
 6. `build_call_graph()`와 `direct_calls()`
-7. `_direct_call_target()`
+7. `_direct_calls_from_symbol_extent()`와 `_direct_call_target()`
 8. `select_reachable()`
 9. `select_user_context()`
 10. `make_fixture_json()`

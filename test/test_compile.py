@@ -15,38 +15,40 @@ from build_manifest import (
     write_manifest,
 )
 from compile import (
-    COMPILED_PROFILE_BY_BUILD,
+    BUILD_FLAGS,
     PROFILE_FLAGS,
     RUSTC_EDITION,
     RUSTC_TARGET,
     STRIP_FLAGS,
+    compile_flags,
     compile_case,
-    compiled_profile_for_build,
     derive_fixture_binary,
     rustc_command,
 )
 from paths import build_manifest_for
 
 
-# Canonical CallKin profile. It is derived from rust-loss but intentionally
-# changes the panic strategy from unwind to abort.
-EXPECTED_O3_FLAGS = (
-    "-C opt-level=3 -C codegen-units=1 -C lto=off -C panic=abort "
-    "-C debuginfo=0 -C debug-assertions=off -C overflow-checks=off"
+# Canonical CallKin compiler profiles.
+EXPECTED_PLAIN_FLAGS = (
+    "-C opt-level=3 -C debuginfo=0 -C debug-assertions=off "
+    "-C overflow-checks=off -C codegen-units=16 -C lto=false -C panic=unwind"
 )
-EXPECTED_O3K_FLAGS = EXPECTED_O3_FLAGS + " --cfg keep"
+EXPECTED_MIN_FLAGS = (
+    "-C opt-level=3 -C debuginfo=0 -C debug-assertions=off "
+    "-C overflow-checks=off -C codegen-units=1 -C lto=true -C panic=abort"
+)
 
 
 def main() -> int:
-    if " ".join(PROFILE_FLAGS["O3"]) != EXPECTED_O3_FLAGS:
+    if " ".join(PROFILE_FLAGS["plain"]) != EXPECTED_PLAIN_FLAGS:
         print(
-            f"FAIL canonical O3 flags: {' '.join(PROFILE_FLAGS['O3'])}"
+            f"FAIL plain flags: {' '.join(PROFILE_FLAGS['plain'])}"
         )
         return 1
 
-    if " ".join(PROFILE_FLAGS["O3K"]) != EXPECTED_O3K_FLAGS:
+    if " ".join(PROFILE_FLAGS["min"]) != EXPECTED_MIN_FLAGS:
         print(
-            f"FAIL canonical O3K flags: {' '.join(PROFILE_FLAGS['O3K'])}"
+            f"FAIL min flags: {' '.join(PROFILE_FLAGS['min'])}"
         )
         return 1
 
@@ -62,18 +64,19 @@ def main() -> int:
         print(f"FAIL strip flags diverged from rust-loss: {STRIP_FLAGS}")
         return 1
 
-    if COMPILED_PROFILE_BY_BUILD != {"O3S": "O3", "O3KS": "O3K"}:
-        print(f"FAIL build->profile mapping: {COMPILED_PROFILE_BY_BUILD}")
+    if BUILD_FLAGS != {"O3S": [], "O3KS": ["--cfg", "keep"]}:
+        print(f"FAIL build flags: {BUILD_FLAGS}")
         return 1
 
-    for build, expected_profile in COMPILED_PROFILE_BY_BUILD.items():
-        got = compiled_profile_for_build(build)
-        if got != expected_profile:
-            print(f"FAIL profile for {build}: expected {expected_profile}, got {got}")
-            return 1
+    if " ".join(compile_flags("plain", "O3KS")) != EXPECTED_PLAIN_FLAGS + " --cfg keep":
+        print("FAIL O3KS did not add --cfg keep to plain")
+        return 1
+    if " ".join(compile_flags("min", "O3S")) != EXPECTED_MIN_FLAGS:
+        print("FAIL O3S changed min profile flags")
+        return 1
 
     try:
-        compiled_profile_for_build("O0")
+        compile_flags("plain", "O0")
     except ValueError as exc:
         if "unsupported build" not in str(exc):
             print(f"FAIL unexpected unsupported-build error: {exc}")
@@ -85,26 +88,27 @@ def main() -> int:
     command = rustc_command(
         source="src/family_graph_03.rs",
         case="family_graph_03",
-        profile="O3K",
-        output="gt_bin/family_graph_03.O3KS.gt.bin",
+        profile="min",
+        build="O3KS",
+        output="gt_bin/min/family_graph_03.O3KS.gt.bin",
     )
     expected_command = [
         "rustc",
         "src/family_graph_03.rs",
-        *PROFILE_FLAGS["O3K"],
+        *compile_flags("min", "O3KS"),
         "--crate-type", "bin",
         "--crate-name", "family_graph_03",
         "--edition", "2024",
         "--target", "x86_64-unknown-linux-gnu",
         "--emit=link",
-        "-o", "gt_bin/family_graph_03.O3KS.gt.bin",
+        "-o", "gt_bin/min/family_graph_03.O3KS.gt.bin",
     ]
     if command != expected_command:
         print(f"FAIL expected rustc command {expected_command}, got {command}")
         return 1
 
-    expected_manifest = Path("build_info") / "family_graph_03.O3KS.json"
-    actual_manifest = Path(build_manifest_for("family_graph_03", "O3KS"))
+    expected_manifest = Path("build_info") / "min" / "family_graph_03.O3KS.json"
+    actual_manifest = Path(build_manifest_for("family_graph_03", "O3KS", "min"))
     if actual_manifest != expected_manifest:
         print("FAIL canonical build manifest path")
         return 1
@@ -161,6 +165,7 @@ def main() -> int:
             source=str(source),
             case="case",
             build="O3S",
+            profile="plain",
             gt_binary=str(gt_binary),
             fixture_binary=str(fixture_binary),
             manifest=str(manifest_path),
@@ -249,7 +254,7 @@ def main() -> int:
             "build_id": "test-build-id",
             "case": "case",
             "build": "O3S",
-            "profile": "O3",
+            "profile": "plain",
             "target": BUILD_TARGET,
             "edition": "2024",
             "crate_name": "case",
@@ -263,7 +268,7 @@ def main() -> int:
                 "sysroot": "/toolchains/stable",
                 "compiler_binary_path": "/toolchains/stable/bin/rustc",
                 "verbose_version": "rustc test\nhost: x86_64-unknown-linux-gnu",
-                "flags": ["-C", "opt-level=3"],
+                "flags": compile_flags("plain", "O3S"),
                 "command": ["rustc", str(source)],
             },
             "strip": {
@@ -290,9 +295,25 @@ def main() -> int:
             manifest_path,
             expected_case="case",
             expected_build="O3S",
+            expected_profile="plain",
         )
         if verified.build_id != "test-build-id":
             print(f"FAIL unexpected verified build id: {verified.build_id}")
+            return 1
+
+        try:
+            load_and_verify_manifest(
+                manifest_path,
+                expected_case="case",
+                expected_build="O3S",
+                expected_profile="min",
+            )
+        except ValueError as exc:
+            if "profile mismatch" not in str(exc):
+                print(f"FAIL unexpected profile mismatch error: {exc}")
+                return 1
+        else:
+            print("FAIL manifest from another profile passed verification")
             return 1
 
         fixture_binary.write_bytes(b"tampered binary")
@@ -301,6 +322,7 @@ def main() -> int:
                 manifest_path,
                 expected_case="case",
                 expected_build="O3S",
+                expected_profile="plain",
             )
         except ValueError as exc:
             if "stripped binary hash mismatch" not in str(exc):
@@ -317,6 +339,7 @@ def main() -> int:
                 manifest_path,
                 expected_case="case",
                 expected_build="O3S",
+                expected_profile="plain",
             )
         except ValueError as exc:
             if "source hash mismatch" not in str(exc):

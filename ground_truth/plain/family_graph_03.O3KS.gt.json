@@ -1,0 +1,119 @@
+{
+  "case": "family_graph_03",
+  "build": "O3KS",
+  "profile": "plain",
+  "schema_version": 5,
+  "provenance": {
+    "build_id": "d41297ce80164cb0ac09978396901dcf",
+    "source_sha256": "f619cb2cf6b96756592c955895dcef822081333d42c018fc5b9c5f7e204a8d4e",
+    "non_stripped_sha256": "d6460699d9cb3c5723f7133dead7a1cd02b1f84ba72600f1c75a6bcb9ed5fcdd",
+    "stripped_sha256": "623ec2db63a4bbe3088e622910333e0bedaf9b072c4aae7b1e1fe7072959603e"
+  },
+  "origins": [
+    {
+      "origin": "share",
+      "members": [
+        "FUN_00114740",
+        "FUN_00114900",
+        "FUN_00114a50"
+      ]
+    },
+    {
+      "origin": "leaf_p",
+      "members": [
+        "FUN_00114b40",
+        "FUN_00114db0",
+        "FUN_00114f10"
+      ]
+    },
+    {
+      "origin": "leaf_q",
+      "members": [
+        "FUN_00115120",
+        "FUN_00115270",
+        "FUN_00115460"
+      ]
+    },
+    {
+      "origin": "decoy_a",
+      "members": [
+        "FUN_001156a0"
+      ]
+    },
+    {
+      "origin": "decoy_b",
+      "members": [
+        "FUN_001157a0"
+      ]
+    },
+    {
+      "origin": "drive_x",
+      "members": [
+        "FUN_00115920",
+        "FUN_00115b70",
+        "FUN_00115e30"
+      ]
+    },
+    {
+      "origin": "drive_y",
+      "members": [
+        "FUN_00115fc0",
+        "FUN_001162f0",
+        "FUN_00116550"
+      ]
+    }
+  ],
+  "symbols": {
+    "FUN_00114740": [
+      "family_graph_03::share"
+    ],
+    "FUN_00114900": [
+      "family_graph_03::share"
+    ],
+    "FUN_00114a50": [
+      "family_graph_03::share"
+    ],
+    "FUN_00114b40": [
+      "family_graph_03::leaf_p"
+    ],
+    "FUN_00114db0": [
+      "family_graph_03::leaf_p"
+    ],
+    "FUN_00114f10": [
+      "family_graph_03::leaf_p"
+    ],
+    "FUN_00115120": [
+      "family_graph_03::leaf_q"
+    ],
+    "FUN_00115270": [
+      "family_graph_03::leaf_q"
+    ],
+    "FUN_00115460": [
+      "family_graph_03::leaf_q"
+    ],
+    "FUN_001156a0": [
+      "family_graph_03::decoy_a"
+    ],
+    "FUN_001157a0": [
+      "family_graph_03::decoy_b"
+    ],
+    "FUN_00115920": [
+      "family_graph_03::drive_x"
+    ],
+    "FUN_00115b70": [
+      "family_graph_03::drive_x"
+    ],
+    "FUN_00115e30": [
+      "family_graph_03::drive_x"
+    ],
+    "FUN_00115fc0": [
+      "family_graph_03::drive_y"
+    ],
+    "FUN_001162f0": [
+      "family_graph_03::drive_y"
+    ],
+    "FUN_00116550": [
+      "family_graph_03::drive_y"
+    ]
+  }
+}

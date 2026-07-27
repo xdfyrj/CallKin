@@ -1,0 +1,52 @@
+{
+  "case": "family_graph_01",
+  "build": "O3S",
+  "profile": "plain",
+  "schema_version": 4,
+  "provenance": {
+    "build_id": "27c93937e458426591a6b9f288555646",
+    "source_sha256": "09fb7950f565fb81ab9bb980270bc8b15ec39e538bca7d6d1ae7b704a9721a6c",
+    "non_stripped_sha256": "872b47d8fb3323334e8cd67fb081a45fdc3354cdf026841f31be689e6c73f71f",
+    "stripped_sha256": "dbab836138697518b9866e29036bd6836889760a5401e445654d2d86568cf056"
+  },
+  "source": "gt_bin/plain/family_graph_01.O3S.gt.bin",
+  "prefix": "family_graph_01::",
+  "addresses": [
+    "0x13e40",
+    "0x13f20",
+    "0x13fa0",
+    "0x14480",
+    "0x14660",
+    "0x148a0"
+  ],
+  "function_bounds": [
+    {
+      "address": "0x13e40",
+      "size": 212
+    },
+    {
+      "address": "0x13f20",
+      "size": 128
+    },
+    {
+      "address": "0x13fa0",
+      "size": 145
+    },
+    {
+      "address": "0x14040",
+      "size": 1075
+    },
+    {
+      "address": "0x14480",
+      "size": 468
+    },
+    {
+      "address": "0x14660",
+      "size": 575
+    },
+    {
+      "address": "0x148a0",
+      "size": 799
+    }
+  ]
+}

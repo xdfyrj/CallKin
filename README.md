@@ -27,22 +27,24 @@ python3 -m pip install -r requirements.txt
 
 ```bash
 python3 scores.py family_graph_03
-python3 scores.py family_graph_03 --build O3KS
+python3 scores.py family_graph_03 --profile min
+python3 scores.py family_graph_03 --build O3KS --profile min
 ```
 
-저장된 네 canonical build를 한 번에 채점하고 JSON으로 기록한다.
+각 profile의 네 canonical build를 채점하고 profile별 JSON으로 기록한다.
 
 ```bash
-python3 scores.py --baseline --json-output results/v0_baseline.json
+python3 scores.py --baseline --profile plain --json-output results/plain/v0_baseline.json
+python3 scores.py --baseline --profile min --json-output results/min/v0_baseline.json
 ```
 
-Rust source부터 네 canonical baseline을 전부 다시 생성하고 검증한다.
+Rust source부터 두 profile의 8개 canonical artifact set을 전부 다시 생성하고 검증한다.
 
 ```bash
 python3 run_baseline.py
 ```
 
-이 명령에는 `rustc`, GNU `strip`, GNU `nm`, `radare2`, Python `r2pipe`가 필요하다. 현재 canonical target은 `x86_64-unknown-linux-gnu`이다.
+이 명령에는 `rustc`, GNU `strip`, GNU `nm`, `radare2`, Python `r2pipe`와 `capstone`이 필요하다. 현재 canonical target은 `x86_64-unknown-linux-gnu`이다.
 
 전체 테스트를 실행한다.
 
@@ -56,14 +58,15 @@ python3 test/run_all.py
 
 ```bash
 python3 compile.py family_graph_03
-python3 compile.py family_graph_03 --build O3KS
+python3 compile.py family_graph_03 --profile min
+python3 compile.py family_graph_03 --build O3KS --profile min
 ```
 
 이미 컴파일된 한 build에서 GT, users, fixture를 생성하고 grouping과 scoring까지 수행한다.
 
 ```bash
 python3 run_case.py family_graph_03
-python3 run_case.py family_graph_03 --build O3KS
+python3 run_case.py family_graph_03 --build O3KS --profile min
 python3 run_case.py family_graph_03 --all-modes
 python3 run_case.py family_graph_03 --trace
 ```
@@ -78,7 +81,12 @@ python3 scores.py family_graph_03 --mode full
 python3 engine.py family_graph_03 --trace
 ```
 
-기본 build는 `O3S`이다. `O3KS`는 `--cfg keep`을 사용한 O3K binary에서 파생된 stripped build이다.
+기본 build는 `O3S`, 기본 compiler profile은 `plain`이다. `O3KS`는 profile 설정에 `--cfg keep`을 추가한다.
+
+| Profile | Compiler flags |
+|---|---|
+| `plain` | Cargo default-release 설정을 근사한 direct-rustc profile: O3, `lto=false`(thin local LTO 가능), CGU 16, panic unwind |
+| `min` | aggressive minimized stress profile: O3, fat LTO, CGU 1, panic abort |
 
 ## Documentation
 
@@ -95,19 +103,19 @@ python3 engine.py family_graph_03 --trace
 
 ## Canonical Artifacts
 
-파일명은 `<case>.<build>` stem을 공유한다.
+파일명은 `<case>.<build>` stem을 공유하고, 산출물 directory 아래에서 profile로 나뉜다.
 
 ```text
 src/family_graph_03.rs
-gt_bin/family_graph_03.O3S.gt.bin
-bin/family_graph_03.O3S.fixture.bin
-build_info/family_graph_03.O3S.json
-ground_truth/family_graph_03.O3S.gt.json
-users/family_graph_03.O3S.users.json
-fixtures/family_graph_03.O3S.fixture.json
+gt_bin/plain/family_graph_03.O3S.gt.bin
+bin/plain/family_graph_03.O3S.fixture.bin
+build_info/plain/family_graph_03.O3S.json
+ground_truth/plain/family_graph_03.O3S.gt.json
+users/plain/family_graph_03.O3S.users.json
+fixtures/plain/family_graph_03.O3S.fixture.json
 ```
 
-Canonical V0 build는 다음 네 개다.
+각 profile에서 다음 네 case/build 조합을 생성하므로 canonical artifact set은 총 8개다.
 
 ```text
 family_graph_01 / O3S
@@ -116,7 +124,7 @@ family_graph_03 / O3S
 family_graph_03 / O3KS
 ```
 
-저장된 baseline 결과는 [results/v0_baseline.json](results/v0_baseline.json)에 있다.
+저장된 결과는 [plain baseline](results/plain/v0_baseline.json)과 [min baseline](results/min/v0_baseline.json)에 있다.
 
 ## Scope
 

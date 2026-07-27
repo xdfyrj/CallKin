@@ -17,9 +17,9 @@ fn process<T>(value: T) { /* ... */ }
 컴파일 후 세 instance가 다음 주소에 생존할 수 있다.
 
 ```text
-FUN_00114240  process instance 1
-FUN_00114420  process instance 2
-FUN_00114660  process instance 3
+FUN_00114480  process instance 1
+FUN_00114660  process instance 2
+FUN_001148a0  process instance 3
 ```
 
 `engine.py`는 `process`라는 이름을 받지 않는다. 각 함수가 누구를 몇 번 호출하고 누구에게 호출되는지만 보고 세 주소를 같은 cluster로 묶으려 한다.
@@ -40,7 +40,7 @@ FUN_00114660  process instance 3
              |                               |
              v                               v
   non-stripped binary                stripped binary
-  gt_bin/*.gt.bin                    bin/*.fixture.bin
+  gt_bin/<profile>/*.gt.bin          bin/<profile>/*.fixture.bin
              |                               |
        gt_extractor.py                binary_extractor.py
              |                               |
@@ -61,7 +61,7 @@ ground_truth/    users/                  engine.py
 한 build에는 source와 두 binary가 같은 실행에서 나왔음을 기록하는 manifest도 있다.
 
 ```text
-build_info/family_graph_01.O3S.json
+build_info/plain/family_graph_01.O3S.json
 ```
 
 `run_case.py`는 JSON을 추출하기 전에 이 manifest의 source hash와 두 binary hash를 검사한다.
@@ -73,19 +73,19 @@ build_info/family_graph_01.O3S.json
 Grouping side는 stripped binary에서 만든 fixture만 사용한다.
 
 ```text
-fixtures/family_graph_01.O3S.fixture.json
+fixtures/plain/family_graph_01.O3S.fixture.json
 ```
 
 fixture의 한 user node는 다음처럼 생겼다.
 
 ```json
 {
-  "id": "FUN_00114240",
+  "id": "FUN_00114480",
   "type": "user",
   "scored": true,
   "calls": [
     {
-      "target": "FUN_00113ce0",
+      "target": "FUN_00113f20",
       "count": 5
     }
   ]
@@ -95,7 +95,7 @@ fixture의 한 user node는 다음처럼 생겼다.
 이 입력은 다음 사실만 말한다.
 
 ```text
-FUN_00114240이 FUN_00113ce0을 정적으로 5곳에서 호출한다.
+FUN_00114480이 FUN_00113f20을 정적으로 5곳에서 호출한다.
 ```
 
 `process`, generic type, origin 같은 정답 정보는 fixture에 없다.
@@ -108,9 +108,9 @@ Ground-truth side는 non-stripped binary의 compiler symbol을 사용한다.
 {
   "origin": "process",
   "members": [
-    "FUN_00114240",
-    "FUN_00114420",
-    "FUN_00114660"
+    "FUN_00114480",
+    "FUN_00114660",
+    "FUN_001148a0"
   ]
 }
 ```
@@ -119,42 +119,50 @@ Ground-truth side는 non-stripped binary의 compiler symbol을 사용한다.
 
 ### 3.3 Candidate address bridge
 
-`users/*.users.json`에는 user 함수의 raw address만 들어간다.
+`users/<profile>/*.users.json`에는 candidate raw address와 source namespace 함수의
+symbol extent가 들어간다. Extent에는 source `main`도 포함된다.
 
 ```json
 {
   "prefix": "family_graph_01::",
   "addresses": [
-    "0x13e20",
-    "0x13f00",
-    "0x13f80",
-    "0x14460",
-    "0x14640",
-    "0x14880"
+    "0x13e40",
+    "0x13f20",
+    "0x13fa0",
+    "0x14480",
+    "0x14660",
+    "0x148a0"
+  ],
+  "function_bounds": [
+    {"address": "0x13e40", "size": 212},
+    {"address": "0x14040", "size": 1075}
   ]
 }
 ```
 
-이 파일은 `0x14460`이 `process`인지, 다른 주소와 같은 origin인지 말하지 않는다. 따라서 binary extractor가 user/library 경계를 정하는 데 사용하지만 grouping 정답 partition은 전달하지 않는다.
+이 파일은 `0x14480`이 `process`인지, 다른 주소와 같은 origin인지 말하지 않는다.
+따라서 binary extractor가 user/library 경계와 함수 extent를 정하는 데 사용하지만
+grouping 정답 partition은 전달하지 않는다. 즉 현재 canonical 평가는
+candidate-and-boundary oracle 조건의 grouping 평가다.
 
 단, 이것은 일반적인 user/library classifier가 아니다. 통제 corpus의 non-stripped symbol namespace를 이용해 candidate 집합을 제공하는 연구 조건이다.
 
 ## 4. Artifact의 의미
 
-모든 canonical 파일은 `<case>.<build>` stem을 공유한다.
+모든 canonical 파일은 `<case>.<build>` stem을 공유하며 산출물 directory 아래의 `<profile>/`로 분리된다.
 
 | Artifact | 예시 | 역할 |
 |---|---|---|
 | Rust source | `src/family_graph_01.rs` | corpus 원본 |
-| Non-stripped binary | `gt_bin/family_graph_01.O3S.gt.bin` | symbol, GT, users 주소의 근거 |
-| Stripped binary | `bin/family_graph_01.O3S.fixture.bin` | 실제 relation 추출 대상 |
-| Build manifest | `build_info/family_graph_01.O3S.json` | source/tool/binary hash 결속 |
-| Ground truth | `ground_truth/family_graph_01.O3S.gt.json` | origin partition과 symbol |
-| User addresses | `users/family_graph_01.O3S.users.json` | candidate raw address 집합 |
-| Fixture | `fixtures/family_graph_01.O3S.fixture.json` | node와 weighted call edge |
-| Score result | `results/v0_baseline.json` | cluster, origin별 결과, metric |
+| Non-stripped binary | `gt_bin/plain/family_graph_01.O3S.gt.bin` | symbol, GT, users 주소의 근거 |
+| Stripped binary | `bin/plain/family_graph_01.O3S.fixture.bin` | 실제 relation 추출 대상 |
+| Build manifest | `build_info/plain/family_graph_01.O3S.json` | source/tool/binary hash 결속 |
+| Ground truth | `ground_truth/plain/family_graph_01.O3S.gt.json` | origin partition과 symbol |
+| User addresses | `users/plain/family_graph_01.O3S.users.json` | candidate raw address 집합 |
+| Fixture | `fixtures/plain/family_graph_01.O3S.fixture.json` | node와 weighted call edge |
+| Score result | `results/plain/v0_baseline.json` | cluster, origin별 결과, metric |
 
-`O3S`의 non-stripped binary는 O3 profile로 컴파일한 binary다. 같은 파일을 복사하고 `strip --strip-all`한 결과가 O3S fixture binary다. `O3KS`는 `--cfg keep`이 추가된 O3K profile에 같은 절차를 적용한다.
+`plain`은 Cargo 기본 release 설정을 근사한 direct-rustc profile로 O3/`lto=false`(thin local LTO 가능)/16 codegen units/panic unwind를 사용한다. `min`은 aggressive minimized stress profile로 O3/fat LTO/1 codegen unit/panic abort를 사용한다. `O3S`는 추가 source cfg가 없으며 `O3KS`는 선택한 profile에 `--cfg keep`을 추가한다. 어느 조합이든 non-stripped binary를 한 번 만든 뒤 복사본에 `strip --strip-all`을 적용한다.
 
 ## 5. Module 책임
 
@@ -166,7 +174,7 @@ Ground-truth side는 non-stripped binary의 compiler symbol을 사용한다.
 
 ### `gt_extractor.py`
 
-Non-stripped binary에서 `nm -n -C` 결과를 읽고 같은 normalized symbol path를 같은 origin으로 묶는다. 동시에 user raw address 집합을 만든다.
+Non-stripped binary에서 `nm -n -S -C` 결과를 읽고 같은 normalized symbol path를 같은 origin으로 묶는다. 동시에 user raw address 집합과 namespace 함수의 symbol extent를 만든다. Extent에는 scored candidate뿐 아니라 source `main`도 포함되며, 이름이나 origin은 binary extractor에 전달하지 않는다.
 
 상세: [Ground truth 추출](ground_truth.md)
 
@@ -215,13 +223,14 @@ manifest 검증
 
 ### `run_baseline.py`
 
-네 canonical build 각각에 대해 `compile.py`와 `run_case.py`를 실행한 뒤 baseline JSON과 exact regression을 생성한다.
+두 profile의 네 canonical case/build 조합에 대해 `compile.py`와 `run_case.py`를 실행한 뒤 profile별 baseline JSON과 exact regression을 생성한다.
 
 ```text
-family_graph_01 / O3S
-family_graph_02 / O3S
-family_graph_03 / O3S
-family_graph_03 / O3KS
+plain, min 각각:
+  family_graph_01 / O3S
+  family_graph_02 / O3S
+  family_graph_03 / O3S
+  family_graph_03 / O3KS
 ```
 
 ## 6. 한 case가 실제로 처리되는 과정
@@ -239,9 +248,9 @@ python3 run_case.py family_graph_01
 
 ```text
 input : src/family_graph_01.rs
-output: gt_bin/family_graph_01.O3S.gt.bin
-output: bin/family_graph_01.O3S.fixture.bin
-output: build_info/family_graph_01.O3S.json
+output: gt_bin/plain/family_graph_01.O3S.gt.bin
+output: bin/plain/family_graph_01.O3S.fixture.bin
+output: build_info/plain/family_graph_01.O3S.json
 ```
 
 ### 6.2 Manifest verification
@@ -254,7 +263,11 @@ non-stripped binary SHA-256
 stripped binary SHA-256
 ```
 
-Case, build, target도 각각 `family_graph_01`, `O3S`, `x86_64-unknown-linux-gnu`인지 검사한다.
+Case, build, profile, target도 각각 `family_graph_01`, `O3S`, `plain`, `x86_64-unknown-linux-gnu`인지 검사한다. Manifest의 compiler/strip flags가 코드에 정의된 canonical profile과 정확히 같은지도 확인한다.
+
+이후 manifest의 `build_id`와 세 hash는 GT, users, fixture, score result에
+`provenance`로 전달된다. 같은 case/build/profile이라도 provenance가 다르면
+scoring join은 실패한다.
 
 ### 6.3 GT and fixture extraction
 
@@ -298,7 +311,7 @@ PR=1.00 RE=1.00 F1=1.00 ARI=1.00
 
 다음 조건이 깨지면 pipeline은 점수를 내지 않고 중단한다.
 
-1. Manifest의 case/build/target이 요청과 같아야 한다.
+1. Manifest의 case/build/profile/target이 요청과 같아야 한다.
 2. 현재 source와 binary hash가 manifest 기록과 같아야 한다.
 3. Non-stripped와 stripped binary는 같은 manifest pair에 속해야 한다.
 4. GT member ID 집합과 fixture의 `scored=true` ID 집합이 정확히 같아야 한다.

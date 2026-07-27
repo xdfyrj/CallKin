@@ -2,6 +2,8 @@
 
 from dataclasses import dataclass
 
+from provenance import BuildProvenance
+
 @dataclass(frozen=True)
 class Call:
     target: str
@@ -20,3 +22,5 @@ class Case:
     build: str
     schema_version: int
     nodes: list[Node]
+    profile: str = "plain"
+    provenance: BuildProvenance | None = None

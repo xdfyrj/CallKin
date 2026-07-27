@@ -1,0 +1,82 @@
+{
+  "case": "family_graph_02",
+  "build": "O3S",
+  "profile": "min",
+  "schema_version": 4,
+  "provenance": {
+    "build_id": "91ad7bd292cd43a4b3cb39573a3bfd27",
+    "source_sha256": "ee46b32e80732e0226b3f443d3aac63d712bf1e19c625b155beb14098f7d60e6",
+    "non_stripped_sha256": "5f01ec9c81bcd305ada546bba34ae4efdbde24c7497c233881a8fad7ea06396c",
+    "stripped_sha256": "aad46cd96981b844d73e9b3ec8c4313382fc1d4634a6c540e9f10da651b61fec"
+  },
+  "source": "gt_bin/min/family_graph_02.O3S.gt.bin",
+  "prefix": "family_graph_02::",
+  "addresses": [
+    "0xe510",
+    "0xe630",
+    "0xe890",
+    "0xea10",
+    "0xead0",
+    "0xed30",
+    "0xee50",
+    "0xeee0",
+    "0xf000",
+    "0xf120",
+    "0xf1b0",
+    "0xf420"
+  ],
+  "function_bounds": [
+    {
+      "address": "0xe510",
+      "size": 275
+    },
+    {
+      "address": "0xe630",
+      "size": 606
+    },
+    {
+      "address": "0xe890",
+      "size": 381
+    },
+    {
+      "address": "0xea10",
+      "size": 191
+    },
+    {
+      "address": "0xead0",
+      "size": 606
+    },
+    {
+      "address": "0xed30",
+      "size": 275
+    },
+    {
+      "address": "0xee50",
+      "size": 139
+    },
+    {
+      "address": "0xeee0",
+      "size": 273
+    },
+    {
+      "address": "0xf000",
+      "size": 275
+    },
+    {
+      "address": "0xf120",
+      "size": 134
+    },
+    {
+      "address": "0xf1b0",
+      "size": 613
+    },
+    {
+      "address": "0xf420",
+      "size": 285
+    },
+    {
+      "address": "0xf540",
+      "size": 1465
+    }
+  ]
+}

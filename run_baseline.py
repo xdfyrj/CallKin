@@ -6,6 +6,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+from paths import BUILD_PROFILES, baseline_result_for
 from scores import V0_BASELINE_JOBS
 
 
@@ -27,8 +28,16 @@ def run_step(arguments: list[str]) -> None:
 def build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
-            "Rebuild, extract, score, and verify the four canonical V0 baselines."
+            "Rebuild, extract, score, and verify the canonical baselines for "
+            "the plain and min compiler profiles."
         )
+    )
+    parser.add_argument(
+        "--profile",
+        dest="profiles",
+        action="append",
+        choices=BUILD_PROFILES,
+        help="profile to rebuild; repeat to select both. Default: both profiles",
     )
     parser.add_argument(
         "--rustc-tool",
@@ -45,28 +54,44 @@ def build_arg_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_arg_parser().parse_args(argv)
+    profiles = tuple(args.profiles or BUILD_PROFILES)
 
     try:
-        for case, build in V0_BASELINE_JOBS:
-            run_step([
-                "compile.py",
-                case,
-                "--build",
-                build,
-                "--rustc-tool",
-                args.rustc_tool,
-                "--strip-tool",
-                args.strip_tool,
-            ])
-            run_step(["run_case.py", case, "--build", build])
+        for profile in profiles:
+            for case, build in V0_BASELINE_JOBS:
+                run_step([
+                    "compile.py",
+                    case,
+                    "--build",
+                    build,
+                    "--profile",
+                    profile,
+                    "--rustc-tool",
+                    args.rustc_tool,
+                    "--strip-tool",
+                    args.strip_tool,
+                ])
+                run_step([
+                    "run_case.py",
+                    case,
+                    "--build",
+                    build,
+                    "--profile",
+                    profile,
+                ])
 
-        run_step([
-            "scores.py",
-            "--baseline",
-            "--json-output",
-            "results/v0_baseline.json",
-        ])
-        run_step(["test/test_scores.py"])
+            run_step([
+                "scores.py",
+                "--baseline",
+                "--profile",
+                profile,
+                "--json-output",
+                baseline_result_for(profile),
+            ])
+        test_arguments = ["test/test_scores.py"]
+        for profile in profiles:
+            test_arguments.extend(["--profile", profile])
+        run_step(test_arguments)
     except Exception as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1

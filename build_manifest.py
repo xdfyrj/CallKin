@@ -7,9 +7,11 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from build_profiles import BUILD_TARGET, RUSTC_EDITION, STRIP_FLAGS, compile_flags
+from provenance import BuildProvenance
 
-BUILD_MANIFEST_SCHEMA_VERSION = 1
-BUILD_TARGET = "x86_64-unknown-linux-gnu"
+
+BUILD_MANIFEST_SCHEMA_VERSION = 2
 _SHA256_RE = re.compile(r"[0-9a-f]{64}")
 
 
@@ -17,9 +19,11 @@ _SHA256_RE = re.compile(r"[0-9a-f]{64}")
 class VerifiedBuild:
     manifest_path: str
     build_id: str
+    profile: str
     source: str
     non_stripped_binary: str
     stripped_binary: str
+    provenance: BuildProvenance
 
 
 def sha256_file(path: str | Path) -> str:
@@ -44,6 +48,7 @@ def load_and_verify_manifest(
     *,
     expected_case: str,
     expected_build: str,
+    expected_profile: str,
     expected_target: str = BUILD_TARGET,
 ) -> VerifiedBuild:
     path = Path(manifest_path)
@@ -66,6 +71,7 @@ def load_and_verify_manifest(
 
     case = _require_string(manifest, "case")
     build = _require_string(manifest, "build")
+    profile = _require_string(manifest, "profile")
     target = _require_string(manifest, "target")
     build_id = _require_string(manifest, "build_id")
 
@@ -77,16 +83,25 @@ def load_and_verify_manifest(
         raise ValueError(
             f"build manifest build mismatch: expected {expected_build!r}, got {build!r}"
         )
+    if profile != expected_profile:
+        raise ValueError(
+            "build manifest profile mismatch: "
+            f"expected {expected_profile!r}, got {profile!r}"
+        )
     if target != expected_target:
         raise ValueError(
             f"build manifest target mismatch: expected {expected_target!r}, got {target!r}"
         )
     if _require_string(manifest, "crate_name") != case:
         raise ValueError("build manifest crate_name must equal case")
-    _require_string(manifest, "profile")
-    _require_string(manifest, "edition")
+    edition = _require_string(manifest, "edition")
+    if edition != RUSTC_EDITION:
+        raise ValueError(
+            f"build manifest edition mismatch: expected {RUSTC_EDITION!r}, got {edition!r}"
+        )
 
-    source = _verify_file_record("source", _require_dict(manifest.get("source"), "source"))
+    source_record = _require_dict(manifest.get("source"), "source")
+    source = _verify_file_record("source", source_record)
     artifacts = _require_dict(manifest.get("artifacts"), "artifacts")
     non_stripped_record = _require_dict(
         artifacts.get("non_stripped"), "artifacts.non_stripped"
@@ -118,16 +133,33 @@ def load_and_verify_manifest(
     _require_string(strip, "resolved_path")
     _require_string(strip, "version")
     _require_string_list(compiler, "command")
-    _require_string_list(compiler, "flags")
+    compiler_flags = _require_string_list(compiler, "flags")
+    expected_flags = compile_flags(profile, build)
+    if compiler_flags != expected_flags:
+        raise ValueError(
+            "build manifest compiler flags do not match the canonical "
+            f"{profile}/{build} profile: {compiler_flags!r} != {expected_flags!r}"
+        )
     _require_string_list(strip, "command")
-    _require_string_list(strip, "flags")
+    strip_flags = _require_string_list(strip, "flags")
+    if strip_flags != STRIP_FLAGS:
+        raise ValueError(
+            f"build manifest strip flags mismatch: {strip_flags!r} != {STRIP_FLAGS!r}"
+        )
 
     return VerifiedBuild(
         manifest_path=str(path),
         build_id=build_id,
+        profile=profile,
         source=source,
         non_stripped_binary=non_stripped,
         stripped_binary=stripped,
+        provenance=BuildProvenance(
+            build_id=build_id,
+            source_sha256=_require_sha256(source_record, "sha256"),
+            non_stripped_sha256=non_stripped_sha256,
+            stripped_sha256=_require_sha256(stripped_record, "sha256"),
+        ),
     )
 
 

@@ -1,0 +1,50 @@
+{
+  "case": "family_graph_01",
+  "build": "O3S",
+  "profile": "plain",
+  "schema_version": 5,
+  "provenance": {
+    "build_id": "27c93937e458426591a6b9f288555646",
+    "source_sha256": "09fb7950f565fb81ab9bb980270bc8b15ec39e538bca7d6d1ae7b704a9721a6c",
+    "non_stripped_sha256": "872b47d8fb3323334e8cd67fb081a45fdc3354cdf026841f31be689e6c73f71f",
+    "stripped_sha256": "dbab836138697518b9866e29036bd6836889760a5401e445654d2d86568cf056"
+  },
+  "origins": [
+    {
+      "origin": "shared_recursive",
+      "members": [
+        "FUN_00113e40",
+        "FUN_00113f20",
+        "FUN_00113fa0"
+      ]
+    },
+    {
+      "origin": "process",
+      "members": [
+        "FUN_00114480",
+        "FUN_00114660",
+        "FUN_001148a0"
+      ]
+    }
+  ],
+  "symbols": {
+    "FUN_00113e40": [
+      "family_graph_01::shared_recursive"
+    ],
+    "FUN_00113f20": [
+      "family_graph_01::shared_recursive"
+    ],
+    "FUN_00113fa0": [
+      "family_graph_01::shared_recursive"
+    ],
+    "FUN_00114480": [
+      "family_graph_01::process"
+    ],
+    "FUN_00114660": [
+      "family_graph_01::process"
+    ],
+    "FUN_001148a0": [
+      "family_graph_01::process"
+    ]
+  }
+}

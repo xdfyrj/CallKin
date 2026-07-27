@@ -5,11 +5,11 @@
 CallKin의 `scores.py`는 CG-WL predicted partition과 compiler-symbol ground-truth partition을 비교한다.
 
 ```text
-fixtures/family_graph_03.O3S.fixture.json
+fixtures/plain/family_graph_03.O3S.fixture.json
 -> engine.py
 -> predicted clusters
 
-ground_truth/family_graph_03.O3S.gt.json
+ground_truth/plain/family_graph_03.O3S.gt.json
 -> true origins
 
 predicted clusters + true origins
@@ -31,15 +31,16 @@ python3 scores.py family_graph_03
 ```text
 case    = family_graph_03
 build   = O3S
+profile = plain
 mode    = full
-fixture = fixtures/family_graph_03.O3S.fixture.json
-GT      = ground_truth/family_graph_03.O3S.gt.json
+fixture = fixtures/plain/family_graph_03.O3S.fixture.json
+GT      = ground_truth/plain/family_graph_03.O3S.gt.json
 ```
 
 핵심 출력:
 
 ```text
-case : family_graph_03 / O3S
+case : family_graph_03 / O3S / plain
 mode: full
 candidates: 13
 candidate pairs: 78
@@ -82,25 +83,32 @@ main()
 
 ## 4. Ground truth loading
 
-GT schema version은 3이다.
+GT schema version은 5다.
 
 ```json
 {
   "case": "family_graph_03",
   "build": "O3S",
-  "schema_version": 3,
+  "profile": "plain",
+  "schema_version": 5,
+  "provenance": {
+    "build_id": "...",
+    "source_sha256": "...",
+    "non_stripped_sha256": "...",
+    "stripped_sha256": "..."
+  },
   "origins": [
     {
       "origin": "share",
       "members": [
-        "FUN_00114470",
-        "FUN_001147f0",
-        "FUN_00114b50"
+        "FUN_001146b0",
+        "FUN_00114a30",
+        "FUN_00114d90"
       ]
     }
   ],
   "symbols": {
-    "FUN_00114470": ["family_graph_03::share"]
+    "FUN_001146b0": ["family_graph_03::share"]
   }
 }
 ```
@@ -117,6 +125,7 @@ Loader는 다음을 검사한다.
 
 - required/unknown field
 - schema version
+- manifest build provenance 형식
 - 중복 origin 이름
 - 빈 origin
 - 한 member가 둘 이상의 origin에 포함되는지
@@ -126,9 +135,9 @@ Loader는 다음을 검사한다.
 
 ```python
 {
-    "FUN_00114470": "share",
-    "FUN_001147f0": "share",
-    "FUN_00114b50": "share",
+    "FUN_001146b0": "share",
+    "FUN_00114a30": "share",
+    "FUN_00114d90": "share",
 }
 ```
 
@@ -136,19 +145,23 @@ Loader는 다음을 검사한다.
 
 `_check_join()`은 점수 계산 전에 두 조건을 확인한다.
 
-### Case/build identity
+### Case/build/profile identity
 
 ```text
 fixture.case  == GT.case
 fixture.build == GT.build
+fixture.profile == GT.profile
 ```
 
-예를 들어 O3S fixture와 O3KS GT를 섞으면 중단한다.
+예를 들어 `plain` fixture와 `min` GT를 섞거나 O3S fixture와 O3KS GT를 섞으면 중단한다.
 
 ```text
-case/build mismatch: fixture=family_graph_03/O3S
-vs ground_truth=family_graph_03/O3KS
+case/build/profile mismatch: fixture=family_graph_03/O3S/plain
+vs ground_truth=family_graph_03/O3S/min
 ```
+
+Case/build/profile이 같아도 `build_id` 또는 source/non-stripped/stripped SHA-256이
+다르면 서로 다른 build generation으로 보고 중단한다.
 
 ### Member universe
 
@@ -394,14 +407,14 @@ Node pair 자체가 없거나 partition denominator가 퇴화하면 ARI를 `1.0`
 
 ```text
 C1:
-  FUN_00114470 | share | origin=share
-  FUN_001147f0 | share | origin=share
+  FUN_001146b0 | share | origin=share
+  FUN_00114a30 | share | origin=share
 ```
 
 각 member는 다음 정보를 가진다.
 
 ```text
-id      = FUN_00114470
+id      = FUN_001146b0
 symbols = [share]
 origin  = share
 ```
@@ -469,7 +482,7 @@ Singleton이므로 within-origin pair는 없지만 `decoy_b`와 같은 predicted
 한 case/mode 결과는 다음 정보를 하나의 객체에 담는다.
 
 ```text
-case, build, mode
+case, build, profile, mode
 candidate_count, pair_count, rounds
 clusters
 origins
@@ -485,26 +498,34 @@ trace (`--trace`를 요청한 경우)
 
 ```bash
 python3 scores.py family_graph_03 \
-  --json-output results/family_graph_03.O3S.json
+  --profile plain \
+  --json-output results/plain/family_graph_03.O3S.json
 ```
 
 네 canonical build를 저장한다.
 
 ```bash
-python3 scores.py --baseline \
-  --json-output results/v0_baseline.json
+python3 scores.py --baseline --profile plain \
+  --json-output results/plain/v0_baseline.json
 ```
 
 Top-level schema:
 
 ```json
 {
-  "schema_version": 1,
+  "schema_version": 3,
   "results": [
     {
       "case": "family_graph_03",
       "build": "O3S",
+      "profile": "plain",
       "mode": "full",
+      "provenance": {
+        "build_id": "...",
+        "source_sha256": "...",
+        "non_stripped_sha256": "...",
+        "stripped_sha256": "..."
+      },
       "candidate_count": 13,
       "pair_count": 78,
       "rounds": 2,
@@ -543,17 +564,17 @@ python3 scores.py family_graph_03 --mode out
 python3 scores.py family_graph_03 --all-modes
 ```
 
-Canonical 네 build의 full mode:
+선택한 profile의 canonical 네 build full mode:
 
 ```bash
-python3 scores.py --baseline
+python3 scores.py --baseline --profile min
 ```
 
-Canonical 네 build의 네 mode:
+`min` profile canonical 네 build의 네 mode:
 
 ```bash
-python3 scores.py --baseline --all-modes \
-  --json-output results/v0_all_modes.json
+python3 scores.py --baseline --profile min --all-modes \
+  --json-output results/min/v0_all_modes.json
 ```
 
 `scores.py --baseline`은 이미 존재하는 fixture/GT를 채점한다. Source compile이나 manifest 검증을 직접 실행하지 않는다. Source부터 재생성하고 manifest를 검증하려면 다음을 사용한다.
@@ -564,7 +585,7 @@ python3 run_baseline.py
 
 ## 16. Exact regression
 
-`test/test_scores.py`는 네 canonical build에 대해 다음을 고정한다.
+`test/test_scores.py`는 두 profile의 8개 canonical artifact set에 대해 다음을 고정한다.
 
 - source, non-stripped, stripped hash
 - origin별 instance 수
@@ -574,7 +595,7 @@ python3 run_baseline.py
 - TP/FP/FN/TN
 - PR/RE/F1/ARI
 - origin별 split/collision 결과
-- 저장된 `results/v0_baseline.json` 전체
+- 저장된 `results/plain/v0_baseline.json`, `results/min/v0_baseline.json` 전체
 
 실행:
 
@@ -585,8 +606,9 @@ python3 test/test_scores.py
 출력 일부:
 
 ```text
-family_graph_03/O3S: n=13 TP=4 FP=1 FN=6 TN=67 PR=0.80 RE=0.40 F1=0.53 ARI=0.49 PASS
-baseline score JSON: PASS
+plain/family_graph_03/O3S: n=13 TP=4 FP=1 FN=6 TN=67 PR=0.80 RE=0.40 F1=0.53 ARI=0.49 PASS
+plain baseline score JSON: PASS
+min baseline score JSON: PASS
 ALL PASS
 ```
 

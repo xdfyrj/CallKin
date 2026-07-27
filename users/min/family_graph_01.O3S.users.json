@@ -1,0 +1,52 @@
+{
+  "case": "family_graph_01",
+  "build": "O3S",
+  "profile": "min",
+  "schema_version": 4,
+  "provenance": {
+    "build_id": "977e3e00d2454421aa18fd8ee65de07f",
+    "source_sha256": "09fb7950f565fb81ab9bb980270bc8b15ec39e538bca7d6d1ae7b704a9721a6c",
+    "non_stripped_sha256": "f0270488b6b7fc384e11a1c1bfa6fe33de47c99f605ce28daa6ef2e937dfb6fa",
+    "stripped_sha256": "e6fe21fe673971825619482646bdef76847a8283ee8982a53112e41ef05210fb"
+  },
+  "source": "gt_bin/min/family_graph_01.O3S.gt.bin",
+  "prefix": "family_graph_01::",
+  "addresses": [
+    "0xe370",
+    "0xe450",
+    "0xe4d0",
+    "0xe9b0",
+    "0xeb90",
+    "0xedd0"
+  ],
+  "function_bounds": [
+    {
+      "address": "0xe370",
+      "size": 212
+    },
+    {
+      "address": "0xe450",
+      "size": 128
+    },
+    {
+      "address": "0xe4d0",
+      "size": 145
+    },
+    {
+      "address": "0xe570",
+      "size": 1075
+    },
+    {
+      "address": "0xe9b0",
+      "size": 468
+    },
+    {
+      "address": "0xeb90",
+      "size": 575
+    },
+    {
+      "address": "0xedd0",
+      "size": 799
+    }
+  ]
+}

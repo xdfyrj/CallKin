@@ -1,0 +1,833 @@
+{
+  "schema_version": 3,
+  "results": [
+    {
+      "case": "family_graph_01",
+      "build": "O3S",
+      "profile": "plain",
+      "mode": "full",
+      "provenance": {
+        "build_id": "27c93937e458426591a6b9f288555646",
+        "source_sha256": "09fb7950f565fb81ab9bb980270bc8b15ec39e538bca7d6d1ae7b704a9721a6c",
+        "non_stripped_sha256": "872b47d8fb3323334e8cd67fb081a45fdc3354cdf026841f31be689e6c73f71f",
+        "stripped_sha256": "dbab836138697518b9866e29036bd6836889760a5401e445654d2d86568cf056"
+      },
+      "candidate_count": 6,
+      "pair_count": 15,
+      "rounds": 1,
+      "pairwise": {
+        "TP": 6,
+        "FP": 0,
+        "FN": 0,
+        "TN": 9,
+        "precision": 1.0,
+        "recall": 1.0,
+        "F1": 1.0,
+        "ARI": 1.0
+      },
+      "clusters": [
+        {
+          "cluster": "C1",
+          "origins": [
+            "shared_recursive"
+          ],
+          "members": [
+            {
+              "id": "FUN_00113e40",
+              "symbols": [
+                "shared_recursive"
+              ],
+              "origin": "shared_recursive"
+            },
+            {
+              "id": "FUN_00113f20",
+              "symbols": [
+                "shared_recursive"
+              ],
+              "origin": "shared_recursive"
+            },
+            {
+              "id": "FUN_00113fa0",
+              "symbols": [
+                "shared_recursive"
+              ],
+              "origin": "shared_recursive"
+            }
+          ]
+        },
+        {
+          "cluster": "C2",
+          "origins": [
+            "process"
+          ],
+          "members": [
+            {
+              "id": "FUN_00114480",
+              "symbols": [
+                "process"
+              ],
+              "origin": "process"
+            },
+            {
+              "id": "FUN_00114660",
+              "symbols": [
+                "process"
+              ],
+              "origin": "process"
+            },
+            {
+              "id": "FUN_001148a0",
+              "symbols": [
+                "process"
+              ],
+              "origin": "process"
+            }
+          ]
+        }
+      ],
+      "origins": [
+        {
+          "origin": "shared_recursive",
+          "k_obs": 3,
+          "predicted_cluster_count": 1,
+          "recovered_pairs": 3,
+          "total_pairs": 3,
+          "colliding_origins": []
+        },
+        {
+          "origin": "process",
+          "k_obs": 3,
+          "predicted_cluster_count": 1,
+          "recovered_pairs": 3,
+          "total_pairs": 3,
+          "colliding_origins": []
+        }
+      ]
+    },
+    {
+      "case": "family_graph_02",
+      "build": "O3S",
+      "profile": "plain",
+      "mode": "full",
+      "provenance": {
+        "build_id": "92d6d435df0c455a80e7aa453e15f6fc",
+        "source_sha256": "ee46b32e80732e0226b3f443d3aac63d712bf1e19c625b155beb14098f7d60e6",
+        "non_stripped_sha256": "1114e027ef8560140bda90e4b1bd0f0a445c73798d4cbe09e8da8756f22307e0",
+        "stripped_sha256": "36689059de093215ebee7a200c7a2e72b912fed25c66cf55e7774d551ff4aac5"
+      },
+      "candidate_count": 12,
+      "pair_count": 66,
+      "rounds": 2,
+      "pairwise": {
+        "TP": 4,
+        "FP": 10,
+        "FN": 0,
+        "TN": 52,
+        "precision": 0.2857142857142857,
+        "recall": 1.0,
+        "F1": 0.4444444444444445,
+        "ARI": 0.3866171003717472
+      },
+      "clusters": [
+        {
+          "cluster": "C1",
+          "origins": [
+            "process_beta"
+          ],
+          "members": [
+            {
+              "id": "FUN_00113ff0",
+              "symbols": [
+                "process_beta"
+              ],
+              "origin": "process_beta"
+            },
+            {
+              "id": "FUN_00114110",
+              "symbols": [
+                "process_beta"
+              ],
+              "origin": "process_beta"
+            }
+          ]
+        },
+        {
+          "cluster": "C2",
+          "origins": [
+            "recurse_beta"
+          ],
+          "members": [
+            {
+              "id": "FUN_00114370",
+              "symbols": [
+                "recurse_beta"
+              ],
+              "origin": "recurse_beta"
+            },
+            {
+              "id": "FUN_001144f0",
+              "symbols": [
+                "recurse_beta"
+              ],
+              "origin": "recurse_beta"
+            }
+          ]
+        },
+        {
+          "cluster": "C3",
+          "origins": [
+            "c_process_alpha_i32",
+            "c_process_alpha_wide",
+            "process_alpha"
+          ],
+          "members": [
+            {
+              "id": "FUN_001145b0",
+              "symbols": [
+                "process_alpha"
+              ],
+              "origin": "process_alpha"
+            },
+            {
+              "id": "FUN_00114810",
+              "symbols": [
+                "process_alpha"
+              ],
+              "origin": "process_alpha"
+            },
+            {
+              "id": "FUN_00114ae0",
+              "symbols": [
+                "c_process_alpha_i32"
+              ],
+              "origin": "c_process_alpha_i32"
+            },
+            {
+              "id": "FUN_00114c90",
+              "symbols": [
+                "c_process_alpha_wide"
+              ],
+              "origin": "c_process_alpha_wide"
+            }
+          ]
+        },
+        {
+          "cluster": "C4",
+          "origins": [
+            "c_recurse_alpha_i32",
+            "c_recurse_alpha_wide",
+            "recurse_alpha"
+          ],
+          "members": [
+            {
+              "id": "FUN_00114930",
+              "symbols": [
+                "recurse_alpha"
+              ],
+              "origin": "recurse_alpha"
+            },
+            {
+              "id": "FUN_001149c0",
+              "symbols": [
+                "recurse_alpha"
+              ],
+              "origin": "recurse_alpha"
+            },
+            {
+              "id": "FUN_00114c00",
+              "symbols": [
+                "c_recurse_alpha_i32"
+              ],
+              "origin": "c_recurse_alpha_i32"
+            },
+            {
+              "id": "FUN_00114f00",
+              "symbols": [
+                "c_recurse_alpha_wide"
+              ],
+              "origin": "c_recurse_alpha_wide"
+            }
+          ]
+        }
+      ],
+      "origins": [
+        {
+          "origin": "process_beta",
+          "k_obs": 2,
+          "predicted_cluster_count": 1,
+          "recovered_pairs": 1,
+          "total_pairs": 1,
+          "colliding_origins": []
+        },
+        {
+          "origin": "recurse_beta",
+          "k_obs": 2,
+          "predicted_cluster_count": 1,
+          "recovered_pairs": 1,
+          "total_pairs": 1,
+          "colliding_origins": []
+        },
+        {
+          "origin": "process_alpha",
+          "k_obs": 2,
+          "predicted_cluster_count": 1,
+          "recovered_pairs": 1,
+          "total_pairs": 1,
+          "colliding_origins": [
+            "c_process_alpha_i32",
+            "c_process_alpha_wide"
+          ]
+        },
+        {
+          "origin": "recurse_alpha",
+          "k_obs": 2,
+          "predicted_cluster_count": 1,
+          "recovered_pairs": 1,
+          "total_pairs": 1,
+          "colliding_origins": [
+            "c_recurse_alpha_i32",
+            "c_recurse_alpha_wide"
+          ]
+        },
+        {
+          "origin": "c_process_alpha_i32",
+          "k_obs": 1,
+          "predicted_cluster_count": 1,
+          "recovered_pairs": 0,
+          "total_pairs": 0,
+          "colliding_origins": [
+            "c_process_alpha_wide",
+            "process_alpha"
+          ]
+        },
+        {
+          "origin": "c_recurse_alpha_i32",
+          "k_obs": 1,
+          "predicted_cluster_count": 1,
+          "recovered_pairs": 0,
+          "total_pairs": 0,
+          "colliding_origins": [
+            "c_recurse_alpha_wide",
+            "recurse_alpha"
+          ]
+        },
+        {
+          "origin": "c_process_alpha_wide",
+          "k_obs": 1,
+          "predicted_cluster_count": 1,
+          "recovered_pairs": 0,
+          "total_pairs": 0,
+          "colliding_origins": [
+            "c_process_alpha_i32",
+            "process_alpha"
+          ]
+        },
+        {
+          "origin": "c_recurse_alpha_wide",
+          "k_obs": 1,
+          "predicted_cluster_count": 1,
+          "recovered_pairs": 0,
+          "total_pairs": 0,
+          "colliding_origins": [
+            "c_recurse_alpha_i32",
+            "recurse_alpha"
+          ]
+        }
+      ]
+    },
+    {
+      "case": "family_graph_03",
+      "build": "O3S",
+      "profile": "plain",
+      "mode": "full",
+      "provenance": {
+        "build_id": "40d95d97ec1146af8567f389564ef78e",
+        "source_sha256": "f619cb2cf6b96756592c955895dcef822081333d42c018fc5b9c5f7e204a8d4e",
+        "non_stripped_sha256": "e36fb58c0e1ac911d5f9ab13449429915a58229e9ac9fe13cf7a584b3489901c",
+        "stripped_sha256": "fa79faf3f4359e3ed083cd9222e2ae162b7f056d1363ea57391a6405e2212f80"
+      },
+      "candidate_count": 13,
+      "pair_count": 78,
+      "rounds": 2,
+      "pairwise": {
+        "TP": 4,
+        "FP": 1,
+        "FN": 6,
+        "TN": 67,
+        "precision": 0.8,
+        "recall": 0.4,
+        "F1": 0.5333333333333333,
+        "ARI": 0.48971962616822434
+      },
+      "clusters": [
+        {
+          "cluster": "C1",
+          "origins": [
+            "share"
+          ],
+          "members": [
+            {
+              "id": "FUN_001146b0",
+              "symbols": [
+                "share"
+              ],
+              "origin": "share"
+            },
+            {
+              "id": "FUN_00114a30",
+              "symbols": [
+                "share"
+              ],
+              "origin": "share"
+            }
+          ]
+        },
+        {
+          "cluster": "C2",
+          "origins": [
+            "share"
+          ],
+          "members": [
+            {
+              "id": "FUN_00114d90",
+              "symbols": [
+                "share"
+              ],
+              "origin": "share"
+            }
+          ]
+        },
+        {
+          "cluster": "C3",
+          "origins": [
+            "leaf_p"
+          ],
+          "members": [
+            {
+              "id": "FUN_00115280",
+              "symbols": [
+                "leaf_p"
+              ],
+              "origin": "leaf_p"
+            },
+            {
+              "id": "FUN_001154f0",
+              "symbols": [
+                "leaf_p"
+              ],
+              "origin": "leaf_p"
+            }
+          ]
+        },
+        {
+          "cluster": "C4",
+          "origins": [
+            "decoy_a",
+            "decoy_b"
+          ],
+          "members": [
+            {
+              "id": "FUN_00115700",
+              "symbols": [
+                "decoy_a"
+              ],
+              "origin": "decoy_a"
+            },
+            {
+              "id": "FUN_00115800",
+              "symbols": [
+                "decoy_b"
+              ],
+              "origin": "decoy_b"
+            }
+          ]
+        },
+        {
+          "cluster": "C5",
+          "origins": [
+            "drive_x"
+          ],
+          "members": [
+            {
+              "id": "FUN_00115980",
+              "symbols": [
+                "drive_x"
+              ],
+              "origin": "drive_x"
+            },
+            {
+              "id": "FUN_00115bd0",
+              "symbols": [
+                "drive_x"
+              ],
+              "origin": "drive_x"
+            }
+          ]
+        },
+        {
+          "cluster": "C6",
+          "origins": [
+            "drive_x"
+          ],
+          "members": [
+            {
+              "id": "FUN_00115e90",
+              "symbols": [
+                "drive_x"
+              ],
+              "origin": "drive_x"
+            }
+          ]
+        },
+        {
+          "cluster": "C7",
+          "origins": [
+            "drive_y"
+          ],
+          "members": [
+            {
+              "id": "FUN_00116020",
+              "symbols": [
+                "drive_y"
+              ],
+              "origin": "drive_y"
+            },
+            {
+              "id": "FUN_00116350",
+              "symbols": [
+                "drive_y"
+              ],
+              "origin": "drive_y"
+            }
+          ]
+        },
+        {
+          "cluster": "C8",
+          "origins": [
+            "drive_y"
+          ],
+          "members": [
+            {
+              "id": "FUN_001165b0",
+              "symbols": [
+                "drive_y"
+              ],
+              "origin": "drive_y"
+            }
+          ]
+        }
+      ],
+      "origins": [
+        {
+          "origin": "share",
+          "k_obs": 3,
+          "predicted_cluster_count": 2,
+          "recovered_pairs": 1,
+          "total_pairs": 3,
+          "colliding_origins": []
+        },
+        {
+          "origin": "leaf_p",
+          "k_obs": 2,
+          "predicted_cluster_count": 1,
+          "recovered_pairs": 1,
+          "total_pairs": 1,
+          "colliding_origins": []
+        },
+        {
+          "origin": "decoy_a",
+          "k_obs": 1,
+          "predicted_cluster_count": 1,
+          "recovered_pairs": 0,
+          "total_pairs": 0,
+          "colliding_origins": [
+            "decoy_b"
+          ]
+        },
+        {
+          "origin": "decoy_b",
+          "k_obs": 1,
+          "predicted_cluster_count": 1,
+          "recovered_pairs": 0,
+          "total_pairs": 0,
+          "colliding_origins": [
+            "decoy_a"
+          ]
+        },
+        {
+          "origin": "drive_x",
+          "k_obs": 3,
+          "predicted_cluster_count": 2,
+          "recovered_pairs": 1,
+          "total_pairs": 3,
+          "colliding_origins": []
+        },
+        {
+          "origin": "drive_y",
+          "k_obs": 3,
+          "predicted_cluster_count": 2,
+          "recovered_pairs": 1,
+          "total_pairs": 3,
+          "colliding_origins": []
+        }
+      ]
+    },
+    {
+      "case": "family_graph_03",
+      "build": "O3KS",
+      "profile": "plain",
+      "mode": "full",
+      "provenance": {
+        "build_id": "d41297ce80164cb0ac09978396901dcf",
+        "source_sha256": "f619cb2cf6b96756592c955895dcef822081333d42c018fc5b9c5f7e204a8d4e",
+        "non_stripped_sha256": "d6460699d9cb3c5723f7133dead7a1cd02b1f84ba72600f1c75a6bcb9ed5fcdd",
+        "stripped_sha256": "623ec2db63a4bbe3088e622910333e0bedaf9b072c4aae7b1e1fe7072959603e"
+      },
+      "candidate_count": 17,
+      "pair_count": 136,
+      "rounds": 2,
+      "pairwise": {
+        "TP": 15,
+        "FP": 1,
+        "FN": 0,
+        "TN": 120,
+        "precision": 0.9375,
+        "recall": 1.0,
+        "F1": 0.967741935483871,
+        "ARI": 0.9635974304068522
+      },
+      "clusters": [
+        {
+          "cluster": "C1",
+          "origins": [
+            "share"
+          ],
+          "members": [
+            {
+              "id": "FUN_00114740",
+              "symbols": [
+                "share"
+              ],
+              "origin": "share"
+            },
+            {
+              "id": "FUN_00114900",
+              "symbols": [
+                "share"
+              ],
+              "origin": "share"
+            },
+            {
+              "id": "FUN_00114a50",
+              "symbols": [
+                "share"
+              ],
+              "origin": "share"
+            }
+          ]
+        },
+        {
+          "cluster": "C2",
+          "origins": [
+            "leaf_p"
+          ],
+          "members": [
+            {
+              "id": "FUN_00114b40",
+              "symbols": [
+                "leaf_p"
+              ],
+              "origin": "leaf_p"
+            },
+            {
+              "id": "FUN_00114db0",
+              "symbols": [
+                "leaf_p"
+              ],
+              "origin": "leaf_p"
+            },
+            {
+              "id": "FUN_00114f10",
+              "symbols": [
+                "leaf_p"
+              ],
+              "origin": "leaf_p"
+            }
+          ]
+        },
+        {
+          "cluster": "C3",
+          "origins": [
+            "leaf_q"
+          ],
+          "members": [
+            {
+              "id": "FUN_00115120",
+              "symbols": [
+                "leaf_q"
+              ],
+              "origin": "leaf_q"
+            },
+            {
+              "id": "FUN_00115270",
+              "symbols": [
+                "leaf_q"
+              ],
+              "origin": "leaf_q"
+            },
+            {
+              "id": "FUN_00115460",
+              "symbols": [
+                "leaf_q"
+              ],
+              "origin": "leaf_q"
+            }
+          ]
+        },
+        {
+          "cluster": "C4",
+          "origins": [
+            "decoy_a",
+            "decoy_b"
+          ],
+          "members": [
+            {
+              "id": "FUN_001156a0",
+              "symbols": [
+                "decoy_a"
+              ],
+              "origin": "decoy_a"
+            },
+            {
+              "id": "FUN_001157a0",
+              "symbols": [
+                "decoy_b"
+              ],
+              "origin": "decoy_b"
+            }
+          ]
+        },
+        {
+          "cluster": "C5",
+          "origins": [
+            "drive_x"
+          ],
+          "members": [
+            {
+              "id": "FUN_00115920",
+              "symbols": [
+                "drive_x"
+              ],
+              "origin": "drive_x"
+            },
+            {
+              "id": "FUN_00115b70",
+              "symbols": [
+                "drive_x"
+              ],
+              "origin": "drive_x"
+            },
+            {
+              "id": "FUN_00115e30",
+              "symbols": [
+                "drive_x"
+              ],
+              "origin": "drive_x"
+            }
+          ]
+        },
+        {
+          "cluster": "C6",
+          "origins": [
+            "drive_y"
+          ],
+          "members": [
+            {
+              "id": "FUN_00115fc0",
+              "symbols": [
+                "drive_y"
+              ],
+              "origin": "drive_y"
+            },
+            {
+              "id": "FUN_001162f0",
+              "symbols": [
+                "drive_y"
+              ],
+              "origin": "drive_y"
+            },
+            {
+              "id": "FUN_00116550",
+              "symbols": [
+                "drive_y"
+              ],
+              "origin": "drive_y"
+            }
+          ]
+        }
+      ],
+      "origins": [
+        {
+          "origin": "share",
+          "k_obs": 3,
+          "predicted_cluster_count": 1,
+          "recovered_pairs": 3,
+          "total_pairs": 3,
+          "colliding_origins": []
+        },
+        {
+          "origin": "leaf_p",
+          "k_obs": 3,
+          "predicted_cluster_count": 1,
+          "recovered_pairs": 3,
+          "total_pairs": 3,
+          "colliding_origins": []
+        },
+        {
+          "origin": "leaf_q",
+          "k_obs": 3,
+          "predicted_cluster_count": 1,
+          "recovered_pairs": 3,
+          "total_pairs": 3,
+          "colliding_origins": []
+        },
+        {
+          "origin": "decoy_a",
+          "k_obs": 1,
+          "predicted_cluster_count": 1,
+          "recovered_pairs": 0,
+          "total_pairs": 0,
+          "colliding_origins": [
+            "decoy_b"
+          ]
+        },
+        {
+          "origin": "decoy_b",
+          "k_obs": 1,
+          "predicted_cluster_count": 1,
+          "recovered_pairs": 0,
+          "total_pairs": 0,
+          "colliding_origins": [
+            "decoy_a"
+          ]
+        },
+        {
+          "origin": "drive_x",
+          "k_obs": 3,
+          "predicted_cluster_count": 1,
+          "recovered_pairs": 3,
+          "total_pairs": 3,
+          "colliding_origins": []
+        },
+        {
+          "origin": "drive_y",
+          "k_obs": 3,
+          "predicted_cluster_count": 1,
+          "recovered_pairs": 3,
+          "total_pairs": 3,
+          "colliding_origins": []
+        }
+      ]
+    }
+  ]
+}

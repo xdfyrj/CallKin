@@ -5,9 +5,9 @@
 CallKin의 `gt_extractor.py`는 non-stripped Rust binary의 symbol table에서 두 파일을 만든다.
 
 ```text
-gt_bin/family_graph_01.O3S.gt.bin
--> ground_truth/family_graph_01.O3S.gt.json
--> users/family_graph_01.O3S.users.json
+gt_bin/plain/family_graph_01.O3S.gt.bin
+-> ground_truth/plain/family_graph_01.O3S.gt.json
+-> users/plain/family_graph_01.O3S.users.json
 ```
 
 두 출력의 역할은 다르다.
@@ -18,9 +18,9 @@ gt_bin/family_graph_01.O3S.gt.bin
 
 ```text
 shared_recursive
-  -> FUN_00113c00
-  -> FUN_00113ce0
-  -> FUN_00113d60
+  -> FUN_00113e40
+  -> FUN_00113f20
+  -> FUN_00113fa0
 ```
 
 이 파일은 scoring에서만 사용한다.
@@ -30,9 +30,9 @@ shared_recursive
 User namespace에 속한 함수의 raw address만 기록한다.
 
 ```text
-0x13e20
-0x13f00
-0x13f80
+0x13e40
+0x13f20
+0x13fa0
 ...
 ```
 
@@ -47,21 +47,22 @@ python3 gt_extractor.py family_graph_01
 기본값은 다음처럼 해석된다.
 
 ```text
-binary = gt_bin/family_graph_01.O3S.gt.bin
+binary = gt_bin/plain/family_graph_01.O3S.gt.bin
 case   = family_graph_01
 build  = O3S
+profile = plain
 prefix = family_graph_01::
-GT     = ground_truth/family_graph_01.O3S.gt.json
-users  = users/family_graph_01.O3S.users.json
+GT     = ground_truth/plain/family_graph_01.O3S.gt.json
+users  = users/plain/family_graph_01.O3S.users.json
 nm     = nm
 ```
 
 출력 예시:
 
 ```text
-wrote ground_truth/family_graph_01.O3S.gt.json
+wrote ground_truth/plain/family_graph_01.O3S.gt.json
 origins=2
-wrote users/family_graph_01.O3S.users.json
+wrote users/plain/family_graph_01.O3S.users.json
 users=6
 ```
 
@@ -89,27 +90,29 @@ main()
 `run_nm()`은 다음 command를 실행한다.
 
 ```bash
-nm -n -C gt_bin/family_graph_01.O3S.gt.bin
+nm -n -S -C gt_bin/plain/family_graph_01.O3S.gt.bin
 ```
 
 Option 의미:
 
 ```text
 -n : symbol을 address 순서로 정렬
+-S : 함수 symbol size를 함께 출력
 -C : Rust/C++ mangled symbol을 demangle
 ```
 
 출력 한 줄의 예시는 다음과 같은 형태다.
 
 ```text
-0000000000013e20 t family_graph_01::shared_recursive
+0000000000013e40 00000000000000d4 t family_graph_01::shared_recursive
 ```
 
 `parse_nm_lines()`는 이를 다음 객체로 바꾼다.
 
 ```python
 Symbol(
-    addr=0x13e20,
+    addr=0x13e40,
+    size=0xd4,
     kind="t",
     name="family_graph_01::shared_recursive",
 )
@@ -197,17 +200,17 @@ Ground truth member ID는 fixture와 같은 규칙을 써야 한다.
 기본 `id_bias`는 `0x100000`이다.
 
 ```text
-raw symbol address = 0x13e20
+raw symbol address = 0x13e40
 id bias            = 0x100000
-result             = 0x113e20
-member ID          = FUN_00113c00
+result             = 0x113e40
+member ID          = FUN_00113e40
 ```
 
 이 변환 덕분에 다음 두 파일이 같은 ID로 join된다.
 
 ```text
-GT member       = FUN_00113c00
-fixture user ID = FUN_00113c00
+GT member       = FUN_00113e40
+fixture user ID = FUN_00113e40
 ```
 
 Bias는 주소의 의미를 바꾸지 않고 ID 문자열 표현만 바꾼다.
@@ -219,27 +222,27 @@ Bias는 주소의 의미를 바꾸지 않고 ID 문자열 표현만 바꾼다.
 실제 fg01 입력을 단순화하면 다음과 같다.
 
 ```text
-0x13e20 family_graph_01::shared_recursive
-0x13f00 family_graph_01::shared_recursive
-0x13f80 family_graph_01::shared_recursive
-0x14460 family_graph_01::process
-0x14640 family_graph_01::process
-0x14880 family_graph_01::process
+0x13e40 family_graph_01::shared_recursive
+0x13f20 family_graph_01::shared_recursive
+0x13fa0 family_graph_01::shared_recursive
+0x14480 family_graph_01::process
+0x14660 family_graph_01::process
+0x148a0 family_graph_01::process
 ```
 
 결과 partition:
 
 ```text
 shared_recursive = {
-  FUN_00113c00,
-  FUN_00113ce0,
-  FUN_00113d60
+  FUN_00113e40,
+  FUN_00113f20,
+  FUN_00113fa0
 }
 
 process = {
-  FUN_00114240,
-  FUN_00114420,
-  FUN_00114660
+  FUN_00114480,
+  FUN_00114660,
+  FUN_001148a0
 }
 ```
 
@@ -254,14 +257,14 @@ Origin은 첫 member address 순서로 정렬되고, 각 origin의 member도 add
 다음 두 symbol이 같은 주소와 같은 normalized origin을 가진다고 하자.
 
 ```text
-0x13e20 family_graph_01::shared_recursive
-0x13e20 family_graph_01::shared_recursive::h0123456789abcdef
+0x13e40 family_graph_01::shared_recursive
+0x13e40 family_graph_01::shared_recursive::h0123456789abcdef
 ```
 
 Member는 한 번만 기록한다.
 
 ```text
-FUN_00113c00
+FUN_00113e40
 ```
 
 두 원래 symbol 문자열은 `symbols` 목록에 보존하고 GT `note`에 duplicate 처리를 기록한다.
@@ -271,21 +274,21 @@ FUN_00113c00
 다음처럼 서로 다른 origin이 같은 주소를 소유하면:
 
 ```text
-0x13e20 family_graph_01::alpha
-0x13e20 family_graph_01::beta
+0x13e40 family_graph_01::alpha
+0x13e40 family_graph_01::beta
 ```
 
 현재 구현은 어느 origin을 임의로 선택하지 않고 실패한다.
 
 ```text
-cross-origin address alias at FUN_00113c00
+cross-origin address alias at FUN_00113e40
 ```
 
 이 정책은 잘못된 partition을 조용히 생성하는 것을 막는다. 다만 compiler merging이나 linker ICF를 상태로 측정하는 기능은 아직 없다.
 
 ## 10. Ground truth JSON schema
 
-Schema version은 3이다.
+Schema version은 5다.
 
 실제 fg01 구조:
 
@@ -293,19 +296,26 @@ Schema version은 3이다.
 {
   "case": "family_graph_01",
   "build": "O3S",
-  "schema_version": 3,
+  "profile": "plain",
+  "schema_version": 5,
+  "provenance": {
+    "build_id": "...",
+    "source_sha256": "...",
+    "non_stripped_sha256": "...",
+    "stripped_sha256": "..."
+  },
   "origins": [
     {
       "origin": "shared_recursive",
       "members": [
-        "FUN_00113c00",
-        "FUN_00113ce0",
-        "FUN_00113d60"
+        "FUN_00113e40",
+        "FUN_00113f20",
+        "FUN_00113fa0"
       ]
     }
   ],
   "symbols": {
-    "FUN_00113c00": [
+    "FUN_00113e40": [
       "family_graph_01::shared_recursive"
     ]
   }
@@ -316,8 +326,9 @@ Schema version은 3이다.
 
 | Field | 의미 |
 |---|---|
-| `case`, `build` | fixture와 join할 identity |
+| `case`, `build`, `profile` | fixture와 join할 identity |
 | `schema_version` | GT schema version |
+| `provenance` | manifest build ID와 source/non-stripped/stripped SHA-256 |
 | `origins` | true partition |
 | `symbols` | member별 원래 demangled symbol 목록 |
 | optional `note` | same-origin duplicate/alias 기록 |
@@ -326,27 +337,41 @@ Schema version은 3이다.
 
 ## 11. Users JSON schema
 
-Schema version은 1이다.
+Schema version은 4다.
 
 ```json
 {
   "case": "family_graph_01",
   "build": "O3S",
-  "schema_version": 1,
-  "source": "gt_bin/family_graph_01.O3S.gt.bin",
+  "profile": "plain",
+  "schema_version": 4,
+  "provenance": {
+    "build_id": "...",
+    "source_sha256": "...",
+    "non_stripped_sha256": "...",
+    "stripped_sha256": "..."
+  },
+  "source": "gt_bin/plain/family_graph_01.O3S.gt.bin",
   "prefix": "family_graph_01::",
   "addresses": [
-    "0x13e20",
-    "0x13f00",
-    "0x13f80",
-    "0x14460",
-    "0x14640",
-    "0x14880"
+    "0x13e40",
+    "0x13f20",
+    "0x13fa0",
+    "0x14480",
+    "0x14660",
+    "0x148a0"
+  ],
+  "function_bounds": [
+    {"address": "0x13e40", "size": 212},
+    {"address": "0x14040", "size": 1075}
   ]
 }
 ```
 
-주소는 중복을 제거하고 오름차순으로 기록한다.
+`addresses`는 scored candidate 시작 주소이며 중복을 제거해 오름차순으로 기록한다.
+`function_bounds`는 같은 source namespace에 속한 함수의 `(시작 주소, byte size)`다.
+Candidate 외에 source `main`도 포함하며, stripped binary의 callsite를 radare2 함수
+경계와 독립적으로 디코딩할 때 사용한다.
 
 Users JSON에는 다음 정보가 없다.
 
@@ -355,6 +380,7 @@ origin 이름
 어떤 주소끼리 같은 family인지
 generic type
 symbol 문자열
+origin label
 ```
 
 따라서 binary extractor에 candidate 집합은 전달하지만 true partition은 전달하지 않는다.
@@ -372,12 +398,12 @@ fixture의 scored=true node ID
 Fg01의 경우 양쪽 모두 다음 여섯 ID여야 한다.
 
 ```text
-FUN_00113c00
-FUN_00113ce0
-FUN_00113d60
-FUN_00114240
-FUN_00114420
+FUN_00113e40
+FUN_00113f20
+FUN_00113fa0
+FUN_00114480
 FUN_00114660
+FUN_001148a0
 ```
 
 하나라도 다르면 scoring universe가 달라지므로 중단한다.
@@ -386,7 +412,7 @@ Standalone CLI에서는 `--fixture`를 줄 때 이 검사를 수행한다.
 
 ```bash
 python3 gt_extractor.py family_graph_01 \
-  --fixture fixtures/family_graph_01.O3S.fixture.json
+  --fixture fixtures/plain/family_graph_01.O3S.fixture.json
 ```
 
 `run_case.py`는 GT와 fixture를 모두 생성한 뒤 같은 검사를 항상 실행한다.
@@ -399,9 +425,11 @@ python3 gt_extractor.py family_graph_01 \
 | positional `output` | GT JSON 출력 경로 | `ground_truth/custom.gt.json` |
 | `--case` | JSON case override | `--case custom_case` |
 | `--build` | build label | `--build O3KS` |
+| `--profile` | compiler profile과 artifact directory | `--profile min` |
 | `--prefix` | 유지할 demangled namespace | `--prefix 'custom_case::'` |
 | `--fixture` | scored universe 검사용 fixture | `fixtures/custom.fixture.json` |
 | `--users` | users JSON 출력 경로 | `users/custom.users.json` |
+| `--manifest` | build manifest override | `build_info/min/custom.json` |
 | `--id-bias` | FUN ID address bias | `--id-bias 0` |
 | `--nm-tool` | nm-compatible executable | `nm`, `/usr/bin/nm` |
 
@@ -409,12 +437,13 @@ python3 gt_extractor.py family_graph_01 \
 
 ```bash
 python3 gt_extractor.py \
-  gt_bin/family_graph_03.O3KS.gt.bin \
-  ground_truth/family_graph_03.O3KS.gt.json \
+  gt_bin/min/family_graph_03.O3KS.gt.bin \
+  ground_truth/min/family_graph_03.O3KS.gt.json \
   --case family_graph_03 \
   --build O3KS \
+  --profile min \
   --prefix 'family_graph_03::' \
-  --users users/family_graph_03.O3KS.users.json \
+  --users users/min/family_graph_03.O3KS.users.json \
   --nm-tool nm
 ```
 

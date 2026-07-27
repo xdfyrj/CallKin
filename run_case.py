@@ -14,11 +14,14 @@ from engine import (
 )
 from loader import load_case
 from paths import (
+    BUILD_PROFILES,
     DEFAULT_BUILD,
+    DEFAULT_PROFILE,
     build_manifest_for,
     fixture_json_for,
     gt_json_for,
     prefix_for_case,
+    normalize_profile,
     split_case_build,
     users_json_for,
 )
@@ -37,11 +40,13 @@ def run_fixture_only(fixture_path: str, mode: str, *, trace: bool = False) -> No
 def run_pipeline(args: argparse.Namespace) -> None:
     case_from_stem, build = split_case_build(args.stem, args.build)
     case_name = args.case or case_from_stem
-    manifest_path = args.manifest or build_manifest_for(case_name, build)
+    profile = normalize_profile(args.profile)
+    manifest_path = args.manifest or build_manifest_for(case_name, build, profile)
     verified = load_and_verify_manifest(
         manifest_path,
         expected_case=case_name,
         expected_build=build,
+        expected_profile=profile,
         expected_target=BUILD_TARGET,
     )
     fixture_binary = _validated_override(
@@ -50,13 +55,14 @@ def run_pipeline(args: argparse.Namespace) -> None:
     gt_binary = _validated_override(
         "--gt-binary", args.gt_binary, verified.non_stripped_binary
     )
-    fixture_json = args.fixture_json or fixture_json_for(case_name, build)
-    gt_json = args.gt_json or gt_json_for(case_name, build)
-    users_json = args.users or users_json_for(case_name, build)
+    fixture_json = args.fixture_json or fixture_json_for(case_name, build, profile)
+    gt_json = args.gt_json or gt_json_for(case_name, build, profile)
+    users_json = args.users or users_json_for(case_name, build, profile)
     prefix = args.prefix or prefix_for_case(case_name)
 
     print(f"case: {case_name}")
     print(f"build: {build}")
+    print(f"profile: {profile}")
     print(f"build manifest: {manifest_path}")
     print(f"build id: {verified.build_id}")
     print(f"fixture binary: {fixture_binary}")
@@ -71,7 +77,9 @@ def run_pipeline(args: argparse.Namespace) -> None:
         users_path=users_json,
         case_name=case_name,
         build=build,
+        profile=profile,
         prefix=prefix,
+        provenance=verified.provenance,
     )
     print(f"ground-truth origins: {len(gt['origins'])}")
 
@@ -80,8 +88,10 @@ def run_pipeline(args: argparse.Namespace) -> None:
         output_path=fixture_json,
         case_name=case_name,
         build=build,
+        profile=profile,
         root=args.root,
         users_path=users_json,
+        provenance=verified.provenance,
     )
     print(f"fixture nodes: {len(fixture['nodes'])}")
 
@@ -111,8 +121,10 @@ def extract_fixture(
     output_path: str,
     case_name: str,
     build: str,
+    profile: str,
     root: str | None,
     users_path: str | None,
+    provenance,
 ) -> dict:
     from binary_extractor import DEFAULT_ID_BIAS, extract_fixture, write_fixture
 
@@ -120,12 +132,14 @@ def extract_fixture(
         binary=binary_path,
         case=case_name,
         build=build,
+        profile=profile,
         root=root,
         score_root=False,
         include_imports=False,
         id_bias=DEFAULT_ID_BIAS,
         list_functions=False,
         users=users_path,
+        provenance=provenance,
     )
     fixture = extract_fixture(args)
     write_fixture(fixture, output_path)
@@ -139,7 +153,9 @@ def extract_ground_truth(
     users_path: str,
     case_name: str,
     build: str,
+    profile: str,
     prefix: str,
+    provenance,
 ) -> dict:
     from gt_extractor import (
         DEFAULT_ID_BIAS,
@@ -148,26 +164,33 @@ def extract_ground_truth(
         parse_nm_lines,
         run_nm,
         user_addresses,
+        user_function_bounds,
         write_json,
     )
 
     symbols = parse_nm_lines(run_nm(binary_path, "nm"))
     user_addrs = user_addresses(symbols=symbols, prefix=prefix)
+    function_bounds = user_function_bounds(symbols=symbols, prefix=prefix)
     gt = make_ground_truth(
         symbols=symbols,
         case=case_name,
         build=build,
+        profile=profile,
         prefix=prefix,
         id_bias=DEFAULT_ID_BIAS,
+        provenance=provenance,
     )
     write_json(gt, output_path)
     write_json(
         make_users_json(
             addresses=user_addrs,
+            function_bounds=function_bounds,
             case=case_name,
             build=build,
+            profile=profile,
             binary_path=binary_path,
             prefix=prefix,
+            provenance=provenance,
         ),
         users_path,
     )
@@ -192,7 +215,13 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--gt-json", help="override generated ground-truth JSON path")
     parser.add_argument("--users", help="override generated user address JSON path")
     parser.add_argument("--case", help="case field written into generated JSON")
-    parser.add_argument("--build", help=f"build/profile. Default: {DEFAULT_BUILD}")
+    parser.add_argument("--build", help=f"build label. Default: {DEFAULT_BUILD}")
+    parser.add_argument(
+        "--profile",
+        choices=BUILD_PROFILES,
+        default=DEFAULT_PROFILE,
+        help=f"compiler profile. Default: {DEFAULT_PROFILE}",
+    )
     parser.add_argument("--prefix", help="demangled symbol prefix for GT extraction")
     parser.add_argument("--root", help="root function name/id/address for binary extraction")
     parser.add_argument(
