@@ -95,11 +95,14 @@ Radare2가 없으면 다음처럼 실패한다.
 error: radare2 executable was not found. Install radare2 before running binary_extractor.py.
 ```
 
-`r2pipe`만 없으면 다음 설치 방법을 포함해 오류를 낸다.
+`r2pipe`가 없으면 다음 설치 방법을 포함해 오류를 낸다.
 
 ```text
 python3 -m pip install -r requirements.txt
 ```
+
+Canonical symbol-extent 추출에서 `capstone`이 없을 때도 같은 명령을 안내하며
+중단한다. `requirements.txt`는 `r2pipe`와 `capstone`을 모두 설치한다.
 
 ## 5. 함수 목록 복구
 
@@ -230,7 +233,10 @@ edge는 fixture에 기록하지 않는다.
 
 ### 8.1 Direct call
 
-Instruction에 radare2의 direct `jump` target이 있고 operation이 call이면 target을 포함하는 함수를 찾는다.
+Symbol-extent 경로에서는 Capstone instruction의 단일 immediate operand를 direct
+target으로 사용한다. Radare2 경로에서는 operation이 call이고 JSON에 direct
+`jump` target이 있을 때 그 주소를 사용한다. 어느 경로든 target 주소를 포함하는
+알려진 함수를 찾아 같은 edge 규칙으로 합산한다.
 
 예시:
 

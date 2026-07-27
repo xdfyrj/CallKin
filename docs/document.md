@@ -324,11 +324,17 @@ PR=1.00 RE=1.00 F1=1.00 ARI=1.00
 
 ### Candidate 조건
 
-현재 점수는 compiler symbol에서 얻은 user 주소 집합이 제공된 조건의 결과다. Stripped binary만으로 user 함수를 자동 분류하는 성능을 측정하지 않는다.
+현재 점수는 compiler symbol에서 얻은 candidate 주소와 source namespace 함수의
+symbol extent가 제공된 조건의 결과다. Stripped binary만으로 user 함수를 자동
+분류하거나 함수 경계를 복구하는 성능을 측정하지 않는다.
 
 ### Function과 edge 복구
 
-함수 경계와 instruction 분석은 radare2에 의존한다. Direct immediate call과 다른 함수 시작점으로 향하는 jump만 edge로 센다. Indirect call은 복구하지 않는다.
+Canonical source 함수와 source `main`의 경계는 non-stripped symbol extent를
+oracle로 사용한다. 해당 stripped byte 범위는 radare2 `p8j`로 읽고 Capstone으로
+x86-64 instruction을 디코딩한다. One-hop library anchor의 함수 시작점과 범위는
+radare2 분석에 의존한다. 두 경로 모두 direct immediate call과 다른 함수의 정확한
+시작점으로 향하는 unconditional jump만 edge로 세며 indirect call은 복구하지 않는다.
 
 ### Ground truth의 의미
 

@@ -7,7 +7,7 @@ CallKin은 Rust monomorphized function family를 stripped binary의 call graph �
 ```text
 Rust source
 -> non-stripped / stripped binary pair
--> compiler-symbol ground truth + user address set
+-> compiler-symbol ground truth + candidate addresses/symbol extents
 -> stripped call-graph fixture
 -> Call-Graph Weisfeiler-Lehman grouping
 -> PR / RE / F1 / ARI scoring
