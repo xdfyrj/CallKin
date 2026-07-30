@@ -20,19 +20,19 @@ PYTHON_FILES = (
     "scores.py",
     "run_case.py",
     "run_baseline.py",
-    "test/test_compile.py",
-    "test/test_engine.py",
-    "test/test_binary_extractor.py",
-    "test/test_gt_extractor.py",
-    "test/test_scores.py",
-    "test/run_all.py",
+    "tests/test_compile.py",
+    "tests/test_engine.py",
+    "tests/test_binary_extractor.py",
+    "tests/test_gt_extractor.py",
+    "tests/test_scores.py",
+    "tests/run_all.py",
 )
 TEST_FILES = (
-    "test/test_compile.py",
-    "test/test_engine.py",
-    "test/test_binary_extractor.py",
-    "test/test_gt_extractor.py",
-    "test/test_scores.py",
+    "tests/test_compile.py",
+    "tests/test_engine.py",
+    "tests/test_binary_extractor.py",
+    "tests/test_gt_extractor.py",
+    "tests/test_scores.py",
 )
 
 

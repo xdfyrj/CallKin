@@ -585,7 +585,7 @@ python3 run_baseline.py
 
 ## 16. Exact regression
 
-`test/test_scores.py`는 두 profile의 8개 canonical artifact set에 대해 다음을 고정한다.
+`tests/test_scores.py`는 두 profile의 8개 canonical artifact set에 대해 다음을 고정한다.
 
 - source, non-stripped, stripped hash
 - origin별 instance 수
@@ -600,7 +600,7 @@ python3 run_baseline.py
 실행:
 
 ```bash
-python3 test/test_scores.py
+python3 tests/test_scores.py
 ```
 
 출력 일부:

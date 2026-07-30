@@ -89,7 +89,7 @@ def main(argv: list[str] | None = None) -> int:
                 "--json-output",
                 baseline_result_for(profile),
             ])
-        test_arguments = ["test/test_scores.py"]
+        test_arguments = ["tests/test_scores.py"]
         for profile in profiles:
             test_arguments.extend(["--profile", profile])
         run_step(test_arguments)

@@ -51,7 +51,7 @@ python3 run_baseline.py
 전체 테스트를 실행한다.
 
 ```bash
-python3 test/run_all.py
+python3 tests/run_all.py
 ```
 
 ## One-Case Commands
