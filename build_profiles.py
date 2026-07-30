@@ -44,3 +44,23 @@ def compile_flags(profile: str, build: str) -> list[str]:
             f"Supported builds: {sorted(BUILD_FLAGS)}"
         )
     return [*PROFILE_FLAGS[profile], *BUILD_FLAGS[build]]
+
+
+def cargo_profile_config(profile: str) -> str:
+    """Return the Cargo release-profile overlay equivalent to CallKin flags."""
+    profile = normalize_profile(profile)
+    codegen_units = 16 if profile == "plain" else 1
+    lto = "false" if profile == "plain" else "true"
+    panic = "unwind" if profile == "plain" else "abort"
+    return (
+        "[profile.release]\n"
+        "opt-level = 3\n"
+        "debug = 0\n"
+        "debug-assertions = false\n"
+        "overflow-checks = false\n"
+        f"codegen-units = {codegen_units}\n"
+        f"lto = {lto}\n"
+        f'panic = "{panic}"\n'
+        "incremental = false\n"
+        'strip = "none"\n'
+    )

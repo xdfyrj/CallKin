@@ -32,9 +32,12 @@ FUN_001148a0  process instance 3
                          source side
                              |
                              v
-                    src/family_graph_01.rs
-                             |
-                         compile.py
+       src/<case>.rs             subjects/<subject>/Cargo.toml
+            |                               |
+          rustc                         cargo build
+            +---------------+---------------+
+                            |
+                        compile.py
                              |
              +---------------+---------------+
              |                               |
@@ -124,7 +127,7 @@ symbol extent가 들어간다. Extent에는 source `main`도 포함된다.
 
 ```json
 {
-  "prefix": "family_graph_01::",
+  "namespaces": ["family_graph_01"],
   "addresses": [
     "0x13e40",
     "0x13f20",
@@ -153,7 +156,7 @@ candidate-and-boundary oracle 조건의 grouping 평가다.
 
 | Artifact | 예시 | 역할 |
 |---|---|---|
-| Rust source | `src/family_graph_01.rs` | corpus 원본 |
+| Rust input | `src/family_graph_01.rs`, `subjects/billing-client/` | case 또는 Cargo subject |
 | Non-stripped binary | `gt_bin/plain/family_graph_01.O3S.gt.bin` | symbol, GT, users 주소의 근거 |
 | Stripped binary | `bin/plain/family_graph_01.O3S.fixture.bin` | 실제 relation 추출 대상 |
 | Build manifest | `build_info/plain/family_graph_01.O3S.json` | source/tool/binary hash 결속 |
@@ -162,13 +165,13 @@ candidate-and-boundary oracle 조건의 grouping 평가다.
 | Fixture | `fixtures/plain/family_graph_01.O3S.fixture.json` | node와 weighted call edge |
 | Score result | `results/plain/v0_baseline.json` | cluster, origin별 결과, metric |
 
-`plain`은 Cargo 기본 release 설정을 근사한 direct-rustc profile로 O3/`lto=false`(thin local LTO 가능)/16 codegen units/panic unwind를 사용한다. `min`은 aggressive minimized stress profile로 O3/fat LTO/1 codegen unit/panic abort를 사용한다. `O3S`는 추가 source cfg가 없으며 `O3KS`는 선택한 profile에 `--cfg keep`을 추가한다. 어느 조합이든 non-stripped binary를 한 번 만든 뒤 복사본에 `strip --strip-all`을 적용한다.
+`plain`은 Cargo 기본 release 설정을 근사한 CallKin profile로 O3/`lto=false`(thin local LTO 가능)/16 codegen units/panic unwind를 사용한다. `min`은 aggressive minimized stress profile로 O3/fat LTO/1 codegen unit/panic abort를 사용한다. Case는 direct rustc flag로, Cargo subject는 release-profile overlay로 같은 조건을 적용한다. `O3S`는 추가 source cfg가 없으며 `O3KS`는 `--cfg keep`을 추가한다. 어느 조합이든 non-stripped binary를 한 번 만든 뒤 복사본에 `strip --strip-all`을 적용한다.
 
 ## 5. Module 책임
 
 ### `compile.py`
 
-한 Rust source를 컴파일해 non-stripped/stripped binary pair와 manifest를 만든다. 실제 컴파일 파이프라인은 이 파일에 있다.
+`case` 입력은 direct rustc로, `subject` 입력은 Cargo metadata/build로 컴파일해 non-stripped/stripped binary pair와 manifest를 만든다.
 
 상세: [컴파일 파이프라인](compilation.md)
 
@@ -238,7 +241,7 @@ plain, min 각각:
 다음 명령을 예로 든다.
 
 ```bash
-python3 compile.py family_graph_01
+python3 compile.py family_graph_01 case
 python3 run_case.py family_graph_01
 ```
 

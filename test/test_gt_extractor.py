@@ -37,7 +37,7 @@ def main() -> int:
         case="fg02",
         build="O3S",
         profile="plain",
-        prefix="family_graph_02::",
+        namespaces=("family_graph_02",),
         id_bias=0x100000,
         provenance=PROVENANCE,
     )
@@ -92,7 +92,7 @@ def main() -> int:
             case="fg02",
             build="O3S",
             profile="plain",
-            prefix="family_graph_02::",
+            namespaces=("family_graph_02",),
             id_bias=0x100000,
             provenance=PROVENANCE,
         )
@@ -104,13 +104,19 @@ def main() -> int:
         print("FAIL cross-origin address alias should stop GT generation")
         return 1
 
-    addresses = user_addresses(symbols=symbols, prefix="family_graph_02::")
+    addresses = user_addresses(
+        symbols=symbols,
+        namespaces=("family_graph_02",),
+    )
     expected_addresses = [0x14000, 0x14120, 0x14AF0, 0x14C10]
     if addresses != expected_addresses:
         print(f"FAIL expected user addresses {expected_addresses}, got {addresses}")
         return 1
 
-    bounds = user_function_bounds(symbols=symbols, prefix="family_graph_02::")
+    bounds = user_function_bounds(
+        symbols=symbols,
+        namespaces=("family_graph_02",),
+    )
     expected_bounds = {
         0x14000: 0x100,
         0x14120: 0x80,
@@ -129,17 +135,17 @@ def main() -> int:
         build="O3S",
         profile="plain",
         binary_path="gt_bin/family_graph_02.gt.bin",
-        prefix="family_graph_02::",
+        namespaces=("family_graph_02",),
         provenance=PROVENANCE,
     )
     expected_users_json = {
         "case": "fg02",
         "build": "O3S",
         "profile": "plain",
-        "schema_version": 4,
+        "schema_version": 5,
         "provenance": PROVENANCE.to_dict(),
         "source": "gt_bin/family_graph_02.gt.bin",
-        "prefix": "family_graph_02::",
+        "namespaces": ["family_graph_02"],
         "addresses": ["0x14000", "0x14120", "0x14af0", "0x14c10"],
         "function_bounds": [
             {"address": "0x14000", "size": 0x100},
@@ -151,6 +157,79 @@ def main() -> int:
     }
     if users_json != expected_users_json:
         print(f"FAIL expected users JSON {expected_users_json}, got {users_json}")
+        return 1
+
+    cargo_symbols = parse_nm_lines([
+        "0000000000020000 0000000000000010 t billing_client::same_name::<i32>",
+        "0000000000020020 0000000000000010 t reconcile::same_name",
+        (
+            "0000000000020040 0000000000000010 t "
+            "billing_client::resources::_::<impl serde::Deserialize for "
+            "billing_client::resources::Invoice>::deserialize"
+        ),
+        (
+            "0000000000020060 0000000000000010 t "
+            "billing_client::resources::_::<impl serde::Deserialize for "
+            "billing_client::resources::Customer>::deserialize"
+        ),
+        (
+            "0000000000020080 0000000000000010 t "
+            "<reconcile::transport::ProxyTransport as "
+            "billing_client::http::Transport>::execute"
+        ),
+        "00000000000200a0 0000000000000010 t reconcile::main",
+        (
+            "00000000000200c0 0000000000000010 t "
+            "core::ptr::drop_in_place<billing_client::resources::Invoice>"
+        ),
+        (
+            "00000000000200e0 0000000000000010 t "
+            "billing_client::resources::<impl billing_client::client::Client>::same"
+        ),
+        (
+            "0000000000020100 0000000000000010 t "
+            "billing_client::resources::<impl billing_client::resources::Invoice>::same"
+        ),
+    ])
+    cargo_gt = make_ground_truth(
+        symbols=cargo_symbols,
+        case="billing-client",
+        build="O3S",
+        profile="plain",
+        namespaces=("billing_client", "reconcile"),
+        id_bias=0,
+        provenance=PROVENANCE,
+    )
+    cargo_origins = {group["origin"] for group in cargo_gt["origins"]}
+    expected_cargo_origins = {
+        "billing_client::same_name",
+        "reconcile::same_name",
+        (
+            "billing_client::resources::_::impl_for="
+            "billing_client::resources::Invoice::deserialize"
+        ),
+        (
+            "billing_client::resources::_::impl_for="
+            "billing_client::resources::Customer::deserialize"
+        ),
+        (
+            "<reconcile::transport::ProxyTransport as "
+            "billing_client::http::Transport>::execute"
+        ),
+        (
+            "billing_client::resources::impl="
+            "billing_client::client::Client::same"
+        ),
+        (
+            "billing_client::resources::impl="
+            "billing_client::resources::Invoice::same"
+        ),
+    }
+    if cargo_origins != expected_cargo_origins:
+        print(
+            f"FAIL expected Cargo origins {expected_cargo_origins}, "
+            f"got {cargo_origins}"
+        )
         return 1
 
     print("ground truth extractor symbol grouping PASS")

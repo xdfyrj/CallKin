@@ -120,9 +120,9 @@ Symbol(
 
 Text symbol kind `t`와 `T`만 사용한다. Data symbol, undefined symbol, 주소를 파싱할 수 없는 줄은 제외한다.
 
-## 5. Prefix로 user namespace 선택
+## 5. Manifest namespace로 subject 함수 선택
 
-Case가 `family_graph_01`이면 기본 prefix는 다음과 같다.
+단일-file case manifest에는 namespace 하나가 기록된다.
 
 ```text
 family_graph_01::
@@ -143,17 +143,28 @@ std::rt::lang_start_internal
 miniz_oxide::inflate::core::transfer
 ```
 
-이것이 현재 controlled corpus에서 user/library candidate 경계를 정하는 규칙이다. `gt_extractor.py`가 library classifier를 구현하는 것은 아니다.
+Cargo subject manifest에는 선택한 package의 library와 binary target namespace가
+함께 기록된다.
+
+```text
+billing_client
+reconcile
+```
+
+일반 symbol은 `billing_client::` 또는 `reconcile::`로 시작하는지 검사한다.
+Trait impl symbol은 `<billing_client::` 또는 `<reconcile::`로 시작하는지도 검사한다.
+외부 `serde::`, `std::`, `sha2::` 함수는 candidate가 아니라 direct library anchor다.
 
 ## 6. Symbol을 origin으로 정규화
 
 `origin_from_symbol()`은 다음 순서로 origin을 만든다.
 
-1. Symbol이 지정 prefix로 시작하는지 확인한다.
-2. Prefix를 제거한다.
+1. Symbol이 manifest의 subject namespace에 속하는지 확인한다.
+2. 단일 namespace case에서는 prefix를 제거하고, 여러 namespace Cargo subject에서는 namespace를 보존한다.
 3. 끝의 Rust hash `::h<16 hex>`를 제거한다.
-4. 표시된 generic argument `::<...>`를 제거한다.
-5. `main`은 제외한다.
+4. `::<impl ...>`이면 구현 대상 type을 먼저 보존한다.
+5. 나머지 표시된 generic argument `::<...>`를 제거한다.
+6. `main`은 제외한다.
 
 ### 예시 1: 일반 symbol
 
@@ -337,14 +348,14 @@ Schema version은 5다.
 
 ## 11. Users JSON schema
 
-Schema version은 4다.
+Schema version은 5다. Version 4 users JSON도 읽을 수 있다.
 
 ```json
 {
   "case": "family_graph_01",
   "build": "O3S",
   "profile": "plain",
-  "schema_version": 4,
+  "schema_version": 5,
   "provenance": {
     "build_id": "...",
     "source_sha256": "...",
@@ -352,7 +363,7 @@ Schema version은 4다.
     "stripped_sha256": "..."
   },
   "source": "gt_bin/plain/family_graph_01.O3S.gt.bin",
-  "prefix": "family_graph_01::",
+  "namespaces": ["family_graph_01"],
   "addresses": [
     "0x13e40",
     "0x13f20",
@@ -426,7 +437,7 @@ python3 gt_extractor.py family_graph_01 \
 | `--case` | JSON case override | `--case custom_case` |
 | `--build` | build label | `--build O3KS` |
 | `--profile` | compiler profile과 artifact directory | `--profile min` |
-| `--prefix` | 유지할 demangled namespace | `--prefix 'custom_case::'` |
+| `--namespace` | manifest namespace override, 여러 번 지정 가능 | `--namespace billing_client` |
 | `--fixture` | scored universe 검사용 fixture | `fixtures/custom.fixture.json` |
 | `--users` | users JSON 출력 경로 | `users/custom.users.json` |
 | `--manifest` | build manifest override | `build_info/min/custom.json` |
@@ -442,7 +453,7 @@ python3 gt_extractor.py \
   --case family_graph_03 \
   --build O3KS \
   --profile min \
-  --prefix 'family_graph_03::' \
+  --namespace family_graph_03 \
   --users users/min/family_graph_03.O3KS.users.json \
   --nm-tool nm
 ```

@@ -13,7 +13,9 @@ Rust source
 -> PR / RE / F1 / ARI scoring
 ```
 
-현재 구현은 통제된 `family_graph_01`, `family_graph_02`, `family_graph_03` corpus의 V0 baseline을 고정한다. 일반 Rust binary에서 generic 함수를 자동 탐지하거나 type을 복원하는 도구는 아니다.
+현재 구현은 통제된 `family_graph_01`, `family_graph_02`, `family_graph_03`
+baseline과 `subjects/` 아래 Cargo project 입력을 지원한다. 일반 Rust binary에서
+generic 함수를 자동 탐지하거나 type을 복원하는 도구는 아니다.
 
 ## Quick Start
 
@@ -54,12 +56,20 @@ python3 test/run_all.py
 
 ## One-Case Commands
 
-한 source를 non-stripped/stripped binary pair로 컴파일한다.
+단일-file case를 non-stripped/stripped binary pair로 컴파일한다.
 
 ```bash
-python3 compile.py family_graph_03
-python3 compile.py family_graph_03 --profile min
-python3 compile.py family_graph_03 --build O3KS --profile min
+python3 compile.py family_graph_03 case
+python3 compile.py family_graph_03 case --profile min
+python3 compile.py family_graph_03 case --build O3KS --profile min
+```
+
+Cargo subject는 `subjects/<name>/Cargo.toml`과 `Cargo.lock`을 사용하되,
+`[profile.release]`를 CallKin의 `plain`/`min` 설정으로 덮어쓴다.
+
+```bash
+python3 compile.py billing-client subject --profile plain --build O3S
+python3 run_case.py billing-client --profile plain --build O3S
 ```
 
 이미 컴파일된 한 build에서 GT, users, fixture를 생성하고 grouping과 scoring까지 수행한다.
@@ -85,7 +95,7 @@ python3 engine.py family_graph_03 --trace
 
 | Profile | Compiler flags |
 |---|---|
-| `plain` | Cargo default-release 설정을 근사한 direct-rustc profile: O3, `lto=false`(thin local LTO 가능), CGU 16, panic unwind |
+| `plain` | Cargo default-release 설정을 근사한 profile: O3, `lto=false`(thin local LTO 가능), CGU 16, panic unwind |
 | `min` | aggressive minimized stress profile: O3, fat LTO, CGU 1, panic abort |
 
 ## Documentation

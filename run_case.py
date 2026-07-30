@@ -20,7 +20,6 @@ from paths import (
     build_manifest_for,
     fixture_json_for,
     gt_json_for,
-    prefix_for_case,
     normalize_profile,
     split_case_build,
     users_json_for,
@@ -58,7 +57,7 @@ def run_pipeline(args: argparse.Namespace) -> None:
     fixture_json = args.fixture_json or fixture_json_for(case_name, build, profile)
     gt_json = args.gt_json or gt_json_for(case_name, build, profile)
     users_json = args.users or users_json_for(case_name, build, profile)
-    prefix = args.prefix or prefix_for_case(case_name)
+    namespaces = tuple(args.namespaces or verified.candidate_namespaces)
 
     print(f"case: {case_name}")
     print(f"build: {build}")
@@ -78,7 +77,7 @@ def run_pipeline(args: argparse.Namespace) -> None:
         case_name=case_name,
         build=build,
         profile=profile,
-        prefix=prefix,
+        namespaces=namespaces,
         provenance=verified.provenance,
     )
     print(f"ground-truth origins: {len(gt['origins'])}")
@@ -154,7 +153,7 @@ def extract_ground_truth(
     case_name: str,
     build: str,
     profile: str,
-    prefix: str,
+    namespaces: tuple[str, ...],
     provenance,
 ) -> dict:
     from gt_extractor import (
@@ -169,14 +168,17 @@ def extract_ground_truth(
     )
 
     symbols = parse_nm_lines(run_nm(binary_path, "nm"))
-    user_addrs = user_addresses(symbols=symbols, prefix=prefix)
-    function_bounds = user_function_bounds(symbols=symbols, prefix=prefix)
+    user_addrs = user_addresses(symbols=symbols, namespaces=namespaces)
+    function_bounds = user_function_bounds(
+        symbols=symbols,
+        namespaces=namespaces,
+    )
     gt = make_ground_truth(
         symbols=symbols,
         case=case_name,
         build=build,
         profile=profile,
-        prefix=prefix,
+        namespaces=namespaces,
         id_bias=DEFAULT_ID_BIAS,
         provenance=provenance,
     )
@@ -189,7 +191,7 @@ def extract_ground_truth(
             build=build,
             profile=profile,
             binary_path=binary_path,
-            prefix=prefix,
+            namespaces=namespaces,
             provenance=provenance,
         ),
         users_path,
@@ -222,7 +224,15 @@ def build_arg_parser() -> argparse.ArgumentParser:
         default=DEFAULT_PROFILE,
         help=f"compiler profile. Default: {DEFAULT_PROFILE}",
     )
-    parser.add_argument("--prefix", help="demangled symbol prefix for GT extraction")
+    parser.add_argument(
+        "--namespace",
+        dest="namespaces",
+        action="append",
+        help=(
+            "override a subject-owned crate namespace; repeat for multiple "
+            "namespaces. Default: build manifest values"
+        ),
+    )
     parser.add_argument("--root", help="root function name/id/address for binary extraction")
     parser.add_argument(
         "--mode",

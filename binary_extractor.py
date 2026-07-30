@@ -25,7 +25,7 @@ from provenance import BuildProvenance, parse_provenance
 
 
 SCHEMA_VERSION = 4
-USERS_SCHEMA_VERSION = 4
+USERS_SCHEMA_VERSION = 5
 DEFAULT_ID_BIAS = 0x100000
 DEFAULT_CASE = "unknown"
 R2_EXECUTABLE = "radare2"
@@ -97,7 +97,7 @@ def load_users(
         raise ValueError("user address file must be an object with an addresses list")
     if not isinstance(data.get("function_bounds"), list):
         raise ValueError("user address file must contain a function_bounds list")
-    if data.get("schema_version") != USERS_SCHEMA_VERSION:
+    if data.get("schema_version") not in {4, USERS_SCHEMA_VERSION}:
         raise ValueError(
             f"unsupported user address schema_version: {data.get('schema_version')!r}"
         )
@@ -387,6 +387,27 @@ class BinaryExtractor:
                 return func
 
         return None
+
+    def add_symbol_bound_functions(
+        self,
+        function_bounds: dict[int, int],
+    ) -> list[int]:
+        """Add symbol-known user starts that radare2 did not recover."""
+        added = []
+        for addr, size in sorted(function_bounds.items()):
+            if addr in self.by_addr:
+                continue
+            func = R2Function(
+                addr=addr,
+                name=f"symbol.bound.0x{addr:x}",
+                size=size,
+                kind="symbol",
+            )
+            self.functions.append(func)
+            self.by_addr[addr] = func
+            added.append(addr)
+        self.functions.sort(key=lambda func: func.addr)
+        return added
 
     def direct_calls(
         self,
@@ -733,8 +754,18 @@ def extract_fixture(args: argparse.Namespace) -> dict[str, Any]:
         function_bounds = (
             user_selection.function_bounds if user_selection is not None else {}
         )
-        graph = extractor.build_call_graph(function_bounds=function_bounds)
         boundary_mismatches = extractor.boundary_mismatches(function_bounds)
+        added_symbol_starts = extractor.add_symbol_bound_functions(function_bounds)
+        for addr in added_symbol_starts:
+            boundary_mismatches.append(
+                {
+                    "id": extractor._function_id(addr),
+                    "address": f"0x{addr:x}",
+                    "symbol_size": function_bounds[addr],
+                    "radare2_size": 0,
+                }
+            )
+        graph = extractor.build_call_graph(function_bounds=function_bounds)
         provenance = getattr(args, "provenance", None)
         if provenance is None:
             raise ValueError("verified build provenance is required for fixture extraction")

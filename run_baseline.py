@@ -62,6 +62,7 @@ def main(argv: list[str] | None = None) -> int:
                 run_step([
                     "compile.py",
                     case,
+                    "case",
                     "--build",
                     build,
                     "--profile",

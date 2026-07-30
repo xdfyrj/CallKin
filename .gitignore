@@ -11,3 +11,6 @@ results/plain/*
 results/min/*
 !results/plain/v0_baseline.json
 !results/min/v0_baseline.json
+!results/plain/v0_all_modes.json
+!results/min/v0_all_modes.json
+subjects/**/target/

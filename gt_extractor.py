@@ -18,7 +18,6 @@ from paths import (
     build_manifest_for,
     gt_json_for,
     normalize_profile,
-    prefix_for_case,
     resolve_gt_binary,
     split_case_build,
     users_json_for,
@@ -27,7 +26,7 @@ from provenance import BuildProvenance
 
 
 GT_SCHEMA_VERSION = 5
-USERS_SCHEMA_VERSION = 4
+USERS_SCHEMA_VERSION = 5
 DEFAULT_ID_BIAS = 0x100000
 
 
@@ -85,18 +84,86 @@ def parse_nm_lines(lines: list[str]) -> list[Symbol]:
     return symbols
 
 
-def origin_from_symbol(demangled_name: str, prefix: str) -> str | None:
-    if not demangled_name.startswith(prefix):
+def belongs_to_subject(demangled_name: str, namespaces: tuple[str, ...]) -> bool:
+    return any(
+        demangled_name.startswith(f"{namespace}::")
+        or demangled_name.startswith(f"<{namespace}::")
+        for namespace in namespaces
+    )
+
+
+def origin_from_symbol(
+    demangled_name: str,
+    namespaces: tuple[str, ...],
+) -> str | None:
+    matched_namespace = next(
+        (
+            namespace
+            for namespace in namespaces
+            if demangled_name.startswith(f"{namespace}::")
+        ),
+        None,
+    )
+    if matched_namespace is not None:
+        relative = demangled_name[len(matched_namespace) + 2:]
+        if relative == "main" or not relative:
+            return None
+        origin = (
+            demangled_name
+            if len(namespaces) > 1
+            else relative
+        )
+    elif any(
+        demangled_name.startswith(f"<{namespace}::")
+        for namespace in namespaces
+    ):
+        origin = demangled_name
+    else:
         return None
 
-    origin = demangled_name[len(prefix):]
     origin = re.sub(r"::h[0-9a-fA-F]{16}$", "", origin)
+    origin = preserve_derived_impl_identity(origin)
     origin = strip_rust_generic_args(origin)
 
-    if origin == "main" or not origin:
+    if not origin:
         return None
 
     return origin
+
+
+def preserve_derived_impl_identity(name: str) -> str:
+    """Keep the implementation target encoded in rustc's ::<impl ...> paths."""
+    marker = "::<"
+    start = 0
+    while True:
+        marker_index = name.find(marker, start)
+        if marker_index < 0:
+            return name
+
+        content_start = marker_index + len(marker)
+        depth = 1
+        index = content_start
+        while index < len(name) and depth:
+            if name[index] == "<":
+                depth += 1
+            elif name[index] == ">":
+                depth -= 1
+            index += 1
+        if depth:
+            return name
+
+        content = name[content_start:index - 1]
+        if content.startswith("impl "):
+            if " for " in content:
+                target_type = content.rsplit(" for ", 1)[1]
+                replacement = f"::impl_for={target_type}"
+            else:
+                target_type = content[len("impl "):]
+                replacement = f"::impl={target_type}"
+            name = name[:marker_index] + replacement + name[index:]
+            start = marker_index + len(replacement)
+        else:
+            start = index
 
 
 def strip_rust_generic_args(name: str) -> str:
@@ -129,7 +196,7 @@ def make_ground_truth(
     case: str,
     build: str,
     profile: str,
-    prefix: str,
+    namespaces: tuple[str, ...],
     id_bias: int,
     provenance: BuildProvenance,
 ) -> dict[str, Any]:
@@ -140,7 +207,7 @@ def make_ground_truth(
     alias_notes: list[str] = []
 
     for symbol in symbols:
-        origin = origin_from_symbol(symbol.name, prefix)
+        origin = origin_from_symbol(symbol.name, namespaces)
         if origin is None:
             continue
 
@@ -186,7 +253,7 @@ def make_ground_truth(
         )
 
     if not origins:
-        raise ValueError(f"no text symbols matched prefix {prefix!r}")
+        raise ValueError(f"no text symbols matched namespaces {namespaces!r}")
 
     gt: dict[str, Any] = {
         "case": case,
@@ -213,12 +280,12 @@ def make_ground_truth(
 def user_addresses(
     *,
     symbols: list[Symbol],
-    prefix: str,
+    namespaces: tuple[str, ...],
 ) -> list[int]:
     addresses = {
         symbol.addr
         for symbol in symbols
-        if origin_from_symbol(symbol.name, prefix) is not None
+        if origin_from_symbol(symbol.name, namespaces) is not None
     }
     return sorted(addresses)
 
@@ -226,13 +293,13 @@ def user_addresses(
 def user_function_bounds(
     *,
     symbols: list[Symbol],
-    prefix: str,
+    namespaces: tuple[str, ...],
 ) -> dict[int, int]:
     """Return symbol extents for namespace functions, including source main."""
     bounds: dict[int, int] = {}
 
     for symbol in symbols:
-        if not symbol.name.startswith(prefix):
+        if not belongs_to_subject(symbol.name, namespaces):
             continue
         if symbol.size <= 0:
             raise ValueError(
@@ -249,7 +316,7 @@ def user_function_bounds(
         bounds[symbol.addr] = symbol.size
 
     if not bounds:
-        raise ValueError(f"no sized text symbols matched prefix {prefix!r}")
+        raise ValueError(f"no sized text symbols matched namespaces {namespaces!r}")
     return dict(sorted(bounds.items()))
 
 
@@ -261,7 +328,7 @@ def make_users_json(
     build: str,
     profile: str,
     binary_path: str,
-    prefix: str,
+    namespaces: tuple[str, ...],
     provenance: BuildProvenance,
 ) -> dict[str, Any]:
     return {
@@ -271,7 +338,7 @@ def make_users_json(
         "schema_version": USERS_SCHEMA_VERSION,
         "provenance": provenance.to_dict(),
         "source": binary_path,
-        "prefix": prefix,
+        "namespaces": list(namespaces),
         "addresses": [f"0x{addr:x}" for addr in addresses],
         "function_bounds": [
             {"address": f"0x{addr:x}", "size": size}
@@ -345,10 +412,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
         help=f"compiler profile. Default: {DEFAULT_PROFILE}",
     )
     parser.add_argument(
-        "--prefix",
+        "--namespace",
+        dest="namespaces",
+        action="append",
         help=(
-            "demangled symbol prefix to keep, e.g. family_graph_01::. "
-            "Default inferred from binary name."
+            "subject-owned Rust crate namespace. Repeat for multiple crates. "
+            "Default: namespaces recorded in the build manifest."
         ),
     )
     parser.add_argument(
@@ -391,7 +460,6 @@ def apply_cli_defaults(args: argparse.Namespace, parser: argparse.ArgumentParser
     args.users = args.users or users_json_for(case, build, args.profile)
     args.case = args.case or case
     args.build = build
-    args.prefix = args.prefix or prefix_for_case(args.case)
     args.manifest = args.manifest or build_manifest_for(case, build, args.profile)
 
 
@@ -402,7 +470,6 @@ def main(argv: list[str] | None = None) -> int:
 
     try:
         output_path = args.output
-        prefix = args.prefix
         case = args.case
         build = args.build
         verified = load_and_verify_manifest(
@@ -417,16 +484,20 @@ def main(argv: list[str] | None = None) -> int:
                 f"binary does not match build manifest: {args.binary!r} != "
                 f"{verified.non_stripped_binary!r}"
             )
+        namespaces = tuple(args.namespaces or verified.candidate_namespaces)
 
         symbols = parse_nm_lines(run_nm(args.binary, args.nm_tool))
-        user_addrs = user_addresses(symbols=symbols, prefix=prefix)
-        function_bounds = user_function_bounds(symbols=symbols, prefix=prefix)
+        user_addrs = user_addresses(symbols=symbols, namespaces=namespaces)
+        function_bounds = user_function_bounds(
+            symbols=symbols,
+            namespaces=namespaces,
+        )
         gt = make_ground_truth(
             symbols=symbols,
             case=case,
             build=build,
             profile=args.profile,
-            prefix=prefix,
+            namespaces=namespaces,
             id_bias=args.id_bias,
             provenance=verified.provenance,
         )
@@ -449,7 +520,7 @@ def main(argv: list[str] | None = None) -> int:
                 build=build,
                 profile=args.profile,
                 binary_path=args.binary,
-                prefix=prefix,
+                namespaces=namespaces,
                 provenance=verified.provenance,
             )
             write_json(users_json, args.users)

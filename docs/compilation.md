@@ -5,8 +5,9 @@
 CallKin의 Rust source compilation pipeline은 `compile.py`에 구현되어 있다.
 
 ```text
-Rust source
--> rustc로 non-stripped binary 생성
+case: src/<name>.rs -> rustc
+subject: subjects/<name>/Cargo.toml -> cargo build
+-> non-stripped binary 생성
 -> binary 복사
 -> 복사본에 strip --strip-all 적용
 -> source/tool/binary 정보를 manifest에 기록
@@ -18,7 +19,7 @@ Rust source
 ## 2. 가장 단순한 실행
 
 ```bash
-python3 compile.py family_graph_03
+python3 compile.py family_graph_03 case
 ```
 
 `--build`를 생략했으므로 기본값은 `O3S`다. 실제로 해석되는 값은 다음과 같다.
@@ -38,7 +39,7 @@ strip_tool     = strip
 크기 지향 `min` profile을 만들려면 다음과 같이 실행한다.
 
 ```bash
-python3 compile.py family_graph_03 --profile min
+python3 compile.py family_graph_03 case --profile min
 ```
 
 이때 핵심 값은 다음처럼 달라진다.
@@ -64,9 +65,8 @@ main()
   -> compile_case()
        -> compile_flags()
        -> _require_tool()
-       -> compile_gt_binary()
-            -> rustc_command()
-            -> _run_tool()
+       -> case: compile_gt_binary() -> rustc_command()
+       -> subject: inspect_cargo_subject() -> compile_cargo_binary()
        -> derive_fixture_binary()
             -> _run_tool()
        -> make_build_manifest()
@@ -96,7 +96,8 @@ error: strip executable was not found. Install it before running compile.py.
 
 | Argument | 의미 | `family_graph_03` 예시 |
 |---|---|---|
-| `source` | `.rs` 경로 또는 case stem | `family_graph_03` 또는 `src/family_graph_03.rs` |
+| `source` | case 또는 subject 이름/경로 | `family_graph_03`, `billing-client` |
+| `input_kind` | 입력 종류를 명시하는 위치 인자 | `case`, `subject` |
 | `--case` | crate name과 manifest case를 명시적으로 덮어씀 | `--case family_graph_03` |
 | `--build` | evaluation build | `O3S`, `O3KS` |
 | `--profile` | compiler optimization profile | `plain`, `min` |
@@ -104,6 +105,7 @@ error: strip executable was not found. Install it before running compile.py.
 | `--fixture-binary` | stripped 출력 경로 override | `bin/custom.fixture.bin` |
 | `--manifest` | manifest 출력 경로 override | `build_info/custom.json` |
 | `--rustc-tool` | 실행할 rustc-compatible program | `rustc`, `/path/to/rustc` |
+| `--cargo-tool` | subject에 사용할 Cargo program | `cargo`, `/path/to/cargo` |
 | `--strip-tool` | 실행할 strip-compatible program | `strip`, `/usr/bin/strip` |
 
 `--rustc-tool 1.93.1`처럼 version 문자열을 넘기는 것이 아니다. 실제 실행 파일의 이름이나 경로를 넘긴다.
@@ -111,7 +113,7 @@ error: strip executable was not found. Install it before running compile.py.
 모든 경로를 명시하는 예시는 다음과 같다.
 
 ```bash
-python3 compile.py src/family_graph_03.rs \
+python3 compile.py src/family_graph_03.rs case \
   --case family_graph_03 \
   --build O3KS \
   --profile min \
@@ -122,15 +124,15 @@ python3 compile.py src/family_graph_03.rs \
   --strip-tool strip
 ```
 
-## 5. `apply_cli_defaults()`: stem을 실제 경로로 바꾸기
+## 5. `apply_cli_defaults()`: 입력 종류를 실제 경로로 바꾸기
 
 입력이 실제 파일인지 먼저 확인한다.
 
 ```bash
-python3 compile.py family_graph_03
+python3 compile.py family_graph_03 case
 ```
 
-`family_graph_03`이라는 파일은 없으므로 case stem으로 해석하고 다음 source를 찾는다.
+두 번째 위치 인자가 `case`이므로 다음 source를 찾는다.
 
 ```text
 src/family_graph_03.rs
@@ -152,10 +154,18 @@ build_manifest_for("family_graph_03", "O3S", "plain")
 다음처럼 실제 source 경로를 전달해도 된다.
 
 ```bash
-python3 compile.py src/family_graph_03.rs --build O3KS
+python3 compile.py src/family_graph_03.rs case --build O3KS
 ```
 
-Known suffix `.rs`를 제거한 stem과 `--build`를 조합해 같은 canonical 경로를 만든다.
+`subject` 입력은 같은 방식으로 `subjects/<name>/Cargo.toml`을 찾는다.
+
+```bash
+python3 compile.py billing-client subject --profile min --build O3S
+```
+
+Cargo metadata에서 package, edition, 하나뿐인 binary target과 library/bin crate
+namespace를 가져온다. Binary target이 여러 개면 현재 구현은 임의 선택하지 않고
+중단한다.
 
 ## 6. Profile과 build
 
@@ -166,8 +176,9 @@ Profile은 최적화·크기 전략이고 build는 source의 `keep` control 여�
 | `plain` | O3, codegen units 16, `lto=false`, panic unwind |
 | `min` | O3, codegen unit 1, fat LTO, panic abort |
 
-`plain`은 Cargo 자체를 실행하는 profile이 아니다. Cargo의 기본 release codegen
-설정을 근사한 direct-rustc controlled profile이다. 특히 `lto=false`는 LTO를
+`plain`은 Cargo 기본 release codegen 설정을 근사한 CallKin profile이다.
+`case`에서는 direct rustc flag로, `subject`에서는 임시 Cargo release-profile
+overlay로 같은 조건을 적용한다. 특히 `lto=false`는 LTO를
 완전히 끈다는 뜻이 아니며, rustc가 local crate의 codegen unit 사이에서 thin
 local LTO를 수행할 수 있다.
 
@@ -338,6 +349,7 @@ Manifest 생성은 `compile.py`의 책임이고, JSON 작성 및 이후 검증 h
   "target": "x86_64-unknown-linux-gnu",
   "edition": "2024",
   "source": {
+    "kind": "case",
     "path": "src/family_graph_01.rs",
     "sha256": "09fb...a6c"
   },
@@ -384,7 +396,11 @@ LLVM          : 21.1.8
 GNU strip     : 2.42
 ```
 
-Build는 Cargo가 아니라 direct `rustc` command를 사용한다. Source corpus는 companion [rust-loss](https://github.com/xdfyrj/rust-loss) 저장소에서 가져왔고, `plain/min` profile은 CallKin이 비교를 위해 정의한다. 이 repository는 grouping 실험에 필요한 linked binary만 생성하므로 LLVM IR과 assembly는 출력하지 않는다.
+`case`는 direct `rustc`, `subject`는 `cargo build --locked`를 사용한다. Cargo
+subject manifest에는 package, selected binary, edition, Cargo.toml/Cargo.lock hash,
+owned namespaces, Cargo command와 profile overlay도 기록한다. Cargo source digest는
+`Cargo.toml`, `Cargo.lock`, `src/**`, 선택적 `build.rs`, `rust-toolchain*`,
+`.cargo/**`만 포함하며 `target/`과 Git metadata는 포함하지 않는다.
 
 ## 12. Manifest 검증
 
@@ -414,7 +430,8 @@ Source와 binary hash를 서로 비교하는 것이 아니다. 각 파일의 현
 
 ### Tool이 없음
 
-`rustc`나 `strip`이 없으면 binary를 건드리기 전에 중단한다.
+Case의 `rustc`/`strip`, subject의 `cargo`/`rustc`/`strip` 중 필요한 tool이
+없으면 binary를 건드리기 전에 중단한다.
 
 ```text
 error: rustc executable was not found. Install it before running compile.py.
@@ -445,8 +462,8 @@ Compile 전후 source hash가 다르면 새 build를 폐기한다.
 3. `apply_cli_defaults()`
 4. `compile_case()`
 5. `compile_flags()`와 `PROFILE_FLAGS`/`BUILD_FLAGS`
-6. `compile_gt_binary()`
-7. `rustc_command()`
+6. Case: `compile_gt_binary()`와 `rustc_command()`
+7. Subject: `inspect_cargo_subject()`와 `compile_cargo_binary()`
 8. `derive_fixture_binary()`
 9. `make_build_manifest()`
 10. `_publish_file()`

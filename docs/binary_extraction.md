@@ -311,7 +311,7 @@ GOT/PLT 형태도 radare2 결과에 직접 code target이 없으면 포함되지
   "case": "family_graph_01",
   "build": "O3S",
   "profile": "plain",
-  "schema_version": 4,
+  "schema_version": 5,
   "provenance": {
     "build_id": "...",
     "source_sha256": "...",
@@ -319,7 +319,7 @@ GOT/PLT 형태도 radare2 결과에 직접 code target이 없으면 포함되지
     "stripped_sha256": "..."
   },
   "source": "gt_bin/plain/family_graph_01.O3S.gt.bin",
-  "prefix": "family_graph_01::",
+  "namespaces": ["family_graph_01"],
   "addresses": [
     "0x13e40",
     "0x13f20",
@@ -349,11 +349,11 @@ map으로 바꾼다. `function_bounds`에는 source `main`도 포함된다.
 }
 ```
 
-Candidate 주소마다 stripped binary에서 radare2가 정확한 함수 시작점을 복구했는지 검사한다. 예를 들어 `0x14480`이 symbol side에는 있지만 `aflj` 함수 시작점에는 없으면 다음 유형의 오류로 중단한다.
-
-```text
-user address(es) are not radare2 function starts in stripped binary: 0x14480
-```
+Candidate 주소가 radare2 함수 시작점에 없더라도 non-stripped symbol의 검증된
+`function_bounds`에 있으면 symbol-bound 함수로 보충한다. 이 함수의 byte 범위는
+Capstone으로 직접 디코딩하고, fixture의 `boundary_mismatches`에는
+`radare2_size=0`으로 기록한다. Symbol에도 없는 주소는 users 생성 단계에서
+들어올 수 없으며, provenance가 다른 users 파일은 별도로 거부한다.
 
 Root reachability는 candidate 필터로 사용하지 않는다. 대신 namespace 함수의
 relation은 symbol extent로 추출하며 radare2 size가 다르면 mismatch를 fixture에

@@ -7,11 +7,18 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from build_profiles import BUILD_TARGET, RUSTC_EDITION, STRIP_FLAGS, compile_flags
+from build_profiles import (
+    BUILD_TARGET,
+    RUSTC_EDITION,
+    STRIP_FLAGS,
+    cargo_profile_config,
+    compile_flags,
+)
 from provenance import BuildProvenance
 
 
-BUILD_MANIFEST_SCHEMA_VERSION = 2
+BUILD_MANIFEST_SCHEMA_VERSION = 3
+SUPPORTED_BUILD_MANIFEST_SCHEMA_VERSIONS = {2, 3}
 _SHA256_RE = re.compile(r"[0-9a-f]{64}")
 
 
@@ -21,6 +28,9 @@ class VerifiedBuild:
     build_id: str
     profile: str
     source: str
+    source_kind: str
+    candidate_namespaces: tuple[str, ...]
+    root_namespace: str
     non_stripped_binary: str
     stripped_binary: str
     provenance: BuildProvenance
@@ -31,6 +41,54 @@ def sha256_file(path: str | Path) -> str:
     with Path(path).open("rb") as stream:
         for chunk in iter(lambda: stream.read(1024 * 1024), b""):
             digest.update(chunk)
+    return digest.hexdigest()
+
+
+def sha256_cargo_inputs(
+    subject_path: str | Path,
+    *,
+    manifest_path: str | Path,
+    lockfile_path: str | Path,
+) -> str:
+    """Hash the Cargo inputs that can affect the selected subject build."""
+    subject = Path(subject_path)
+    manifest = Path(manifest_path)
+    lockfile = Path(lockfile_path)
+    if not subject.is_dir():
+        raise ValueError(f"Cargo subject directory not found: {subject}")
+
+    required = [manifest, lockfile]
+    optional_files = [
+        subject / "build.rs",
+        subject / "rust-toolchain",
+        subject / "rust-toolchain.toml",
+    ]
+    source_files = [
+        candidate
+        for candidate in (subject / "src").rglob("*")
+        if candidate.is_file()
+    ] if (subject / "src").is_dir() else []
+    cargo_config_files = [
+        candidate
+        for candidate in (subject / ".cargo").rglob("*")
+        if candidate.is_file()
+    ] if (subject / ".cargo").is_dir() else []
+
+    files = [*required, *(path for path in optional_files if path.is_file())]
+    files.extend(source_files)
+    files.extend(cargo_config_files)
+    if any(not path.is_file() for path in required):
+        missing = [str(path) for path in required if not path.is_file()]
+        raise ValueError(f"missing Cargo build input(s): {missing}")
+
+    digest = hashlib.sha256()
+    for candidate in sorted(set(files), key=lambda path: path.relative_to(subject).as_posix()):
+        relative = candidate.relative_to(subject).as_posix().encode("utf-8")
+        digest.update(len(relative).to_bytes(8, "big"))
+        digest.update(relative)
+        with candidate.open("rb") as stream:
+            for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+                digest.update(chunk)
     return digest.hexdigest()
 
 
@@ -64,7 +122,7 @@ def load_and_verify_manifest(
 
     manifest = _require_dict(raw, "manifest")
     schema_version = _require_int(manifest, "schema_version")
-    if schema_version != BUILD_MANIFEST_SCHEMA_VERSION:
+    if schema_version not in SUPPORTED_BUILD_MANIFEST_SCHEMA_VERSIONS:
         raise ValueError(
             f"unsupported build manifest schema_version {schema_version}: {path}"
         )
@@ -92,16 +150,67 @@ def load_and_verify_manifest(
         raise ValueError(
             f"build manifest target mismatch: expected {expected_target!r}, got {target!r}"
         )
-    if _require_string(manifest, "crate_name") != case:
-        raise ValueError("build manifest crate_name must equal case")
     edition = _require_string(manifest, "edition")
-    if edition != RUSTC_EDITION:
-        raise ValueError(
-            f"build manifest edition mismatch: expected {RUSTC_EDITION!r}, got {edition!r}"
-        )
 
     source_record = _require_dict(manifest.get("source"), "source")
-    source = _verify_file_record("source", source_record)
+    source_kind = source_record.get(
+        "kind",
+        "case" if schema_version == 2 else None,
+    )
+    if source_kind == "case":
+        source = _verify_file_record("source", source_record)
+        if _require_string(manifest, "crate_name") != case:
+            raise ValueError("case manifest crate_name must equal case")
+        if edition != RUSTC_EDITION:
+            raise ValueError(
+                f"case manifest edition mismatch: expected {RUSTC_EDITION!r}, "
+                f"got {edition!r}"
+            )
+        candidate_namespaces = (case,)
+        root_namespace = case
+    elif source_kind == "subject":
+        source = _verify_cargo_source_record(source_record, manifest)
+        cargo = _require_dict(manifest.get("cargo"), "cargo")
+        package = _require_string(cargo, "package")
+        binary = _require_string(cargo, "binary")
+        candidate_namespaces = tuple(
+            _require_string_list(cargo, "candidate_namespaces")
+        )
+        root_namespace = _require_string(cargo, "root_namespace")
+        if root_namespace != binary:
+            raise ValueError(
+                "cargo root_namespace must equal the selected binary target"
+            )
+        if root_namespace not in candidate_namespaces:
+            raise ValueError(
+                "cargo candidate_namespaces must include root_namespace"
+            )
+        if _require_string(manifest, "crate_name") != binary:
+            raise ValueError(
+                "subject manifest crate_name must equal the selected binary target"
+            )
+        if not package:
+            raise ValueError("cargo package must not be empty")
+        _require_string(cargo, "invoked_path")
+        _require_string(cargo, "resolved_path")
+        _require_string(cargo, "version")
+        _require_string_list(cargo, "command")
+        environment = _require_dict(cargo.get("environment"), "cargo.environment")
+        _require_string(environment, "RUSTC")
+        rustflags = environment.get("RUSTFLAGS")
+        if not isinstance(rustflags, str):
+            raise ValueError("cargo.environment.RUSTFLAGS must be a string")
+        expected_rustflags = "--cfg keep" if build == "O3KS" else ""
+        if rustflags != expected_rustflags:
+            raise ValueError(
+                f"cargo RUSTFLAGS mismatch: {rustflags!r} != {expected_rustflags!r}"
+            )
+        profile_config = _require_string(cargo, "profile_config")
+        expected_profile_config = cargo_profile_config(profile)
+        if profile_config != expected_profile_config:
+            raise ValueError("cargo profile config does not match CallKin profile")
+    else:
+        raise ValueError("build manifest source.kind must be 'case' or 'subject'")
     artifacts = _require_dict(manifest.get("artifacts"), "artifacts")
     non_stripped_record = _require_dict(
         artifacts.get("non_stripped"), "artifacts.non_stripped"
@@ -152,6 +261,9 @@ def load_and_verify_manifest(
         build_id=build_id,
         profile=profile,
         source=source,
+        source_kind=source_kind,
+        candidate_namespaces=candidate_namespaces,
+        root_namespace=root_namespace,
         non_stripped_binary=non_stripped,
         stripped_binary=stripped,
         provenance=BuildProvenance(
@@ -175,6 +287,33 @@ def _verify_file_record(label: str, record: dict[str, Any]) -> str:
             f"{label} hash mismatch: expected {expected_hash}, got {actual_hash}: {path}"
         )
     return str(path)
+
+
+def _verify_cargo_source_record(
+    source_record: dict[str, Any],
+    manifest: dict[str, Any],
+) -> str:
+    source_path = Path(_require_string(source_record, "path"))
+    expected_hash = _require_sha256(source_record, "sha256")
+    if not source_path.is_dir():
+        raise ValueError(f"Cargo subject directory not found: {source_path}")
+
+    cargo = _require_dict(manifest.get("cargo"), "cargo")
+    manifest_record = _require_dict(cargo.get("manifest"), "cargo.manifest")
+    lockfile_record = _require_dict(cargo.get("lockfile"), "cargo.lockfile")
+    manifest_path = _verify_file_record("Cargo manifest", manifest_record)
+    lockfile_path = _verify_file_record("Cargo lockfile", lockfile_record)
+    actual_hash = sha256_cargo_inputs(
+        source_path,
+        manifest_path=manifest_path,
+        lockfile_path=lockfile_path,
+    )
+    if actual_hash != expected_hash:
+        raise ValueError(
+            f"Cargo source input hash mismatch: expected {expected_hash}, "
+            f"got {actual_hash}: {source_path}"
+        )
+    return str(source_path)
 
 
 def _require_dict(value: Any, label: str) -> dict[str, Any]:

@@ -253,6 +253,30 @@ def check_user_address_mode() -> int:
     return 0
 
 
+def check_symbol_bound_function_recovery() -> int:
+    extractor = BinaryExtractor.__new__(BinaryExtractor)
+    existing = R2Function(addr=0x1000, name="root", size=0x40, kind="fcn")
+    extractor.functions = [existing]
+    extractor.by_addr = {existing.addr: existing}
+
+    added = extractor.add_symbol_bound_functions({
+        0x1000: 0x40,
+        0x2000: 0x30,
+    })
+    if added != [0x2000]:
+        print(f"FAIL expected one recovered symbol start, got {added}")
+        return 1
+    recovered = extractor.by_addr.get(0x2000)
+    if (
+        recovered is None
+        or recovered.size != 0x30
+        or recovered.kind != "symbol"
+    ):
+        print(f"FAIL invalid recovered symbol-bound function: {recovered}")
+        return 1
+    return 0
+
+
 def check_symbol_extent_call_extraction() -> int:
     extractor = BinaryExtractor.__new__(BinaryExtractor)
     extractor.r2 = FakeR2({
@@ -301,6 +325,8 @@ def main() -> int:
         return 1
 
     if check_user_address_mode() != 0:
+        return 1
+    if check_symbol_bound_function_recovery() != 0:
         return 1
     if check_symbol_extent_call_extraction() != 0:
         return 1

@@ -11,6 +11,7 @@ from build_manifest import (
     BUILD_MANIFEST_SCHEMA_VERSION,
     BUILD_TARGET,
     load_and_verify_manifest,
+    sha256_cargo_inputs,
     sha256_file,
     write_manifest,
 )
@@ -21,8 +22,11 @@ from compile import (
     RUSTC_TARGET,
     STRIP_FLAGS,
     compile_flags,
+    cargo_build_command,
+    cargo_profile_config,
     compile_case,
     derive_fixture_binary,
+    inspect_cargo_subject,
     rustc_command,
 )
 from paths import build_manifest_for
@@ -75,6 +79,56 @@ def main() -> int:
         print("FAIL O3S changed min profile flags")
         return 1
 
+    subject = inspect_cargo_subject("subjects/billing-client")
+    if (
+        subject.package != "billing-client"
+        or subject.binary != "reconcile"
+        or subject.edition != "2021"
+        or subject.candidate_namespaces != ("billing_client", "reconcile")
+        or subject.root_namespace != "reconcile"
+    ):
+        print(f"FAIL unexpected billing-client Cargo metadata: {subject}")
+        return 1
+    subject_hash = sha256_cargo_inputs(
+        subject.path,
+        manifest_path=subject.manifest,
+        lockfile_path=subject.lockfile,
+    )
+    if len(subject_hash) != 64:
+        print(f"FAIL invalid Cargo source input hash: {subject_hash}")
+        return 1
+    min_config = cargo_profile_config("min")
+    for expected in (
+        "opt-level = 3",
+        "codegen-units = 1",
+        "lto = true",
+        'panic = "abort"',
+        'strip = "none"',
+    ):
+        if expected not in min_config:
+            print(f"FAIL min Cargo profile omitted {expected!r}")
+            return 1
+    cargo_command = cargo_build_command(
+        subject=subject,
+        target_dir="/tmp/callkin-target",
+        config_path="/tmp/callkin-profile.toml",
+    )
+    if cargo_command[:3] != ["cargo", "build", "--release"]:
+        print(f"FAIL unexpected Cargo build command: {cargo_command}")
+        return 1
+    for required in (
+        "--locked",
+        "--manifest-path",
+        "--package",
+        "--bin",
+        "--target",
+        "--target-dir",
+        "--config",
+    ):
+        if required not in cargo_command:
+            print(f"FAIL Cargo build command omitted {required}")
+            return 1
+
     try:
         compile_flags("plain", "O0")
     except ValueError as exc:
@@ -115,6 +169,43 @@ def main() -> int:
 
     with tempfile.TemporaryDirectory() as directory:
         root = Path(directory)
+        subject_root = root / "subject"
+        (subject_root / "src").mkdir(parents=True)
+        (subject_root / "Cargo.toml").write_text(
+            "[package]\nname='subject'\nversion='0.1.0'\nedition='2021'\n",
+            encoding="utf-8",
+        )
+        (subject_root / "Cargo.lock").write_text("version = 4\n", encoding="utf-8")
+        subject_source = subject_root / "src" / "main.rs"
+        subject_source.write_text("fn main() {}\n", encoding="utf-8")
+        cargo_hash_before = sha256_cargo_inputs(
+            subject_root,
+            manifest_path=subject_root / "Cargo.toml",
+            lockfile_path=subject_root / "Cargo.lock",
+        )
+        (subject_root / "tests").mkdir()
+        (subject_root / "tests" / "ignored.rs").write_text(
+            "#[test] fn ignored() {}\n",
+            encoding="utf-8",
+        )
+        cargo_hash_after_test = sha256_cargo_inputs(
+            subject_root,
+            manifest_path=subject_root / "Cargo.toml",
+            lockfile_path=subject_root / "Cargo.lock",
+        )
+        if cargo_hash_before != cargo_hash_after_test:
+            print("FAIL Cargo source hash included non-build integration tests")
+            return 1
+        subject_source.write_text("fn main() { println!(\"changed\"); }\n", encoding="utf-8")
+        cargo_hash_after_source = sha256_cargo_inputs(
+            subject_root,
+            manifest_path=subject_root / "Cargo.toml",
+            lockfile_path=subject_root / "Cargo.lock",
+        )
+        if cargo_hash_before == cargo_hash_after_source:
+            print("FAIL Cargo source hash ignored src/ change")
+            return 1
+
         gt_binary = root / "case.gt.bin"
         fixture_binary = root / "case.fixture.bin"
         source = root / "case.rs"
@@ -259,6 +350,7 @@ def main() -> int:
             "edition": "2024",
             "crate_name": "case",
             "source": {
+                "kind": "case",
                 "path": str(source),
                 "sha256": sha256_file(source),
             },
@@ -355,3 +447,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+    inspect_cargo_subject,

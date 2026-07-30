@@ -60,10 +60,6 @@ def output_stem(case: str, build: str) -> str:
     return f"{case}.{normalize_build(build)}"
 
 
-def prefix_for_case(case: str) -> str:
-    return f"{case}::"
-
-
 def source_rs_for(case: str) -> str:
     return f"src/{case}.rs"
 
