@@ -7,6 +7,10 @@ from pathlib import Path
 DEFAULT_BUILD = "O3S"
 DEFAULT_PROFILE = "plain"
 BUILD_PROFILES = ("plain", "min")
+DIRECT_V0_TRACK = "direct-v0"
+DIRECT_IN_V1_TRACK = "direct-in-v1"
+DEFAULT_ANALYSIS_TRACK = DIRECT_V0_TRACK
+ANALYSIS_TRACKS = (DIRECT_V0_TRACK, DIRECT_IN_V1_TRACK)
 
 
 def normalize_build(build: str | None) -> str:
@@ -19,6 +23,16 @@ def normalize_profile(profile: str | None) -> str:
         raise ValueError(
             f"unknown build profile: {profile!r}. "
             f"expected one of {', '.join(BUILD_PROFILES)}"
+        )
+    return normalized
+
+
+def normalize_track(track: str | None) -> str:
+    normalized = (track or DEFAULT_ANALYSIS_TRACK).lower()
+    if normalized not in ANALYSIS_TRACKS:
+        raise ValueError(
+            f"unknown analysis track: {track!r}. "
+            f"expected one of {', '.join(ANALYSIS_TRACKS)}"
         )
     return normalized
 
@@ -108,8 +122,25 @@ def fixture_json_for(
     case: str,
     build: str,
     profile: str = DEFAULT_PROFILE,
+    track: str = DEFAULT_ANALYSIS_TRACK,
 ) -> str:
-    return f"fixtures/{normalize_profile(profile)}/{output_stem(case, build)}.fixture.json"
+    normalized_track = normalize_track(track)
+    profile = normalize_profile(profile)
+    stem = output_stem(case, build)
+    if normalized_track == DIRECT_V0_TRACK:
+        return f"fixtures/{profile}/{stem}.fixture.json"
+    return f"fixtures/{normalized_track}/{profile}/{stem}.fixture.json"
+
+
+def raw_graph_for(
+    case: str,
+    build: str,
+    profile: str = DEFAULT_PROFILE,
+) -> str:
+    return (
+        f"extractions/{normalize_profile(profile)}/"
+        f"{output_stem(case, build)}.raw.json"
+    )
 
 
 def gt_json_for(
@@ -132,8 +163,9 @@ def resolve_fixture_json(
     case: str,
     build: str,
     profile: str = DEFAULT_PROFILE,
+    track: str = DEFAULT_ANALYSIS_TRACK,
 ) -> str:
-    return fixture_json_for(case, build, profile)
+    return fixture_json_for(case, build, profile, track)
 
 
 def resolve_gt_json(

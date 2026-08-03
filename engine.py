@@ -10,7 +10,9 @@ from dataclasses import dataclass
 from loader import load_case
 from model import Case
 from paths import (
+    ANALYSIS_TRACKS,
     BUILD_PROFILES,
+    DEFAULT_ANALYSIS_TRACK,
     DEFAULT_BUILD,
     DEFAULT_PROFILE,
     resolve_fixture_json,
@@ -201,7 +203,7 @@ def make_initial_cg_wl_colors(
 
     for node in case.nodes:
         if node.type == "anchor":
-            colors[node.id] = _anchor_color(node.id)
+            colors[node.id] = _anchor_color(node.color_class or node.id)
             continue
 
         self_count = view.self_call_count[node.id]
@@ -253,7 +255,7 @@ def refine_cg_wl_once(
 
     for node in case.nodes:
         if node.type == "anchor":
-            new_colors[node.id] = _anchor_color(node.id)
+            new_colors[node.id] = _anchor_color(node.color_class or node.id)
         else:
             new_colors[node.id] = signature_to_color[signatures[node.id]]
 
@@ -407,8 +409,8 @@ def _canonicalize_signatures(
     }
 
 
-def _anchor_color(node_id: NodeId) -> Color:
-    return f"ANCHOR:{node_id}"
+def _anchor_color(color_class: str) -> Color:
+    return f"ANCHOR:{color_class}"
 
 
 def run_fixture_path(
@@ -433,6 +435,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
         help=f"compiler profile. Default: {DEFAULT_PROFILE}",
     )
     parser.add_argument(
+        "--track",
+        choices=ANALYSIS_TRACKS,
+        default=DEFAULT_ANALYSIS_TRACK,
+        help=f"analysis track. Default: {DEFAULT_ANALYSIS_TRACK}",
+    )
+    parser.add_argument(
         "--mode",
         choices=CG_WL_MODES,
         default=DEFAULT_CG_WL_MODE,
@@ -453,7 +461,12 @@ def main(argv: list[str] | None = None) -> int:
         fixture_path = args.fixture
     else:
         case, build = split_case_build(args.fixture, args.build)
-        fixture_path = resolve_fixture_json(case, build, args.profile)
+        fixture_path = resolve_fixture_json(
+            case,
+            build,
+            args.profile,
+            args.track,
+        )
 
     try:
         result = run_fixture_path(fixture_path, mode=args.mode, trace=args.trace)

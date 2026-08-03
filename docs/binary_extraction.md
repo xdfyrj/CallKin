@@ -2,12 +2,18 @@
 
 ## 1. 목적과 입력 경계
 
-CallKin의 `binary_extractor.py`는 stripped binary를 radare2로 분석해 CG-WL 입력인 fixture JSON을 만든다.
+CallKin의 `binary_extractor.py`는 stripped binary를 radare2와 Capstone으로 분석해
+raw transfer evidence를 만든다. `graph_projector.py`가 이 evidence를 track 정책에
+따라 CG-WL fixture로 투영한다. Raw graph에는 projection track과 candidate 주소가
+들어가지 않는다.
 
 ```text
 bin/plain/family_graph_01.O3S.fixture.bin
 + users/plain/family_graph_01.O3S.users.json
 -> binary_extractor.py
+-> extractions/plain/family_graph_01.O3S.raw.json
++ users/plain/family_graph_01.O3S.users.json
+-> graph_projector.py
 -> fixtures/plain/family_graph_01.O3S.fixture.json
 ```
 
@@ -40,12 +46,14 @@ case   = family_graph_01
 build  = O3S
 profile = plain
 output = fixtures/plain/family_graph_01.O3S.fixture.json
+raw    = extractions/plain/family_graph_01.O3S.raw.json
 ```
 
 실행 결과 예시:
 
 ```text
 wrote fixtures/plain/family_graph_01.O3S.fixture.json
+raw graph: extractions/plain/family_graph_01.O3S.raw.json
 nodes=7
 ```
 
@@ -62,17 +70,17 @@ nodes=7
 main()
   -> build_arg_parser()
   -> apply_cli_defaults()
-  -> extract_fixture()
+  -> extract_artifacts()
        -> BinaryExtractor(...)
        -> analyze()
             -> radare2 aaa
             -> aflj
-       -> load_users()
+       -> load_candidate_selection()
        -> resolve_root()
-       -> build_call_graph()
-            -> direct_calls() for every discovered function
-       -> select_user_context()
-       -> make_fixture_json()
+       -> transfer_evidence() for every discovered function
+       -> build_raw_graph()
+       -> graph_projector.py(raw + candidate selection + track)
+  -> write_raw_graph()
   -> write_fixture()
 ```
 
@@ -231,6 +239,13 @@ Users가 직접 호출하는 one-hop library anchor는 symbol extent가 없으�
 radare2 `pdfj @ <function address>`를 사용한다. Anchor는 terminal이므로 그 내부
 edge는 fixture에 기록하지 않는다.
 
+Radare2 함수는 entry 주소부터 연속된 byte range 하나가 아닐 수 있다. 실제
+billing-client의 한 함수는 nominal entry가 `0x411b0`이지만 앞쪽의 `0x3105c`
+basic block도 같은 함수에 속한다. 따라서 radare2 `pdfj`가 그 함수에 귀속한
+operation은 `entry <= callsite < entry+size`라는 선형 조건으로 다시 자르지 않는다.
+반대로 symbol-oracle extent는 정확한 연속 범위이므로 Capstone이 그 범위를 엄격히
+검사한다.
+
 ### 8.1 Direct call
 
 Symbol-extent 경로에서는 Capstone instruction의 단일 immediate operand를 direct
@@ -290,17 +305,35 @@ known function start   = 0x13f20
 
 함수 내부 basic block으로 향하는 일반 branch는 target이 다른 함수 시작점이 아니므로 제외한다.
 
-### 8.3 포함하지 않는 call
+### 8.3 Target을 확정하지 못한 call
 
-`call rax`처럼 immediate target이 없는 indirect call은 `_direct_code_target()`이 주소를 얻을 수 없으므로 제외한다.
+`call rax`처럼 immediate target이 없는 indirect call은 fixture edge로 만들지 않는다.
+대신 raw graph에 `status=unresolved`로 기록한다.
 
 ```text
 call rax
-=> target unknown
-=> fixture edge 없음
+=> raw evidence: operand_kind=register, status=unresolved
+=> projected fixture edge 없음
 ```
 
-GOT/PLT 형태도 radare2 결과에 직접 code target이 없으면 포함되지 않는다. 이는 호출이 실행되지 않는다는 뜻이 아니라 현재 extractor가 direct target으로 복구하지 않았다는 뜻이다.
+GOT/PLT 형태도 현재 track에서 target을 확정하지 못하면 동일하게 unresolved다.
+이는 호출이 실행되지 않는다는 뜻이 아니라 현재 extractor가 target을 복구하지
+못했다는 뜻이다.
+
+### 8.4 확정했지만 제외한 import
+
+`include_imports=false`일 때 import stub의 주소를 정확히 알아도 fixture edge에서는
+제외한다. 이 경우는 unresolved가 아니라 다음처럼 기록한다.
+
+```text
+status=filtered
+target=0x52760
+resolver=direct-immediate
+confidence=exact
+filter_reason=import
+```
+
+따라서 `unresolved`는 target을 정하지 못한 callsite만 의미한다.
 
 ## 9. User address 입력
 
@@ -335,8 +368,8 @@ GOT/PLT 형태도 radare2 결과에 직접 code target이 없으면 포함되지
 }
 ```
 
-`load_users()`는 candidate 주소를 integer set으로, symbol extent를 address-to-size
-map으로 바꾼다. `function_bounds`에는 source `main`도 포함된다.
+`candidate_selection.py`는 candidate 주소를 integer set으로, symbol extent를
+address-to-size map으로 바꾼다. `function_bounds`에는 source `main`도 포함된다.
 
 ```python
 {
@@ -359,7 +392,14 @@ Root reachability는 candidate 필터로 사용하지 않는다. 대신 namespac
 relation은 symbol extent로 추출하며 radare2 size가 다르면 mismatch를 fixture에
 남긴다.
 
-## 10. 어떤 node를 fixture에 넣는가
+Candidate 주소는 raw graph에 복사하지 않는다. Projector가 users JSON을 별도
+입력으로 읽고 candidate 집합을 선택하며, 그 JSON의 canonical SHA-256을 schema v5
+fixture의 `analysis.candidate_selection_sha256`에 기록한다. 따라서 하나의 raw
+evidence를 다른 candidate scope와 projection 정책에 재사용할 수 있다.
+
+## 10. Track과 fixture node 선택
+
+### 10.1 `direct-v0`
 
 정상 users mode의 emitted node 집합은 다음과 같다.
 
@@ -411,13 +451,44 @@ Node type과 scoring은 다음과 같다.
 
 정상 users mode에서는 users JSON의 주소 집합을 authoritative candidate set으로 사용한다. Root reachability를 candidate 필터로 다시 적용하지 않는다. 이는 radare2가 큰 함수의 경계를 일찍 끊더라도 symbol에서 확인된 user 함수를 누락시키지 않기 위해서다.
 
-`select_user_context()`는 root, 모든 listed user, 각 listed user가 직접 호출하는 함수만 선택한다. 따라서 library anchor의 callee로 더 내려가지 않는다.
+`project_direct_v0_fixture()`는 root, 모든 listed user, 각 listed user가 직접
+호출하는 함수만 선택한다. 따라서 library anchor의 callee로 더 내려가지 않는다.
 
-`select_reachable()`은 users JSON 없이 직접 실행하는 fallback mode에서만 root-reachable closure 전체를 선택한다. 이것은 canonical 연구 pipeline이 아니다.
+### 10.2 `direct-in-v1`
+
+다음 집합을 사용한다.
+
+```text
+U = candidate 함수
+O = U가 직접 호출하는 외부 함수
+I = U를 직접 호출하는 외부 함수
+S = U + O + I + root
+```
+
+Anchor 역할은 다음과 같다.
+
+| `anchor_kind` | 의미 | 보존하는 edge |
+|---|---|---|
+| `root` | Rust user main | candidate 방향 |
+| `incoming` | 외부 함수가 candidate 호출 | candidate 방향 |
+| `outgoing` | candidate가 외부 함수 호출 | 없음 |
+| `both` | 두 관계가 모두 존재 | candidate 방향 |
+
+예를 들어 `X -> A`, `X -> B`이면 X를 두 번 복제하지 않는다.
+
+```text
+          +-> A
+X(anchor)-+
+          +-> B
+```
+
+`X -> library Y`는 제거하며 Y 내부로 더 내려가지 않는다. 따라서 incoming 문맥을
+복구해도 library 전체 call graph는 fixture에 들어오지 않는다.
 
 ## 11. Fixture JSON
 
-`make_fixture_json()`의 출력 schema version은 4다.
+Frozen `direct-v0` 출력은 schema version 4를 유지한다. `direct-in-v1`은 analysis
+provenance와 anchor metadata가 추가된 schema version 5를 사용한다.
 
 실제 fg01 일부:
 
@@ -466,6 +537,31 @@ Node type과 scoring은 다음과 같다.
 
 Self-call도 일반 call edge 형태로 JSON에 기록한다. `engine.py`가 fixture를 읽은 뒤 self edge를 `self_call_count`로 분리한다.
 
+Schema v5 anchor 예시는 다음과 같다.
+
+```json
+{
+  "id": "FUN_001487a0",
+  "type": "anchor",
+  "scored": false,
+  "anchor_kind": "incoming",
+  "color_class": "ADDR:FUN_001487a0",
+  "observability": {
+    "resolved_out_calls": 1,
+    "unresolved_indirect_out_callsites": 0,
+    "address_taken_references": null,
+    "resolved_in_callers": 0
+  },
+  "calls": [
+    {"target": "FUN_001562e0", "count": 1}
+  ]
+}
+```
+
+`address_taken_references=null`은 아직 address-taken 분석을 수행하지 않았다는 뜻이다.
+0이라고 단정하지 않는다. Fixture의 `analysis`는 raw graph SHA-256과 projection
+config SHA-256, candidate selection SHA-256을 기록한다.
+
 `loader.py`는 다음 오류를 거부한다.
 
 - unknown field
@@ -484,6 +580,8 @@ Self-call도 일반 call edge 형태로 JSON에 기록한다. `engine.py`가 fix
 | `--case` | JSON case override | `--case custom_case` |
 | `--build` | build label | `--build O3KS` |
 | `--profile` | compiler profile과 artifact directory | `--profile min` |
+| `--track` | projection track | `--track direct-in-v1` |
+| `--raw-output` | raw evidence 출력 override | `--raw-output /tmp/case.raw.json` |
 | `--root` | root name/ID/address | `--root FUN_00114040` |
 | `--users` | users JSON 경로 | `--users users/min/custom.users.json` |
 | `--manifest` | build manifest override | `--manifest build_info/min/custom.json` |
@@ -496,7 +594,9 @@ Self-call도 일반 call edge 형태로 JSON에 기록한다. `engine.py`가 fix
 
 - Source namespace 함수 경계는 non-stripped symbol extent를 oracle로 사용한다.
 - One-hop library anchor의 시작점과 범위 복구는 radare2 분석에 의존한다.
-- Immediate direct target이 없는 call은 복구하지 않는다.
+- Immediate direct target이 없는 call은 raw evidence에 unresolved로 남지만 target은 복구하지 않는다.
+- 확정했지만 정책상 제외한 import는 unresolved가 아니라 filtered로 기록한다.
+- `direct-in-v1`은 복구된 direct caller만 추가하며 완전한 incoming graph를 주장하지 않는다.
 - Root 자동 탐지는 현재 Rust/glibc startup 형태에 맞춘 heuristic이다.
 - Users JSON은 compiler symbol namespace에서 얻은 controlled candidate와 boundary 조건이다.
 - Library/runtime 함수의 종류를 분류하지 않는다. User의 direct callee이면 동일하게 anchor다.
@@ -507,12 +607,11 @@ Self-call도 일반 call edge 형태로 JSON에 기록한다. `engine.py`가 fix
 
 1. `main()`
 2. `apply_cli_defaults()`
-3. `extract_fixture()`
+3. `extract_artifacts()`
 4. `BinaryExtractor.analyze()`와 `_refresh_functions()`
 5. `resolve_root()`와 startup helper
-6. `build_call_graph()`와 `direct_calls()`
-7. `_direct_calls_from_symbol_extent()`와 `_direct_call_target()`
-8. `select_reachable()`
-9. `select_user_context()`
-10. `make_fixture_json()`
-11. `write_fixture()`
+6. `transfer_evidence()`와 symbol/radare2 evidence helper
+7. `build_raw_graph()`와 `graph_evidence.py`
+8. `graph_projector.py`
+9. `candidate_selection.py`와 `project_fixture()`
+10. `write_raw_graph()`과 `write_fixture()`

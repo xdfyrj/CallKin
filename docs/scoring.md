@@ -24,6 +24,7 @@ Ground truth는 이 단계에서 처음 grouping 결과와 만난다. `engine.py
 
 ```bash
 python3 scores.py family_graph_03
+python3 scores.py billing-client --track direct-in-v1
 ```
 
 기본값:
@@ -58,6 +59,16 @@ python3 scores.py family_graph_03 --trace
 ```
 
 이 경우 `round 0(seed)`부터 마지막 `fixpoint` 확인 라운드까지 CLI에 추가로 출력된다.
+
+`direct-v0`가 기본이며 `direct-in-v1` fixture는 다음 경로에서 읽는다.
+
+```text
+fixtures/direct-in-v1/plain/billing-client.O3S.fixture.json
+```
+
+Schema v5 fixture를 채점하면 CLI와 결과 JSON에 track, raw/projection hash,
+candidate selection hash가 포함된다. Ground truth는 build에 속하고 track에는 속하지 않으므로 기존
+`ground_truth/<profile>/...` 파일을 공유한다.
 
 ## 3. 전체 함수 호출 순서
 

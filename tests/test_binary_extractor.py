@@ -313,6 +313,82 @@ def check_symbol_extent_call_extraction() -> int:
     return 0
 
 
+def check_transfer_site_deduplication() -> int:
+    transfer = binary_extractor_module.TransferEvidence(
+        source=0x1000,
+        callsite=0x1010,
+        instruction="call 0x2000",
+        kind="call",
+        operand_kind="immediate",
+        status="resolved",
+        target=0x2000,
+        resolver="direct-immediate",
+        confidence="exact",
+    )
+    got = BinaryExtractor._deduplicate_transfer_sites([transfer, transfer])
+    if got != [transfer]:
+        print(f"FAIL duplicate radare2 callsite was not normalized: {got}")
+        return 1
+    conflicting = binary_extractor_module.TransferEvidence(
+        source=0x1000,
+        callsite=0x1010,
+        instruction="call rax",
+        kind="call",
+        operand_kind="register",
+        status="unresolved",
+        target=None,
+        resolver=None,
+        confidence="unknown",
+    )
+    try:
+        BinaryExtractor._deduplicate_transfer_sites([transfer, conflicting])
+    except ValueError:
+        return 0
+    print("FAIL conflicting evidence at one callsite was not rejected")
+    return 1
+
+
+def check_filtered_import_evidence() -> int:
+    extractor = BinaryExtractor.__new__(BinaryExtractor)
+    caller = R2Function(addr=0x1000, name="caller", size=0x20, kind="fcn")
+    imported = R2Function(
+        addr=0x3000,
+        name="sym.imp.memcpy",
+        size=0,
+        kind="sym",
+    )
+    extractor.r2 = FakeR2({
+        "pdfj @ 4096": {
+            "ops": [{
+                "offset": 0x1004,
+                "type": "call",
+                "opcode": "call 0x3000",
+                "jump": 0x3000,
+            }],
+        },
+    })
+    extractor.include_imports = False
+    extractor.functions = [caller]
+    extractor.by_addr = {caller.addr: caller}
+    extractor.all_functions = [caller, imported]
+    extractor.all_by_addr = {caller.addr: caller, imported.addr: imported}
+
+    transfers = extractor._r2_transfer_evidence(caller)
+    if len(transfers) != 1:
+        print(f"FAIL expected one filtered import transfer, got {transfers}")
+        return 1
+    transfer = transfers[0]
+    if (
+        transfer.status != "filtered"
+        or transfer.target != imported.addr
+        or transfer.filter_reason != "import"
+        or transfer.confidence != "exact"
+    ):
+        print(f"FAIL import was not recorded as resolved-but-filtered: {transfer}")
+        return 1
+    return 0
+
+
 def main() -> int:
     if check_missing_radare2_error() != 0:
         return 1
@@ -329,6 +405,10 @@ def main() -> int:
     if check_symbol_bound_function_recovery() != 0:
         return 1
     if check_symbol_extent_call_extraction() != 0:
+        return 1
+    if check_transfer_site_deduplication() != 0:
+        return 1
+    if check_filtered_import_evidence() != 0:
         return 1
 
     extractor = BinaryExtractor.__new__(BinaryExtractor)

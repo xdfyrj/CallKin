@@ -48,6 +48,10 @@ FUN_001148a0  process instance 3
        gt_extractor.py                binary_extractor.py
              |                               |
        +-----+-----+                         v
+       |           |              extractions/*/*.raw.json
+       |           |                         |
+       |           |                  graph_projector.py
+       |           |                         |
        |           |                 fixtures/*.fixture.json
        v           v                         |
 ground_truth/    users/                  engine.py
@@ -162,7 +166,8 @@ candidate-and-boundary oracle 조건의 grouping 평가다.
 | Build manifest | `build_info/plain/family_graph_01.O3S.json` | source/tool/binary hash 결속 |
 | Ground truth | `ground_truth/plain/family_graph_01.O3S.gt.json` | origin partition과 symbol |
 | User addresses | `users/plain/family_graph_01.O3S.users.json` | candidate raw address 집합 |
-| Fixture | `fixtures/plain/family_graph_01.O3S.fixture.json` | node와 weighted call edge |
+| Raw graph | `extractions/plain/*.raw.json` | track/candidate 독립 transfer evidence |
+| Fixture | `fixtures/plain/*.fixture.json`, `fixtures/direct-in-v1/plain/*.fixture.json` | track 정책으로 투영한 node와 weighted edge |
 | Score result | `results/plain/v0_baseline.json` | cluster, origin별 결과, metric |
 
 `plain`은 Cargo 기본 release 설정을 근사한 CallKin profile로 O3/`lto=false`(thin local LTO 가능)/16 codegen units/panic unwind를 사용한다. `min`은 aggressive minimized stress profile로 O3/fat LTO/1 codegen unit/panic abort를 사용한다. Case는 direct rustc flag로, Cargo subject는 release-profile overlay로 같은 조건을 적용한다. `O3S`는 추가 source cfg가 없으며 `O3KS`는 `--cfg keep`을 추가한다. 어느 조합이든 non-stripped binary를 한 번 만든 뒤 복사본에 `strip --strip-all`을 적용한다.
@@ -183,7 +188,18 @@ Non-stripped binary에서 `nm -n -S -C` 결과를 읽고 같은 normalized symbo
 
 ### `binary_extractor.py`
 
-Radare2가 복구한 stripped function과 direct call을 fixture로 변환한다. user 함수와 직접 인접한 library/runtime 함수까지만 anchor로 emit한다.
+Radare2와 Capstone으로 stripped function과 transfer evidence를 추출한다. 확정된
+direct edge, 정책상 제외한 import, target을 정하지 못한 indirect callsite를 raw
+graph에 각각 resolved/filtered/unresolved로 구분해 남긴다.
+
+### `candidate_selection.py`, `graph_evidence.py`, `graph_projector.py`
+
+`candidate_selection.py`는 users JSON을 검증하고 candidate 집합과 SHA-256을 만든다.
+`graph_evidence.py`는 candidate와 track을 포함하지 않는 raw graph schema와 hash
+검증을 담당한다. `graph_projector.py`는 raw evidence, candidate selection, track
+정책을 결합해 CG-WL fixture로 바꾼다.
+`direct-in-v1`에서는 candidate의 direct callee와 direct external caller까지만
+anchor로 포함하고 library 내부로 더 내려가지 않는다.
 
 상세: [바이너리 추출](binary_extraction.md)
 
@@ -218,7 +234,8 @@ Predicted partition과 GT origin partition을 같은 scored universe 위에서 �
 ```text
 manifest 검증
 -> GT/users 생성
--> fixture 생성
+-> raw graph 생성
+-> track별 fixture projection
 -> GT와 scored universe join 검사
 -> CG-WL
 -> scoring

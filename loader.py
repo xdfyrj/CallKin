@@ -1,23 +1,36 @@
 import json
-from model import Call, Node, Case
+from analysis_provenance import parse_analysis_provenance
+from model import Call, Case, Node, Observability
 from paths import normalize_profile
 from provenance import parse_provenance
 
 
-FIXTURE_SCHEMA_VERSION = 4
+FIXTURE_SCHEMA_V4 = 4
+FIXTURE_SCHEMA_V5 = 5
+FIXTURE_SCHEMA_VERSION = FIXTURE_SCHEMA_V5
+SUPPORTED_FIXTURE_SCHEMAS = {FIXTURE_SCHEMA_V4, FIXTURE_SCHEMA_V5}
 
-REQUIRED_TOP_LEVEL_KEYS = {
+V4_REQUIRED_TOP_LEVEL_KEYS = {
     "case", "build", "profile", "schema_version", "provenance", "extraction", "nodes"
 }
-ALLOWED_TOP_LEVEL_KEYS = REQUIRED_TOP_LEVEL_KEYS | {"note"}
+V5_REQUIRED_TOP_LEVEL_KEYS = V4_REQUIRED_TOP_LEVEL_KEYS | {"analysis"}
 
-REQUIRED_NODE_KEYS = {"id", "type", "scored", "calls"}
-ALLOWED_NODE_KEYS = REQUIRED_NODE_KEYS
+V4_REQUIRED_NODE_KEYS = {"id", "type", "scored", "calls"}
+V5_REQUIRED_NODE_KEYS = V4_REQUIRED_NODE_KEYS | {
+    "anchor_kind", "color_class", "observability"
+}
 
 REQUIRED_CALL_KEYS = {"target", "count"}
 ALLOWED_CALL_KEYS = REQUIRED_CALL_KEYS
 
 ALLOWED_NODE_TYPES = {"user", "anchor"}
+ALLOWED_ANCHOR_KINDS = {"root", "incoming", "outgoing", "both"}
+OBSERVABILITY_KEYS = {
+    "resolved_out_calls",
+    "unresolved_indirect_out_callsites",
+    "address_taken_references",
+    "resolved_in_callers",
+}
 
 
 def load_case(file_name: str) -> Case:
@@ -33,6 +46,11 @@ def load_case(file_name: str) -> Case:
         nodes=[_parse_node(node) for node in data["nodes"]],
         profile=data["profile"],
         provenance=parse_provenance(data["provenance"], where="fixture.provenance"),
+        analysis=(
+            parse_analysis_provenance(data["analysis"], where="fixture.analysis")
+            if data["schema_version"] == FIXTURE_SCHEMA_V5
+            else None
+        ),
     )
 
 
@@ -42,6 +60,13 @@ def _parse_node(node: dict) -> Node:
         type=node["type"],
         scored=node["scored"],
         calls=[_parse_call(call) for call in node["calls"]],
+        anchor_kind=node.get("anchor_kind"),
+        color_class=node.get("color_class"),
+        observability=(
+            Observability(**node["observability"])
+            if "observability" in node
+            else None
+        ),
     )
 
 
@@ -56,15 +81,24 @@ def validate_raw_fixture(data) -> None:
     if not isinstance(data, dict):
         raise ValueError("fixture root must be a JSON object")
 
-    _validate_top_level(data)
-    _validate_nodes(data["nodes"])
+    schema_version = _validate_top_level(data)
+    _validate_nodes(data["nodes"], schema_version=schema_version)
 
 
-def _validate_top_level(data: dict) -> None:
+def _validate_top_level(data: dict) -> int:
+    _require_exact_type(data.get("schema_version"), int, "schema_version")
+    schema_version = data["schema_version"]
+    if schema_version not in SUPPORTED_FIXTURE_SCHEMAS:
+        raise ValueError(f"unsupported schema_version: {schema_version}")
+    required = (
+        V5_REQUIRED_TOP_LEVEL_KEYS
+        if schema_version == FIXTURE_SCHEMA_V5
+        else V4_REQUIRED_TOP_LEVEL_KEYS
+    )
     _check_keys(
         data,
-        required=REQUIRED_TOP_LEVEL_KEYS,
-        allowed=ALLOWED_TOP_LEVEL_KEYS,
+        required=required,
+        allowed=required | {"note"},
         where="fixture root",
     )
 
@@ -72,11 +106,9 @@ def _validate_top_level(data: dict) -> None:
     _require_nonempty_str(data["build"], "build")
     _require_nonempty_str(data["profile"], "profile")
     normalize_profile(data["profile"])
-    _require_exact_type(data["schema_version"], int, "schema_version")
     parse_provenance(data["provenance"], where="fixture.provenance")
-
-    if data["schema_version"] != FIXTURE_SCHEMA_VERSION:
-        raise ValueError(f"unsupported schema_version: {data['schema_version']}")
+    if schema_version == FIXTURE_SCHEMA_V5:
+        parse_analysis_provenance(data["analysis"], where="fixture.analysis")
 
     if "note" in data and not isinstance(data["note"], str):
         raise ValueError("note must be a string when present")
@@ -88,6 +120,7 @@ def _validate_top_level(data: dict) -> None:
 
     if not data["nodes"]:
         raise ValueError("nodes must not be empty")
+    return schema_version
 
 
 def _validate_extraction(extraction) -> None:
@@ -120,8 +153,13 @@ def _validate_extraction(extraction) -> None:
                 raise ValueError(f"boundary_mismatches[{index}].{key} must be non-negative")
 
 
-def _validate_nodes(nodes: list) -> None:
+def _validate_nodes(nodes: list, *, schema_version: int) -> None:
     ids = []
+    required_keys = (
+        V5_REQUIRED_NODE_KEYS
+        if schema_version == FIXTURE_SCHEMA_V5
+        else V4_REQUIRED_NODE_KEYS
+    )
 
     for index, node in enumerate(nodes):
         where = f"nodes[{index}]"
@@ -131,8 +169,8 @@ def _validate_nodes(nodes: list) -> None:
 
         _check_keys(
             node,
-            required=REQUIRED_NODE_KEYS,
-            allowed=ALLOWED_NODE_KEYS,
+            required=required_keys,
+            allowed=required_keys,
             where=where,
         )
 
@@ -151,6 +189,9 @@ def _validate_nodes(nodes: list) -> None:
         if node["scored"] and node["type"] != "user":
             raise ValueError(f"scored node must have type='user': {node_id}")
 
+        if schema_version == FIXTURE_SCHEMA_V5:
+            _validate_v5_node_metadata(node)
+
         if not isinstance(node["calls"], list):
             raise ValueError(f"calls must be a list for node {node_id}")
 
@@ -167,6 +208,31 @@ def _validate_nodes(nodes: list) -> None:
 
     if not any(node["scored"] for node in nodes):
         raise ValueError("at least one node must have scored=true")
+
+
+def _validate_v5_node_metadata(node: dict) -> None:
+    node_id = node["id"]
+    if node["type"] == "user":
+        if node["anchor_kind"] is not None or node["color_class"] is not None:
+            raise ValueError(
+                f"user node cannot have anchor_kind/color_class: {node_id}"
+            )
+    else:
+        if node["anchor_kind"] not in ALLOWED_ANCHOR_KINDS:
+            raise ValueError(f"invalid anchor_kind for {node_id}")
+        _require_nonempty_str(node["color_class"], f"{node_id}.color_class")
+
+    observability = node["observability"]
+    if not isinstance(observability, dict) or set(observability) != OBSERVABILITY_KEYS:
+        raise ValueError(
+            f"{node_id}.observability must contain exactly "
+            f"{sorted(OBSERVABILITY_KEYS)}"
+        )
+    for key in OBSERVABILITY_KEYS - {"address_taken_references"}:
+        _require_nonnegative_int(observability[key], f"{node_id}.{key}")
+    address_taken = observability["address_taken_references"]
+    if address_taken is not None:
+        _require_nonnegative_int(address_taken, f"{node_id}.address_taken_references")
 
 
 def _validate_calls(node: dict, id_set: set[str]) -> None:
@@ -234,6 +300,12 @@ def _require_nonempty_str(value, name: str) -> None:
 def _require_exact_type(value, expected_type: type, name: str) -> None:
     if type(value) is not expected_type:
         raise ValueError(f"{name} must be {expected_type.__name__}")
+
+
+def _require_nonnegative_int(value, name: str) -> None:
+    _require_exact_type(value, int, name)
+    if value < 0:
+        raise ValueError(f"{name} must be non-negative")
 
 
 def _find_duplicates(values: list[str]) -> list[str]:

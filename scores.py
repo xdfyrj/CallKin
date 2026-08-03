@@ -21,6 +21,7 @@ from dataclasses import dataclass
 from itertools import combinations
 from pathlib import Path
 
+from analysis_provenance import AnalysisProvenance
 from engine import (
     CG_WL_MODES,
     DEFAULT_CG_WL_MODE,
@@ -32,7 +33,9 @@ from engine import (
 from loader import load_case
 from model import Case
 from paths import (
+    ANALYSIS_TRACKS,
     BUILD_PROFILES,
+    DEFAULT_ANALYSIS_TRACK,
     DEFAULT_BUILD,
     DEFAULT_PROFILE,
     normalize_profile,
@@ -219,6 +222,7 @@ class ScoreReport:
     origins: tuple[OriginScore, ...]
     pairwise: PairwiseScore
     provenance: BuildProvenance
+    analysis: AnalysisProvenance | None = None
     trace: tuple[CGWLRoundTrace, ...] = ()
 
 
@@ -272,6 +276,7 @@ def score_case(
         origins=origins,
         pairwise=pairwise,
         provenance=gt.provenance,
+        analysis=case.analysis,
         trace=result.trace,
     )
 
@@ -435,6 +440,7 @@ def format_report(r: ScoreReport) -> str:
     p = r.pairwise
     lines = [
         f"case : {r.case} / {r.build} / {r.profile}",
+        *([f"track: {r.analysis.track}"] if r.analysis is not None else []),
         f"mode: {r.mode}",
         f"candidates: {r.candidate_count}",
         f"candidate pairs: {r.pair_count}",
@@ -526,12 +532,14 @@ def score_report_to_dict(report: ScoreReport) -> dict:
             }
             for step in report.trace
         ]
+    if report.analysis is not None:
+        data["analysis"] = report.analysis.to_dict()
     return data
 
 
 def reports_to_dict(reports: tuple[ScoreReport, ...]) -> dict:
     return {
-        "schema_version": 3,
+        "schema_version": 4 if any(report.analysis for report in reports) else 3,
         "results": [score_report_to_dict(report) for report in reports],
     }
 
@@ -567,6 +575,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
         help=f"compiler profile. Default: {DEFAULT_PROFILE}",
     )
     parser.add_argument(
+        "--track",
+        choices=ANALYSIS_TRACKS,
+        default=DEFAULT_ANALYSIS_TRACK,
+        help=f"analysis track. Default: {DEFAULT_ANALYSIS_TRACK}",
+    )
+    parser.add_argument(
         "--mode",
         choices=CG_WL_MODES,
         default=DEFAULT_CG_WL_MODE,
@@ -600,9 +614,15 @@ def main(argv: list[str] | None = None) -> int:
 
     try:
         if args.baseline:
-            if args.fixture is not None or args.ground_truth is not None or args.build:
+            if (
+                args.fixture is not None
+                or args.ground_truth is not None
+                or args.build
+                or args.track != DEFAULT_ANALYSIS_TRACK
+            ):
                 parser.error(
-                    "--baseline cannot be combined with fixture, ground_truth, or --build"
+                    "--baseline is the frozen direct-v0 baseline and cannot be "
+                    "combined with fixture, ground_truth, --build, or another --track"
                 )
             reports = score_v0_baseline(
                 profile=args.profile,
@@ -615,7 +635,12 @@ def main(argv: list[str] | None = None) -> int:
                 parser.error("fixture or --baseline is required")
             if args.ground_truth is None:
                 case, build = split_case_build(args.fixture, args.build)
-                fixture_path = resolve_fixture_json(case, build, args.profile)
+                fixture_path = resolve_fixture_json(
+                    case,
+                    build,
+                    args.profile,
+                    args.track,
+                )
                 gt_path = resolve_gt_json(case, build, args.profile)
             else:
                 fixture_path = args.fixture

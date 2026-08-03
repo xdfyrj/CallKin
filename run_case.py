@@ -14,13 +14,17 @@ from engine import (
 )
 from loader import load_case
 from paths import (
+    ANALYSIS_TRACKS,
     BUILD_PROFILES,
+    DEFAULT_ANALYSIS_TRACK,
     DEFAULT_BUILD,
     DEFAULT_PROFILE,
     build_manifest_for,
     fixture_json_for,
     gt_json_for,
     normalize_profile,
+    normalize_track,
+    raw_graph_for,
     split_case_build,
     users_json_for,
 )
@@ -40,6 +44,7 @@ def run_pipeline(args: argparse.Namespace) -> None:
     case_from_stem, build = split_case_build(args.stem, args.build)
     case_name = args.case or case_from_stem
     profile = normalize_profile(args.profile)
+    track = normalize_track(args.track)
     manifest_path = args.manifest or build_manifest_for(case_name, build, profile)
     verified = load_and_verify_manifest(
         manifest_path,
@@ -54,7 +59,17 @@ def run_pipeline(args: argparse.Namespace) -> None:
     gt_binary = _validated_override(
         "--gt-binary", args.gt_binary, verified.non_stripped_binary
     )
-    fixture_json = args.fixture_json or fixture_json_for(case_name, build, profile)
+    fixture_json = args.fixture_json or fixture_json_for(
+        case_name,
+        build,
+        profile,
+        track,
+    )
+    raw_graph_json = args.raw_graph or raw_graph_for(
+        case_name,
+        build,
+        profile,
+    )
     gt_json = args.gt_json or gt_json_for(case_name, build, profile)
     users_json = args.users or users_json_for(case_name, build, profile)
     namespaces = tuple(args.namespaces or verified.candidate_namespaces)
@@ -62,11 +77,13 @@ def run_pipeline(args: argparse.Namespace) -> None:
     print(f"case: {case_name}")
     print(f"build: {build}")
     print(f"profile: {profile}")
+    print(f"track: {track}")
     print(f"build manifest: {manifest_path}")
     print(f"build id: {verified.build_id}")
     print(f"fixture binary: {fixture_binary}")
     print(f"gt binary: {gt_binary}")
     print(f"fixture json: {fixture_json}")
+    print(f"raw graph: {raw_graph_json}")
     print(f"gt json: {gt_json}")
     print(f"users: {users_json}")
 
@@ -88,6 +105,8 @@ def run_pipeline(args: argparse.Namespace) -> None:
         case_name=case_name,
         build=build,
         profile=profile,
+        track=track,
+        raw_graph_path=raw_graph_json,
         root=args.root,
         users_path=users_json,
         provenance=verified.provenance,
@@ -121,17 +140,21 @@ def extract_fixture(
     case_name: str,
     build: str,
     profile: str,
+    track: str,
+    raw_graph_path: str,
     root: str | None,
     users_path: str | None,
     provenance,
 ) -> dict:
-    from binary_extractor import DEFAULT_ID_BIAS, extract_fixture, write_fixture
+    from binary_extractor import DEFAULT_ID_BIAS, extract_artifacts, write_fixture
+    from graph_evidence import write_raw_graph
 
     args = SimpleNamespace(
         binary=binary_path,
         case=case_name,
         build=build,
         profile=profile,
+        track=track,
         root=root,
         score_root=False,
         include_imports=False,
@@ -140,9 +163,10 @@ def extract_fixture(
         users=users_path,
         provenance=provenance,
     )
-    fixture = extract_fixture(args)
-    write_fixture(fixture, output_path)
-    return fixture
+    artifacts = extract_artifacts(args)
+    write_raw_graph(artifacts.raw_graph, raw_graph_path)
+    write_fixture(artifacts.fixture, output_path)
+    return artifacts.fixture
 
 
 def extract_ground_truth(
@@ -214,6 +238,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--gt-binary", help="override non-stripped GT binary path")
     parser.add_argument("--manifest", help="override and verify build manifest path")
     parser.add_argument("--fixture-json", help="override generated fixture JSON path")
+    parser.add_argument("--raw-graph", help="override generated raw graph JSON path")
     parser.add_argument("--gt-json", help="override generated ground-truth JSON path")
     parser.add_argument("--users", help="override generated user address JSON path")
     parser.add_argument("--case", help="case field written into generated JSON")
@@ -223,6 +248,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
         choices=BUILD_PROFILES,
         default=DEFAULT_PROFILE,
         help=f"compiler profile. Default: {DEFAULT_PROFILE}",
+    )
+    parser.add_argument(
+        "--track",
+        choices=ANALYSIS_TRACKS,
+        default=DEFAULT_ANALYSIS_TRACK,
+        help=f"analysis track. Default: {DEFAULT_ANALYSIS_TRACK}",
     )
     parser.add_argument(
         "--namespace",

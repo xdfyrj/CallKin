@@ -10,22 +10,33 @@ from pathlib import Path
 from typing import Any
 
 from build_manifest import BUILD_TARGET, load_and_verify_manifest
+from candidate_selection import load_candidate_selection
+from graph_evidence import (
+    TransferEvidence,
+    make_raw_graph,
+    raw_graph_sha256,
+    write_raw_graph,
+)
+from graph_projector import project_fixture
 from paths import (
+    ANALYSIS_TRACKS,
     BUILD_PROFILES,
+    DEFAULT_ANALYSIS_TRACK,
     DEFAULT_BUILD,
     DEFAULT_PROFILE,
     build_manifest_for,
     fixture_json_for,
     normalize_profile,
+    normalize_track,
+    raw_graph_for,
     resolve_fixture_binary,
     resolve_users_json,
     split_case_build,
 )
-from provenance import BuildProvenance, parse_provenance
+from provenance import BuildProvenance
 
 
 SCHEMA_VERSION = 4
-USERS_SCHEMA_VERSION = 5
 DEFAULT_ID_BIAS = 0x100000
 DEFAULT_CASE = "unknown"
 R2_EXECUTABLE = "radare2"
@@ -40,10 +51,10 @@ class R2Function:
 
 
 @dataclass(frozen=True)
-class UserSelection:
-    addresses: set[int]
-    function_bounds: dict[int, int]
-    provenance: BuildProvenance
+class ExtractionArtifacts:
+    raw_graph: dict[str, Any]
+    fixture: dict[str, Any]
+    raw_graph_sha256: str
 
 
 def ensure_radare2_available() -> None:
@@ -83,78 +94,6 @@ def parse_int(value: str) -> int:
     return int(value, 0)
 
 
-def load_users(
-    path: str,
-    *,
-    expected_case: str,
-    expected_build: str,
-    expected_profile: str,
-) -> UserSelection:
-    with open(path, "r", encoding="utf-8") as f:
-        data = json.load(f)
-
-    if not isinstance(data, dict) or not isinstance(data.get("addresses"), list):
-        raise ValueError("user address file must be an object with an addresses list")
-    if not isinstance(data.get("function_bounds"), list):
-        raise ValueError("user address file must contain a function_bounds list")
-    if data.get("schema_version") not in {4, USERS_SCHEMA_VERSION}:
-        raise ValueError(
-            f"unsupported user address schema_version: {data.get('schema_version')!r}"
-        )
-    for key, expected in (
-        ("case", expected_case),
-        ("build", expected_build),
-        ("profile", expected_profile),
-    ):
-        if data.get(key) != expected:
-            raise ValueError(
-                f"user address {key} mismatch: expected {expected!r}, "
-                f"got {data.get(key)!r}"
-            )
-    raw_addresses = data["addresses"]
-
-    addresses: set[int] = set()
-    for value in raw_addresses:
-        if isinstance(value, int):
-            addresses.add(value)
-        elif isinstance(value, str):
-            addresses.add(int(value, 0))
-        else:
-            raise ValueError(f"invalid user address: {value!r}")
-
-    function_bounds: dict[int, int] = {}
-    for index, item in enumerate(data["function_bounds"]):
-        if not isinstance(item, dict) or set(item) != {"address", "size"}:
-            raise ValueError(
-                f"function_bounds[{index}] must contain exactly address/size"
-            )
-        address_value = item["address"]
-        if isinstance(address_value, int):
-            address = address_value
-        elif isinstance(address_value, str):
-            address = int(address_value, 0)
-        else:
-            raise ValueError(f"invalid function bound address: {address_value!r}")
-        size = item["size"]
-        if not isinstance(size, int) or isinstance(size, bool) or size <= 0:
-            raise ValueError(f"invalid function bound size at 0x{address:x}: {size!r}")
-        if address in function_bounds:
-            raise ValueError(f"duplicate function bound address: 0x{address:x}")
-        function_bounds[address] = size
-
-    missing_bounds = addresses - set(function_bounds)
-    if missing_bounds:
-        missing = ", ".join(f"0x{addr:x}" for addr in sorted(missing_bounds))
-        raise ValueError(f"listed user address(es) have no symbol extent: {missing}")
-
-    provenance = parse_provenance(data.get("provenance"), where="users.provenance")
-    return UserSelection(
-        addresses=addresses,
-        function_bounds=function_bounds,
-        provenance=provenance,
-    )
-
-
 def is_probably_import(func: R2Function) -> bool:
     return func.name.startswith("sym.imp.") or func.kind == "sym"
 
@@ -173,7 +112,12 @@ class BinaryExtractor:
         self.r2 = open_r2(binary_path)
         self.functions: list[R2Function] = []
         self.by_addr: dict[int, R2Function] = {}
+        self.all_functions: list[R2Function] = []
+        self.all_by_addr: dict[int, R2Function] = {}
         self._call_cache: dict[tuple[int, int | None], Counter[int]] = {}
+        self._transfer_cache: dict[
+            tuple[int, int | None], tuple[TransferEvidence, ...]
+        ] = {}
 
     def close(self) -> None:
         try:
@@ -188,7 +132,7 @@ class BinaryExtractor:
     def _refresh_functions(self) -> None:
         raw_functions = self.r2.cmdj("aflj") or []
 
-        functions: list[R2Function] = []
+        all_functions: list[R2Function] = []
         for raw in raw_functions:
             addr = raw.get("offset")
             if not isinstance(addr, int):
@@ -200,14 +144,20 @@ class BinaryExtractor:
                 size=int(raw.get("size") or 0),
                 kind=str(raw.get("type") or ""),
             )
-            if not self.include_imports and is_probably_import(func):
-                continue
-            functions.append(func)
+            all_functions.append(func)
 
-        functions.sort(key=lambda f: f.addr)
+        all_functions.sort(key=lambda f: f.addr)
+        functions = [
+            func
+            for func in all_functions
+            if self.include_imports or not is_probably_import(func)
+        ]
+        self.all_functions = all_functions
+        self.all_by_addr = {func.addr: func for func in all_functions}
         self.functions = functions
         self.by_addr = {f.addr: f for f in functions}
         self._call_cache.clear()
+        self._transfer_cache.clear()
 
     def list_functions(self) -> None:
         for func in self.functions:
@@ -393,6 +343,10 @@ class BinaryExtractor:
         function_bounds: dict[int, int],
     ) -> list[int]:
         """Add symbol-known user starts that radare2 did not recover."""
+        if not hasattr(self, "all_functions"):
+            self.all_functions = list(self.functions)
+        if not hasattr(self, "all_by_addr"):
+            self.all_by_addr = dict(self.by_addr)
         added = []
         for addr, size in sorted(function_bounds.items()):
             if addr in self.by_addr:
@@ -405,8 +359,11 @@ class BinaryExtractor:
             )
             self.functions.append(func)
             self.by_addr[addr] = func
+            self.all_functions.append(func)
+            self.all_by_addr[addr] = func
             added.append(addr)
         self.functions.sort(key=lambda func: func.addr)
+        self.all_functions.sort(key=lambda func: func.addr)
         return added
 
     def direct_calls(
@@ -420,30 +377,109 @@ class BinaryExtractor:
             return self._call_cache[cache_key].copy()
 
         counts: Counter[int] = Counter()
-        if symbol_size is None:
-            pdf = self.r2.cmdj(f"pdfj @ {func.addr}") or {}
-            ops = pdf.get("ops") or []
-            for op in ops:
-                target_func = self._direct_call_target(func, op)
-                if target_func is None:
-                    continue
-                if not self.include_imports and is_probably_import(target_func):
-                    continue
-                counts[target_func.addr] += 1
-        else:
-            counts = self._direct_calls_from_symbol_extent(func, symbol_size)
+        for transfer in self.transfer_evidence(func, symbol_size=symbol_size):
+            if transfer.status == "resolved" and transfer.target is not None:
+                counts[transfer.target] += 1
 
         self._call_cache[cache_key] = counts.copy()
         return counts
 
-    def _direct_calls_from_symbol_extent(
+    def transfer_evidence(
+        self,
+        func: R2Function,
+        *,
+        symbol_size: int | None = None,
+    ) -> tuple[TransferEvidence, ...]:
+        cache_key = (func.addr, symbol_size)
+        transfer_cache = getattr(self, "_transfer_cache", None)
+        if transfer_cache is None:
+            transfer_cache = {}
+            self._transfer_cache = transfer_cache
+        if cache_key in transfer_cache:
+            return transfer_cache[cache_key]
+
+        if symbol_size is None:
+            transfers = self._r2_transfer_evidence(func)
+        else:
+            transfers = self._symbol_extent_transfer_evidence(func, symbol_size)
+        transfer_cache[cache_key] = tuple(transfers)
+        return transfer_cache[cache_key]
+
+    def _r2_transfer_evidence(
+        self,
+        func: R2Function,
+    ) -> list[TransferEvidence]:
+        pdf = self.r2.cmdj(f"pdfj @ {func.addr}") or {}
+        ops = pdf.get("ops") or []
+        transfers = []
+        for index, op in enumerate(ops):
+            callsite = op.get("offset")
+            if not isinstance(callsite, int):
+                callsite = func.addr + index
+            instruction = str(op.get("opcode") or op.get("disasm") or op.get("type") or "unknown")
+            is_call = self._is_call_op(op)
+            is_tail_jump = self._is_tail_call_jump_op(op)
+            target_func = self._direct_call_target(
+                func,
+                op,
+                include_filtered=True,
+            )
+
+            if (
+                target_func is not None
+                and not self.include_imports
+                and is_probably_import(target_func)
+            ):
+                transfers.append(TransferEvidence(
+                    source=func.addr,
+                    callsite=callsite,
+                    instruction=instruction,
+                    kind="call" if is_call else "tail-call",
+                    operand_kind="immediate",
+                    status="filtered",
+                    target=target_func.addr,
+                    resolver="direct-immediate" if is_call else "direct-tail",
+                    confidence="exact",
+                    filter_reason="import",
+                ))
+            elif target_func is not None:
+                transfers.append(TransferEvidence(
+                    source=func.addr,
+                    callsite=callsite,
+                    instruction=instruction,
+                    kind="call" if is_call else "tail-call",
+                    operand_kind="immediate",
+                    status="resolved",
+                    target=target_func.addr,
+                    resolver="direct-immediate" if is_call else "direct-tail",
+                    confidence="exact",
+                ))
+            elif is_call:
+                transfers.append(TransferEvidence(
+                    source=func.addr,
+                    callsite=callsite,
+                    instruction=instruction,
+                    kind="call",
+                    operand_kind=self._r2_operand_kind(op),
+                    status="unresolved",
+                    target=None,
+                    resolver=None,
+                    confidence="unknown",
+                ))
+            elif is_tail_jump:
+                # An unresolved jump may be an ordinary branch or switch. It is
+                # not call evidence until a later resolver identifies a target.
+                continue
+        return self._deduplicate_transfer_sites(transfers)
+
+    def _symbol_extent_transfer_evidence(
         self,
         func: R2Function,
         size: int,
-    ) -> Counter[int]:
+    ) -> list[TransferEvidence]:
         try:
             from capstone import CS_ARCH_X86, CS_GRP_CALL, CS_MODE_64, Cs
-            from capstone.x86_const import X86_OP_IMM
+            from capstone.x86_const import X86_OP_IMM, X86_OP_MEM, X86_OP_REG
         except ImportError as exc:
             raise RuntimeError(
                 "Python package capstone is required for symbol-extent call "
@@ -464,7 +500,7 @@ class BinaryExtractor:
         instructions = list(decoder.disasm(bytes(raw_bytes), func.addr))
         expected = func.addr
         end = func.addr + size
-        counts: Counter[int] = Counter()
+        transfers = []
 
         for instruction in instructions:
             if instruction.address != expected:
@@ -478,30 +514,108 @@ class BinaryExtractor:
             is_tail_jump = instruction.mnemonic == "jmp"
             if not is_call and not is_tail_jump:
                 continue
-            if len(instruction.operands) != 1:
-                continue
-            operand = instruction.operands[0]
-            if operand.type != X86_OP_IMM:
-                continue
-
-            target_func = self._resolve_direct_target(
-                func,
-                int(operand.imm),
-                is_call=is_call,
-                is_tail_jump=is_tail_jump,
+            instruction_text = (
+                f"{instruction.mnemonic} {instruction.op_str}".strip()
             )
-            if target_func is None:
-                continue
-            if not self.include_imports and is_probably_import(target_func):
-                continue
-            counts[target_func.addr] += 1
+            operand = (
+                instruction.operands[0]
+                if len(instruction.operands) == 1
+                else None
+            )
+            target_func = None
+            if operand is not None and operand.type == X86_OP_IMM:
+                target_func = self._resolve_direct_target(
+                    func,
+                    int(operand.imm),
+                    is_call=is_call,
+                    is_tail_jump=is_tail_jump,
+                    include_filtered=True,
+                )
+
+            if (
+                target_func is not None
+                and not self.include_imports
+                and is_probably_import(target_func)
+            ):
+                transfers.append(TransferEvidence(
+                    source=func.addr,
+                    callsite=instruction.address,
+                    instruction=instruction_text,
+                    kind="call" if is_call else "tail-call",
+                    operand_kind="immediate",
+                    status="filtered",
+                    target=target_func.addr,
+                    resolver="direct-immediate" if is_call else "direct-tail",
+                    confidence="exact",
+                    filter_reason="import",
+                ))
+            elif target_func is not None:
+                transfers.append(TransferEvidence(
+                    source=func.addr,
+                    callsite=instruction.address,
+                    instruction=instruction_text,
+                    kind="call" if is_call else "tail-call",
+                    operand_kind="immediate",
+                    status="resolved",
+                    target=target_func.addr,
+                    resolver="direct-immediate" if is_call else "direct-tail",
+                    confidence="exact",
+                ))
+            elif is_call:
+                if operand is not None and operand.type == X86_OP_MEM:
+                    operand_kind = "memory"
+                elif operand is not None and operand.type == X86_OP_REG:
+                    operand_kind = "register"
+                elif operand is not None and operand.type == X86_OP_IMM:
+                    operand_kind = "immediate"
+                else:
+                    operand_kind = "unknown"
+                transfers.append(TransferEvidence(
+                    source=func.addr,
+                    callsite=instruction.address,
+                    instruction=instruction_text,
+                    kind="call",
+                    operand_kind=operand_kind,
+                    status="unresolved",
+                    target=None,
+                    resolver=None,
+                    confidence="unknown",
+                ))
 
         if expected != end:
             raise ValueError(
                 f"incomplete symbol-extent decode for 0x{func.addr:x}: "
                 f"expected end 0x{end:x}, got 0x{expected:x}"
             )
-        return counts
+        return self._deduplicate_transfer_sites(transfers)
+
+    @staticmethod
+    def _r2_operand_kind(op: dict[str, Any]) -> str:
+        opcode = str(op.get("opcode") or "")
+        operand = opcode.split(None, 1)[1] if " " in opcode else ""
+        if "[" in operand:
+            return "memory"
+        if operand and not operand.startswith("0x"):
+            return "register"
+        if isinstance(op.get("jump"), int):
+            return "immediate"
+        return "unknown"
+
+    @staticmethod
+    def _deduplicate_transfer_sites(
+        transfers: list[TransferEvidence],
+    ) -> list[TransferEvidence]:
+        by_callsite: dict[int, TransferEvidence] = {}
+        for transfer in transfers:
+            previous = by_callsite.get(transfer.callsite)
+            if previous is None:
+                by_callsite[transfer.callsite] = transfer
+            elif previous != transfer:
+                raise ValueError(
+                    "conflicting transfer evidence at "
+                    f"0x{transfer.callsite:x}: {previous} != {transfer}"
+                )
+        return [by_callsite[address] for address in sorted(by_callsite)]
 
     @staticmethod
     def _is_call_op(op: dict[str, Any]) -> bool:
@@ -517,6 +631,8 @@ class BinaryExtractor:
         self,
         current_func: R2Function,
         op: dict[str, Any],
+        *,
+        include_filtered: bool = False,
     ) -> R2Function | None:
         target = self._direct_code_target(op)
         if target is None:
@@ -527,6 +643,7 @@ class BinaryExtractor:
             target,
             is_call=self._is_call_op(op),
             is_tail_jump=self._is_tail_call_jump_op(op),
+            include_filtered=include_filtered,
         )
 
     def _resolve_direct_target(
@@ -536,9 +653,11 @@ class BinaryExtractor:
         *,
         is_call: bool,
         is_tail_jump: bool,
+        include_filtered: bool = False,
     ) -> R2Function | None:
-
         if is_call:
+            if include_filtered:
+                return self._function_containing_all(target)
             return self.function_containing(target)
 
         if is_tail_jump:
@@ -546,10 +665,23 @@ class BinaryExtractor:
             # Count it only when the jump target is exactly another function's
             # start address. This avoids ordinary in-function branches and most
             # switch/case labels that radare2 may expose as pseudo-functions.
-            target_func = self.by_addr.get(target)
+            target_func = (
+                getattr(self, "all_by_addr", self.by_addr).get(target)
+                if include_filtered
+                else self.by_addr.get(target)
+            )
             if target_func is not None and target_func.addr != current_func.addr:
                 return target_func
 
+        return None
+
+    def _function_containing_all(self, address: int) -> R2Function | None:
+        all_by_addr = getattr(self, "all_by_addr", self.by_addr)
+        if address in all_by_addr:
+            return all_by_addr[address]
+        for func in getattr(self, "all_functions", self.functions):
+            if func.size > 0 and func.addr <= address < func.addr + func.size:
+                return func
         return None
 
     @staticmethod
@@ -575,6 +707,52 @@ class BinaryExtractor:
             func.addr: self.direct_calls(func, symbol_size=bounds.get(func.addr))
             for func in self.functions
         }
+
+    def build_raw_graph(
+        self,
+        *,
+        case: str,
+        build: str,
+        profile: str,
+        provenance: BuildProvenance,
+        root_address: int,
+        function_bounds: dict[int, int],
+        boundary_mode: str,
+        boundary_mismatches: list[dict[str, int | str]],
+    ) -> dict[str, Any]:
+        transfers = []
+        for func in self.functions:
+            transfers.extend(
+                self.transfer_evidence(
+                    func,
+                    symbol_size=function_bounds.get(func.addr),
+                )
+            )
+        functions = [
+            {
+                "address": f"0x{func.addr:x}",
+                "name": func.name,
+                "size": function_bounds.get(func.addr, func.size),
+                "boundary_source": (
+                    "symbol-oracle"
+                    if func.addr in function_bounds
+                    else "radare2"
+                ),
+            }
+            for func in self.functions
+        ]
+        return make_raw_graph(
+            case=case,
+            build=build,
+            profile=profile,
+            binary_path=self.binary_path,
+            provenance=provenance,
+            root_address=root_address,
+            functions=functions,
+            transfers=transfers,
+            boundary_mode=boundary_mode,
+            boundary_mismatches=boundary_mismatches,
+        )
 
     def boundary_mismatches(
         self,
@@ -726,7 +904,7 @@ def make_fixture_json(
     }
 
 
-def extract_fixture(args: argparse.Namespace) -> dict[str, Any]:
+def extract_artifacts(args: argparse.Namespace) -> ExtractionArtifacts:
     extractor = BinaryExtractor(
         args.binary,
         include_imports=args.include_imports,
@@ -737,10 +915,10 @@ def extract_fixture(args: argparse.Namespace) -> dict[str, Any]:
 
         if args.list_functions:
             extractor.list_functions()
-            return {}
+            return ExtractionArtifacts({}, {}, "")
 
-        user_selection = (
-            load_users(
+        selection = (
+            load_candidate_selection(
                 args.users,
                 expected_case=args.case,
                 expected_build=args.build,
@@ -749,11 +927,13 @@ def extract_fixture(args: argparse.Namespace) -> dict[str, Any]:
             if args.users
             else None
         )
+        if selection is None:
+            raise ValueError(
+                "fixture projection requires a candidate selection JSON; pass --users"
+            )
         root = extractor.resolve_root(args.root)
-        user_addrs = user_selection.addresses if user_selection is not None else None
-        function_bounds = (
-            user_selection.function_bounds if user_selection is not None else {}
-        )
+        user_addrs = set(selection.addresses)
+        function_bounds = selection.function_bounds
         boundary_mismatches = extractor.boundary_mismatches(function_bounds)
         added_symbol_starts = extractor.add_symbol_bound_functions(function_bounds)
         for addr in added_symbol_starts:
@@ -765,51 +945,52 @@ def extract_fixture(args: argparse.Namespace) -> dict[str, Any]:
                     "radare2_size": 0,
                 }
             )
-        graph = extractor.build_call_graph(function_bounds=function_bounds)
         provenance = getattr(args, "provenance", None)
         if provenance is None:
             raise ValueError("verified build provenance is required for fixture extraction")
-        if user_selection is not None and user_selection.provenance != provenance:
-            raise ValueError("users/fixture build provenance mismatch")
+        if selection.provenance != provenance:
+            raise ValueError("candidate selection/fixture build provenance mismatch")
 
-        if user_addrs is not None:
-            missing_starts = user_addrs - set(extractor.by_addr)
-            if missing_starts:
-                missing = ", ".join(f"0x{addr:x}" for addr in sorted(missing_starts))
-                raise ValueError(
-                    "user address(es) are not radare2 function starts "
-                    f"in stripped binary: {missing}"
-                )
-
-            selected = select_user_context(
-                graph,
-                root.addr,
-                user_addrs,
-                allowed_addrs=set(extractor.by_addr),
-                score_root=args.score_root,
+        missing_starts = user_addrs - set(extractor.by_addr)
+        if missing_starts:
+            missing = ", ".join(f"0x{addr:x}" for addr in sorted(missing_starts))
+            raise ValueError(
+                "candidate address(es) are not available as function starts "
+                f"in stripped binary: {missing}"
             )
-        else:
-            selected = select_reachable(graph, root.addr)
 
-        return make_fixture_json(
+        track = normalize_track(getattr(args, "track", DEFAULT_ANALYSIS_TRACK))
+        boundary_mode = "symbol-extent"
+        raw_graph = extractor.build_raw_graph(
             case=args.case,
             build=args.build,
             profile=args.profile,
-            binary_path=args.binary,
-            root=root,
-            functions=extractor.by_addr,
-            graph=graph,
-            selected=selected,
-            score_root=args.score_root,
-            user_addrs=user_addrs,
+            provenance=provenance,
+            root_address=root.addr,
+            function_bounds=function_bounds,
+            boundary_mode=boundary_mode,
+            boundary_mismatches=boundary_mismatches,
+        )
+        fixture = project_fixture(
+            raw_graph,
+            selection=selection,
+            track=track,
             users_path=args.users,
             id_bias=args.id_bias,
-            boundary_mode="symbol-extent" if user_selection is not None else "radare2",
-            boundary_mismatches=boundary_mismatches,
-            provenance=provenance,
+            score_root=args.score_root,
+        )
+
+        return ExtractionArtifacts(
+            raw_graph=raw_graph,
+            fixture=fixture,
+            raw_graph_sha256=raw_graph_sha256(raw_graph),
         )
     finally:
         extractor.close()
+
+
+def extract_fixture(args: argparse.Namespace) -> dict[str, Any]:
+    return extract_artifacts(args).fixture
 
 
 def write_fixture(fixture: dict[str, Any], output_path: str) -> None:
@@ -832,8 +1013,8 @@ def build_arg_parser() -> argparse.ArgumentParser:
         "output",
         nargs="?",
         help=(
-            "output path. If omitted, writes "
-            "fixtures/<profile>/<case>.<build>.fixture.json."
+            "output path. If omitted, direct-v0 writes the compatibility path; "
+            "other tracks write fixtures/<track>/<profile>/."
         ),
     )
     parser.add_argument(
@@ -850,6 +1031,16 @@ def build_arg_parser() -> argparse.ArgumentParser:
         choices=BUILD_PROFILES,
         default=DEFAULT_PROFILE,
         help=f"compiler profile. Default: {DEFAULT_PROFILE}",
+    )
+    parser.add_argument(
+        "--track",
+        choices=ANALYSIS_TRACKS,
+        default=DEFAULT_ANALYSIS_TRACK,
+        help=f"analysis track. Default: {DEFAULT_ANALYSIS_TRACK}",
+    )
+    parser.add_argument(
+        "--raw-output",
+        help="raw extraction graph output path",
     )
     parser.add_argument(
         "-o",
@@ -902,6 +1093,7 @@ def apply_cli_defaults(args: argparse.Namespace, parser: argparse.ArgumentParser
     args.output = args.output_option or args.output
     case, build = split_case_build(args.binary, args.build)
     args.profile = normalize_profile(args.profile)
+    args.track = normalize_track(args.track)
 
     if not Path(args.binary).exists():
         args.binary = resolve_fixture_binary(case, build, args.profile)
@@ -914,7 +1106,18 @@ def apply_cli_defaults(args: argparse.Namespace, parser: argparse.ArgumentParser
     args.build = build
 
     if args.output is None:
-        args.output = fixture_json_for(args.case, build, args.profile)
+        args.output = fixture_json_for(
+            args.case,
+            build,
+            args.profile,
+            args.track,
+        )
+    if args.raw_output is None:
+        args.raw_output = raw_graph_for(
+            args.case,
+            build,
+            args.profile,
+        )
 
     default_users = resolve_users_json(args.case, build, args.profile)
     if args.users is None and Path(default_users).exists():
@@ -945,16 +1148,19 @@ def main(argv: list[str] | None = None) -> int:
                     f"{verified.stripped_binary!r}"
                 )
             args.provenance = verified.provenance
-        fixture = extract_fixture(args)
+        artifacts = extract_artifacts(args)
         if args.list_functions:
             return 0
-        write_fixture(fixture, args.output)
+        write_raw_graph(artifacts.raw_graph, args.raw_output)
+        write_fixture(artifacts.fixture, args.output)
     except Exception as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1
 
     print(f"wrote {args.output}")
-    print(f"nodes={len(fixture.get('nodes', []))}")
+    print(f"raw graph: {args.raw_output}")
+    print(f"raw graph SHA-256: {artifacts.raw_graph_sha256}")
+    print(f"nodes={len(artifacts.fixture.get('nodes', []))}")
     return 0
 
 

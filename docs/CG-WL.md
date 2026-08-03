@@ -152,14 +152,24 @@ distinct_out_callee_count[A] = 2
 
 ## 6. Anchor color
 
-각 anchor는 자기 ID가 들어간 고정 color를 받는다.
+Schema v4에서는 각 anchor가 자기 ID가 들어간 고정 color를 받는다.
 
 ```text
 FUN_00113e00 -> ANCHOR:FUN_00113e00
 FUN_00152600 -> ANCHOR:FUN_00152600
 ```
 
-서로 다른 anchor는 처음부터 다른 color다. Refinement 중에도 anchor color는 바뀌지 않는다.
+Schema v5에서는 fixture의 `color_class`가 고정 color의 기준이다.
+
+```text
+color_class=ADDR:FUN_001487a0
+-> ANCHOR:ADDR:FUN_001487a0
+```
+
+현재 canonical `direct-in-v1`의 `anchor_policy=address`도 anchor마다 서로 다른
+class를 주므로 schema v4와 같은 individualized 의미를 유지한다. 향후 role 또는
+semantic policy에서는 여러 anchor가 같은 `color_class`를 공유할 수 있다.
+Refinement 중 anchor color는 어느 경우에도 바뀌지 않는다.
 
 따라서 두 user 함수가 서로 다른 library anchor를 호출하면 그 차이가 relation signature에 남는다.
 
