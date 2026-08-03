@@ -23,6 +23,7 @@ from paths import (
     DEFAULT_ANALYSIS_TRACK,
     DIRECT_IN_V1_TRACK,
     DIRECT_V0_TRACK,
+    SUBJECT_CANDIDATE_SCOPE,
     fixture_json_for,
     normalize_track,
 )
@@ -110,8 +111,8 @@ def project_direct_in_fixture(
 ) -> dict[str, Any]:
     validate_raw_graph(raw)
     config = config or projection_config_for(DIRECT_IN_V1_TRACK)
-    if config.track != DIRECT_IN_V1_TRACK:
-        raise ValueError("schema v5 incoming projection requires direct-in-v1 track")
+    if config.track not in {DIRECT_V0_TRACK, DIRECT_IN_V1_TRACK}:
+        raise ValueError(f"unsupported schema v5 projection track: {config.track}")
     if config.anchor_policy not in ANCHOR_POLICIES:
         raise ValueError(f"unsupported anchor policy: {config.anchor_policy}")
     _validate_selection_join(raw, selection)
@@ -152,6 +153,7 @@ def project_direct_in_fixture(
     raw_digest = raw_graph_sha256(raw)
     analysis = AnalysisProvenance(
         track=config.track,
+        candidate_scope=selection.scope,
         backend=RAW_GRAPH_BACKEND,
         extractor_version=RAW_GRAPH_EXTRACTOR_VERSION,
         raw_graph_sha256=raw_digest,
@@ -226,6 +228,9 @@ def project_direct_in_fixture(
         })
 
     provenance = parse_provenance(raw["provenance"], where="raw graph.provenance")
+    context_description = "candidates plus their direct callees"
+    if config.include_incoming_anchors:
+        context_description += " and direct external callers"
     return {
         "case": raw["case"],
         "build": raw["build"],
@@ -233,12 +238,13 @@ def project_direct_in_fixture(
         "schema_version": FIXTURE_SCHEMA_V5,
         "provenance": provenance.to_dict(),
         "analysis": analysis.to_dict(),
-        "extraction": raw["extraction"],
+        "extraction": _projected_extraction(raw, selection),
         "note": (
             f"projected by graph_projector.py from {raw['binary']['path']}; "
-            f"track={config.track}; root={function_id(root, id_bias=id_bias)}; "
-            f"users={users_path or 'none'}; candidates plus their direct callees "
-            "and direct external callers are emitted; anchors expose only edges "
+            f"track={config.track}; candidate_scope={selection.scope}; "
+            f"root={function_id(root, id_bias=id_bias)}; "
+            f"users={users_path or 'none'}; {context_description} are emitted; "
+            "anchors expose only edges "
             "into candidates; unresolved transfers remain analysis evidence and "
             "are not projected as call edges"
         ),
@@ -265,6 +271,25 @@ def project_direct_v0_fixture(
     if unknown_candidates:
         rendered = ", ".join(f"0x{value:x}" for value in sorted(unknown_candidates))
         raise ValueError(f"candidate selection is absent from raw graph: {rendered}")
+
+    # The shared raw graph contains symbol-oracle function starts that older
+    # direct-v0 extraction did not know about. Keep the frozen projection
+    # compatible: candidate starts are always valid, while context anchors must
+    # still have been discovered independently by radare2.
+    r2_discovered = {
+        _address(function["address"])
+        for function in raw["functions"]
+        if function["discovered_by_radare2"]
+    }
+    allowed_context_targets = candidates | r2_discovered
+    graph = {
+        source: Counter({
+            target: count
+            for target, count in targets.items()
+            if target in allowed_context_targets
+        })
+        for source, targets in graph.items()
+    }
 
     selected = {root} | candidates
     context_sources = set(candidates)
@@ -327,7 +352,7 @@ def project_direct_v0_fixture(
         "profile": raw["profile"],
         "schema_version": 4,
         "provenance": provenance.to_dict(),
-        "extraction": raw["extraction"],
+        "extraction": _projected_extraction(raw, selection),
         "note": note,
         "nodes": nodes,
     }
@@ -343,7 +368,7 @@ def project_fixture(
     score_root: bool = False,
 ) -> dict[str, Any]:
     track = normalize_track(track)
-    if track == DIRECT_V0_TRACK:
+    if track == DIRECT_V0_TRACK and selection.scope == SUBJECT_CANDIDATE_SCOPE:
         return project_direct_v0_fixture(
             raw,
             selection=selection,
@@ -379,6 +404,21 @@ def _validate_selection_join(
     provenance = parse_provenance(raw["provenance"], where="raw graph.provenance")
     if selection.provenance != provenance:
         raise ValueError("raw graph/candidate selection build provenance mismatch")
+
+
+def _projected_extraction(
+    raw: dict[str, Any],
+    selection: CandidateSelection,
+) -> dict[str, Any]:
+    relevant_addresses = set(selection.function_bounds)
+    return {
+        "boundary_mode": raw["extraction"]["boundary_mode"],
+        "boundary_mismatches": [
+            mismatch
+            for mismatch in raw["extraction"]["boundary_mismatches"]
+            if _address(mismatch["address"]) in relevant_addresses
+        ],
+    }
 
 
 def function_id(address: int, *, id_bias: int) -> str:
@@ -463,6 +503,7 @@ def main(argv: list[str] | None = None) -> int:
             raw["build"],
             raw["profile"],
             track,
+            selection.scope,
         )
         path = Path(output)
         path.parent.mkdir(parents=True, exist_ok=True)

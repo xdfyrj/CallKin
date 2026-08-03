@@ -6,7 +6,7 @@ Rust generic 함수는 하나의 source definition에서 여러 monomorphized in
 
 CallKin은 다음의 제한된 질문을 다룬다.
 
-> 분석 대상 user 함수 집합이 주어졌을 때, stripped binary에서 관찰되는 caller/callee 관계만으로 같은 source origin에서 나온 monomorphized 함수들을 다시 묶을 수 있는가?
+> 분석 대상 Rust 함수 집합이 주어졌을 때, stripped binary에서 관찰되는 caller/callee 관계만으로 같은 source origin에서 나온 monomorphized 함수들을 다시 묶을 수 있는가?
 
 예를 들어 source에 다음 함수가 있다고 하자.
 
@@ -47,10 +47,12 @@ FUN_001148a0  process instance 3
              |                               |
        gt_extractor.py                binary_extractor.py
              |                               |
-       +-----+-----+                         v
-       |           |              extractions/*/*.raw.json
-       |           |                         |
-       |           |                  graph_projector.py
+       +-----+-------------+                 v
+       |          |        |      extractions/*/*.raw.json
+       |          |        |                 |
+       |          |   boundaries/            |
+       |          |   *.boundaries.json -----+
+       |          |                  graph_projector.py
        |           |                         |
        |           |                 fixtures/*.fixture.json
        v           v                         |
@@ -126,8 +128,8 @@ Ground-truth side는 non-stripped binary의 compiler symbol을 사용한다.
 
 ### 3.3 Candidate address bridge
 
-`users/<profile>/*.users.json`에는 candidate raw address와 source namespace 함수의
-symbol extent가 들어간다. Extent에는 source `main`도 포함된다.
+`users/<scope>/<profile>/*.users.json`에는 candidate raw address와 그 함수의 symbol
+extent가 들어간다. Extent에는 source `main`도 포함된다.
 
 ```json
 {
@@ -148,11 +150,20 @@ symbol extent가 들어간다. Extent에는 source `main`도 포함된다.
 ```
 
 이 파일은 `0x14480`이 `process`인지, 다른 주소와 같은 origin인지 말하지 않는다.
-따라서 binary extractor가 user/library 경계와 함수 extent를 정하는 데 사용하지만
-grouping 정답 partition은 전달하지 않는다. 즉 현재 canonical 평가는
-candidate-and-boundary oracle 조건의 grouping 평가다.
+따라서 projector가 scored candidate를 정하는 데 사용하지만 grouping 정답 partition은
+전달하지 않는다. Candidate selection의 canonical SHA-256은 schema v5 fixture의
+analysis provenance에 기록된다.
 
-단, 이것은 일반적인 user/library classifier가 아니다. 통제 corpus의 non-stripped symbol namespace를 이용해 candidate 집합을 제공하는 연구 조건이다.
+기본 `rust-nonstd` scope는 demangled Rust text symbol 중 소유 namespace가 `core`,
+`alloc`, `std`인 함수와 source `main`만 제외한다. Subject와 dependency crate 함수는
+모두 candidate다. `subject` scope는 manifest의 subject namespace만 candidate로 두는
+기존 통제 평가다. 둘 다 non-stripped symbol을 사용하는 oracle이며, stripped-only
+library classifier가 아니다.
+
+함수 경계는 candidate selection에서 분리되어
+`boundaries/<profile>/*.boundaries.json`에 저장된다. 이 파일은 scope와 무관하게
+demangle 가능한 모든 Rust text symbol extent를 담는다. 따라서 같은 raw graph를
+`subject`와 `rust-nonstd` selection에 각각 투영할 수 있다.
 
 ## 4. Artifact의 의미
 
@@ -164,10 +175,11 @@ candidate-and-boundary oracle 조건의 grouping 평가다.
 | Non-stripped binary | `gt_bin/plain/family_graph_01.O3S.gt.bin` | symbol, GT, users 주소의 근거 |
 | Stripped binary | `bin/plain/family_graph_01.O3S.fixture.bin` | 실제 relation 추출 대상 |
 | Build manifest | `build_info/plain/family_graph_01.O3S.json` | source/tool/binary hash 결속 |
-| Ground truth | `ground_truth/plain/family_graph_01.O3S.gt.json` | origin partition과 symbol |
-| User addresses | `users/plain/family_graph_01.O3S.users.json` | candidate raw address 집합 |
+| Ground truth | `ground_truth/rust-nonstd/plain/*.gt.json`, `ground_truth/plain/*.gt.json` | scope별 origin partition과 symbol |
+| Candidate selection | `users/rust-nonstd/plain/*.users.json`, `users/plain/*.users.json` | scope별 candidate raw address 집합 |
+| Function boundaries | `boundaries/plain/*.boundaries.json` | scope-independent Rust symbol extents |
 | Raw graph | `extractions/plain/*.raw.json` | track/candidate 독립 transfer evidence |
-| Fixture | `fixtures/plain/*.fixture.json`, `fixtures/direct-in-v1/plain/*.fixture.json` | track 정책으로 투영한 node와 weighted edge |
+| Fixture | `fixtures/rust-nonstd/plain/*.fixture.json`, `fixtures/direct-in-v1/rust-nonstd/plain/*.fixture.json`, 호환용 `fixtures/plain/*.fixture.json` | scope와 track 정책으로 투영한 node와 weighted edge |
 | Score result | `results/plain/v0_baseline.json` | cluster, origin별 결과, metric |
 
 `plain`은 Cargo 기본 release 설정을 근사한 CallKin profile로 O3/`lto=false`(thin local LTO 가능)/16 codegen units/panic unwind를 사용한다. `min`은 aggressive minimized stress profile로 O3/fat LTO/1 codegen unit/panic abort를 사용한다. Case는 direct rustc flag로, Cargo subject는 release-profile overlay로 같은 조건을 적용한다. `O3S`는 추가 source cfg가 없으며 `O3KS`는 `--cfg keep`을 추가한다. 어느 조합이든 non-stripped binary를 한 번 만든 뒤 복사본에 `strip --strip-all`을 적용한다.
@@ -182,20 +194,22 @@ candidate-and-boundary oracle 조건의 grouping 평가다.
 
 ### `gt_extractor.py`
 
-Non-stripped binary에서 `nm -n -S -C` 결과를 읽고 같은 normalized symbol path를 같은 origin으로 묶는다. 동시에 user raw address 집합과 namespace 함수의 symbol extent를 만든다. Extent에는 scored candidate뿐 아니라 source `main`도 포함되며, 이름이나 origin은 binary extractor에 전달하지 않는다.
+Non-stripped binary에서 `nm -n -S -C` 결과를 읽고 같은 normalized symbol path를 같은 origin으로 묶는다. 동시에 scope별 candidate selection과 모든 Rust symbol의 공용 boundary artifact를 만든다. 이름이나 origin partition은 binary extractor에 전달하지 않는다.
 
 상세: [Ground truth 추출](ground_truth.md)
 
 ### `binary_extractor.py`
 
 Radare2와 Capstone으로 stripped function과 transfer evidence를 추출한다. 확정된
-direct edge, 정책상 제외한 import, target을 정하지 못한 indirect callsite를 raw
-graph에 각각 resolved/filtered/unresolved로 구분해 남긴다.
+direct edge, 정책상 제외한 import, 함수에 매핑되지 않은 direct target, target을 정하지
+못한 indirect callsite를 raw graph에 각각
+resolved/filtered/unmapped/unresolved로 구분해 남긴다.
 
 ### `candidate_selection.py`, `graph_evidence.py`, `graph_projector.py`
 
 `candidate_selection.py`는 users JSON을 검증하고 candidate 집합과 SHA-256을 만든다.
-`graph_evidence.py`는 candidate와 track을 포함하지 않는 raw graph schema와 hash
+`function_boundaries.py`는 scope-independent Rust function extent를 검증한다.
+`graph_evidence.py`는 candidate와 track을 포함하지 않는 raw graph schema v2와 hash
 검증을 담당한다. `graph_projector.py`는 raw evidence, candidate selection, track
 정책을 결합해 CG-WL fixture로 바꾼다.
 `direct-in-v1`에서는 candidate의 direct callee와 direct external caller까지만
@@ -259,7 +273,7 @@ plain, min 각각:
 
 ```bash
 python3 compile.py family_graph_01 case
-python3 run_case.py family_graph_01
+python3 run_case.py family_graph_01 --candidate-scope subject
 ```
 
 ### 6.1 Compile
@@ -337,16 +351,17 @@ PR=1.00 RE=1.00 F1=1.00 ARI=1.00
 4. GT member ID 집합과 fixture의 `scored=true` ID 집합이 정확히 같아야 한다.
 5. Fixture call target은 fixture 안에 존재해야 하고 count는 양수여야 한다.
 6. 한 GT member는 둘 이상의 origin에 속할 수 없다.
-7. 서로 다른 origin symbol이 한 주소를 공유하면 GT 생성은 실패한다.
+7. `subject` scope에서 서로 다른 origin symbol이 한 주소를 공유하면 GT 생성은 실패한다. `rust-nonstd` scope에서는 주소 하나를 중복 node로 만들 수 없으므로 `shared-address@FUN_*` singleton과 원래 origin 목록을 보존한다.
 8. Engine은 fixture 외의 GT/symbol 파일을 읽지 않는다.
 
 ## 8. 현재 범위와 한계
 
 ### Candidate 조건
 
-현재 점수는 compiler symbol에서 얻은 candidate 주소와 source namespace 함수의
-symbol extent가 제공된 조건의 결과다. Stripped binary만으로 user 함수를 자동
-분류하거나 함수 경계를 복구하는 성능을 측정하지 않는다.
+현재 점수는 compiler symbol에서 얻은 candidate 주소와 Rust 함수 symbol extent가
+제공된 조건의 결과다. 기본 scope는 `core/alloc/std` 소유 함수를 제외한 모든
+관찰 가능한 Rust 함수이고, 호환 scope는 subject namespace만 사용한다. Stripped
+binary만으로 함수 소유권이나 경계를 복구하는 성능을 측정하지 않는다.
 
 ### Function과 edge 복구
 

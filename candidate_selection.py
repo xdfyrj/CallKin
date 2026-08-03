@@ -5,15 +5,22 @@ import json
 from dataclasses import dataclass
 from typing import Any
 
-from paths import normalize_profile
+from paths import (
+    DEFAULT_CANDIDATE_SCOPE,
+    RUST_NONSTD_CANDIDATE_SCOPE,
+    SUBJECT_CANDIDATE_SCOPE,
+    normalize_candidate_scope,
+    normalize_profile,
+)
 from provenance import BuildProvenance, parse_provenance
 
 
-SUPPORTED_SELECTION_SCHEMAS = {4, 5}
+SUPPORTED_SELECTION_SCHEMAS = {4, 5, 6}
 
 
 @dataclass(frozen=True)
 class CandidateSelection:
+    scope: str
     addresses: frozenset[int]
     function_bounds: dict[int, int]
     provenance: BuildProvenance
@@ -51,17 +58,49 @@ def parse_candidate_selection(
         "case", "build", "profile", "schema_version", "provenance",
         "source", "addresses", "function_bounds",
     }
-    namespace_keys = set(data) & {"prefix", "namespaces"}
-    if set(data) - {"prefix", "namespaces"} != required or len(namespace_keys) != 1:
-        raise ValueError(
-            "candidate selection must contain the common fields plus exactly "
-            "one of prefix/namespaces"
-        )
-    if data["schema_version"] not in SUPPORTED_SELECTION_SCHEMAS:
+    schema_version = data.get("schema_version")
+    if schema_version not in SUPPORTED_SELECTION_SCHEMAS:
         raise ValueError(
             "unsupported candidate selection schema_version: "
             f"{data['schema_version']!r}"
         )
+    if schema_version == 6:
+        policy_keys = {"scope", "root_namespace", "namespaces", "excluded_namespaces"}
+        if set(data) != required | policy_keys:
+            raise ValueError(
+                "schema v6 candidate selection has an invalid field set"
+            )
+        scope = normalize_candidate_scope(data["scope"])
+        _string(data["root_namespace"], "candidate selection root_namespace")
+        namespaces = _string_list(
+            data["namespaces"],
+            "candidate selection namespaces",
+            allow_empty=scope == RUST_NONSTD_CANDIDATE_SCOPE,
+        )
+        excluded = _string_list(
+            data["excluded_namespaces"],
+            "candidate selection excluded_namespaces",
+            allow_empty=scope != RUST_NONSTD_CANDIDATE_SCOPE,
+        )
+        if scope == RUST_NONSTD_CANDIDATE_SCOPE and set(excluded) != {
+            "core", "alloc", "std"
+        }:
+            raise ValueError(
+                "rust-nonstd selection must exclude exactly core/alloc/std"
+            )
+    else:
+        namespace_keys = set(data) & {"prefix", "namespaces"}
+        if (
+            set(data) - {"prefix", "namespaces"} != required
+            or len(namespace_keys) != 1
+        ):
+            raise ValueError(
+                "legacy candidate selection must contain the common fields plus "
+                "exactly one of prefix/namespaces"
+            )
+        # Schemas 4/5 predate candidate scopes and always mean the original
+        # subject-owned selection, regardless of the current CLI default.
+        scope = SUBJECT_CANDIDATE_SCOPE
     for key, expected in (
         ("case", expected_case),
         ("build", expected_build),
@@ -75,18 +114,17 @@ def parse_candidate_selection(
     normalize_profile(data["profile"])
     if not isinstance(data["source"], str) or not data["source"]:
         raise ValueError("candidate selection source must be a non-empty string")
-    if "prefix" in data:
-        if not isinstance(data["prefix"], str) or not data["prefix"]:
-            raise ValueError("candidate selection prefix must be a non-empty string")
-    else:
-        namespaces = data["namespaces"]
-        if (
-            not isinstance(namespaces, list)
-            or not namespaces
-            or any(not isinstance(item, str) or not item for item in namespaces)
-        ):
-            raise ValueError(
-                "candidate selection namespaces must be non-empty strings"
+    if schema_version != 6:
+        if "prefix" in data:
+            if not isinstance(data["prefix"], str) or not data["prefix"]:
+                raise ValueError(
+                    "candidate selection prefix must be a non-empty string"
+                )
+        else:
+            _string_list(
+                data["namespaces"],
+                "candidate selection namespaces",
+                allow_empty=False,
             )
 
     addresses = _address_set(data["addresses"])
@@ -97,6 +135,7 @@ def parse_candidate_selection(
         raise ValueError(f"candidate address(es) have no symbol extent: {missing}")
 
     return CandidateSelection(
+        scope=scope,
         addresses=frozenset(addresses),
         function_bounds=function_bounds,
         provenance=parse_provenance(
@@ -155,3 +194,23 @@ def _address(value: Any, where: str) -> int:
         except ValueError as exc:
             raise ValueError(f"invalid {where}: {value!r}") from exc
     raise ValueError(f"invalid {where}: {value!r}")
+
+
+def _string(value: Any, where: str) -> str:
+    if not isinstance(value, str) or not value:
+        raise ValueError(f"{where} must be a non-empty string")
+    return value
+
+
+def _string_list(values: Any, where: str, *, allow_empty: bool) -> list[str]:
+    if (
+        not isinstance(values, list)
+        or (not values and not allow_empty)
+        or any(not isinstance(item, str) or not item for item in values)
+        or len(set(values)) != len(values)
+    ):
+        qualifier = "a list of unique strings"
+        if not allow_empty:
+            qualifier = "a non-empty " + qualifier
+        raise ValueError(f"{where} must be {qualifier}")
+    return values

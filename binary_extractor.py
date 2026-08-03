@@ -18,15 +18,20 @@ from graph_evidence import (
     write_raw_graph,
 )
 from graph_projector import project_fixture
+from function_boundaries import load_function_boundaries
 from paths import (
     ANALYSIS_TRACKS,
     BUILD_PROFILES,
+    CANDIDATE_SCOPES,
     DEFAULT_ANALYSIS_TRACK,
     DEFAULT_BUILD,
+    DEFAULT_CANDIDATE_SCOPE,
     DEFAULT_PROFILE,
+    boundaries_json_for,
     build_manifest_for,
     fixture_json_for,
     normalize_profile,
+    normalize_candidate_scope,
     normalize_track,
     raw_graph_for,
     resolve_fixture_binary,
@@ -419,6 +424,7 @@ class BinaryExtractor:
             instruction = str(op.get("opcode") or op.get("disasm") or op.get("type") or "unknown")
             is_call = self._is_call_op(op)
             is_tail_jump = self._is_tail_call_jump_op(op)
+            direct_target = self._direct_code_target(op)
             target_func = self._direct_call_target(
                 func,
                 op,
@@ -452,6 +458,22 @@ class BinaryExtractor:
                     status="resolved",
                     target=target_func.addr,
                     resolver="direct-immediate" if is_call else "direct-tail",
+                    confidence="exact",
+                ))
+            elif (
+                is_call
+                and direct_target is not None
+                and self._r2_operand_kind(op) == "immediate"
+            ):
+                transfers.append(TransferEvidence(
+                    source=func.addr,
+                    callsite=callsite,
+                    instruction=instruction,
+                    kind="call",
+                    operand_kind="immediate",
+                    status="unmapped",
+                    target=direct_target,
+                    resolver="direct-immediate",
                     confidence="exact",
                 ))
             elif is_call:
@@ -523,10 +545,12 @@ class BinaryExtractor:
                 else None
             )
             target_func = None
+            direct_target = None
             if operand is not None and operand.type == X86_OP_IMM:
+                direct_target = int(operand.imm)
                 target_func = self._resolve_direct_target(
                     func,
-                    int(operand.imm),
+                    direct_target,
                     is_call=is_call,
                     is_tail_jump=is_tail_jump,
                     include_filtered=True,
@@ -559,6 +583,18 @@ class BinaryExtractor:
                     status="resolved",
                     target=target_func.addr,
                     resolver="direct-immediate" if is_call else "direct-tail",
+                    confidence="exact",
+                ))
+            elif is_call and direct_target is not None:
+                transfers.append(TransferEvidence(
+                    source=func.addr,
+                    callsite=instruction.address,
+                    instruction=instruction_text,
+                    kind="call",
+                    operand_kind="immediate",
+                    status="unmapped",
+                    target=direct_target,
+                    resolver="direct-immediate",
                     confidence="exact",
                 ))
             elif is_call:
@@ -715,8 +751,10 @@ class BinaryExtractor:
         build: str,
         profile: str,
         provenance: BuildProvenance,
+        boundary_input_sha256: str,
         root_address: int,
         function_bounds: dict[int, int],
+        symbol_only_addresses: set[int],
         boundary_mode: str,
         boundary_mismatches: list[dict[str, int | str]],
     ) -> dict[str, Any]:
@@ -738,6 +776,7 @@ class BinaryExtractor:
                     if func.addr in function_bounds
                     else "radare2"
                 ),
+                "discovered_by_radare2": func.addr not in symbol_only_addresses,
             }
             for func in self.functions
         ]
@@ -747,6 +786,7 @@ class BinaryExtractor:
             profile=profile,
             binary_path=self.binary_path,
             provenance=provenance,
+            boundary_input_sha256=boundary_input_sha256,
             root_address=root_address,
             functions=functions,
             transfers=transfers,
@@ -933,7 +973,19 @@ def extract_artifacts(args: argparse.Namespace) -> ExtractionArtifacts:
             )
         root = extractor.resolve_root(args.root)
         user_addrs = set(selection.addresses)
-        function_bounds = selection.function_bounds
+        if not getattr(args, "boundaries", None):
+            raise ValueError(
+                "raw extraction requires a scope-independent function boundary "
+                "JSON; run gt_extractor.py first or pass --boundaries"
+            )
+        boundary_input = load_function_boundaries(
+            args.boundaries,
+            expected_case=args.case,
+            expected_build=args.build,
+            expected_profile=args.profile,
+        )
+        function_bounds = boundary_input.bounds
+        boundary_input_sha256 = boundary_input.sha256
         boundary_mismatches = extractor.boundary_mismatches(function_bounds)
         added_symbol_starts = extractor.add_symbol_bound_functions(function_bounds)
         for addr in added_symbol_starts:
@@ -950,6 +1002,8 @@ def extract_artifacts(args: argparse.Namespace) -> ExtractionArtifacts:
             raise ValueError("verified build provenance is required for fixture extraction")
         if selection.provenance != provenance:
             raise ValueError("candidate selection/fixture build provenance mismatch")
+        if boundary_input.provenance != provenance:
+            raise ValueError("function boundaries/fixture build provenance mismatch")
 
         missing_starts = user_addrs - set(extractor.by_addr)
         if missing_starts:
@@ -966,8 +1020,10 @@ def extract_artifacts(args: argparse.Namespace) -> ExtractionArtifacts:
             build=args.build,
             profile=args.profile,
             provenance=provenance,
+            boundary_input_sha256=boundary_input_sha256,
             root_address=root.addr,
             function_bounds=function_bounds,
+            symbol_only_addresses=set(added_symbol_starts),
             boundary_mode=boundary_mode,
             boundary_mismatches=boundary_mismatches,
         )
@@ -1039,6 +1095,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
         help=f"analysis track. Default: {DEFAULT_ANALYSIS_TRACK}",
     )
     parser.add_argument(
+        "--candidate-scope",
+        choices=CANDIDATE_SCOPES,
+        default=DEFAULT_CANDIDATE_SCOPE,
+        help=f"candidate selection scope. Default: {DEFAULT_CANDIDATE_SCOPE}",
+    )
+    parser.add_argument(
         "--raw-output",
         help="raw extraction graph output path",
     )
@@ -1057,6 +1119,10 @@ def build_arg_parser() -> argparse.ArgumentParser:
         ),
     )
     parser.add_argument("--users", help="JSON file containing raw user addresses")
+    parser.add_argument(
+        "--boundaries",
+        help="scope-independent function boundary JSON",
+    )
     parser.add_argument("--manifest", help="override and verify build manifest path")
     parser.add_argument(
         "--score-root",
@@ -1094,6 +1160,7 @@ def apply_cli_defaults(args: argparse.Namespace, parser: argparse.ArgumentParser
     case, build = split_case_build(args.binary, args.build)
     args.profile = normalize_profile(args.profile)
     args.track = normalize_track(args.track)
+    args.candidate_scope = normalize_candidate_scope(args.candidate_scope)
 
     if not Path(args.binary).exists():
         args.binary = resolve_fixture_binary(case, build, args.profile)
@@ -1111,6 +1178,7 @@ def apply_cli_defaults(args: argparse.Namespace, parser: argparse.ArgumentParser
             build,
             args.profile,
             args.track,
+            args.candidate_scope,
         )
     if args.raw_output is None:
         args.raw_output = raw_graph_for(
@@ -1119,9 +1187,17 @@ def apply_cli_defaults(args: argparse.Namespace, parser: argparse.ArgumentParser
             args.profile,
         )
 
-    default_users = resolve_users_json(args.case, build, args.profile)
+    default_users = resolve_users_json(
+        args.case,
+        build,
+        args.profile,
+        args.candidate_scope,
+    )
     if args.users is None and Path(default_users).exists():
         args.users = default_users
+    default_boundaries = boundaries_json_for(args.case, build, args.profile)
+    if args.boundaries is None and Path(default_boundaries).exists():
+        args.boundaries = default_boundaries
     args.manifest = args.manifest or build_manifest_for(args.case, build, args.profile)
 
     if args.list_functions:

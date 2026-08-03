@@ -16,6 +16,7 @@ from paths import (
     build_manifest_for,
     fixture_json_for,
     gt_json_for,
+    SUBJECT_CANDIDATE_SCOPE,
 )
 from scores import reports_to_dict, score_case, score_v0_baseline
 
@@ -114,8 +115,10 @@ def main(argv: list[str] | None = None) -> int:
             expected_profile=profile,
         )
         report = score_case(
-            fixture_json_for(case, build, profile),
-            gt_json_for(case, build, profile),
+            fixture_json_for(
+                case, build, profile, candidate_scope=SUBJECT_CANDIDATE_SCOPE
+            ),
+            gt_json_for(case, build, profile, SUBJECT_CANDIDATE_SCOPE),
         )
         counts = (
             report.pairwise.tp,
@@ -143,7 +146,12 @@ def main(argv: list[str] | None = None) -> int:
         }
         if profile == "min" and case == "family_graph_02" and build == "O3S":
             fixture_data = json.loads(
-                Path(fixture_json_for(case, build, profile)).read_text(encoding="utf-8")
+                Path(fixture_json_for(
+                    case,
+                    build,
+                    profile,
+                    candidate_scope=SUBJECT_CANDIDATE_SCOPE,
+                )).read_text(encoding="utf-8")
             )
             root_nodes = [
                 node for node in fixture_data["nodes"]
@@ -183,8 +191,13 @@ def main(argv: list[str] | None = None) -> int:
     if set(profiles) == set(BUILD_PROFILES):
         try:
             score_case(
-                fixture_json_for("family_graph_01", "O3S", "plain"),
-                gt_json_for("family_graph_01", "O3S", "min"),
+                fixture_json_for(
+                    "family_graph_01", "O3S", "plain",
+                    candidate_scope=SUBJECT_CANDIDATE_SCOPE,
+                ),
+                gt_json_for(
+                    "family_graph_01", "O3S", "min", SUBJECT_CANDIDATE_SCOPE
+                ),
             )
         except ValueError as exc:
             profile_join_ok = "case/build/profile mismatch" in str(exc)
@@ -193,7 +206,9 @@ def main(argv: list[str] | None = None) -> int:
         all_ok = all_ok and profile_join_ok
         print(f"cross-profile join rejection: {'PASS' if profile_join_ok else 'FAIL'}")
 
-        gt_path = gt_json_for("family_graph_01", "O3S", "plain")
+        gt_path = gt_json_for(
+            "family_graph_01", "O3S", "plain", SUBJECT_CANDIDATE_SCOPE
+        )
         mismatched_gt = json.loads(Path(gt_path).read_text(encoding="utf-8"))
         mismatched_gt["provenance"]["build_id"] = "another-build-generation"
         with tempfile.NamedTemporaryFile(mode="w", suffix=".json", encoding="utf-8") as f:
@@ -201,7 +216,10 @@ def main(argv: list[str] | None = None) -> int:
             f.flush()
             try:
                 score_case(
-                    fixture_json_for("family_graph_01", "O3S", "plain"),
+                    fixture_json_for(
+                        "family_graph_01", "O3S", "plain",
+                        candidate_scope=SUBJECT_CANDIDATE_SCOPE,
+                    ),
                     f.name,
                 )
             except ValueError as exc:

@@ -7,6 +7,10 @@ from pathlib import Path
 DEFAULT_BUILD = "O3S"
 DEFAULT_PROFILE = "plain"
 BUILD_PROFILES = ("plain", "min")
+SUBJECT_CANDIDATE_SCOPE = "subject"
+RUST_NONSTD_CANDIDATE_SCOPE = "rust-nonstd"
+DEFAULT_CANDIDATE_SCOPE = RUST_NONSTD_CANDIDATE_SCOPE
+CANDIDATE_SCOPES = (SUBJECT_CANDIDATE_SCOPE, RUST_NONSTD_CANDIDATE_SCOPE)
 DIRECT_V0_TRACK = "direct-v0"
 DIRECT_IN_V1_TRACK = "direct-in-v1"
 DEFAULT_ANALYSIS_TRACK = DIRECT_V0_TRACK
@@ -33,6 +37,16 @@ def normalize_track(track: str | None) -> str:
         raise ValueError(
             f"unknown analysis track: {track!r}. "
             f"expected one of {', '.join(ANALYSIS_TRACKS)}"
+        )
+    return normalized
+
+
+def normalize_candidate_scope(scope: str | None) -> str:
+    normalized = (scope or DEFAULT_CANDIDATE_SCOPE).lower()
+    if normalized not in CANDIDATE_SCOPES:
+        raise ValueError(
+            f"unknown candidate scope: {scope!r}. "
+            f"expected one of {', '.join(CANDIDATE_SCOPES)}"
         )
     return normalized
 
@@ -123,13 +137,19 @@ def fixture_json_for(
     build: str,
     profile: str = DEFAULT_PROFILE,
     track: str = DEFAULT_ANALYSIS_TRACK,
+    candidate_scope: str = DEFAULT_CANDIDATE_SCOPE,
 ) -> str:
     normalized_track = normalize_track(track)
+    candidate_scope = normalize_candidate_scope(candidate_scope)
     profile = normalize_profile(profile)
     stem = output_stem(case, build)
-    if normalized_track == DIRECT_V0_TRACK:
-        return f"fixtures/{profile}/{stem}.fixture.json"
-    return f"fixtures/{normalized_track}/{profile}/{stem}.fixture.json"
+    parts = ["fixtures"]
+    if normalized_track != DIRECT_V0_TRACK:
+        parts.append(normalized_track)
+    if candidate_scope != SUBJECT_CANDIDATE_SCOPE:
+        parts.append(candidate_scope)
+    parts.extend((profile, f"{stem}.fixture.json"))
+    return "/".join(parts)
 
 
 def raw_graph_for(
@@ -147,16 +167,33 @@ def gt_json_for(
     case: str,
     build: str,
     profile: str = DEFAULT_PROFILE,
+    candidate_scope: str = DEFAULT_CANDIDATE_SCOPE,
 ) -> str:
-    return f"ground_truth/{normalize_profile(profile)}/{output_stem(case, build)}.gt.json"
+    return _scoped_artifact_path(
+        "ground_truth", case, build, profile, candidate_scope, ".gt.json"
+    )
 
 
 def users_json_for(
     case: str,
     build: str,
     profile: str = DEFAULT_PROFILE,
+    candidate_scope: str = DEFAULT_CANDIDATE_SCOPE,
 ) -> str:
-    return f"users/{normalize_profile(profile)}/{output_stem(case, build)}.users.json"
+    return _scoped_artifact_path(
+        "users", case, build, profile, candidate_scope, ".users.json"
+    )
+
+
+def boundaries_json_for(
+    case: str,
+    build: str,
+    profile: str = DEFAULT_PROFILE,
+) -> str:
+    return (
+        f"boundaries/{normalize_profile(profile)}/"
+        f"{output_stem(case, build)}.boundaries.json"
+    )
 
 
 def resolve_fixture_json(
@@ -164,24 +201,43 @@ def resolve_fixture_json(
     build: str,
     profile: str = DEFAULT_PROFILE,
     track: str = DEFAULT_ANALYSIS_TRACK,
+    candidate_scope: str = DEFAULT_CANDIDATE_SCOPE,
 ) -> str:
-    return fixture_json_for(case, build, profile, track)
+    return fixture_json_for(case, build, profile, track, candidate_scope)
 
 
 def resolve_gt_json(
     case: str,
     build: str,
     profile: str = DEFAULT_PROFILE,
+    candidate_scope: str = DEFAULT_CANDIDATE_SCOPE,
 ) -> str:
-    return gt_json_for(case, build, profile)
+    return gt_json_for(case, build, profile, candidate_scope)
 
 
 def resolve_users_json(
     case: str,
     build: str,
     profile: str = DEFAULT_PROFILE,
+    candidate_scope: str = DEFAULT_CANDIDATE_SCOPE,
 ) -> str:
-    return users_json_for(case, build, profile)
+    return users_json_for(case, build, profile, candidate_scope)
+
+
+def _scoped_artifact_path(
+    root: str,
+    case: str,
+    build: str,
+    profile: str,
+    candidate_scope: str,
+    suffix: str,
+) -> str:
+    parts = [root]
+    scope = normalize_candidate_scope(candidate_scope)
+    if scope != SUBJECT_CANDIDATE_SCOPE:
+        parts.append(scope)
+    parts.extend((normalize_profile(profile), f"{output_stem(case, build)}{suffix}"))
+    return "/".join(parts)
 
 
 def baseline_result_for(profile: str = DEFAULT_PROFILE) -> str:

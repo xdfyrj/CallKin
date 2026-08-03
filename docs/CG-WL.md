@@ -380,7 +380,7 @@ rounds = 1
 기본 실행은 최종 partition과 `rounds`만 반환한다. `--trace`를 지정하면 `round 0` seed부터 마지막 fixpoint 확인까지 scored partition을 모두 기록하고 출력한다.
 
 ```bash
-python3 engine.py family_graph_02 --build O3S --profile plain --trace
+python3 engine.py family_graph_02 --build O3S --profile plain --trace --candidate-scope subject
 ```
 
 출력 형태:
@@ -448,10 +448,10 @@ trace (`--trace`를 요청한 경우)
 기본 mode는 `full`이다.
 
 ```bash
-python3 engine.py family_graph_03
-python3 engine.py family_graph_03 --mode out
-python3 engine.py family_graph_03 --mode in
-python3 engine.py family_graph_03 --mode out-in
+python3 engine.py family_graph_03 --candidate-scope subject
+python3 engine.py family_graph_03 --mode out --candidate-scope subject
+python3 engine.py family_graph_03 --mode in --candidate-scope subject
+python3 engine.py family_graph_03 --mode out-in --candidate-scope subject
 ```
 
 출력 예시:
@@ -465,7 +465,7 @@ full
 모든 mode를 GT와 함께 비교하려면 scorer를 사용한다.
 
 ```bash
-python3 scores.py family_graph_03 --all-modes
+python3 scores.py family_graph_03 --all-modes --candidate-scope subject
 ```
 
 ## 14. Engine이 하지 않는 일

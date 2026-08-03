@@ -79,6 +79,8 @@ def main(argv: list[str] | None = None) -> int:
                     build,
                     "--profile",
                     profile,
+                    "--candidate-scope",
+                    "subject",
                 ])
 
             run_step([

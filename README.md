@@ -29,9 +29,9 @@ python3 -m pip install -r requirements.txt
 저장된 fixture와 ground truth로 한 case를 채점한다.
 
 ```bash
-python3 scores.py family_graph_03
-python3 scores.py family_graph_03 --profile min
-python3 scores.py family_graph_03 --build O3KS --profile min
+python3 scores.py family_graph_03 --candidate-scope subject
+python3 scores.py family_graph_03 --profile min --candidate-scope subject
+python3 scores.py family_graph_03 --build O3KS --profile min --candidate-scope subject
 ```
 
 각 profile의 네 canonical build를 채점하고 profile별 JSON으로 기록한다.
@@ -70,20 +70,28 @@ Cargo subject는 `subjects/<name>/Cargo.toml`과 `Cargo.lock`을 사용하되,
 
 ```bash
 python3 compile.py billing-client subject --profile plain --build O3S
-python3 run_case.py billing-client --profile plain --build O3S
 python3 run_case.py billing-client --profile plain --build O3S --track direct-in-v1
 ```
 
 이미 컴파일된 한 build에서 GT, users, fixture를 생성하고 grouping과 scoring까지 수행한다.
 
 ```bash
-python3 run_case.py family_graph_03
-python3 run_case.py family_graph_03 --build O3KS --profile min
-python3 run_case.py family_graph_03 --all-modes
-python3 run_case.py family_graph_03 --trace
+python3 run_case.py family_graph_03 --candidate-scope subject
+python3 run_case.py family_graph_03 --build O3KS --profile min --candidate-scope subject
+python3 run_case.py family_graph_03 --all-modes --candidate-scope subject
+python3 run_case.py family_graph_03 --trace --candidate-scope subject
 ```
 
-기본 `direct-v0` track은 기존 baseline을 그대로 사용한다. `direct-in-v1`은
+기본 candidate scope는 `rust-nonstd`다. Non-stripped binary에서 demangle 가능한 Rust
+text symbol 중 함수 소유 namespace가 `core`, `alloc`, `std`인 함수와 source `main`을
+제외하고, subject crate와 dependency crate 함수는 모두 scored candidate로 둔다.
+기존 통제 corpus의 subject-owned 함수만 재현하려면 `--candidate-scope subject`를
+명시한다. 두 scope 모두 candidate 주소를 compiler symbol에서 받는 oracle 조건이며,
+stripped binary만으로 library 소유권을 분류하는 기능은 아니다.
+
+기본 projection track은 `direct-v0`다. 기존 동결 baseline은 정확히
+`subject/direct-v0` 조합이며, 새 기본값인 `rust-nonstd/direct-v0`는 별도
+경로와 schema v5로 생성된다. `direct-in-v1`은
 candidate가 직접 호출하는 외부 함수뿐 아니라 candidate를 직접 호출하는 외부
 함수도 one-hop anchor로 포함한다. 두 track은 서로 다른 경로에 저장되어 기존
 fixture를 덮어쓰지 않는다. Raw graph는 track별로 복제하지 않고
@@ -93,16 +101,16 @@ track 정책을 결합한다.
 각 단계를 단독 실행할 수도 있다.
 
 ```bash
-python3 gt_extractor.py family_graph_03
-python3 binary_extractor.py family_graph_03
-python3 binary_extractor.py family_graph_03 --track direct-in-v1
+python3 gt_extractor.py family_graph_03 --candidate-scope subject
+python3 binary_extractor.py family_graph_03 --candidate-scope subject
+python3 binary_extractor.py family_graph_03 --track direct-in-v1 --candidate-scope subject
 python3 graph_projector.py \
   extractions/plain/family_graph_03.O3S.raw.json \
   users/plain/family_graph_03.O3S.users.json \
   --track direct-in-v1
-python3 engine.py family_graph_03 --mode full
-python3 scores.py family_graph_03 --mode full
-python3 engine.py family_graph_03 --trace
+python3 engine.py family_graph_03 --mode full --candidate-scope subject
+python3 scores.py family_graph_03 --mode full --candidate-scope subject
+python3 engine.py family_graph_03 --trace --candidate-scope subject
 ```
 
 기본 build는 `O3S`, 기본 compiler profile은 `plain`이다. `O3KS`는 profile 설정에 `--cfg keep`을 추가한다.
@@ -136,9 +144,15 @@ bin/plain/family_graph_03.O3S.fixture.bin
 build_info/plain/family_graph_03.O3S.json
 ground_truth/plain/family_graph_03.O3S.gt.json
 users/plain/family_graph_03.O3S.users.json
+boundaries/plain/family_graph_03.O3S.boundaries.json
 fixtures/plain/family_graph_03.O3S.fixture.json
 extractions/plain/family_graph_03.O3S.raw.json
 fixtures/direct-in-v1/plain/family_graph_03.O3S.fixture.json
+
+# 기본 rust-nonstd scope의 scope별 산출물
+ground_truth/rust-nonstd/plain/billing-client.O3S.gt.json
+users/rust-nonstd/plain/billing-client.O3S.users.json
+fixtures/direct-in-v1/rust-nonstd/plain/billing-client.O3S.fixture.json
 ```
 
 각 profile에서 다음 네 case/build 조합을 생성하므로 canonical artifact set은 총 8개다.
@@ -159,8 +173,10 @@ family_graph_03 / O3KS
 - direct call과 다른 함수 시작점으로 향하는 tail-call-like jump
 - resolved/unresolved transfer evidence를 분리한 raw extraction graph
 - projection과 독립된 raw graph 및 별도 candidate selection
-- target을 알지만 제외한 import의 `filtered` transfer evidence
-- compiler symbol로 관찰된 user 함수 주소 집합
+- target을 알지만 제외한 import의 `filtered`, 함수에 매핑되지 않은 direct target의 `unmapped` evidence
+- 모든 Rust symbol extent를 담는 scope-independent boundary artifact
+- 기본 `rust-nonstd` candidate scope와 호환용 `subject` scope
+- candidate selection SHA-256을 포함한 projection provenance
 - `direct-v0`: user 함수가 직접 호출하는 library/runtime anchor
 - `direct-in-v1`: user 함수의 direct callee와 direct external caller anchor
 - directed weighted call graph 기반 CG-WL
@@ -172,7 +188,7 @@ family_graph_03 / O3KS
 - generic function 자동 탐지
 - 함수 경계 복원 연구
 - indirect call target recovery. 현재 unresolved callsite로만 기록한다.
-- std/library classifier 구현
+- stripped-only std/library classifier. 현재 scope는 non-stripped symbol owner oracle이다.
 - source-level mono-item census와 inlined/eliminated 원인 판정
 - type recovery 또는 body/CFG similarity
 

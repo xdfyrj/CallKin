@@ -2,15 +2,16 @@
 
 ## 1. 목적
 
-CallKin의 `gt_extractor.py`는 non-stripped Rust binary의 symbol table에서 두 파일을 만든다.
+CallKin의 `gt_extractor.py`는 non-stripped Rust binary의 symbol table에서 세 파일을 만든다.
 
 ```text
 gt_bin/plain/family_graph_01.O3S.gt.bin
 -> ground_truth/plain/family_graph_01.O3S.gt.json
 -> users/plain/family_graph_01.O3S.users.json
+-> boundaries/plain/family_graph_01.O3S.boundaries.json
 ```
 
-두 출력의 역할은 다르다.
+세 출력의 역할은 다르다.
 
 ### Ground truth JSON
 
@@ -27,7 +28,7 @@ shared_recursive
 
 ### Users JSON
 
-User namespace에 속한 함수의 raw address만 기록한다.
+선택한 candidate scope에 속한 함수의 raw address만 기록한다.
 
 ```text
 0x13e40
@@ -41,19 +42,24 @@ User namespace에 속한 함수의 raw address만 기록한다.
 ## 2. 가장 단순한 실행
 
 ```bash
-python3 gt_extractor.py family_graph_01
+# 기본: core/alloc/std를 제외한 모든 관찰 가능한 Rust 함수
+python3 gt_extractor.py billing-client
+
+# frozen micro-corpus의 subject-owned 함수만 재현
+python3 gt_extractor.py family_graph_01 --candidate-scope subject
 ```
 
-기본값은 다음처럼 해석된다.
+위 `family_graph_01 --candidate-scope subject` 명령은 다음처럼 해석된다.
 
 ```text
 binary = gt_bin/plain/family_graph_01.O3S.gt.bin
 case   = family_graph_01
 build  = O3S
 profile = plain
-prefix = family_graph_01::
+candidate scope = subject
 GT     = ground_truth/plain/family_graph_01.O3S.gt.json
 users  = users/plain/family_graph_01.O3S.users.json
+boundaries = boundaries/plain/family_graph_01.O3S.boundaries.json
 nm     = nm
 ```
 
@@ -64,6 +70,8 @@ wrote ground_truth/plain/family_graph_01.O3S.gt.json
 origins=2
 wrote users/plain/family_graph_01.O3S.users.json
 users=6
+wrote boundaries/plain/family_graph_01.O3S.boundaries.json
+function boundaries=<all Rust text symbols>
 ```
 
 ## 3. 전체 함수 호출 순서
@@ -76,6 +84,7 @@ main()
   -> parse_nm_lines()
   -> user_addresses()
        -> origin_from_symbol()
+  -> rust_function_bounds()
   -> make_ground_truth()
        -> origin_from_symbol()
        -> function_id()
@@ -83,6 +92,8 @@ main()
   -> write_json(GT)
   -> make_users_json()
   -> write_json(users)
+  -> make_function_boundaries_json()
+  -> write_json(boundaries)
 ```
 
 ## 4. Symbol 읽기
@@ -120,7 +131,43 @@ Symbol(
 
 Text symbol kind `t`와 `T`만 사용한다. Data symbol, undefined symbol, 주소를 파싱할 수 없는 줄은 제외한다.
 
-## 5. Manifest namespace로 subject 함수 선택
+## 5. Candidate scope
+
+### 5.1 기본 `rust-nonstd`
+
+기본 정책은 demangle 가능한 Rust text symbol의 **함수 소유 namespace**를 판정한다.
+소유자가 `core`, `alloc`, `std`이면 제외하고, 그 밖의 subject/dependency crate 함수는
+candidate로 포함한다. Source `main`은 CG-WL root anchor이므로 scored candidate에서
+제외한다.
+
+```text
+serde_json::de::parse                       -> candidate
+billing_client::client::decode              -> candidate
+core::ptr::drop_in_place<billing_client::T> -> 제외(core 소유)
+std::rt::lang_start_internal                -> 제외(std 소유)
+reconcile::main                             -> 제외(root)
+```
+
+Trait impl은 맨 앞 문자열만 보지 않는다. 구현 header에서 non-standard crate를 찾아
+소유자를 정한다.
+
+```text
+<billing_client::Invoice as core::fmt::Display>::fmt
+-> billing_client 소유 -> candidate
+
+<alloc::vec::Vec<T> as billing_client::LocalTrait>::method
+-> billing_client 소유 trait impl -> candidate
+
+<&T as core::fmt::Debug>::fmt
+-> core 소유 -> 제외
+```
+
+이 분류는 non-stripped symbol oracle이다. Stripped binary만 보고 standard library를
+식별한 결과가 아니다. 또한 요청한 범위를 문자 그대로 적용하므로 `__rustc`,
+`std_detect`처럼 owner가 정확히 `core/alloc/std`가 아닌 Rust namespace는 candidate가
+될 수 있다.
+
+### 5.2 호환 `subject`
 
 단일-file case manifest에는 namespace 하나가 기록된다.
 
@@ -154,13 +201,15 @@ reconcile
 일반 symbol은 `billing_client::` 또는 `reconcile::`로 시작하는지 검사한다.
 Trait impl symbol은 `<billing_client::` 또는 `<reconcile::`로 시작하는지도 검사한다.
 외부 `serde::`, `std::`, `sha2::` 함수는 candidate가 아니라 direct library anchor다.
+이 정책은 `--candidate-scope subject`로 선택하며 frozen family-graph baseline이
+사용한다.
 
 ## 6. Symbol을 origin으로 정규화
 
 `origin_from_symbol()`은 다음 순서로 origin을 만든다.
 
-1. Symbol이 manifest의 subject namespace에 속하는지 확인한다.
-2. 단일 namespace case에서는 prefix를 제거하고, 여러 namespace Cargo subject에서는 namespace를 보존한다.
+1. Symbol이 선택한 candidate scope에 속하는지 확인한다.
+2. `subject`의 단일 namespace case에서는 prefix를 제거한다. 여러 namespace 또는 `rust-nonstd`에서는 crate path를 보존한다.
 3. 끝의 Rust hash `::h<16 hex>`를 제거한다.
 4. `::<impl ...>`이면 구현 대상 type을 먼저 보존한다.
 5. 나머지 표시된 generic argument `::<...>`를 제거한다.
@@ -289,17 +338,27 @@ FUN_00113e40
 0x13e40 family_graph_01::beta
 ```
 
-현재 구현은 어느 origin을 임의로 선택하지 않고 실패한다.
+`subject` scope는 어느 origin을 임의로 선택하지 않고 실패한다.
 
 ```text
 cross-origin address alias at FUN_00113e40
 ```
 
-이 정책은 잘못된 partition을 조용히 생성하는 것을 막는다. 다만 compiler merging이나 linker ICF를 상태로 측정하는 기능은 아직 없다.
+`rust-nonstd`처럼 큰 universe에서는 실제 binary에 이런 alias가 존재할 수 있다.
+기계 함수 하나를 두 GT group에 중복 배치할 수 없으므로 다음 singleton으로 둔다.
+
+```text
+shared-address@FUN_001557f0
+```
+
+GT schema v6의 `cross_origin_aliases`에는 해당 주소에서 관찰한 원래 origin을 모두
+보존한다. 이것은 ICF나 compiler merging 원인을 확정한다는 뜻이 아니라, partition이
+정의되지 않는 shared-address 관찰을 임의의 한 origin으로 귀속하지 않는 처리다.
 
 ## 10. Ground truth JSON schema
 
-Schema version은 5다.
+일반 GT schema version은 5다. Cross-origin shared address가 있으면 schema version
+6과 `cross_origin_aliases`를 사용한다.
 
 실제 fg01 구조:
 
@@ -343,10 +402,13 @@ Schema version은 5다.
 | `origins` | true partition |
 | `symbols` | member별 원래 demangled symbol 목록 |
 | optional `note` | same-origin duplicate/alias 기록 |
+| optional `cross_origin_aliases` | shared-address member와 관찰된 원래 origin 목록 |
 
 `symbols`의 key 집합은 모든 origin member 집합과 정확히 같아야 한다. 이 조건은 `scores.py` loader가 다시 검증한다.
 
-## 11. Users JSON schema
+## 11. Candidate selection과 boundary schema
+
+### 11.1 `subject` users JSON
 
 Schema version은 5다. Version 4 users JSON도 읽을 수 있다.
 
@@ -380,7 +442,8 @@ Schema version은 5다. Version 4 users JSON도 읽을 수 있다.
 ```
 
 `addresses`는 scored candidate 시작 주소이며 중복을 제거해 오름차순으로 기록한다.
-`function_bounds`는 같은 source namespace에 속한 함수의 `(시작 주소, byte size)`다.
+이 schema v5 예시에서 `function_bounds`는 같은 subject namespace에 속한 함수의
+`(시작 주소, byte size)`다.
 Candidate 외에 source `main`도 포함하며, stripped binary의 callsite를 radare2 함수
 경계와 독립적으로 디코딩할 때 사용한다.
 
@@ -395,6 +458,40 @@ origin label
 ```
 
 따라서 binary extractor에 candidate 집합은 전달하지만 true partition은 전달하지 않는다.
+
+### 11.2 `rust-nonstd` users JSON
+
+Schema version 6은 선택 정책을 명시한다.
+
+```json
+{
+  "schema_version": 6,
+  "scope": "rust-nonstd",
+  "root_namespace": "reconcile",
+  "namespaces": [],
+  "excluded_namespaces": ["core", "alloc", "std"],
+  "addresses": ["0x2c840", "0x2ce00"],
+  "function_bounds": [
+    {"address": "0x2c840", "size": 64}
+  ]
+}
+```
+
+`candidate_selection.py`는 JSON 전체를 canonical form으로 hash하고, projector가 그
+SHA-256을 fixture `analysis.candidate_selection_sha256`에 기록한다.
+
+### 11.3 Scope-independent function boundaries
+
+`boundaries/<profile>/*.boundaries.json`은 candidate를 고르지 않는다. Demangle 가능한
+모든 Rust text symbol의 `(address, size)`만 담고 별도 SHA-256으로 검증된다.
+
+```text
+같은 boundaries + stripped binary -> raw graph 하나
+raw + subject users              -> subject fixture
+raw + rust-nonstd users          -> rust-nonstd fixture
+```
+
+따라서 candidate scope를 바꿀 때 disassembly evidence를 중복 생성할 필요가 없다.
 
 ## 12. Fixture universe 검증
 
@@ -423,6 +520,7 @@ Standalone CLI에서는 `--fixture`를 줄 때 이 검사를 수행한다.
 
 ```bash
 python3 gt_extractor.py family_graph_01 \
+  --candidate-scope subject \
   --fixture fixtures/plain/family_graph_01.O3S.fixture.json
 ```
 
@@ -437,9 +535,11 @@ python3 gt_extractor.py family_graph_01 \
 | `--case` | JSON case override | `--case custom_case` |
 | `--build` | build label | `--build O3KS` |
 | `--profile` | compiler profile과 artifact directory | `--profile min` |
+| `--candidate-scope` | `rust-nonstd`(기본) 또는 `subject` | `--candidate-scope subject` |
 | `--namespace` | manifest namespace override, 여러 번 지정 가능 | `--namespace billing_client` |
 | `--fixture` | scored universe 검사용 fixture | `fixtures/custom.fixture.json` |
 | `--users` | users JSON 출력 경로 | `users/custom.users.json` |
+| `--boundaries` | 공용 Rust symbol boundary 출력 | `boundaries/custom.json` |
 | `--manifest` | build manifest override | `build_info/min/custom.json` |
 | `--id-bias` | FUN ID address bias | `--id-bias 0` |
 | `--nm-tool` | nm-compatible executable | `nm`, `/usr/bin/nm` |
@@ -453,6 +553,7 @@ python3 gt_extractor.py \
   --case family_graph_03 \
   --build O3KS \
   --profile min \
+  --candidate-scope subject \
   --namespace family_graph_03 \
   --users users/min/family_graph_03.O3KS.users.json \
   --nm-tool nm
@@ -492,5 +593,6 @@ python3 gt_extractor.py \
 7. `make_ground_truth()`
 8. `user_addresses()`
 9. `make_users_json()`
-10. `validate_against_fixture()`
-11. `write_json()`
+10. `rust_function_bounds()`과 `make_function_boundaries_json()`
+11. `validate_against_fixture()`
+12. `write_json()`

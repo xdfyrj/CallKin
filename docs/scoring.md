@@ -23,20 +23,24 @@ Ground truth는 이 단계에서 처음 grouping 결과와 만난다. `engine.py
 ## 2. 가장 단순한 실행
 
 ```bash
-python3 scores.py family_graph_03
 python3 scores.py billing-client --track direct-in-v1
+python3 scores.py family_graph_03 --candidate-scope subject
 ```
 
-기본값:
+일반 CLI 기본값:
 
 ```text
-case    = family_graph_03
+case    = 사용자가 입력한 stem
 build   = O3S
 profile = plain
+candidate scope = rust-nonstd
 mode    = full
-fixture = fixtures/plain/family_graph_03.O3S.fixture.json
-GT      = ground_truth/plain/family_graph_03.O3S.gt.json
+fixture = fixtures/rust-nonstd/plain/<case>.O3S.fixture.json
+GT      = ground_truth/rust-nonstd/plain/<case>.O3S.gt.json
 ```
+
+아래 출력 예시는 `--candidate-scope subject`로 실행한 동결
+`family_graph_03` baseline이다.
 
 핵심 출력:
 
@@ -55,20 +59,22 @@ PR=0.80 RE=0.40 F1=0.53 ARI=0.49
 라운드별 scored partition도 함께 보려면 `--trace`를 사용한다.
 
 ```bash
-python3 scores.py family_graph_03 --trace
+python3 scores.py family_graph_03 --trace --candidate-scope subject
 ```
 
 이 경우 `round 0(seed)`부터 마지막 `fixpoint` 확인 라운드까지 CLI에 추가로 출력된다.
 
-`direct-v0`가 기본이며 `direct-in-v1` fixture는 다음 경로에서 읽는다.
+`direct-v0`가 기본 track이고 `rust-nonstd`가 기본 candidate scope다. Frozen
+family-graph 결과는 `--candidate-scope subject`를 명시한다. Broad
+`direct-in-v1` fixture는 다음 경로에서 읽는다.
 
 ```text
-fixtures/direct-in-v1/plain/billing-client.O3S.fixture.json
+fixtures/direct-in-v1/rust-nonstd/plain/billing-client.O3S.fixture.json
 ```
 
-Schema v5 fixture를 채점하면 CLI와 결과 JSON에 track, raw/projection hash,
+Schema v5 fixture를 채점하면 CLI와 결과 JSON에 track, candidate scope, raw/projection hash,
 candidate selection hash가 포함된다. Ground truth는 build에 속하고 track에는 속하지 않으므로 기존
-`ground_truth/<profile>/...` 파일을 공유한다.
+scope별 `ground_truth/<scope>/<profile>/...` 파일을 사용한다.
 
 ## 3. 전체 함수 호출 순서
 
@@ -94,7 +100,8 @@ main()
 
 ## 4. Ground truth loading
 
-GT schema version은 5다.
+GT schema version은 5이며, cross-origin shared address를 보존하는 broad GT는 schema
+version 6을 사용한다.
 
 ```json
 {
@@ -141,6 +148,7 @@ Loader는 다음을 검사한다.
 - 빈 origin
 - 한 member가 둘 이상의 origin에 포함되는지
 - `symbols` key 집합과 member 전체 집합이 같은지
+- schema v6 shared-address member와 원래 origin 목록의 형식
 
 `GroundTruth.origin_of()`는 다음 lookup을 만든다.
 
@@ -510,6 +518,7 @@ trace (`--trace`를 요청한 경우)
 ```bash
 python3 scores.py family_graph_03 \
   --profile plain \
+  --candidate-scope subject \
   --json-output results/plain/family_graph_03.O3S.json
 ```
 
@@ -566,13 +575,13 @@ Top-level schema:
 한 mode:
 
 ```bash
-python3 scores.py family_graph_03 --mode out
+python3 scores.py family_graph_03 --mode out --candidate-scope subject
 ```
 
 네 mode:
 
 ```bash
-python3 scores.py family_graph_03 --all-modes
+python3 scores.py family_graph_03 --all-modes --candidate-scope subject
 ```
 
 선택한 profile의 canonical 네 build full mode:

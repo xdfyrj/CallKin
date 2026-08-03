@@ -389,6 +389,37 @@ def check_filtered_import_evidence() -> int:
     return 0
 
 
+def check_unmapped_immediate_evidence() -> int:
+    extractor = BinaryExtractor.__new__(BinaryExtractor)
+    caller = R2Function(addr=0x1000, name="caller", size=0x20, kind="fcn")
+    extractor.r2 = FakeR2({
+        "pdfj @ 4096": {
+            "ops": [{
+                "offset": 0x1004,
+                "type": "call",
+                "opcode": "call 0x4000",
+                "jump": 0x4000,
+            }],
+        },
+    })
+    extractor.include_imports = False
+    extractor.functions = [caller]
+    extractor.by_addr = {caller.addr: caller}
+    extractor.all_functions = [caller]
+    extractor.all_by_addr = {caller.addr: caller}
+
+    transfer = extractor._r2_transfer_evidence(caller)[0]
+    if (
+        transfer.status != "unmapped"
+        or transfer.target != 0x4000
+        or transfer.resolver != "direct-immediate"
+        or transfer.confidence != "exact"
+    ):
+        print(f"FAIL decoded direct target was reported as unresolved: {transfer}")
+        return 1
+    return 0
+
+
 def main() -> int:
     if check_missing_radare2_error() != 0:
         return 1
@@ -409,6 +440,8 @@ def main() -> int:
     if check_transfer_site_deduplication() != 0:
         return 1
     if check_filtered_import_evidence() != 0:
+        return 1
+    if check_unmapped_immediate_evidence() != 0:
         return 1
 
     extractor = BinaryExtractor.__new__(BinaryExtractor)

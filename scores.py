@@ -35,9 +35,13 @@ from model import Case
 from paths import (
     ANALYSIS_TRACKS,
     BUILD_PROFILES,
+    CANDIDATE_SCOPES,
     DEFAULT_ANALYSIS_TRACK,
     DEFAULT_BUILD,
+    DEFAULT_CANDIDATE_SCOPE,
     DEFAULT_PROFILE,
+    SUBJECT_CANDIDATE_SCOPE,
+    normalize_candidate_scope,
     normalize_profile,
     resolve_fixture_json,
     resolve_gt_json,
@@ -49,6 +53,7 @@ from provenance import BuildProvenance, parse_provenance
 # ---------------------------------------------------------- ground truth model
 
 GROUND_TRUTH_SCHEMA_VERSION = 5
+SUPPORTED_GROUND_TRUTH_SCHEMAS = {5, 6}
 
 V0_BASELINE_JOBS: tuple[tuple[str, str], ...] = (
     ("family_graph_01", "O3S"),
@@ -113,13 +118,13 @@ def _validate_ground_truth(data) -> None:
     required = {
         "case", "build", "profile", "schema_version", "provenance", "origins", "symbols"
     }
-    allowed = required | {"note"}
+    allowed = required | {"note", "cross_origin_aliases"}
     keys = set(data)
     if required - keys:
         raise ValueError(f"missing field(s): {sorted(required - keys)}")
     if keys - allowed:
         raise ValueError(f"unknown field(s): {sorted(keys - allowed)}")
-    if data["schema_version"] != GROUND_TRUTH_SCHEMA_VERSION:
+    if data["schema_version"] not in SUPPORTED_GROUND_TRUTH_SCHEMAS:
         raise ValueError(f"unsupported schema_version: {data['schema_version']}")
     normalize_profile(data["profile"])
     parse_provenance(data["provenance"], where="ground_truth.provenance")
@@ -165,6 +170,30 @@ def _validate_ground_truth(data) -> None:
         for name in names:
             if not isinstance(name, str) or not name.strip():
                 raise ValueError(f"symbols[{member_id!r}] has an invalid symbol")
+
+    aliases = data.get("cross_origin_aliases", [])
+    if data["schema_version"] == 6 and not aliases:
+        raise ValueError("ground truth schema v6 requires cross_origin_aliases")
+    if aliases:
+        if not isinstance(aliases, list):
+            raise ValueError("cross_origin_aliases must be a list")
+        seen_alias_members = set()
+        for index, alias in enumerate(aliases):
+            where = f"cross_origin_aliases[{index}]"
+            if not isinstance(alias, dict) or set(alias) != {"member", "origins"}:
+                raise ValueError(f"{where} must contain member/origins")
+            member = alias["member"]
+            origins = alias["origins"]
+            if member not in seen_members or member in seen_alias_members:
+                raise ValueError(f"invalid or duplicate alias member: {member!r}")
+            seen_alias_members.add(member)
+            if (
+                not isinstance(origins, list)
+                or len(origins) < 2
+                or any(not isinstance(origin, str) or not origin for origin in origins)
+                or len(set(origins)) != len(origins)
+            ):
+                raise ValueError(f"{where}.origins must contain unique source origins")
 
 
 # ---------------------------------------------------------- score result types
@@ -304,8 +333,12 @@ def score_v0_baseline(
     reports = []
     modes = CG_WL_MODES if all_modes else (mode,)
     for case, build in V0_BASELINE_JOBS:
-        fixture_path = resolve_fixture_json(case, build, profile)
-        gt_path = resolve_gt_json(case, build, profile)
+        fixture_path = resolve_fixture_json(
+            case, build, profile, candidate_scope=SUBJECT_CANDIDATE_SCOPE
+        )
+        gt_path = resolve_gt_json(
+            case, build, profile, SUBJECT_CANDIDATE_SCOPE
+        )
         reports.extend(
             score_case(fixture_path, gt_path, mode=mode, trace=trace)
             for mode in modes
@@ -441,6 +474,11 @@ def format_report(r: ScoreReport) -> str:
     lines = [
         f"case : {r.case} / {r.build} / {r.profile}",
         *([f"track: {r.analysis.track}"] if r.analysis is not None else []),
+        *(
+            [f"candidate scope: {r.analysis.candidate_scope}"]
+            if r.analysis is not None
+            else []
+        ),
         f"mode: {r.mode}",
         f"candidates: {r.candidate_count}",
         f"candidate pairs: {r.pair_count}",
@@ -581,6 +619,15 @@ def build_arg_parser() -> argparse.ArgumentParser:
         help=f"analysis track. Default: {DEFAULT_ANALYSIS_TRACK}",
     )
     parser.add_argument(
+        "--candidate-scope",
+        choices=CANDIDATE_SCOPES,
+        default=None,
+        help=(
+            f"candidate scope. Default: {DEFAULT_CANDIDATE_SCOPE}; "
+            "--baseline always uses the frozen subject scope"
+        ),
+    )
+    parser.add_argument(
         "--mode",
         choices=CG_WL_MODES,
         default=DEFAULT_CG_WL_MODE,
@@ -619,10 +666,12 @@ def main(argv: list[str] | None = None) -> int:
                 or args.ground_truth is not None
                 or args.build
                 or args.track != DEFAULT_ANALYSIS_TRACK
+                or args.candidate_scope not in (None, SUBJECT_CANDIDATE_SCOPE)
             ):
                 parser.error(
                     "--baseline is the frozen direct-v0 baseline and cannot be "
-                    "combined with fixture, ground_truth, --build, or another --track"
+                    "combined with fixture, ground_truth, --build, another "
+                    "--track, or a non-subject candidate scope"
                 )
             reports = score_v0_baseline(
                 profile=args.profile,
@@ -633,6 +682,7 @@ def main(argv: list[str] | None = None) -> int:
         else:
             if args.fixture is None:
                 parser.error("fixture or --baseline is required")
+            candidate_scope = normalize_candidate_scope(args.candidate_scope)
             if args.ground_truth is None:
                 case, build = split_case_build(args.fixture, args.build)
                 fixture_path = resolve_fixture_json(
@@ -640,8 +690,14 @@ def main(argv: list[str] | None = None) -> int:
                     build,
                     args.profile,
                     args.track,
+                    candidate_scope,
                 )
-                gt_path = resolve_gt_json(case, build, args.profile)
+                gt_path = resolve_gt_json(
+                    case,
+                    build,
+                    args.profile,
+                    candidate_scope,
+                )
             else:
                 fixture_path = args.fixture
                 gt_path = args.ground_truth

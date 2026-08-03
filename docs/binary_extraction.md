@@ -9,7 +9,7 @@ raw transfer evidence를 만든다. `graph_projector.py`가 이 evidence를 trac
 
 ```text
 bin/plain/family_graph_01.O3S.fixture.bin
-+ users/plain/family_graph_01.O3S.users.json
++ boundaries/plain/family_graph_01.O3S.boundaries.json
 -> binary_extractor.py
 -> extractions/plain/family_graph_01.O3S.raw.json
 + users/plain/family_graph_01.O3S.users.json
@@ -34,7 +34,11 @@ static callsite count
 Canonical 파일명을 사용하는 가장 짧은 명령은 다음과 같다.
 
 ```bash
-python3 binary_extractor.py family_graph_01
+# 기본 rust-nonstd scope
+python3 binary_extractor.py billing-client --track direct-in-v1
+
+# frozen subject-only baseline
+python3 binary_extractor.py family_graph_01 --candidate-scope subject
 ```
 
 기본값이 해석된 결과는 다음과 같다.
@@ -42,6 +46,7 @@ python3 binary_extractor.py family_graph_01
 ```text
 binary = bin/plain/family_graph_01.O3S.fixture.bin
 users  = users/plain/family_graph_01.O3S.users.json
+boundaries = boundaries/plain/family_graph_01.O3S.boundaries.json
 case   = family_graph_01
 build  = O3S
 profile = plain
@@ -76,6 +81,7 @@ main()
             -> radare2 aaa
             -> aflj
        -> load_candidate_selection()
+       -> load_function_boundaries()
        -> resolve_root()
        -> transfer_evidence() for every discovered function
        -> build_raw_graph()
@@ -167,7 +173,7 @@ fixture ID  = FUN_00113e40
 Raw radare2 address 형식을 원하면 다음처럼 실행할 수 있다.
 
 ```bash
-python3 binary_extractor.py family_graph_01 --id-bias 0
+python3 binary_extractor.py family_graph_01 --id-bias 0 --candidate-scope subject
 ```
 
 그 경우 같은 함수 ID는 다음이 된다.
@@ -222,8 +228,8 @@ python3 binary_extractor.py family_graph_01 --root FUN_00113e00
 
 `build_call_graph()`는 함수 종류에 따라 두 경계 source를 사용한다.
 
-Canonical users mode에서 source namespace 함수와 source `main`은 users JSON의
-symbol extent를 사용한다. Stripped binary bytes를 다음 radare2 명령으로 읽고,
+Canonical extraction은 candidate scope와 독립된 boundaries JSON의 Rust symbol
+extent를 사용한다. Stripped binary bytes를 다음 radare2 명령으로 읽고,
 Capstone x86-64 decoder로 `[start, start + size)` 전체를 선형 디코딩한다.
 
 ```text
@@ -235,8 +241,8 @@ p8j <symbol size> @ <function address>
 fixture의 `extraction.boundary_mismatches`에 차이를 기록하고 1465 bytes 전체를
 디코딩한다.
 
-Users가 직접 호출하는 one-hop library anchor는 symbol extent가 없으므로 기존처럼
-radare2 `pdfj @ <function address>`를 사용한다. Anchor는 terminal이므로 그 내부
+Boundary artifact에 없는 C/import 함수는 기존처럼 radare2
+`pdfj @ <function address>`를 사용한다. Projected anchor는 terminal이므로 그 내부
 edge는 fixture에 기록하지 않는다.
 
 Radare2 함수는 entry 주소부터 연속된 byte range 하나가 아닐 수 있다. 실제
@@ -335,7 +341,22 @@ filter_reason=import
 
 따라서 `unresolved`는 target을 정하지 못한 callsite만 의미한다.
 
-## 9. User address 입력
+### 8.5 주소는 알지만 함수에 매핑하지 못한 direct call
+
+Immediate operand에서 숫자 target은 정확히 디코딩했지만 raw function table의 어느
+함수에도 연결하지 못한 경우는 `unresolved`와 구분한다.
+
+```text
+status=unmapped
+target=0x5b072054
+resolver=direct-immediate
+confidence=exact
+```
+
+이는 target 주소를 모른다는 뜻이 아니다. 주소는 알지만 현재 function/boundary
+evidence로 함수 node에 매핑할 수 없다는 뜻이며, fixture edge로는 투영하지 않는다.
+
+## 9. Candidate와 boundary 입력
 
 정상 pipeline은 `gt_extractor.py`가 만든 users JSON을 읽는다.
 
@@ -382,8 +403,9 @@ address-to-size map으로 바꾼다. `function_bounds`에는 source `main`도 �
 }
 ```
 
-Candidate 주소가 radare2 함수 시작점에 없더라도 non-stripped symbol의 검증된
-`function_bounds`에 있으면 symbol-bound 함수로 보충한다. 이 함수의 byte 범위는
+공용 `boundaries/*.boundaries.json`은 demangle 가능한 모든 Rust text symbol extent를
+담으며 candidate 주소나 scope를 담지 않는다. Candidate 주소가 radare2 함수 시작점에
+없더라도 이 검증된 boundary에 있으면 symbol-bound 함수로 보충한다. 이 함수의 byte 범위는
 Capstone으로 직접 디코딩하고, fixture의 `boundary_mismatches`에는
 `radare2_size=0`으로 기록한다. Symbol에도 없는 주소는 users 생성 단계에서
 들어올 수 없으며, provenance가 다른 users 파일은 별도로 거부한다.
@@ -392,10 +414,20 @@ Root reachability는 candidate 필터로 사용하지 않는다. 대신 namespac
 relation은 symbol extent로 추출하며 radare2 size가 다르면 mismatch를 fixture에
 남긴다.
 
+Raw schema v2는 각 함수가 radare2에서도 발견됐는지
+`discovered_by_radare2`로 기록하고 boundary JSON의 SHA-256을
+`analysis.boundary_input_sha256`에 기록한다. Projection track과 candidate 주소는 raw에
+없다.
+
 Candidate 주소는 raw graph에 복사하지 않는다. Projector가 users JSON을 별도
 입력으로 읽고 candidate 집합을 선택하며, 그 JSON의 canonical SHA-256을 schema v5
 fixture의 `analysis.candidate_selection_sha256`에 기록한다. 따라서 하나의 raw
 evidence를 다른 candidate scope와 projection 정책에 재사용할 수 있다.
+
+Boundary 파일이 없을 때 users의 candidate extent로 대신 raw를 만드는 fallback은
+허용하지 않는다. 그렇게 하면 같은 binary의 raw evidence가 candidate scope에 따라
+달라지기 때문이다. Standalone 실행은 `gt_extractor.py`로 users와 boundaries를 먼저
+생성해야 한다.
 
 ## 10. Track과 fixture node 선택
 
@@ -451,8 +483,10 @@ Node type과 scoring은 다음과 같다.
 
 정상 users mode에서는 users JSON의 주소 집합을 authoritative candidate set으로 사용한다. Root reachability를 candidate 필터로 다시 적용하지 않는다. 이는 radare2가 큰 함수의 경계를 일찍 끊더라도 symbol에서 확인된 user 함수를 누락시키지 않기 위해서다.
 
-`project_direct_v0_fixture()`는 root, 모든 listed user, 각 listed user가 직접
+Frozen `subject/direct-v0`의 `project_direct_v0_fixture()`는 root, 모든 listed user, 각 listed user가 직접
 호출하는 함수만 선택한다. 따라서 library anchor의 callee로 더 내려가지 않는다.
+공용 boundary가 새로 복구한 non-candidate 함수 때문에 동결 결과가 바뀌지 않도록,
+이 호환 projection의 외부 anchor는 radare2도 발견한 함수로 제한한다.
 
 ### 10.2 `direct-in-v1`
 
@@ -487,8 +521,9 @@ X(anchor)-+
 
 ## 11. Fixture JSON
 
-Frozen `direct-v0` 출력은 schema version 4를 유지한다. `direct-in-v1`은 analysis
-provenance와 anchor metadata가 추가된 schema version 5를 사용한다.
+Frozen `subject/direct-v0` 출력만 schema version 4를 유지한다. 새 기본
+`rust-nonstd/direct-v0`와 모든 `direct-in-v1` 출력은 analysis provenance와 anchor
+metadata가 추가된 schema version 5를 사용한다.
 
 실제 fg01 일부:
 
@@ -581,9 +616,11 @@ config SHA-256, candidate selection SHA-256을 기록한다.
 | `--build` | build label | `--build O3KS` |
 | `--profile` | compiler profile과 artifact directory | `--profile min` |
 | `--track` | projection track | `--track direct-in-v1` |
+| `--candidate-scope` | `rust-nonstd`(기본) 또는 `subject` | `--candidate-scope subject` |
 | `--raw-output` | raw evidence 출력 override | `--raw-output /tmp/case.raw.json` |
 | `--root` | root name/ID/address | `--root FUN_00114040` |
 | `--users` | users JSON 경로 | `--users users/min/custom.users.json` |
+| `--boundaries` | scope-independent boundary JSON | `--boundaries boundaries/min/custom.json` |
 | `--manifest` | build manifest override | `--manifest build_info/min/custom.json` |
 | `--score-root` | root도 user/scored로 처리 | canonical pipeline에서는 사용하지 않음 |
 | `--include-imports` | import stub 포함 | debugging option |
@@ -592,14 +629,16 @@ config SHA-256, candidate selection SHA-256을 기록한다.
 
 ## 13. 한계의 정확한 의미
 
-- Source namespace 함수 경계는 non-stripped symbol extent를 oracle로 사용한다.
+- Rust 함수 경계는 non-stripped symbol extent를 oracle로 사용한다.
 - One-hop library anchor의 시작점과 범위 복구는 radare2 분석에 의존한다.
 - Immediate direct target이 없는 call은 raw evidence에 unresolved로 남지만 target은 복구하지 않는다.
 - 확정했지만 정책상 제외한 import는 unresolved가 아니라 filtered로 기록한다.
+- 숫자 target은 알지만 함수에 매핑하지 못한 direct call은 unmapped로 기록한다.
 - `direct-in-v1`은 복구된 direct caller만 추가하며 완전한 incoming graph를 주장하지 않는다.
 - Root 자동 탐지는 현재 Rust/glibc startup 형태에 맞춘 heuristic이다.
-- Users JSON은 compiler symbol namespace에서 얻은 controlled candidate와 boundary 조건이다.
-- Library/runtime 함수의 종류를 분류하지 않는다. User의 direct callee이면 동일하게 anchor다.
+- Users JSON은 compiler symbol owner에서 얻은 candidate oracle이다. 기본은
+  `core/alloc/std`를 제외한 Rust 함수, 호환 mode는 subject namespace 함수다.
+- 이 범위 판정은 stripped-only library classifier가 아니다.
 - Anchor 내부를 계속 탐색하지 않으므로 library subgraph topology는 feature에 들어가지 않는다.
 - Fixture의 call count는 dynamic execution frequency가 아니다.
 
@@ -613,5 +652,5 @@ config SHA-256, candidate selection SHA-256을 기록한다.
 6. `transfer_evidence()`와 symbol/radare2 evidence helper
 7. `build_raw_graph()`와 `graph_evidence.py`
 8. `graph_projector.py`
-9. `candidate_selection.py`와 `project_fixture()`
+9. `candidate_selection.py`, `function_boundaries.py`, `project_fixture()`
 10. `write_raw_graph()`과 `write_fixture()`

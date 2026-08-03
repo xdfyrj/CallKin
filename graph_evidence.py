@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -10,16 +11,17 @@ from paths import normalize_profile
 from provenance import BuildProvenance, parse_provenance
 
 
-RAW_GRAPH_SCHEMA_VERSION = 1
+RAW_GRAPH_SCHEMA_VERSION = 2
 RAW_GRAPH_BACKEND = "radare2-capstone"
-RAW_GRAPH_EXTRACTOR_VERSION = "direct-call-v1"
+RAW_GRAPH_EXTRACTOR_VERSION = "direct-call-v2"
 
 TRANSFER_KINDS = {"call", "tail-call"}
-TRANSFER_STATUSES = {"resolved", "unresolved", "filtered"}
+TRANSFER_STATUSES = {"resolved", "unresolved", "unmapped", "filtered"}
 TRANSFER_RESOLVERS = {"direct-immediate", "direct-tail"}
 TRANSFER_FILTER_REASONS = {"import"}
 OPERAND_KINDS = {"immediate", "memory", "register", "unknown"}
 BOUNDARY_SOURCES = {"radare2", "symbol-oracle"}
+_SHA256_RE = re.compile(r"[0-9a-f]{64}")
 
 
 @dataclass(frozen=True)
@@ -57,6 +59,7 @@ def make_raw_graph(
     profile: str,
     binary_path: str,
     provenance: BuildProvenance,
+    boundary_input_sha256: str,
     root_address: int,
     functions: list[dict[str, object]],
     transfers: list[TransferEvidence],
@@ -73,6 +76,7 @@ def make_raw_graph(
             "backend": RAW_GRAPH_BACKEND,
             "extractor_version": RAW_GRAPH_EXTRACTOR_VERSION,
             "oracle_level": "symbol-boundary",
+            "boundary_input_sha256": boundary_input_sha256,
         },
         "binary": {
             "path": binary_path,
@@ -140,13 +144,20 @@ def validate_raw_graph(raw: Any) -> None:
     provenance = parse_provenance(raw["provenance"], where="raw graph.provenance")
 
     analysis = raw["analysis"]
-    analysis_keys = {"backend", "extractor_version", "oracle_level"}
+    analysis_keys = {
+        "backend", "extractor_version", "oracle_level", "boundary_input_sha256"
+    }
     if not isinstance(analysis, dict) or set(analysis) != analysis_keys:
         raise ValueError(
             f"raw graph.analysis must contain exactly {sorted(analysis_keys)}"
         )
-    for key in analysis_keys:
+    for key in analysis_keys - {"boundary_input_sha256"}:
         _require_string(analysis[key], f"raw graph.analysis.{key}")
+    if (
+        not isinstance(analysis["boundary_input_sha256"], str)
+        or not _SHA256_RE.fullmatch(analysis["boundary_input_sha256"])
+    ):
+        raise ValueError("raw graph.analysis.boundary_input_sha256 must be SHA-256")
 
     binary = raw["binary"]
     if not isinstance(binary, dict) or set(binary) != {"path", "stripped_sha256"}:
@@ -167,10 +178,10 @@ def validate_raw_graph(raw: Any) -> None:
     for index, function in enumerate(functions):
         where = f"raw graph.functions[{index}]"
         if not isinstance(function, dict) or set(function) != {
-            "address", "name", "size", "boundary_source",
+            "address", "name", "size", "boundary_source", "discovered_by_radare2",
         }:
             raise ValueError(
-                f"{where} must contain exactly address/name/size/boundary_source"
+                f"{where} has an invalid field set"
             )
         address = _parse_hex(function["address"], f"{where}.address")
         if address in function_addresses:
@@ -184,6 +195,8 @@ def validate_raw_graph(raw: Any) -> None:
         if function["boundary_source"] not in BOUNDARY_SOURCES:
             raise ValueError(f"invalid {where}.boundary_source")
         function_sources[address] = function["boundary_source"]
+        if not isinstance(function["discovered_by_radare2"], bool):
+            raise ValueError(f"{where}.discovered_by_radare2 must be boolean")
 
     if root not in function_addresses:
         raise ValueError("raw graph root is not a known function")
@@ -280,6 +293,14 @@ def _validate_transfers(
                 raise ValueError(f"{where}.confidence must be exact")
             if transfer["filter_reason"] not in TRANSFER_FILTER_REASONS:
                 raise ValueError(f"invalid {where}.filter_reason")
+        elif status == "unmapped":
+            _parse_hex(transfer["target"], f"{where}.target")
+            if transfer["resolver"] not in TRANSFER_RESOLVERS:
+                raise ValueError(f"invalid {where}.resolver")
+            if transfer["confidence"] != "exact":
+                raise ValueError(f"{where}.confidence must be exact")
+            if transfer["filter_reason"] is not None:
+                raise ValueError(f"{where} unmapped transfer cannot be filtered")
         elif transfer["target"] is not None or transfer["resolver"] is not None:
             raise ValueError(f"{where} unresolved transfer cannot have target/resolver")
         elif transfer["filter_reason"] is not None:

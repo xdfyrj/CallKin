@@ -12,8 +12,10 @@ from model import Case
 from paths import (
     ANALYSIS_TRACKS,
     BUILD_PROFILES,
+    CANDIDATE_SCOPES,
     DEFAULT_ANALYSIS_TRACK,
     DEFAULT_BUILD,
+    DEFAULT_CANDIDATE_SCOPE,
     DEFAULT_PROFILE,
     resolve_fixture_json,
     split_case_build,
@@ -441,6 +443,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
         help=f"analysis track. Default: {DEFAULT_ANALYSIS_TRACK}",
     )
     parser.add_argument(
+        "--candidate-scope",
+        choices=CANDIDATE_SCOPES,
+        default=DEFAULT_CANDIDATE_SCOPE,
+        help=f"candidate scope. Default: {DEFAULT_CANDIDATE_SCOPE}",
+    )
+    parser.add_argument(
         "--mode",
         choices=CG_WL_MODES,
         default=DEFAULT_CG_WL_MODE,
@@ -466,6 +474,7 @@ def main(argv: list[str] | None = None) -> int:
             build,
             args.profile,
             args.track,
+            args.candidate_scope,
         )
 
     try:

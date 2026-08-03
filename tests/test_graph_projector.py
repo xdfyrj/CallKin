@@ -7,11 +7,17 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from candidate_selection import parse_candidate_selection
 from graph_evidence import TransferEvidence, make_raw_graph, raw_graph_sha256
-from graph_projector import project_direct_in_fixture, project_direct_v0_fixture
+from graph_projector import (
+    project_direct_in_fixture,
+    project_direct_v0_fixture,
+    project_fixture,
+)
 from loader import validate_raw_fixture
 from paths import (
     DIRECT_IN_V1_TRACK,
     DIRECT_V0_TRACK,
+    RUST_NONSTD_CANDIDATE_SCOPE,
+    SUBJECT_CANDIDATE_SCOPE,
     fixture_json_for,
     raw_graph_for,
 )
@@ -69,6 +75,20 @@ def filtered_import(source: int, callsite: int, target: int) -> TransferEvidence
     )
 
 
+def unmapped(source: int, callsite: int, target: int) -> TransferEvidence:
+    return TransferEvidence(
+        source=source,
+        callsite=callsite,
+        instruction=f"call 0x{target:x}",
+        kind="call",
+        operand_kind="immediate",
+        status="unmapped",
+        target=target,
+        resolver="direct-immediate",
+        confidence="exact",
+    )
+
+
 def selection(addresses: set[int], bounds: dict[int, int]):
     data = {
         "case": "projector-test",
@@ -92,18 +112,64 @@ def selection(addresses: set[int], bounds: dict[int, int]):
     )
 
 
+def broad_selection(addresses: set[int], bounds: dict[int, int]):
+    data = {
+        "case": "projector-test",
+        "build": "O3S",
+        "profile": "plain",
+        "schema_version": 6,
+        "provenance": PROVENANCE.to_dict(),
+        "source": "gt_bin/plain/projector-test.O3S.gt.bin",
+        "scope": "rust-nonstd",
+        "root_namespace": "projector_test",
+        "namespaces": [],
+        "excluded_namespaces": ["core", "alloc", "std"],
+        "addresses": [f"0x{address:x}" for address in sorted(addresses)],
+        "function_bounds": [
+            {"address": f"0x{address:x}", "size": size}
+            for address, size in sorted(bounds.items())
+        ],
+    }
+    return parse_candidate_selection(
+        data,
+        expected_case="projector-test",
+        expected_build="O3S",
+        expected_profile="plain",
+    )
+
+
 def check_track_paths() -> int:
-    legacy = fixture_json_for("sample", "O3S", "plain", DIRECT_V0_TRACK)
+    legacy = fixture_json_for(
+        "sample", "O3S", "plain", DIRECT_V0_TRACK, SUBJECT_CANDIDATE_SCOPE
+    )
     if legacy != "fixtures/plain/sample.O3S.fixture.json":
         print(f"FAIL direct-v0 path changed: {legacy}")
         return 1
-    tracked = fixture_json_for("sample", "O3S", "plain", DIRECT_IN_V1_TRACK)
+    tracked = fixture_json_for(
+        "sample", "O3S", "plain", DIRECT_IN_V1_TRACK, SUBJECT_CANDIDATE_SCOPE
+    )
     if tracked != "fixtures/direct-in-v1/plain/sample.O3S.fixture.json":
         print(f"FAIL direct-in-v1 fixture path: {tracked}")
         return 1
     raw = raw_graph_for("sample", "O3S", "plain")
     if raw != "extractions/plain/sample.O3S.raw.json":
         print(f"FAIL track-independent raw path: {raw}")
+        return 1
+    broad = fixture_json_for(
+        "sample",
+        "O3S",
+        "plain",
+        DIRECT_IN_V1_TRACK,
+        RUST_NONSTD_CANDIDATE_SCOPE,
+    )
+    if broad != "fixtures/direct-in-v1/rust-nonstd/plain/sample.O3S.fixture.json":
+        print(f"FAIL scoped fixture path: {broad}")
+        return 1
+    default_path = fixture_json_for(
+        "sample", "O3S", "plain", DIRECT_IN_V1_TRACK
+    )
+    if default_path != broad:
+        print(f"FAIL rust-nonstd is not the default candidate scope: {default_path}")
         return 1
     return 0
 
@@ -117,6 +183,7 @@ def check_incoming_projection() -> int:
         profile="plain",
         binary_path="bin/plain/projector-test.O3S.fixture.bin",
         provenance=PROVENANCE,
+        boundary_input_sha256="4" * 64,
         root_address=0x1000,
         functions=[
             {
@@ -126,6 +193,10 @@ def check_incoming_projection() -> int:
                 "boundary_source": (
                     "symbol-oracle" if address in {0x2000, 0x2100} else "radare2"
                 ),
+                # 0x3000 exists only because the common symbol-boundary oracle
+                # recovered it. direct-in-v1 may use it; frozen direct-v0 may
+                # not silently gain this new external anchor.
+                "discovered_by_radare2": address != 0x3000,
             }
             for address in addresses
         ],
@@ -135,6 +206,7 @@ def check_incoming_projection() -> int:
             resolved(0x2000, 0x2008, 0x5000),
             unresolved(0x2000, 0x200C),
             filtered_import(0x2000, 0x2010, 0xDEAD),
+            unmapped(0x2000, 0x2014, 0xBEEF),
             resolved(0x3000, 0x3004, 0x6000),
             resolved(0x4000, 0x4004, 0x2000),
             resolved(0x4000, 0x4008, 0x2100),
@@ -154,6 +226,9 @@ def check_incoming_projection() -> int:
         id_bias=0,
     )
     validate_raw_fixture(fixture)
+    if "track" in raw["analysis"] or "candidates" in raw:
+        print("FAIL raw evidence contains projection/candidate policy")
+        return 1
     nodes = {node["id"]: node for node in fixture["nodes"]}
 
     expected = {
@@ -214,6 +289,7 @@ def check_incoming_projection() -> int:
     analysis = fixture["analysis"]
     if (
         analysis["track"] != DIRECT_IN_V1_TRACK
+        or analysis["candidate_scope"] != "subject"
         or analysis["raw_graph_sha256"] != raw_graph_sha256(raw)
         or not analysis["candidate_selection_sha256"]
     ):
@@ -236,8 +312,34 @@ def check_incoming_projection() -> int:
     if "FUN_00004000" in v0_nodes:
         print("FAIL direct-v0 projection included an incoming-only caller")
         return 1
+    if "FUN_00003000" in v0_nodes:
+        print("FAIL direct-v0 projection gained a symbol-only external anchor")
+        return 1
     if v0_nodes["FUN_00005000"]["calls"]:
         print("FAIL direct-v0 outgoing anchor retained its incoming edge")
+        return 1
+
+    broad_v0 = project_fixture(
+        raw,
+        selection=broad_selection(
+            {0x2000, 0x2100},
+            {0x2000: 0x20, 0x2100: 0x20},
+        ),
+        track=DIRECT_V0_TRACK,
+        users_path="users/rust-nonstd/plain/projector-test.O3S.users.json",
+        id_bias=0,
+    )
+    validate_raw_fixture(broad_v0)
+    if (
+        broad_v0["schema_version"] != 5
+        or broad_v0["analysis"]["candidate_scope"] != "rust-nonstd"
+        or not broad_v0["analysis"]["candidate_selection_sha256"]
+    ):
+        print("FAIL broad direct-v0 projection lost candidate provenance")
+        return 1
+    broad_v0_nodes = {node["id"]: node for node in broad_v0["nodes"]}
+    if "FUN_00004000" in broad_v0_nodes:
+        print("FAIL broad direct-v0 projection included an incoming-only caller")
         return 1
     return 0
 
@@ -251,6 +353,7 @@ def check_noncontiguous_radare2_function() -> int:
         "profile": "plain",
         "binary_path": "bin/plain/noncontiguous-test.O3S.fixture.bin",
         "provenance": PROVENANCE,
+        "boundary_input_sha256": "4" * 64,
         "root_address": 0x5000,
         "transfers": [resolved(0x5000, 0x4000, 0x6000)],
         "boundary_mode": "radare2",
@@ -262,10 +365,12 @@ def check_noncontiguous_radare2_function() -> int:
             {
                 "address": "0x5000", "name": "root", "size": 0x20,
                 "boundary_source": "radare2",
+                "discovered_by_radare2": True,
             },
             {
                 "address": "0x6000", "name": "candidate", "size": 0x20,
                 "boundary_source": "symbol-oracle",
+                "discovered_by_radare2": True,
             },
         ],
     )
@@ -279,12 +384,14 @@ def check_noncontiguous_radare2_function() -> int:
                     "name": "root",
                     "size": 0x20,
                     "boundary_source": "symbol-oracle",
+                    "discovered_by_radare2": True,
                 },
                 {
                     "address": "0x6000",
                     "name": "candidate",
                     "size": 0x20,
                     "boundary_source": "symbol-oracle",
+                    "discovered_by_radare2": True,
                 },
             ],
         )

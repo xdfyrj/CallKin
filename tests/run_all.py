@@ -13,6 +13,7 @@ PYTHON_FILES = (
     "build_manifest.py",
     "provenance.py",
     "candidate_selection.py",
+    "function_boundaries.py",
     "analysis_provenance.py",
     "graph_evidence.py",
     "graph_projector.py",

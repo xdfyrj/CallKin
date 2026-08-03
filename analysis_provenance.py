@@ -4,11 +4,12 @@ import re
 from dataclasses import dataclass
 from typing import Any
 
-from paths import normalize_track
+from paths import normalize_candidate_scope, normalize_track
 
 _SHA256_RE = re.compile(r"[0-9a-f]{64}")
 ANALYSIS_PROVENANCE_KEYS = {
     "track",
+    "candidate_scope",
     "backend",
     "extractor_version",
     "raw_graph_sha256",
@@ -23,6 +24,7 @@ ANALYSIS_PROVENANCE_KEYS = {
 @dataclass(frozen=True)
 class AnalysisProvenance:
     track: str
+    candidate_scope: str
     backend: str
     extractor_version: str
     raw_graph_sha256: str
@@ -35,6 +37,7 @@ class AnalysisProvenance:
     def to_dict(self) -> dict[str, object]:
         return {
             "track": self.track,
+            "candidate_scope": self.candidate_scope,
             "backend": self.backend,
             "extractor_version": self.extractor_version,
             "raw_graph_sha256": self.raw_graph_sha256,
@@ -55,6 +58,7 @@ def parse_analysis_provenance(value: Any, *, where: str) -> AnalysisProvenance:
     strings = {}
     for key in (
         "track",
+        "candidate_scope",
         "backend",
         "extractor_version",
         "anchor_policy",
@@ -65,6 +69,7 @@ def parse_analysis_provenance(value: Any, *, where: str) -> AnalysisProvenance:
             raise ValueError(f"{where}.{key} must be a non-empty string")
         strings[key] = item
     normalize_track(strings["track"])
+    normalize_candidate_scope(strings["candidate_scope"])
 
     hashes = {}
     for key in (

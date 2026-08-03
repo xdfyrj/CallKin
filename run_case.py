@@ -16,13 +16,17 @@ from loader import load_case
 from paths import (
     ANALYSIS_TRACKS,
     BUILD_PROFILES,
+    CANDIDATE_SCOPES,
     DEFAULT_ANALYSIS_TRACK,
     DEFAULT_BUILD,
+    DEFAULT_CANDIDATE_SCOPE,
     DEFAULT_PROFILE,
+    boundaries_json_for,
     build_manifest_for,
     fixture_json_for,
     gt_json_for,
     normalize_profile,
+    normalize_candidate_scope,
     normalize_track,
     raw_graph_for,
     split_case_build,
@@ -45,6 +49,7 @@ def run_pipeline(args: argparse.Namespace) -> None:
     case_name = args.case or case_from_stem
     profile = normalize_profile(args.profile)
     track = normalize_track(args.track)
+    candidate_scope = normalize_candidate_scope(args.candidate_scope)
     manifest_path = args.manifest or build_manifest_for(case_name, build, profile)
     verified = load_and_verify_manifest(
         manifest_path,
@@ -64,20 +69,29 @@ def run_pipeline(args: argparse.Namespace) -> None:
         build,
         profile,
         track,
+        candidate_scope,
     )
     raw_graph_json = args.raw_graph or raw_graph_for(
         case_name,
         build,
         profile,
     )
-    gt_json = args.gt_json or gt_json_for(case_name, build, profile)
-    users_json = args.users or users_json_for(case_name, build, profile)
+    gt_json = args.gt_json or gt_json_for(
+        case_name, build, profile, candidate_scope
+    )
+    users_json = args.users or users_json_for(
+        case_name, build, profile, candidate_scope
+    )
+    boundaries_json = args.boundaries or boundaries_json_for(
+        case_name, build, profile
+    )
     namespaces = tuple(args.namespaces or verified.candidate_namespaces)
 
     print(f"case: {case_name}")
     print(f"build: {build}")
     print(f"profile: {profile}")
     print(f"track: {track}")
+    print(f"candidate scope: {candidate_scope}")
     print(f"build manifest: {manifest_path}")
     print(f"build id: {verified.build_id}")
     print(f"fixture binary: {fixture_binary}")
@@ -86,6 +100,7 @@ def run_pipeline(args: argparse.Namespace) -> None:
     print(f"raw graph: {raw_graph_json}")
     print(f"gt json: {gt_json}")
     print(f"users: {users_json}")
+    print(f"function boundaries: {boundaries_json}")
 
     gt = extract_ground_truth(
         binary_path=gt_binary,
@@ -95,6 +110,9 @@ def run_pipeline(args: argparse.Namespace) -> None:
         build=build,
         profile=profile,
         namespaces=namespaces,
+        candidate_scope=candidate_scope,
+        root_namespace=verified.root_namespace,
+        boundaries_path=boundaries_json,
         provenance=verified.provenance,
     )
     print(f"ground-truth origins: {len(gt['origins'])}")
@@ -107,6 +125,7 @@ def run_pipeline(args: argparse.Namespace) -> None:
         profile=profile,
         track=track,
         raw_graph_path=raw_graph_json,
+        boundaries_path=boundaries_json,
         root=args.root,
         users_path=users_json,
         provenance=verified.provenance,
@@ -142,6 +161,7 @@ def extract_fixture(
     profile: str,
     track: str,
     raw_graph_path: str,
+    boundaries_path: str,
     root: str | None,
     users_path: str | None,
     provenance,
@@ -161,6 +181,7 @@ def extract_fixture(
         id_bias=DEFAULT_ID_BIAS,
         list_functions=False,
         users=users_path,
+        boundaries=boundaries_path,
         provenance=provenance,
     )
     artifacts = extract_artifacts(args)
@@ -178,25 +199,38 @@ def extract_ground_truth(
     build: str,
     profile: str,
     namespaces: tuple[str, ...],
+    candidate_scope: str,
+    root_namespace: str,
+    boundaries_path: str,
     provenance,
 ) -> dict:
     from gt_extractor import (
         DEFAULT_ID_BIAS,
         make_ground_truth,
+        make_function_boundaries_json,
         make_users_json,
         parse_nm_lines,
         run_nm,
         user_addresses,
         user_function_bounds,
+        rust_function_bounds,
         write_json,
     )
 
     symbols = parse_nm_lines(run_nm(binary_path, "nm"))
-    user_addrs = user_addresses(symbols=symbols, namespaces=namespaces)
+    user_addrs = user_addresses(
+        symbols=symbols,
+        namespaces=namespaces,
+        candidate_scope=candidate_scope,
+        root_namespace=root_namespace,
+    )
     function_bounds = user_function_bounds(
         symbols=symbols,
         namespaces=namespaces,
+        candidate_scope=candidate_scope,
+        root_namespace=root_namespace,
     )
+    all_boundaries = rust_function_bounds(symbols)
     gt = make_ground_truth(
         symbols=symbols,
         case=case_name,
@@ -205,6 +239,8 @@ def extract_ground_truth(
         namespaces=namespaces,
         id_bias=DEFAULT_ID_BIAS,
         provenance=provenance,
+        candidate_scope=candidate_scope,
+        root_namespace=root_namespace,
     )
     write_json(gt, output_path)
     write_json(
@@ -217,8 +253,21 @@ def extract_ground_truth(
             binary_path=binary_path,
             namespaces=namespaces,
             provenance=provenance,
+            candidate_scope=candidate_scope,
+            root_namespace=root_namespace,
         ),
         users_path,
+    )
+    write_json(
+        make_function_boundaries_json(
+            function_bounds=all_boundaries,
+            case=case_name,
+            build=build,
+            profile=profile,
+            binary_path=binary_path,
+            provenance=provenance,
+        ),
+        boundaries_path,
     )
     return gt
 
@@ -241,6 +290,10 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--raw-graph", help="override generated raw graph JSON path")
     parser.add_argument("--gt-json", help="override generated ground-truth JSON path")
     parser.add_argument("--users", help="override generated user address JSON path")
+    parser.add_argument(
+        "--boundaries",
+        help="override generated scope-independent function boundary JSON path",
+    )
     parser.add_argument("--case", help="case field written into generated JSON")
     parser.add_argument("--build", help=f"build label. Default: {DEFAULT_BUILD}")
     parser.add_argument(
@@ -254,6 +307,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
         choices=ANALYSIS_TRACKS,
         default=DEFAULT_ANALYSIS_TRACK,
         help=f"analysis track. Default: {DEFAULT_ANALYSIS_TRACK}",
+    )
+    parser.add_argument(
+        "--candidate-scope",
+        choices=CANDIDATE_SCOPES,
+        default=DEFAULT_CANDIDATE_SCOPE,
+        help=f"candidate scope. Default: {DEFAULT_CANDIDATE_SCOPE}",
     )
     parser.add_argument(
         "--namespace",
