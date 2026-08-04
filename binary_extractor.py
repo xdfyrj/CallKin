@@ -21,6 +21,7 @@ from graph_projector import project_fixture
 from function_boundaries import load_function_boundaries
 from paths import (
     ANALYSIS_TRACKS,
+    ANGR_TRACK,
     BUILD_PROFILES,
     CANDIDATE_SCOPES,
     DEFAULT_ANALYSIS_TRACK,
@@ -30,6 +31,7 @@ from paths import (
     boundaries_json_for,
     build_manifest_for,
     fixture_json_for,
+    evidence_backend_for_track,
     normalize_profile,
     normalize_candidate_scope,
     normalize_track,
@@ -1027,6 +1029,13 @@ def extract_artifacts(args: argparse.Namespace) -> ExtractionArtifacts:
             boundary_mode=boundary_mode,
             boundary_mismatches=boundary_mismatches,
         )
+        if track == ANGR_TRACK:
+            from angr_adapter import augment_raw_graph_with_angr
+
+            raw_graph = augment_raw_graph_with_angr(
+                raw_graph,
+                binary_path=args.binary,
+            )
         fixture = project_fixture(
             raw_graph,
             selection=selection,
@@ -1069,7 +1078,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
         "output",
         nargs="?",
         help=(
-            "output path. If omitted, direct-v0 writes the compatibility path; "
+            "output path. If omitted, direct writes the compatibility path; "
             "other tracks write fixtures/<track>/<profile>/."
         ),
     )
@@ -1185,6 +1194,7 @@ def apply_cli_defaults(args: argparse.Namespace, parser: argparse.ArgumentParser
             args.case,
             build,
             args.profile,
+            evidence_backend_for_track(args.track),
         )
 
     default_users = resolve_users_json(

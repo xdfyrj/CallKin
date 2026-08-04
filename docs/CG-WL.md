@@ -166,7 +166,7 @@ color_class=ADDR:FUN_001487a0
 -> ANCHOR:ADDR:FUN_001487a0
 ```
 
-현재 canonical `direct-in-v1`의 `anchor_policy=address`도 anchor마다 서로 다른
+현재 `direct-in`과 `angr`의 `anchor_policy=address`도 anchor마다 서로 다른
 class를 주므로 schema v4와 같은 individualized 의미를 유지한다. 향후 role 또는
 semantic policy에서는 여러 anchor가 같은 `color_class`를 공유할 수 있다.
 Refinement 중 anchor color는 어느 경우에도 바뀌지 않는다.

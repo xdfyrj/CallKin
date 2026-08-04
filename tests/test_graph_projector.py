@@ -8,14 +8,16 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from candidate_selection import parse_candidate_selection
 from graph_evidence import TransferEvidence, make_raw_graph, raw_graph_sha256
 from graph_projector import (
-    project_direct_in_fixture,
-    project_direct_v0_fixture,
+    project_direct_fixture,
+    project_context_fixture,
     project_fixture,
 )
 from loader import validate_raw_fixture
 from paths import (
-    DIRECT_IN_V1_TRACK,
-    DIRECT_V0_TRACK,
+    ANGR_EVIDENCE,
+    ANGR_TRACK,
+    DIRECT_IN_TRACK,
+    DIRECT_TRACK,
     RUST_NONSTD_CANDIDATE_SCOPE,
     SUBJECT_CANDIDATE_SCOPE,
     fixture_json_for,
@@ -140,33 +142,43 @@ def broad_selection(addresses: set[int], bounds: dict[int, int]):
 
 def check_track_paths() -> int:
     legacy = fixture_json_for(
-        "sample", "O3S", "plain", DIRECT_V0_TRACK, SUBJECT_CANDIDATE_SCOPE
+        "sample", "O3S", "plain", DIRECT_TRACK, SUBJECT_CANDIDATE_SCOPE
     )
     if legacy != "fixtures/plain/sample.O3S.fixture.json":
-        print(f"FAIL direct-v0 path changed: {legacy}")
+        print(f"FAIL direct path changed: {legacy}")
         return 1
     tracked = fixture_json_for(
-        "sample", "O3S", "plain", DIRECT_IN_V1_TRACK, SUBJECT_CANDIDATE_SCOPE
+        "sample", "O3S", "plain", DIRECT_IN_TRACK, SUBJECT_CANDIDATE_SCOPE
     )
-    if tracked != "fixtures/direct-in-v1/plain/sample.O3S.fixture.json":
-        print(f"FAIL direct-in-v1 fixture path: {tracked}")
+    if tracked != "fixtures/direct-in/plain/sample.O3S.fixture.json":
+        print(f"FAIL direct-in fixture path: {tracked}")
         return 1
     raw = raw_graph_for("sample", "O3S", "plain")
     if raw != "extractions/plain/sample.O3S.raw.json":
         print(f"FAIL track-independent raw path: {raw}")
         return 1
+    angr_raw = raw_graph_for("sample", "O3S", "plain", ANGR_EVIDENCE)
+    if angr_raw != "extractions/angr/plain/sample.O3S.raw.json":
+        print(f"FAIL angr raw path: {angr_raw}")
+        return 1
+    angr_fixture = fixture_json_for(
+        "sample", "O3S", "plain", ANGR_TRACK, SUBJECT_CANDIDATE_SCOPE
+    )
+    if angr_fixture != "fixtures/angr/plain/sample.O3S.fixture.json":
+        print(f"FAIL angr fixture path: {angr_fixture}")
+        return 1
     broad = fixture_json_for(
         "sample",
         "O3S",
         "plain",
-        DIRECT_IN_V1_TRACK,
+        DIRECT_IN_TRACK,
         RUST_NONSTD_CANDIDATE_SCOPE,
     )
-    if broad != "fixtures/direct-in-v1/rust-nonstd/plain/sample.O3S.fixture.json":
+    if broad != "fixtures/direct-in/rust-nonstd/plain/sample.O3S.fixture.json":
         print(f"FAIL scoped fixture path: {broad}")
         return 1
     default_path = fixture_json_for(
-        "sample", "O3S", "plain", DIRECT_IN_V1_TRACK
+        "sample", "O3S", "plain", DIRECT_IN_TRACK
     )
     if default_path != broad:
         print(f"FAIL rust-nonstd is not the default candidate scope: {default_path}")
@@ -194,7 +206,7 @@ def check_incoming_projection() -> int:
                     "symbol-oracle" if address in {0x2000, 0x2100} else "radare2"
                 ),
                 # 0x3000 exists only because the common symbol-boundary oracle
-                # recovered it. direct-in-v1 may use it; frozen direct-v0 may
+                # recovered it. direct-in may use it; frozen direct may
                 # not silently gain this new external anchor.
                 "discovered_by_radare2": address != 0x3000,
             }
@@ -216,7 +228,7 @@ def check_incoming_projection() -> int:
         boundary_mode="symbol-extent",
         boundary_mismatches=[],
     )
-    fixture = project_direct_in_fixture(
+    fixture = project_context_fixture(
         raw,
         selection=selection(
             {0x2000, 0x2100},
@@ -288,7 +300,7 @@ def check_incoming_projection() -> int:
 
     analysis = fixture["analysis"]
     if (
-        analysis["track"] != DIRECT_IN_V1_TRACK
+        analysis["track"] != DIRECT_IN_TRACK
         or analysis["candidate_scope"] != "subject"
         or analysis["raw_graph_sha256"] != raw_graph_sha256(raw)
         or not analysis["candidate_selection_sha256"]
@@ -296,7 +308,7 @@ def check_incoming_projection() -> int:
         print("FAIL analysis provenance does not bind the raw graph")
         return 1
 
-    v0 = project_direct_v0_fixture(
+    direct = project_direct_fixture(
         raw,
         selection=selection(
             {0x2000, 0x2100},
@@ -305,41 +317,41 @@ def check_incoming_projection() -> int:
         users_path="users/plain/projector-test.O3S.users.json",
         id_bias=0,
     )
-    if v0["schema_version"] != 4 or "analysis" in v0:
-        print("FAIL frozen direct-v0 projection changed schema")
+    if direct["schema_version"] != 4 or "analysis" in direct:
+        print("FAIL frozen direct projection changed schema")
         return 1
-    v0_nodes = {node["id"]: node for node in v0["nodes"]}
-    if "FUN_00004000" in v0_nodes:
-        print("FAIL direct-v0 projection included an incoming-only caller")
+    direct_nodes = {node["id"]: node for node in direct["nodes"]}
+    if "FUN_00004000" in direct_nodes:
+        print("FAIL direct projection included an incoming-only caller")
         return 1
-    if "FUN_00003000" in v0_nodes:
-        print("FAIL direct-v0 projection gained a symbol-only external anchor")
+    if "FUN_00003000" in direct_nodes:
+        print("FAIL direct projection gained a symbol-only external anchor")
         return 1
-    if v0_nodes["FUN_00005000"]["calls"]:
-        print("FAIL direct-v0 outgoing anchor retained its incoming edge")
+    if direct_nodes["FUN_00005000"]["calls"]:
+        print("FAIL direct outgoing anchor retained its incoming edge")
         return 1
 
-    broad_v0 = project_fixture(
+    broad_direct = project_fixture(
         raw,
         selection=broad_selection(
             {0x2000, 0x2100},
             {0x2000: 0x20, 0x2100: 0x20},
         ),
-        track=DIRECT_V0_TRACK,
+        track=DIRECT_TRACK,
         users_path="users/rust-nonstd/plain/projector-test.O3S.users.json",
         id_bias=0,
     )
-    validate_raw_fixture(broad_v0)
+    validate_raw_fixture(broad_direct)
     if (
-        broad_v0["schema_version"] != 5
-        or broad_v0["analysis"]["candidate_scope"] != "rust-nonstd"
-        or not broad_v0["analysis"]["candidate_selection_sha256"]
+        broad_direct["schema_version"] != 5
+        or broad_direct["analysis"]["candidate_scope"] != "rust-nonstd"
+        or not broad_direct["analysis"]["candidate_selection_sha256"]
     ):
-        print("FAIL broad direct-v0 projection lost candidate provenance")
+        print("FAIL broad direct projection lost candidate provenance")
         return 1
-    broad_v0_nodes = {node["id"]: node for node in broad_v0["nodes"]}
-    if "FUN_00004000" in broad_v0_nodes:
-        print("FAIL broad direct-v0 projection included an incoming-only caller")
+    broad_direct_nodes = {node["id"]: node for node in broad_direct["nodes"]}
+    if "FUN_00004000" in broad_direct_nodes:
+        print("FAIL broad direct projection included an incoming-only caller")
         return 1
     return 0
 

@@ -2,3 +2,5 @@
 # The radare2 executable itself is a system dependency; see README.md.
 r2pipe>=1.9
 capstone>=5.0
+# Pinned because the angr CFG API is part of the recorded extraction method.
+angr==9.2.165

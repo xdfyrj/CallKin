@@ -70,7 +70,8 @@ Cargo subject는 `subjects/<name>/Cargo.toml`과 `Cargo.lock`을 사용하되,
 
 ```bash
 python3 compile.py billing-client subject --profile plain --build O3S
-python3 run_case.py billing-client --profile plain --build O3S --track direct-in-v1
+python3 run_case.py billing-client --profile plain --build O3S --track direct-in
+python3 run_case.py billing-client --profile plain --build O3S --track angr
 ```
 
 이미 컴파일된 한 build에서 GT, users, fixture를 생성하고 grouping과 scoring까지 수행한다.
@@ -89,25 +90,29 @@ text symbol 중 함수 소유 namespace가 `core`, `alloc`, `std`인 함수와 s
 명시한다. 두 scope 모두 candidate 주소를 compiler symbol에서 받는 oracle 조건이며,
 stripped binary만으로 library 소유권을 분류하는 기능은 아니다.
 
-기본 projection track은 `direct-v0`다. 기존 동결 baseline은 정확히
-`subject/direct-v0` 조합이며, 새 기본값인 `rust-nonstd/direct-v0`는 별도
-경로와 schema v5로 생성된다. `direct-in-v1`은
+기본 projection track은 `direct`다. 기존 동결 baseline은 정확히
+`subject/direct` 조합이며, 새 기본값인 `rust-nonstd/direct`는 별도
+경로와 schema v5로 생성된다. `direct-in`은
 candidate가 직접 호출하는 외부 함수뿐 아니라 candidate를 직접 호출하는 외부
-함수도 one-hop anchor로 포함한다. 두 track은 서로 다른 경로에 저장되어 기존
-fixture를 덮어쓰지 않는다. Raw graph는 track별로 복제하지 않고
-`extractions/<profile>/`에 한 번만 저장하며, projector가 별도 candidate selection과
-track 정책을 결합한다.
+함수도 one-hop anchor로 포함한다. 두 track은 서로 다른 fixture 경로에 저장되어 기존
+fixture를 덮어쓰지 않는다. `direct`와 `direct-in`은
+`extractions/<profile>/`의 같은 raw graph를 공유하고, projector가 별도 candidate
+selection과 track 정책을 결합한다. `angr`는 기존 direct edge에 더해 angr CFG가 하나의 기존
+함수 시작점으로 확정한 indirect call을 사용하고, `direct-in`과 같은 one-hop
+incoming/outgoing anchor 문맥을 투영한다. Angr evidence는 extraction 자체가 다르므로
+`extractions/angr/<profile>/`에 별도로 저장된다.
 
 각 단계를 단독 실행할 수도 있다.
 
 ```bash
 python3 gt_extractor.py family_graph_03 --candidate-scope subject
 python3 binary_extractor.py family_graph_03 --candidate-scope subject
-python3 binary_extractor.py family_graph_03 --track direct-in-v1 --candidate-scope subject
+python3 binary_extractor.py family_graph_03 --track direct-in --candidate-scope subject
+python3 binary_extractor.py billing-client --track angr
 python3 graph_projector.py \
   extractions/plain/family_graph_03.O3S.raw.json \
   users/plain/family_graph_03.O3S.users.json \
-  --track direct-in-v1
+  --track direct-in
 python3 engine.py family_graph_03 --mode full --candidate-scope subject
 python3 scores.py family_graph_03 --mode full --candidate-scope subject
 python3 engine.py family_graph_03 --trace --candidate-scope subject
@@ -147,12 +152,14 @@ users/plain/family_graph_03.O3S.users.json
 boundaries/plain/family_graph_03.O3S.boundaries.json
 fixtures/plain/family_graph_03.O3S.fixture.json
 extractions/plain/family_graph_03.O3S.raw.json
-fixtures/direct-in-v1/plain/family_graph_03.O3S.fixture.json
+fixtures/direct-in/plain/family_graph_03.O3S.fixture.json
+extractions/angr/plain/family_graph_03.O3S.raw.json
+fixtures/angr/plain/family_graph_03.O3S.fixture.json
 
 # 기본 rust-nonstd scope의 scope별 산출물
 ground_truth/rust-nonstd/plain/billing-client.O3S.gt.json
 users/rust-nonstd/plain/billing-client.O3S.users.json
-fixtures/direct-in-v1/rust-nonstd/plain/billing-client.O3S.fixture.json
+fixtures/direct-in/rust-nonstd/plain/billing-client.O3S.fixture.json
 ```
 
 각 profile에서 다음 네 case/build 조합을 생성하므로 canonical artifact set은 총 8개다.
@@ -177,8 +184,9 @@ family_graph_03 / O3KS
 - 모든 Rust symbol extent를 담는 scope-independent boundary artifact
 - 기본 `rust-nonstd` candidate scope와 호환용 `subject` scope
 - candidate selection SHA-256을 포함한 projection provenance
-- `direct-v0`: user 함수가 직접 호출하는 library/runtime anchor
-- `direct-in-v1`: user 함수의 direct callee와 direct external caller anchor
+- `direct`: user 함수가 직접 호출하는 library/runtime anchor
+- `direct-in`: user 함수의 direct callee와 direct external caller anchor
+- `angr`: direct edge와 singleton angr-resolved indirect edge, 양방향 one-hop anchor
 - directed weighted call graph 기반 CG-WL
 - `full`, `out`, `in`, `out-in` relation mode
 - pairwise PR/RE/F1과 ARI
@@ -187,7 +195,7 @@ family_graph_03 / O3KS
 
 - generic function 자동 탐지
 - 함수 경계 복원 연구
-- indirect call target recovery. 현재 unresolved callsite로만 기록한다.
+- multi-target 또는 미해결 indirect call의 exact edge 투영
 - stripped-only std/library classifier. 현재 scope는 non-stripped symbol owner oracle이다.
 - source-level mono-item census와 inlined/eliminated 원인 판정
 - type recovery 또는 body/CFG similarity

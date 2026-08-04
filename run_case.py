@@ -24,6 +24,7 @@ from paths import (
     boundaries_json_for,
     build_manifest_for,
     fixture_json_for,
+    evidence_backend_for_track,
     gt_json_for,
     normalize_profile,
     normalize_candidate_scope,
@@ -75,6 +76,7 @@ def run_pipeline(args: argparse.Namespace) -> None:
         case_name,
         build,
         profile,
+        evidence_backend_for_track(track),
     )
     gt_json = args.gt_json or gt_json_for(
         case_name, build, profile, candidate_scope

@@ -11,13 +11,15 @@ from paths import normalize_profile
 from provenance import BuildProvenance, parse_provenance
 
 
-RAW_GRAPH_SCHEMA_VERSION = 2
+RAW_GRAPH_SCHEMA_VERSION = 3
 RAW_GRAPH_BACKEND = "radare2-capstone"
-RAW_GRAPH_EXTRACTOR_VERSION = "direct-call-v2"
+ANGR_RAW_GRAPH_BACKEND = "radare2-capstone+angr"
+RAW_GRAPH_EXTRACTOR_VERSION = "call-evidence-v3"
+ANGR_RESOLVER = "angr-cfg"
 
 TRANSFER_KINDS = {"call", "tail-call"}
 TRANSFER_STATUSES = {"resolved", "unresolved", "unmapped", "filtered"}
-TRANSFER_RESOLVERS = {"direct-immediate", "direct-tail"}
+TRANSFER_RESOLVERS = {"direct-immediate", "direct-tail", ANGR_RESOLVER}
 TRANSFER_FILTER_REASONS = {"import"}
 OPERAND_KINDS = {"immediate", "memory", "register", "unknown"}
 BOUNDARY_SOURCES = {"radare2", "symbol-oracle"}
@@ -65,6 +67,8 @@ def make_raw_graph(
     transfers: list[TransferEvidence],
     boundary_mode: str,
     boundary_mismatches: list[dict[str, int | str]],
+    backend: str = RAW_GRAPH_BACKEND,
+    extractor_version: str = RAW_GRAPH_EXTRACTOR_VERSION,
 ) -> dict[str, Any]:
     raw = {
         "schema_version": RAW_GRAPH_SCHEMA_VERSION,
@@ -73,8 +77,8 @@ def make_raw_graph(
         "profile": profile,
         "provenance": provenance.to_dict(),
         "analysis": {
-            "backend": RAW_GRAPH_BACKEND,
-            "extractor_version": RAW_GRAPH_EXTRACTOR_VERSION,
+            "backend": backend,
+            "extractor_version": extractor_version,
             "oracle_level": "symbol-boundary",
             "boundary_input_sha256": boundary_input_sha256,
         },
@@ -281,8 +285,15 @@ def _validate_transfers(
                 raise ValueError(f"{where}.target is not a known function")
             if transfer["resolver"] not in TRANSFER_RESOLVERS:
                 raise ValueError(f"invalid {where}.resolver")
-            if transfer["confidence"] != "exact":
-                raise ValueError(f"{where}.confidence must be exact")
+            expected_confidence = (
+                "inferred"
+                if transfer["resolver"] == ANGR_RESOLVER
+                else "exact"
+            )
+            if transfer["confidence"] != expected_confidence:
+                raise ValueError(
+                    f"{where}.confidence must be {expected_confidence}"
+                )
             if transfer["filter_reason"] is not None:
                 raise ValueError(f"{where} resolved transfer cannot be filtered")
         elif status == "filtered":

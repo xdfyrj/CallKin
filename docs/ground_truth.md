@@ -486,7 +486,7 @@ SHA-256을 fixture `analysis.candidate_selection_sha256`에 기록한다.
 모든 Rust text symbol의 `(address, size)`만 담고 별도 SHA-256으로 검증된다.
 
 ```text
-같은 boundaries + stripped binary -> raw graph 하나
+같은 boundaries + stripped binary -> extraction backend별 raw graph 하나
 raw + subject users              -> subject fixture
 raw + rust-nonstd users          -> rust-nonstd fixture
 ```

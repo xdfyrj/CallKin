@@ -178,8 +178,8 @@ demangle 가능한 모든 Rust text symbol extent를 담는다. 따라서 같은
 | Ground truth | `ground_truth/rust-nonstd/plain/*.gt.json`, `ground_truth/plain/*.gt.json` | scope별 origin partition과 symbol |
 | Candidate selection | `users/rust-nonstd/plain/*.users.json`, `users/plain/*.users.json` | scope별 candidate raw address 집합 |
 | Function boundaries | `boundaries/plain/*.boundaries.json` | scope-independent Rust symbol extents |
-| Raw graph | `extractions/plain/*.raw.json` | track/candidate 독립 transfer evidence |
-| Fixture | `fixtures/rust-nonstd/plain/*.fixture.json`, `fixtures/direct-in-v1/rust-nonstd/plain/*.fixture.json`, 호환용 `fixtures/plain/*.fixture.json` | scope와 track 정책으로 투영한 node와 weighted edge |
+| Raw graph | `extractions/plain/*.raw.json`, `extractions/angr/plain/*.raw.json` | candidate/projection 독립 transfer evidence; angr backend만 별도 |
+| Fixture | `fixtures/rust-nonstd/plain/*.fixture.json`, `fixtures/direct-in/rust-nonstd/plain/*.fixture.json`, `fixtures/angr/rust-nonstd/plain/*.fixture.json`, 호환용 `fixtures/plain/*.fixture.json` | scope와 track 정책으로 투영한 node와 weighted edge |
 | Score result | `results/plain/v0_baseline.json` | cluster, origin별 결과, metric |
 
 `plain`은 Cargo 기본 release 설정을 근사한 CallKin profile로 O3/`lto=false`(thin local LTO 가능)/16 codegen units/panic unwind를 사용한다. `min`은 aggressive minimized stress profile로 O3/fat LTO/1 codegen unit/panic abort를 사용한다. Case는 direct rustc flag로, Cargo subject는 release-profile overlay로 같은 조건을 적용한다. `O3S`는 추가 source cfg가 없으며 `O3KS`는 `--cfg keep`을 추가한다. 어느 조합이든 non-stripped binary를 한 번 만든 뒤 복사본에 `strip --strip-all`을 적용한다.
@@ -209,11 +209,17 @@ resolved/filtered/unmapped/unresolved로 구분해 남긴다.
 
 `candidate_selection.py`는 users JSON을 검증하고 candidate 집합과 SHA-256을 만든다.
 `function_boundaries.py`는 scope-independent Rust function extent를 검증한다.
-`graph_evidence.py`는 candidate와 track을 포함하지 않는 raw graph schema v2와 hash
+`graph_evidence.py`는 candidate와 projection track을 포함하지 않는 raw graph schema v3와 hash
 검증을 담당한다. `graph_projector.py`는 raw evidence, candidate selection, track
 정책을 결합해 CG-WL fixture로 바꾼다.
-`direct-in-v1`에서는 candidate의 direct callee와 direct external caller까지만
+`direct-in`에서는 candidate의 direct callee와 direct external caller까지만
 anchor로 포함하고 library 내부로 더 내려가지 않는다.
+`angr`에서는 direct edge와 angr가 단일 target으로 해결한 indirect edge를 사용하되,
+동일하게 양방향 one-hop anchor에서 탐색을 멈춘다.
+`angr_adapter.py`는 CFGFast 결과를 raw callsite와 join하고, 기존 함수 시작점 하나로
+확정된 unresolved call만 `resolver=angr-cfg`, `confidence=inferred`로 승격한다.
+Singleton 판정은 unknown target을 제거하기 전에 수행한다. Raw에서는 direct exact와
+angr inferred evidence를 구분하지만 현재 fixture는 동일 source-target call count로 합산한다.
 
 상세: [바이너리 추출](binary_extraction.md)
 
@@ -369,7 +375,9 @@ Canonical source 함수와 source `main`의 경계는 non-stripped symbol extent
 oracle로 사용한다. 해당 stripped byte 범위는 radare2 `p8j`로 읽고 Capstone으로
 x86-64 instruction을 디코딩한다. One-hop library anchor의 함수 시작점과 범위는
 radare2 분석에 의존한다. 두 경로 모두 direct immediate call과 다른 함수의 정확한
-시작점으로 향하는 unconditional jump만 edge로 세며 indirect call은 복구하지 않는다.
+시작점으로 향하는 unconditional jump를 exact edge로 센다. `angr` track에서는 여기에
+angr CFG가 기존 함수 시작점 하나로 해결한 indirect call을 inferred edge로 추가한다.
+Multi-target과 미해결 indirect call은 edge로 만들지 않는다.
 
 ### Ground truth의 의미
 

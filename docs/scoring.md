@@ -23,7 +23,8 @@ Ground truth는 이 단계에서 처음 grouping 결과와 만난다. `engine.py
 ## 2. 가장 단순한 실행
 
 ```bash
-python3 scores.py billing-client --track direct-in-v1
+python3 scores.py billing-client --track direct-in
+python3 scores.py billing-client --track angr
 python3 scores.py family_graph_03 --candidate-scope subject
 ```
 
@@ -64,12 +65,18 @@ python3 scores.py family_graph_03 --trace --candidate-scope subject
 
 이 경우 `round 0(seed)`부터 마지막 `fixpoint` 확인 라운드까지 CLI에 추가로 출력된다.
 
-`direct-v0`가 기본 track이고 `rust-nonstd`가 기본 candidate scope다. Frozen
+`direct`가 기본 track이고 `rust-nonstd`가 기본 candidate scope다. Frozen
 family-graph 결과는 `--candidate-scope subject`를 명시한다. Broad
-`direct-in-v1` fixture는 다음 경로에서 읽는다.
+`direct-in` fixture는 다음 경로에서 읽는다.
 
 ```text
-fixtures/direct-in-v1/rust-nonstd/plain/billing-client.O3S.fixture.json
+fixtures/direct-in/rust-nonstd/plain/billing-client.O3S.fixture.json
+```
+
+`angr` fixture는 다음 경로에서 읽는다.
+
+```text
+fixtures/angr/rust-nonstd/plain/billing-client.O3S.fixture.json
 ```
 
 Schema v5 fixture를 채점하면 CLI와 결과 JSON에 track, candidate scope, raw/projection hash,

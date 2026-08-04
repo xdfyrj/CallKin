@@ -5,7 +5,8 @@
 CallKin의 `binary_extractor.py`는 stripped binary를 radare2와 Capstone으로 분석해
 raw transfer evidence를 만든다. `graph_projector.py`가 이 evidence를 track 정책에
 따라 CG-WL fixture로 투영한다. Raw graph에는 projection track과 candidate 주소가
-들어가지 않는다.
+들어가지 않는다. `angr` track은 같은 direct evidence에서 출발해 angr CFG가 단일
+target으로 해결한 indirect callsite를 보강한 별도 raw graph를 사용한다.
 
 ```text
 bin/plain/family_graph_01.O3S.fixture.bin
@@ -35,7 +36,8 @@ Canonical 파일명을 사용하는 가장 짧은 명령은 다음과 같다.
 
 ```bash
 # 기본 rust-nonstd scope
-python3 binary_extractor.py billing-client --track direct-in-v1
+python3 binary_extractor.py billing-client --track direct-in
+python3 binary_extractor.py billing-client --track angr
 
 # frozen subject-only baseline
 python3 binary_extractor.py family_graph_01 --candidate-scope subject
@@ -85,6 +87,7 @@ main()
        -> resolve_root()
        -> transfer_evidence() for every discovered function
        -> build_raw_graph()
+       -> [angr track] augment_raw_graph_with_angr()
        -> graph_projector.py(raw + candidate selection + track)
   -> write_raw_graph()
   -> write_fixture()
@@ -116,7 +119,9 @@ python3 -m pip install -r requirements.txt
 ```
 
 Canonical symbol-extent 추출에서 `capstone`이 없을 때도 같은 명령을 안내하며
-중단한다. `requirements.txt`는 `r2pipe`와 `capstone`을 모두 설치한다.
+중단한다. `requirements.txt`는 `r2pipe`, `capstone`, pinned `angr`를 설치한다.
+Angr는 `--track angr`에서만 import하고 실행하므로 direct track의 실행 비용에는
+영향을 주지 않는다.
 
 ## 5. 함수 목록 복구
 
@@ -322,11 +327,48 @@ call rax
 => projected fixture edge 없음
 ```
 
-GOT/PLT 형태도 현재 track에서 target을 확정하지 못하면 동일하게 unresolved다.
+GOT/PLT 형태도 direct track에서 target을 확정하지 못하면 동일하게 unresolved다.
 이는 호출이 실행되지 않는다는 뜻이 아니라 현재 extractor가 target을 복구하지
 못했다는 뜻이다.
 
-### 8.4 확정했지만 제외한 import
+### 8.4 Angr singleton indirect resolution
+
+`--track angr`는 direct raw graph의 unresolved `call` callsite를 angr
+`CFGFast(resolve_indirect_jumps=True)` 결과와 주소로 join한다. Resolver가 성공해
+일반 `Ijk_Call` CFG edge가 된 결과와, `cfg.indirect_jumps`에 남은 결과를 모두
+수집한다. 다음 조건을 순서대로 모두 만족할 때만 fixture edge 후보로 승격한다.
+
+`CFGFast(function_starts=...)`에는 boundaries JSON의 함수 시작점을 angr load base에
+맞게 rebasing하여 전달한다. 이 boundaries JSON은 non-stripped binary의 demangle 가능한
+전체 Rust text symbol에서 얻는다. 따라서 angr target recovery는 stripped binary의
+instruction을 분석하지만, 함수 시작점은 symbol-boundary oracle을 사용하는 조건이며
+stripped-only function discovery가 아니다.
+
+```text
+같은 callsite를 가리킴
++ filtering 전 angr target 집합의 크기가 정확히 1
++ 그 유일한 target이 raw graph에 이미 존재하는 함수 시작점
+```
+
+예를 들어 `call rax`의 callsite가 `0x39048`이고 angr가 target `0x35470` 하나만
+찾으면 raw transfer는 다음처럼 바뀐다.
+
+```text
+status=resolved
+target=0x35470
+resolver=angr-cfg
+confidence=inferred
+```
+
+target이 두 개 이상이거나 알려진 함수 시작점이 아니면 기존 `unresolved` 상태를
+유지한다. 이미 `direct-immediate` 또는 `direct-tail`로 확정된 edge는 angr 결과가
+달라도 덮어쓰지 않는다.
+
+Raw graph에서는 direct edge의 `confidence=exact`와 angr edge의
+`confidence=inferred`를 구분한다. 현재 projected fixture의 `calls`는 resolver별
+evidence를 보존하지 않고 같은 `(source, target)`의 static callsite count로 합산한다.
+
+### 8.5 확정했지만 제외한 import
 
 `include_imports=false`일 때 import stub의 주소를 정확히 알아도 fixture edge에서는
 제외한다. 이 경우는 unresolved가 아니라 다음처럼 기록한다.
@@ -341,7 +383,7 @@ filter_reason=import
 
 따라서 `unresolved`는 target을 정하지 못한 callsite만 의미한다.
 
-### 8.5 주소는 알지만 함수에 매핑하지 못한 direct call
+### 8.6 주소는 알지만 함수에 매핑하지 못한 direct call
 
 Immediate operand에서 숫자 target은 정확히 디코딩했지만 raw function table의 어느
 함수에도 연결하지 못한 경우는 `unresolved`와 구분한다.
@@ -414,7 +456,7 @@ Root reachability는 candidate 필터로 사용하지 않는다. 대신 namespac
 relation은 symbol extent로 추출하며 radare2 size가 다르면 mismatch를 fixture에
 남긴다.
 
-Raw schema v2는 각 함수가 radare2에서도 발견됐는지
+Raw schema v3는 각 함수가 radare2에서도 발견됐는지
 `discovered_by_radare2`로 기록하고 boundary JSON의 SHA-256을
 `analysis.boundary_input_sha256`에 기록한다. Projection track과 candidate 주소는 raw에
 없다.
@@ -431,7 +473,7 @@ Boundary 파일이 없을 때 users의 candidate extent로 대신 raw를 만드�
 
 ## 10. Track과 fixture node 선택
 
-### 10.1 `direct-v0`
+### 10.1 `direct`
 
 정상 users mode의 emitted node 집합은 다음과 같다.
 
@@ -483,12 +525,12 @@ Node type과 scoring은 다음과 같다.
 
 정상 users mode에서는 users JSON의 주소 집합을 authoritative candidate set으로 사용한다. Root reachability를 candidate 필터로 다시 적용하지 않는다. 이는 radare2가 큰 함수의 경계를 일찍 끊더라도 symbol에서 확인된 user 함수를 누락시키지 않기 위해서다.
 
-Frozen `subject/direct-v0`의 `project_direct_v0_fixture()`는 root, 모든 listed user, 각 listed user가 직접
+Frozen `subject/direct`의 `project_direct_fixture()`는 root, 모든 listed user, 각 listed user가 직접
 호출하는 함수만 선택한다. 따라서 library anchor의 callee로 더 내려가지 않는다.
 공용 boundary가 새로 복구한 non-candidate 함수 때문에 동결 결과가 바뀌지 않도록,
 이 호환 projection의 외부 anchor는 radare2도 발견한 함수로 제한한다.
 
-### 10.2 `direct-in-v1`
+### 10.2 `direct-in`
 
 다음 집합을 사용한다.
 
@@ -519,10 +561,28 @@ X(anchor)-+
 `X -> library Y`는 제거하며 Y 내부로 더 내려가지 않는다. 따라서 incoming 문맥을
 복구해도 library 전체 call graph는 fixture에 들어오지 않는다.
 
+### 10.3 `angr`
+
+`angr`는 node 선택은 `direct-in`과 같고, 허용하는 edge evidence만 넓힌다.
+
+```text
+direct-immediate
++ direct-tail
++ angr-cfg singleton indirect call
+```
+
+Candidate가 angr로 복구된 간접 call을 통해 외부 함수를 호출하면 그 함수는
+outgoing anchor가 되고, 외부 함수가 candidate를 간접 호출한 것이 단일 target으로
+복구되면 incoming anchor가 된다. 어느 경우에도 anchor 내부에서 더 깊게 탐색하지 않는다.
+
+Direct raw graph는 `extractions/<profile>/`에, angr 보강 raw graph는
+`extractions/angr/<profile>/`에 저장한다. 이 둘은 projection만 다른 것이 아니라
+추출 evidence가 실제로 다르기 때문에 별도 파일이다.
+
 ## 11. Fixture JSON
 
-Frozen `subject/direct-v0` 출력만 schema version 4를 유지한다. 새 기본
-`rust-nonstd/direct-v0`와 모든 `direct-in-v1` 출력은 analysis provenance와 anchor
+Frozen `subject/direct` 출력만 schema version 4를 유지한다. 새 기본
+`rust-nonstd/direct`, 모든 `direct-in`, `angr` 출력은 analysis provenance와 anchor
 metadata가 추가된 schema version 5를 사용한다.
 
 실제 fg01 일부:
@@ -615,7 +675,7 @@ config SHA-256, candidate selection SHA-256을 기록한다.
 | `--case` | JSON case override | `--case custom_case` |
 | `--build` | build label | `--build O3KS` |
 | `--profile` | compiler profile과 artifact directory | `--profile min` |
-| `--track` | projection track | `--track direct-in-v1` |
+| `--track` | `direct`, `direct-in`, `angr` | `--track angr` |
 | `--candidate-scope` | `rust-nonstd`(기본) 또는 `subject` | `--candidate-scope subject` |
 | `--raw-output` | raw evidence 출력 override | `--raw-output /tmp/case.raw.json` |
 | `--root` | root name/ID/address | `--root FUN_00114040` |
@@ -631,10 +691,16 @@ config SHA-256, candidate selection SHA-256을 기록한다.
 
 - Rust 함수 경계는 non-stripped symbol extent를 oracle로 사용한다.
 - One-hop library anchor의 시작점과 범위 복구는 radare2 분석에 의존한다.
-- Immediate direct target이 없는 call은 raw evidence에 unresolved로 남지만 target은 복구하지 않는다.
+- Direct track에서 immediate target이 없는 call은 unresolved로 남는다.
+- `angr`는 single-target으로 복구되고 기존 함수 시작점과 일치한 indirect call만 edge로 사용한다.
+- Angr multi-target과 미해결 call은 unresolved이며 가짜 edge를 만들지 않는다.
+- ELF relocation을 직접 해석한 exact memory-indirect resolver는 아직 없다. Angr가
+  복구한 memory/register indirect edge는 모두 inferred다.
+- Raw graph는 exact/inferred resolver를 구분하지만 fixture `calls`는 같은 target의
+  edge evidence를 합산한다.
 - 확정했지만 정책상 제외한 import는 unresolved가 아니라 filtered로 기록한다.
 - 숫자 target은 알지만 함수에 매핑하지 못한 direct call은 unmapped로 기록한다.
-- `direct-in-v1`은 복구된 direct caller만 추가하며 완전한 incoming graph를 주장하지 않는다.
+- `direct-in`은 복구된 direct caller만 추가하며 완전한 incoming graph를 주장하지 않는다.
 - Root 자동 탐지는 현재 Rust/glibc startup 형태에 맞춘 heuristic이다.
 - Users JSON은 compiler symbol owner에서 얻은 candidate oracle이다. 기본은
   `core/alloc/std`를 제외한 Rust 함수, 호환 mode는 subject namespace 함수다.
@@ -651,6 +717,12 @@ config SHA-256, candidate selection SHA-256을 기록한다.
 5. `resolve_root()`와 startup helper
 6. `transfer_evidence()`와 symbol/radare2 evidence helper
 7. `build_raw_graph()`와 `graph_evidence.py`
-8. `graph_projector.py`
-9. `candidate_selection.py`, `function_boundaries.py`, `project_fixture()`
-10. `write_raw_graph()`과 `write_fixture()`
+8. `angr_adapter.py` (`angr` track만)
+9. `graph_projector.py`
+10. `candidate_selection.py`, `function_boundaries.py`, `project_fixture()`
+11. `write_raw_graph()`과 `write_fixture()`
+
+`tests/test_angr_integration.py`는 Linux에서 작은 실제 x86-64 ELF를 임시로 빌드해
+angr CFG가 memory-indirect call target을 복구하는지 검사한다. `cc` 또는 angr가 없는
+환경에서는 명시적으로 skip하며, cardinality와 merge 정책은
+`tests/test_angr_adapter.py`가 별도로 고정한다.

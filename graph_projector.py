@@ -12,17 +12,19 @@ from typing import Any
 from analysis_provenance import AnalysisProvenance
 from candidate_selection import CandidateSelection, load_candidate_selection
 from graph_evidence import (
+    ANGR_RAW_GRAPH_BACKEND,
+    ANGR_RESOLVER,
     RAW_GRAPH_BACKEND,
-    RAW_GRAPH_EXTRACTOR_VERSION,
     load_raw_graph,
     raw_graph_sha256,
     validate_raw_graph,
 )
 from paths import (
     ANALYSIS_TRACKS,
+    ANGR_TRACK,
     DEFAULT_ANALYSIS_TRACK,
-    DIRECT_IN_V1_TRACK,
-    DIRECT_V0_TRACK,
+    DIRECT_IN_TRACK,
+    DIRECT_TRACK,
     SUBJECT_CANDIDATE_SCOPE,
     fixture_json_for,
     normalize_track,
@@ -54,19 +56,26 @@ class ProjectionConfig:
 
 def projection_config_for(track: str) -> ProjectionConfig:
     track = normalize_track(track)
-    if track == DIRECT_V0_TRACK:
+    if track == DIRECT_TRACK:
         return ProjectionConfig(
             track=track,
             include_incoming_anchors=False,
             anchor_policy="address",
             edge_policy=("direct-immediate", "direct-tail"),
         )
-    if track == DIRECT_IN_V1_TRACK:
+    if track == DIRECT_IN_TRACK:
         return ProjectionConfig(
             track=track,
             include_incoming_anchors=True,
             anchor_policy="address",
             edge_policy=("direct-immediate", "direct-tail"),
+        )
+    if track == ANGR_TRACK:
+        return ProjectionConfig(
+            track=track,
+            include_incoming_anchors=True,
+            anchor_policy="address",
+            edge_policy=("direct-immediate", "direct-tail", ANGR_RESOLVER),
         )
     raise ValueError(f"unsupported projection track: {track}")
 
@@ -100,7 +109,7 @@ def resolved_graph(
     return graph
 
 
-def project_direct_in_fixture(
+def project_context_fixture(
     raw: dict[str, Any],
     *,
     selection: CandidateSelection,
@@ -110,8 +119,8 @@ def project_direct_in_fixture(
     config: ProjectionConfig | None = None,
 ) -> dict[str, Any]:
     validate_raw_graph(raw)
-    config = config or projection_config_for(DIRECT_IN_V1_TRACK)
-    if config.track not in {DIRECT_V0_TRACK, DIRECT_IN_V1_TRACK}:
+    config = config or projection_config_for(DIRECT_IN_TRACK)
+    if config.track not in {DIRECT_TRACK, DIRECT_IN_TRACK, ANGR_TRACK}:
         raise ValueError(f"unsupported schema v5 projection track: {config.track}")
     if config.anchor_policy not in ANCHOR_POLICIES:
         raise ValueError(f"unsupported anchor policy: {config.anchor_policy}")
@@ -154,8 +163,8 @@ def project_direct_in_fixture(
     analysis = AnalysisProvenance(
         track=config.track,
         candidate_scope=selection.scope,
-        backend=RAW_GRAPH_BACKEND,
-        extractor_version=RAW_GRAPH_EXTRACTOR_VERSION,
+        backend=raw["analysis"]["backend"],
+        extractor_version=raw["analysis"]["extractor_version"],
         raw_graph_sha256=raw_digest,
         candidate_selection_sha256=selection.sha256,
         projection_config_sha256=projection_config_sha256(config),
@@ -228,9 +237,9 @@ def project_direct_in_fixture(
         })
 
     provenance = parse_provenance(raw["provenance"], where="raw graph.provenance")
-    context_description = "candidates plus their direct callees"
+    context_description = "candidates plus their resolved callees"
     if config.include_incoming_anchors:
-        context_description += " and direct external callers"
+        context_description += " and resolved external callers"
     return {
         "case": raw["case"],
         "build": raw["build"],
@@ -252,7 +261,7 @@ def project_direct_in_fixture(
     }
 
 
-def project_direct_v0_fixture(
+def project_direct_fixture(
     raw: dict[str, Any],
     *,
     selection: CandidateSelection,
@@ -260,10 +269,10 @@ def project_direct_v0_fixture(
     id_bias: int,
     score_root: bool = False,
 ) -> dict[str, Any]:
-    """Project the frozen schema-v4 direct-v0 compatibility fixture."""
+    """Project the frozen schema-v4 direct compatibility fixture."""
     validate_raw_graph(raw)
     _validate_selection_join(raw, selection)
-    config = projection_config_for(DIRECT_V0_TRACK)
+    config = projection_config_for(DIRECT_TRACK)
     graph = resolved_graph(raw, config)
     root = _address(raw["root"])
     candidates = set(selection.addresses)
@@ -272,10 +281,10 @@ def project_direct_v0_fixture(
         rendered = ", ".join(f"0x{value:x}" for value in sorted(unknown_candidates))
         raise ValueError(f"candidate selection is absent from raw graph: {rendered}")
 
-    # The shared raw graph contains symbol-oracle function starts that older
-    # direct-v0 extraction did not know about. Keep the frozen projection
-    # compatible: candidate starts are always valid, while context anchors must
-    # still have been discovered independently by radare2.
+    # The shared raw graph contains symbol-oracle function starts unavailable to
+    # the original direct extraction. Keep the frozen projection compatible:
+    # candidate starts are always valid, while context anchors must still have
+    # been discovered independently by radare2.
     r2_discovered = {
         _address(function["address"])
         for function in raw["functions"]
@@ -368,15 +377,24 @@ def project_fixture(
     score_root: bool = False,
 ) -> dict[str, Any]:
     track = normalize_track(track)
-    if track == DIRECT_V0_TRACK and selection.scope == SUBJECT_CANDIDATE_SCOPE:
-        return project_direct_v0_fixture(
+    backend = raw["analysis"]["backend"]
+    if track == ANGR_TRACK and backend != ANGR_RAW_GRAPH_BACKEND:
+        raise ValueError(
+            "the angr projection requires raw evidence augmented by angr"
+        )
+    if track != ANGR_TRACK and backend != RAW_GRAPH_BACKEND:
+        raise ValueError(
+            f"the {track} projection requires direct raw evidence"
+        )
+    if track == DIRECT_TRACK and selection.scope == SUBJECT_CANDIDATE_SCOPE:
+        return project_direct_fixture(
             raw,
             selection=selection,
             users_path=users_path,
             id_bias=id_bias,
             score_root=score_root,
         )
-    return project_direct_in_fixture(
+    return project_context_fixture(
         raw,
         selection=selection,
         users_path=users_path,

@@ -669,7 +669,7 @@ def main(argv: list[str] | None = None) -> int:
                 or args.candidate_scope not in (None, SUBJECT_CANDIDATE_SCOPE)
             ):
                 parser.error(
-                    "--baseline is the frozen direct-v0 baseline and cannot be "
+                    "--baseline is the frozen direct baseline and cannot be "
                     "combined with fixture, ground_truth, --build, another "
                     "--track, or a non-subject candidate scope"
                 )

@@ -11,10 +11,14 @@ SUBJECT_CANDIDATE_SCOPE = "subject"
 RUST_NONSTD_CANDIDATE_SCOPE = "rust-nonstd"
 DEFAULT_CANDIDATE_SCOPE = RUST_NONSTD_CANDIDATE_SCOPE
 CANDIDATE_SCOPES = (SUBJECT_CANDIDATE_SCOPE, RUST_NONSTD_CANDIDATE_SCOPE)
-DIRECT_V0_TRACK = "direct-v0"
-DIRECT_IN_V1_TRACK = "direct-in-v1"
-DEFAULT_ANALYSIS_TRACK = DIRECT_V0_TRACK
-ANALYSIS_TRACKS = (DIRECT_V0_TRACK, DIRECT_IN_V1_TRACK)
+DIRECT_TRACK = "direct"
+DIRECT_IN_TRACK = "direct-in"
+ANGR_TRACK = "angr"
+DEFAULT_ANALYSIS_TRACK = DIRECT_TRACK
+ANALYSIS_TRACKS = (DIRECT_TRACK, DIRECT_IN_TRACK, ANGR_TRACK)
+DIRECT_EVIDENCE = "direct"
+ANGR_EVIDENCE = "angr"
+EVIDENCE_BACKENDS = (DIRECT_EVIDENCE, ANGR_EVIDENCE)
 
 
 def normalize_build(build: str | None) -> str:
@@ -49,6 +53,10 @@ def normalize_candidate_scope(scope: str | None) -> str:
             f"expected one of {', '.join(CANDIDATE_SCOPES)}"
         )
     return normalized
+
+
+def evidence_backend_for_track(track: str | None) -> str:
+    return ANGR_EVIDENCE if normalize_track(track) == ANGR_TRACK else DIRECT_EVIDENCE
 
 
 def strip_known_suffix(value: str, suffixes: tuple[str, ...]) -> str:
@@ -144,7 +152,7 @@ def fixture_json_for(
     profile = normalize_profile(profile)
     stem = output_stem(case, build)
     parts = ["fixtures"]
-    if normalized_track != DIRECT_V0_TRACK:
+    if normalized_track != DIRECT_TRACK:
         parts.append(normalized_track)
     if candidate_scope != SUBJECT_CANDIDATE_SCOPE:
         parts.append(candidate_scope)
@@ -156,11 +164,18 @@ def raw_graph_for(
     case: str,
     build: str,
     profile: str = DEFAULT_PROFILE,
+    evidence_backend: str = DIRECT_EVIDENCE,
 ) -> str:
-    return (
-        f"extractions/{normalize_profile(profile)}/"
-        f"{output_stem(case, build)}.raw.json"
-    )
+    if evidence_backend not in EVIDENCE_BACKENDS:
+        raise ValueError(
+            f"unknown evidence backend: {evidence_backend!r}. "
+            f"expected one of {', '.join(EVIDENCE_BACKENDS)}"
+        )
+    parts = ["extractions"]
+    if evidence_backend != DIRECT_EVIDENCE:
+        parts.append(evidence_backend)
+    parts.extend((normalize_profile(profile), f"{output_stem(case, build)}.raw.json"))
+    return "/".join(parts)
 
 
 def gt_json_for(
