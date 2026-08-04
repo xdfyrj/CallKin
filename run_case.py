@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import argparse
 import sys
+import time
 from pathlib import Path
 from types import SimpleNamespace
 
 from build_manifest import BUILD_TARGET, load_and_verify_manifest
+from candidate_selection import load_candidate_selection
 from engine import (
     CG_WL_MODES,
     DEFAULT_CG_WL_MODE,
@@ -49,6 +51,7 @@ def run_fixture_only(fixture_path: str, mode: str, *, trace: bool = False) -> No
 
 
 def run_pipeline(args: argparse.Namespace) -> None:
+    pipeline_started = time.perf_counter()
     case_from_stem, build = split_case_build(args.stem, args.build)
     case_name = args.case or case_from_stem
     profile = normalize_profile(args.profile)
@@ -110,6 +113,7 @@ def run_pipeline(args: argparse.Namespace) -> None:
     print(f"users: {users_json}")
     print(f"function boundaries: {boundaries_json}")
 
+    gt_started = time.perf_counter()
     gt = extract_ground_truth(
         binary_path=gt_binary,
         output_path=gt_json,
@@ -123,9 +127,10 @@ def run_pipeline(args: argparse.Namespace) -> None:
         boundaries_path=boundaries_json,
         provenance=verified.provenance,
     )
+    gt_duration = time.perf_counter() - gt_started
     print(f"ground-truth origins: {len(gt['origins'])}")
 
-    fixture = extract_fixture(
+    artifacts = extract_fixture(
         binary_path=fixture_binary,
         output_path=fixture_json,
         case_name=case_name,
@@ -139,12 +144,14 @@ def run_pipeline(args: argparse.Namespace) -> None:
         users_path=users_json,
         provenance=verified.provenance,
     )
+    fixture = artifacts.fixture
     print(f"fixture nodes: {len(fixture['nodes'])}")
 
     from gt_extractor import validate_against_fixture
 
     validate_against_fixture(gt, fixture_json)
 
+    scoring_started = time.perf_counter()
     if args.all_modes:
         reports = score_all_modes(fixture_json, gt_json, trace=args.trace)
     else:
@@ -154,10 +161,44 @@ def run_pipeline(args: argparse.Namespace) -> None:
             mode=args.mode,
             trace=args.trace,
         ),)
+    scoring_duration = time.perf_counter() - scoring_started
 
     print("\n\n".join(format_report(report) for report in reports))
     if args.json_output:
-        write_reports_json(reports, args.json_output)
+        from binary_extractor import DEFAULT_ID_BIAS
+        from run_summary import build_run_summary, execution_summary
+
+        selection = load_candidate_selection(
+            users_json,
+            expected_case=case_name,
+            expected_build=build,
+            expected_profile=profile,
+        )
+        durations = dict(artifacts.execution["duration_seconds"])
+        durations.update({
+            "ground_truth_extraction": gt_duration,
+            "scoring": scoring_duration,
+            "total": time.perf_counter() - pipeline_started,
+        })
+        execution = execution_summary(
+            duration_seconds=durations,
+            warnings=artifacts.execution["warnings"],
+        )
+        summary = build_run_summary(
+            raw=artifacts.raw_graph,
+            fixture=fixture,
+            ground_truth=gt,
+            selection=selection,
+            reports=reports,
+            execution=execution,
+            binary_path=fixture_binary,
+            id_bias=DEFAULT_ID_BIAS,
+        )
+        write_reports_json(
+            reports,
+            args.json_output,
+            run_summary=summary,
+        )
         print(f"\nJSON: {args.json_output}")
 
 
@@ -175,7 +216,7 @@ def extract_fixture(
     root: str | None,
     users_path: str | None,
     provenance,
-) -> dict:
+) -> object:
     from binary_extractor import DEFAULT_ID_BIAS, extract_artifacts, write_fixture
     from graph_evidence import write_raw_graph
 
@@ -198,7 +239,7 @@ def extract_fixture(
     artifacts = extract_artifacts(args)
     write_raw_graph(artifacts.raw_graph, raw_graph_path)
     write_fixture(artifacts.fixture, output_path)
-    return artifacts.fixture
+    return artifacts
 
 
 def extract_ground_truth(

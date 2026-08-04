@@ -4,6 +4,7 @@ import argparse
 import json
 import shutil
 import sys
+import time
 from collections import Counter, deque
 from dataclasses import dataclass
 from pathlib import Path
@@ -65,6 +66,7 @@ class ExtractionArtifacts:
     raw_graph: dict[str, Any]
     fixture: dict[str, Any]
     raw_graph_sha256: str
+    execution: dict[str, Any]
 
 
 def ensure_radare2_available() -> None:
@@ -552,7 +554,7 @@ class BinaryExtractor:
             target_func = None
             direct_target = None
             if operand is not None and operand.type == X86_OP_IMM:
-                direct_target = int(operand.imm)
+                direct_target = int(operand.imm) & ((1 << 64) - 1)
                 target_func = self._resolve_direct_target(
                     func,
                     direct_target,
@@ -735,7 +737,7 @@ class BinaryExtractor:
     def _direct_code_target(op: dict[str, Any]) -> int | None:
         value = op.get("jump")
         if isinstance(value, int):
-            return value
+            return value & ((1 << 64) - 1)
         return None
 
     def build_call_graph(
@@ -950,6 +952,7 @@ def make_fixture_json(
 
 
 def extract_artifacts(args: argparse.Namespace) -> ExtractionArtifacts:
+    extraction_started = time.perf_counter()
     extractor = BinaryExtractor(
         args.binary,
         include_imports=args.include_imports,
@@ -960,7 +963,7 @@ def extract_artifacts(args: argparse.Namespace) -> ExtractionArtifacts:
 
         if args.list_functions:
             extractor.list_functions()
-            return ExtractionArtifacts({}, {}, "")
+            return ExtractionArtifacts({}, {}, "", {})
 
         selection = (
             load_candidate_selection(
@@ -1035,13 +1038,21 @@ def extract_artifacts(args: argparse.Namespace) -> ExtractionArtifacts:
             boundary_mode=boundary_mode,
             boundary_mismatches=boundary_mismatches,
         )
+        direct_duration = time.perf_counter() - extraction_started
+        angr_runtime: dict[str, Any] = {
+            "duration_seconds": 0.0,
+            "warnings": [],
+            "angr_version": None,
+        }
         if track == ANGR_TRACK:
             from angr_adapter import augment_raw_graph_with_angr
 
             raw_graph = augment_raw_graph_with_angr(
                 raw_graph,
                 binary_path=args.binary,
+                runtime=angr_runtime,
             )
+        projection_started = time.perf_counter()
         fixture = project_fixture(
             raw_graph,
             selection=selection,
@@ -1051,11 +1062,21 @@ def extract_artifacts(args: argparse.Namespace) -> ExtractionArtifacts:
             id_bias=args.id_bias,
             score_root=args.score_root,
         )
+        projection_duration = time.perf_counter() - projection_started
 
         return ExtractionArtifacts(
             raw_graph=raw_graph,
             fixture=fixture,
             raw_graph_sha256=raw_graph_sha256(raw_graph),
+            execution={
+                "duration_seconds": {
+                    "direct_extraction": direct_duration,
+                    "angr_cfg": angr_runtime["duration_seconds"],
+                    "projection": projection_duration,
+                },
+                "warnings": angr_runtime["warnings"],
+                "angr_version": angr_runtime["angr_version"],
+            },
         )
     finally:
         extractor.close()

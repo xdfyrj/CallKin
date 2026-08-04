@@ -577,18 +577,38 @@ def score_report_to_dict(report: ScoreReport) -> dict:
     return data
 
 
-def reports_to_dict(reports: tuple[ScoreReport, ...]) -> dict:
-    return {
-        "schema_version": 4 if any(report.analysis for report in reports) else 3,
+def reports_to_dict(
+    reports: tuple[ScoreReport, ...],
+    *,
+    run_summary: dict | None = None,
+) -> dict:
+    data = {
+        "schema_version": (
+            5
+            if run_summary is not None
+            else 4 if any(report.analysis for report in reports) else 3
+        ),
         "results": [score_report_to_dict(report) for report in reports],
     }
+    if run_summary is not None:
+        data["run_summary"] = run_summary
+    return data
 
 
-def write_reports_json(reports: tuple[ScoreReport, ...], output_path: str) -> None:
+def write_reports_json(
+    reports: tuple[ScoreReport, ...],
+    output_path: str,
+    *,
+    run_summary: dict | None = None,
+) -> None:
     path = Path(output_path)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
-        json.dumps(reports_to_dict(reports), indent=2, ensure_ascii=False) + "\n",
+        json.dumps(
+            reports_to_dict(reports, run_summary=run_summary),
+            indent=2,
+            ensure_ascii=False,
+        ) + "\n",
         encoding="utf-8",
     )
 

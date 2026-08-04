@@ -362,8 +362,12 @@ confidence=inferred
 ```
 
 target이 두 개 이상이거나 알려진 함수 시작점이 아니면 기존 `unresolved` 상태를
-유지한다. 이미 `direct-immediate` 또는 `direct-tail`로 확정된 edge는 angr 결과가
-달라도 덮어쓰지 않는다.
+유지한다. Raw schema v4는 각 간접 callsite에 `angr_status`와 `angr_targets`를 추가해
+`accepted`, `multiple_targets`, `unknown_target`, `ambiguous_source`,
+`no_angr_result`를 구분한다. `indirect_call_summary`는 이 판정을 operand 종류별로
+합산한다. Direct raw graph에서는 분석 전 상태를 `not_run`으로 기록한다. 이미
+`direct-immediate` 또는 `direct-tail`로 확정된 edge는 angr 결과가 달라도 덮어쓰지
+않는다.
 
 Raw graph에서는 direct edge의 `confidence=exact`와 angr edge의
 `confidence=inferred`를 구분한다. 현재 projected fixture의 `calls`는 resolver별
@@ -457,7 +461,7 @@ Root reachability는 candidate 필터로 사용하지 않는다. 대신 namespac
 relation은 symbol extent로 추출하며 radare2 size가 다르면 mismatch를 fixture에
 남긴다.
 
-Raw schema v3는 각 함수가 radare2에서도 발견됐는지
+Raw schema v4는 각 함수가 radare2에서도 발견됐는지
 `discovered_by_radare2`로 기록하고 boundary JSON의 SHA-256을
 `analysis.boundary_input_sha256`에 기록한다. Projection track과 candidate 주소는 raw에
 없다.

@@ -82,6 +82,8 @@ def _raw_graph():
             _direct(0x2000, 0x2030, 0x3000),
             _unresolved(0x2000, 0x2040),
             _unresolved(0x2000, 0x2050),
+            _unresolved(0x2000, 0x2060),
+            _unresolved(0x2000, 0x2070),
         ],
         boundary_mode="symbol-extent",
         boundary_mismatches=[],
@@ -126,6 +128,11 @@ def main() -> int:
             AngrCallResolution(0x2000, 0x2040, (0xDEAD,)),
             # Filtering the unknown target first must not create a singleton.
             AngrCallResolution(0x2000, 0x2050, (0x4000, 0xDEAD)),
+            # The source function could not be joined unambiguously.
+            AngrCallResolution(
+                0x2000, 0x2060, (), ambiguous_source=True
+            ),
+            # 0x2070 is intentionally absent: angr returned no target.
         ),
         angr_version="test",
     )
@@ -158,6 +165,35 @@ def main() -> int:
         return 1
     if by_callsite[0x2050]["status"] != "unresolved":
         print("FAIL mixed known/unknown target set became a singleton edge")
+        return 1
+    expected_statuses = {
+        0x2010: "accepted",
+        0x2020: "multiple_targets",
+        0x2040: "unknown_target",
+        0x2050: "multiple_targets",
+        0x2060: "ambiguous_source",
+        0x2070: "no_angr_result",
+    }
+    actual_statuses = {
+        callsite: by_callsite[callsite]["angr_status"]
+        for callsite in expected_statuses
+    }
+    if actual_statuses != expected_statuses:
+        print(f"FAIL angr decision audit: {actual_statuses}")
+        return 1
+    summary = augmented["indirect_call_summary"]
+    if (
+        summary["total"] != 6
+        or summary["resolved_by_angr"] != 1
+        or summary["unresolved"] != 5
+        or summary["rejected"] != {
+            "multiple_targets": 2,
+            "unknown_target": 1,
+            "ambiguous_source": 1,
+            "no_angr_result": 1,
+        }
+    ):
+        print(f"FAIL indirect call summary: {summary}")
         return 1
     if augmented["analysis"]["backend"] != ANGR_RAW_GRAPH_BACKEND:
         print("FAIL angr backend provenance")

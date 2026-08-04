@@ -73,6 +73,8 @@ python3 compile.py billing-client subject --profile plain --build O3S
 python3 run_case.py billing-client --profile plain --build O3S --track direct-in
 python3 run_case.py billing-client --profile plain --build O3S --track angr
 python3 run_case.py billing-client --track angr --anchor-policy role
+python3 run_case.py billing-client --track angr --all-modes \
+  --json-output results/billing-client.angr.json
 ```
 
 이미 컴파일된 한 build에서 GT, users, fixture를 생성하고 grouping과 scoring까지 수행한다.
@@ -106,6 +108,15 @@ incoming/outgoing anchor 문맥을 투영한다. Angr evidence는 extraction 자
 Anchor policy 기본값은 `address`다. `--anchor-policy role`은 anchor 주소 대신
 `root/incoming/outgoing/both` 역할을 color class로 사용한다. Role fixture는
 `fixtures/<track>/role/...`에 저장되어 address 결과를 덮어쓰지 않는다.
+
+`run_case.py --json-output`은 mode별 점수 외에 `run_summary`를 한 번 저장한다.
+여기에는 angr 간접호출 성공/거절 이유, candidate에 추가된 edge, root 도달성·고립
+통계, GT family 난이도, 단계별 시간·경고·peak RSS, binary/boundary/tool 통계가
+포함된다. Plain/min의 서로 다른 candidate universe는 별도로 비교한다.
+
+```bash
+python3 compare_profiles.py billing-client --build O3S
+```
 
 각 단계를 단독 실행할 수도 있다.
 

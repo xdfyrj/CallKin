@@ -11,10 +11,11 @@ from paths import normalize_profile
 from provenance import BuildProvenance, parse_provenance
 
 
-RAW_GRAPH_SCHEMA_VERSION = 3
+RAW_GRAPH_SCHEMA_VERSION = 4
+SUPPORTED_RAW_GRAPH_SCHEMAS = {3, 4}
 RAW_GRAPH_BACKEND = "radare2-capstone"
 ANGR_RAW_GRAPH_BACKEND = "radare2-capstone+angr"
-RAW_GRAPH_EXTRACTOR_VERSION = "call-evidence-v3"
+RAW_GRAPH_EXTRACTOR_VERSION = "call-evidence-v4"
 ANGR_RESOLVER = "angr-cfg"
 
 TRANSFER_KINDS = {"call", "tail-call"}
@@ -23,6 +24,21 @@ TRANSFER_RESOLVERS = {"direct-immediate", "direct-tail", ANGR_RESOLVER}
 TRANSFER_FILTER_REASONS = {"import"}
 OPERAND_KINDS = {"immediate", "memory", "register", "unknown"}
 BOUNDARY_SOURCES = {"radare2", "symbol-oracle"}
+ANGR_STATUSES = {
+    "not_applicable",
+    "not_run",
+    "accepted",
+    "multiple_targets",
+    "unknown_target",
+    "ambiguous_source",
+    "no_angr_result",
+}
+ANGR_REJECTION_REASONS = (
+    "multiple_targets",
+    "unknown_target",
+    "ambiguous_source",
+    "no_angr_result",
+)
 _SHA256_RE = re.compile(r"[0-9a-f]{64}")
 
 
@@ -38,8 +54,21 @@ class TransferEvidence:
     resolver: str | None
     confidence: str
     filter_reason: str | None = None
+    angr_status: str | None = None
+    angr_targets: tuple[int, ...] = ()
 
     def to_dict(self) -> dict[str, object]:
+        angr_status = self.angr_status
+        if angr_status is None:
+            angr_status = (
+                "not_run"
+                if (
+                    self.kind == "call"
+                    and self.status == "unresolved"
+                    and self.operand_kind in {"memory", "register"}
+                )
+                else "not_applicable"
+            )
         return {
             "source": _hex(self.source),
             "callsite": _hex(self.callsite),
@@ -51,6 +80,8 @@ class TransferEvidence:
             "resolver": self.resolver,
             "confidence": self.confidence,
             "filter_reason": self.filter_reason,
+            "angr_status": angr_status,
+            "angr_targets": [_hex(target) for target in self.angr_targets],
         }
 
 
@@ -70,6 +101,17 @@ def make_raw_graph(
     backend: str = RAW_GRAPH_BACKEND,
     extractor_version: str = RAW_GRAPH_EXTRACTOR_VERSION,
 ) -> dict[str, Any]:
+    transfer_dicts = [
+        item.to_dict()
+        for item in sorted(
+            transfers,
+            key=lambda item: (
+                item.source,
+                item.callsite,
+                item.target if item.target is not None else -1,
+            ),
+        )
+    ]
     raw = {
         "schema_version": RAW_GRAPH_SCHEMA_VERSION,
         "case": case,
@@ -91,18 +133,12 @@ def make_raw_graph(
             "boundary_mode": boundary_mode,
             "boundary_mismatches": boundary_mismatches,
         },
+        "indirect_call_summary": make_indirect_call_summary(
+            transfer_dicts,
+            analysis_status="not_run",
+        ),
         "functions": functions,
-        "transfers": [
-            item.to_dict()
-            for item in sorted(
-                transfers,
-                key=lambda item: (
-                    item.source,
-                    item.callsite,
-                    item.target if item.target is not None else -1,
-                ),
-            )
-        ],
+        "transfers": transfer_dicts,
     }
     validate_raw_graph(raw)
     return raw
@@ -133,15 +169,18 @@ def load_raw_graph(path: str) -> dict[str, Any]:
 def validate_raw_graph(raw: Any) -> None:
     if not isinstance(raw, dict):
         raise ValueError("raw graph root must be an object")
+    schema_version = raw.get("schema_version")
+    if schema_version not in SUPPORTED_RAW_GRAPH_SCHEMAS:
+        raise ValueError(f"unsupported raw graph schema: {schema_version!r}")
     required = {
         "schema_version", "case", "build", "profile", "provenance",
         "analysis", "binary", "root", "extraction",
         "functions", "transfers",
     }
+    if schema_version >= 4:
+        required.add("indirect_call_summary")
     if set(raw) != required:
         raise ValueError(f"raw graph must contain exactly {sorted(required)}")
-    if raw["schema_version"] != RAW_GRAPH_SCHEMA_VERSION:
-        raise ValueError(f"unsupported raw graph schema: {raw['schema_version']!r}")
     for key in ("case", "build"):
         _require_string(raw[key], f"raw graph.{key}")
     normalize_profile(raw["profile"])
@@ -209,7 +248,13 @@ def validate_raw_graph(raw: Any) -> None:
         function_addresses,
         function_sizes,
         function_sources,
+        schema_version=schema_version,
     )
+    if schema_version >= 4:
+        _validate_indirect_call_summary(
+            raw["indirect_call_summary"],
+            raw["transfers"],
+        )
 
 
 def _validate_extraction(extraction: Any) -> None:
@@ -242,6 +287,8 @@ def _validate_transfers(
     function_addresses: set[int],
     function_sizes: dict[int, int],
     function_sources: dict[int, str],
+    *,
+    schema_version: int,
 ) -> None:
     if not isinstance(transfers, list):
         raise ValueError("raw graph.transfers must be a list")
@@ -249,6 +296,8 @@ def _validate_transfers(
         "source", "callsite", "instruction", "kind", "operand_kind",
         "status", "target", "resolver", "confidence", "filter_reason",
     }
+    if schema_version >= 4:
+        required |= {"angr_status", "angr_targets"}
     seen_callsites = set()
     for index, transfer in enumerate(transfers):
         where = f"raw graph.transfers[{index}]"
@@ -319,6 +368,128 @@ def _validate_transfers(
         elif transfer["confidence"] != "unknown":
             raise ValueError(f"{where}.confidence must be unknown")
 
+        if schema_version >= 4:
+            _validate_angr_evidence(transfer, where)
+
+
+def make_indirect_call_summary(
+    transfers: list[dict[str, Any]],
+    *,
+    analysis_status: str,
+) -> dict[str, Any]:
+    if analysis_status not in {"not_run", "completed"}:
+        raise ValueError(f"invalid indirect analysis status: {analysis_status!r}")
+    indirect = [
+        transfer
+        for transfer in transfers
+        if (
+            transfer["kind"] == "call"
+            and transfer["operand_kind"] in {"memory", "register"}
+            and transfer.get("angr_status") != "not_applicable"
+        )
+    ]
+    accepted = sum(
+        transfer.get("angr_status") == "accepted"
+        for transfer in indirect
+    )
+    by_operand = {}
+    for operand in ("memory", "register"):
+        selected = [
+            transfer for transfer in indirect
+            if transfer["operand_kind"] == operand
+        ]
+        resolved = sum(
+            transfer.get("angr_status") == "accepted"
+            for transfer in selected
+        )
+        by_operand[operand] = {
+            "total": len(selected),
+            "resolved": resolved,
+            "unresolved": len(selected) - resolved,
+        }
+    rejected = {
+        reason: sum(
+            transfer.get("angr_status") == reason
+            for transfer in indirect
+        )
+        for reason in ANGR_REJECTION_REASONS
+    }
+    total = len(indirect)
+    return {
+        "analysis_status": analysis_status,
+        "total": total,
+        "resolved_by_angr": accepted,
+        "unresolved": total - accepted,
+        "resolution_rate": accepted / total if total else 0.0,
+        "by_operand": by_operand,
+        "rejected": rejected,
+    }
+
+
+def indirect_call_summary(raw: dict[str, Any]) -> dict[str, Any]:
+    """Return stored diagnostics, or derive a not-run summary for schema v3."""
+    validate_raw_graph(raw)
+    if raw["schema_version"] >= 4:
+        return raw["indirect_call_summary"]
+    return make_indirect_call_summary(
+        raw["transfers"],
+        analysis_status="not_run",
+    )
+
+
+def _validate_angr_evidence(transfer: dict[str, Any], where: str) -> None:
+    angr_status = transfer["angr_status"]
+    if angr_status not in ANGR_STATUSES:
+        raise ValueError(f"invalid {where}.angr_status")
+    targets = _parse_unique_hex_list(
+        transfer["angr_targets"],
+        f"{where}.angr_targets",
+    )
+    if angr_status == "accepted":
+        if (
+            transfer["status"] != "resolved"
+            or transfer["resolver"] != ANGR_RESOLVER
+            or len(targets) != 1
+            or _parse_hex(transfer["target"], f"{where}.target") not in targets
+        ):
+            raise ValueError(f"{where} has inconsistent accepted angr evidence")
+    elif angr_status == "multiple_targets":
+        if transfer["status"] != "unresolved" or len(targets) < 2:
+            raise ValueError(f"{where} multiple_targets requires two or more targets")
+    elif angr_status == "unknown_target":
+        if transfer["status"] != "unresolved" or len(targets) != 1:
+            raise ValueError(f"{where} unknown_target requires one target")
+    elif angr_status in {"ambiguous_source", "no_angr_result", "not_run"}:
+        if transfer["status"] != "unresolved" or targets:
+            raise ValueError(f"{where} {angr_status} cannot contain targets")
+    elif targets:
+        raise ValueError(f"{where} not_applicable cannot contain targets")
+
+
+def _validate_indirect_call_summary(
+    summary: Any,
+    transfers: list[dict[str, Any]],
+) -> None:
+    if not isinstance(summary, dict):
+        raise ValueError("raw graph.indirect_call_summary must be an object")
+    status = summary.get("analysis_status")
+    expected = make_indirect_call_summary(transfers, analysis_status=status)
+    if summary != expected:
+        raise ValueError("raw graph.indirect_call_summary does not match transfers")
+    indirect_statuses = {
+        transfer["angr_status"]
+        for transfer in transfers
+        if (
+            transfer["kind"] == "call"
+            and transfer["operand_kind"] in {"memory", "register"}
+            and transfer["angr_status"] != "not_applicable"
+        )
+    }
+    if status == "not_run" and indirect_statuses - {"not_run"}:
+        raise ValueError("not-run indirect summary contains angr decisions")
+    if status == "completed" and "not_run" in indirect_statuses:
+        raise ValueError("completed indirect summary contains unanalyzed callsites")
+
 
 def _hex(value: int) -> str:
     return f"0x{value:x}"
@@ -326,11 +497,15 @@ def _hex(value: int) -> str:
 
 def _parse_hex(value: Any, where: str) -> int:
     if not isinstance(value, str) or not value.startswith("0x"):
-        raise ValueError(f"{where} must be a hexadecimal address string")
+        raise ValueError(
+            f"{where} must be a hexadecimal address string, got {value!r}"
+        )
     try:
         return int(value, 16)
     except ValueError as exc:
-        raise ValueError(f"{where} must be a hexadecimal address string") from exc
+        raise ValueError(
+            f"{where} must be a hexadecimal address string, got {value!r}"
+        ) from exc
 
 
 def _parse_unique_hex_list(value: Any, where: str) -> set[int]:

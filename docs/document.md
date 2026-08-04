@@ -209,7 +209,7 @@ resolved/filtered/unmapped/unresolved로 구분해 남긴다.
 
 `candidate_selection.py`는 users JSON을 검증하고 candidate 집합과 SHA-256을 만든다.
 `function_boundaries.py`는 scope-independent Rust function extent를 검증한다.
-`graph_evidence.py`는 candidate와 projection track을 포함하지 않는 raw graph schema v3와 hash
+`graph_evidence.py`는 candidate와 projection track을 포함하지 않는 raw graph schema v4와 hash
 검증을 담당한다. `graph_projector.py`는 raw evidence, candidate selection, track
 정책을 결합해 CG-WL fixture로 바꾼다.
 `direct-in`에서는 candidate의 direct callee와 direct external caller까지만
@@ -219,7 +219,8 @@ anchor로 포함하고 library 내부로 더 내려가지 않는다.
 `angr_adapter.py`는 CFGFast 결과를 raw callsite와 join하고, 기존 함수 시작점 하나로
 확정된 unresolved call만 `resolver=angr-cfg`, `confidence=inferred`로 승격한다.
 Singleton 판정은 unknown target을 제거하기 전에 수행한다. Raw에서는 direct exact와
-angr inferred evidence를 구분하지만 현재 fixture는 동일 source-target call count로 합산한다.
+angr inferred evidence를 구분하고, 거절된 callsite도 이유와 target 후보를 보존하지만
+현재 fixture는 동일 source-target call count로 합산한다.
 Projector의 공식 anchor policy는 주소별 고정 color인 `address`와 방향 역할별 color인
 `role`이다. Role fixture는 각 track 아래 `role/` 경로에 별도로 저장한다.
 

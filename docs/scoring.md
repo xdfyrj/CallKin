@@ -528,7 +528,59 @@ trace (`--trace`를 요청한 경우)
 
 ## 14. JSON output
 
-한 case를 저장한다.
+전체 pipeline 진단까지 저장하려면 `run_case.py`를 사용한다.
+
+```bash
+python3 run_case.py billing-client --track angr --all-modes \
+  --json-output results/billing-client.angr.json
+```
+
+이 경로의 top-level schema는 version 5다. `run_summary`는 mode와 무관하므로 한 번만
+저장하고, `results` 배열에 full/out/in/out-in 결과를 둔다.
+
+```json
+{
+  "schema_version": 5,
+  "run_summary": {
+    "ground_truth": {
+      "candidate_count": 320,
+      "origin_count": 219,
+      "generic_family_count": 42,
+      "true_positive_pair_count": 400
+    },
+    "extraction": {
+      "indirect_call_summary": {
+        "total": 4153,
+        "resolved_by_angr": 3047,
+        "unresolved": 1106,
+        "by_operand": {},
+        "rejected": {}
+      }
+    },
+    "candidate_impact": {},
+    "candidate_observability": {},
+    "execution": {},
+    "artifact_summary": {},
+    "tool_versions": {}
+  },
+  "results": [
+    {"mode": "full"},
+    {"mode": "out"},
+    {"mode": "in"},
+    {"mode": "out-in"}
+  ]
+}
+```
+
+`candidate_impact`는 accepted angr callsite 중 candidate의 OUT/IN에 실제로 추가된
+수를 센다. `candidate_observability`는 projected fixture 기준 root 도달성,
+zero-OUT, zero-IN, 완전 고립, unresolved indirect call 보유 candidate를 센다.
+`ground_truth.true_positive_pair_count`는 모든 mode에서 `TP + FN`과 같아야 하며,
+다르면 JSON 생성을 중단한다. `execution.warnings`는 같은 component/message를 묶어
+count만 저장한다. 시간과 경고는 raw graph SHA에 넣지 않아 evidence hash를 안정적으로
+유지한다.
+
+이미 생성된 fixture/GT의 점수만 저장하려면 `scores.py`를 사용한다.
 
 ```bash
 python3 scores.py family_graph_03 \
@@ -544,7 +596,7 @@ python3 scores.py --baseline --profile plain \
   --json-output results/plain/v0_baseline.json
 ```
 
-Top-level schema:
+이 경우에는 extraction 실행 정보가 없으므로 기존 score-only schema를 유지한다.
 
 ```json
 {
@@ -584,6 +636,21 @@ Top-level schema:
 실제 JSON에는 float의 계산값을 저장하고 CLI만 소수점 둘째 자리로 표시한다.
 
 `--trace`와 `--json-output`을 함께 사용하면 각 결과에 `trace` 배열도 저장된다. `--trace`를 생략하면 기존 JSON schema와 baseline 파일에는 `trace` field가 추가되지 않는다.
+
+Plain/min의 candidate universe 차이는 별도 JSON으로 비교한다.
+
+```bash
+python3 compare_profiles.py billing-client --build O3S
+```
+
+기본 출력은
+`results/profile_comparison/rust-nonstd/billing-client.O3S.json`이며, origin,
+`k_obs >= 2` family, instance의 common/plain-only/min-only 수를 기록한다.
+Instance 비교는 `(origin, 정렬된 symbol alias 목록)`의 멀티셋으로 수행하므로,
+legacy demangling에서 여러 주소가 같은 이름으로 보이더라도 instance 개수가
+하나로 축약되지 않는다. 다만 이 값은 concrete type identity를 복구하는 source-level
+census가 아니라 최종 binary에서 관찰된 symbol instance 비교다. 두 GT의 source
+SHA-256이 다르면 비교를 거부한다.
 
 ## 15. Mode와 baseline 실행
 
