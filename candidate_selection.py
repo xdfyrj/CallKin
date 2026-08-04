@@ -83,10 +83,11 @@ def parse_candidate_selection(
             allow_empty=scope != RUST_NONSTD_CANDIDATE_SCOPE,
         )
         if scope == RUST_NONSTD_CANDIDATE_SCOPE and set(excluded) != {
-            "core", "alloc", "std"
+            "core", "alloc", "std", "__rustc"
         }:
             raise ValueError(
-                "rust-nonstd selection must exclude exactly core/alloc/std"
+                "rust-nonstd selection must exclude exactly "
+                "core/alloc/std/__rustc"
             )
     else:
         namespace_keys = set(data) & {"prefix", "namespaces"}

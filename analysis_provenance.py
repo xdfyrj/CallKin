@@ -4,7 +4,7 @@ import re
 from dataclasses import dataclass
 from typing import Any
 
-from paths import normalize_candidate_scope, normalize_track
+from paths import normalize_anchor_policy, normalize_candidate_scope, normalize_track
 
 _SHA256_RE = re.compile(r"[0-9a-f]{64}")
 ANALYSIS_PROVENANCE_KEYS = {
@@ -70,6 +70,7 @@ def parse_analysis_provenance(value: Any, *, where: str) -> AnalysisProvenance:
         strings[key] = item
     normalize_track(strings["track"])
     normalize_candidate_scope(strings["candidate_scope"])
+    normalize_anchor_policy(strings["anchor_policy"])
 
     hashes = {}
     for key in (

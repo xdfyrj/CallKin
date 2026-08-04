@@ -25,6 +25,7 @@ Ground truth는 이 단계에서 처음 grouping 결과와 만난다. `engine.py
 ```bash
 python3 scores.py billing-client --track direct-in
 python3 scores.py billing-client --track angr
+python3 scores.py billing-client --track angr --anchor-policy role
 python3 scores.py family_graph_03 --candidate-scope subject
 ```
 
@@ -35,6 +36,7 @@ case    = 사용자가 입력한 stem
 build   = O3S
 profile = plain
 candidate scope = rust-nonstd
+anchor policy = address
 mode    = full
 fixture = fixtures/rust-nonstd/plain/<case>.O3S.fixture.json
 GT      = ground_truth/rust-nonstd/plain/<case>.O3S.gt.json
@@ -77,6 +79,12 @@ fixtures/direct-in/rust-nonstd/plain/billing-client.O3S.fixture.json
 
 ```text
 fixtures/angr/rust-nonstd/plain/billing-client.O3S.fixture.json
+```
+
+Role policy fixture는 address fixture와 분리된다.
+
+```text
+fixtures/angr/role/rust-nonstd/plain/billing-client.O3S.fixture.json
 ```
 
 Schema v5 fixture를 채점하면 CLI와 결과 JSON에 track, candidate scope, raw/projection hash,

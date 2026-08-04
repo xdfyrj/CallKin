@@ -34,9 +34,11 @@ from loader import load_case
 from model import Case
 from paths import (
     ANALYSIS_TRACKS,
+    ANCHOR_POLICIES,
     BUILD_PROFILES,
     CANDIDATE_SCOPES,
     DEFAULT_ANALYSIS_TRACK,
+    DEFAULT_ANCHOR_POLICY,
     DEFAULT_BUILD,
     DEFAULT_CANDIDATE_SCOPE,
     DEFAULT_PROFILE,
@@ -619,6 +621,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
         help=f"analysis track. Default: {DEFAULT_ANALYSIS_TRACK}",
     )
     parser.add_argument(
+        "--anchor-policy",
+        choices=ANCHOR_POLICIES,
+        default=DEFAULT_ANCHOR_POLICY,
+        help=f"anchor color policy. Default: {DEFAULT_ANCHOR_POLICY}",
+    )
+    parser.add_argument(
         "--candidate-scope",
         choices=CANDIDATE_SCOPES,
         default=None,
@@ -666,12 +674,14 @@ def main(argv: list[str] | None = None) -> int:
                 or args.ground_truth is not None
                 or args.build
                 or args.track != DEFAULT_ANALYSIS_TRACK
+                or args.anchor_policy != DEFAULT_ANCHOR_POLICY
                 or args.candidate_scope not in (None, SUBJECT_CANDIDATE_SCOPE)
             ):
                 parser.error(
                     "--baseline is the frozen direct baseline and cannot be "
                     "combined with fixture, ground_truth, --build, another "
-                    "--track, or a non-subject candidate scope"
+                    "--track, a non-address anchor policy, or a non-subject "
+                    "candidate scope"
                 )
             reports = score_v0_baseline(
                 profile=args.profile,
@@ -691,6 +701,7 @@ def main(argv: list[str] | None = None) -> int:
                     args.profile,
                     args.track,
                     candidate_scope,
+                    args.anchor_policy,
                 )
                 gt_path = resolve_gt_json(
                     case,

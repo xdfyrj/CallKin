@@ -72,6 +72,7 @@ Cargo subject는 `subjects/<name>/Cargo.toml`과 `Cargo.lock`을 사용하되,
 python3 compile.py billing-client subject --profile plain --build O3S
 python3 run_case.py billing-client --profile plain --build O3S --track direct-in
 python3 run_case.py billing-client --profile plain --build O3S --track angr
+python3 run_case.py billing-client --track angr --anchor-policy role
 ```
 
 이미 컴파일된 한 build에서 GT, users, fixture를 생성하고 grouping과 scoring까지 수행한다.
@@ -84,7 +85,7 @@ python3 run_case.py family_graph_03 --trace --candidate-scope subject
 ```
 
 기본 candidate scope는 `rust-nonstd`다. Non-stripped binary에서 demangle 가능한 Rust
-text symbol 중 함수 소유 namespace가 `core`, `alloc`, `std`인 함수와 source `main`을
+text symbol 중 함수 소유 namespace가 `core`, `alloc`, `std`, `__rustc`인 함수와 source `main`을
 제외하고, subject crate와 dependency crate 함수는 모두 scored candidate로 둔다.
 기존 통제 corpus의 subject-owned 함수만 재현하려면 `--candidate-scope subject`를
 명시한다. 두 scope 모두 candidate 주소를 compiler symbol에서 받는 oracle 조건이며,
@@ -101,6 +102,10 @@ selection과 track 정책을 결합한다. `angr`는 기존 direct edge에 더�
 함수 시작점으로 확정한 indirect call을 사용하고, `direct-in`과 같은 one-hop
 incoming/outgoing anchor 문맥을 투영한다. Angr evidence는 extraction 자체가 다르므로
 `extractions/angr/<profile>/`에 별도로 저장된다.
+
+Anchor policy 기본값은 `address`다. `--anchor-policy role`은 anchor 주소 대신
+`root/incoming/outgoing/both` 역할을 color class로 사용한다. Role fixture는
+`fixtures/<track>/role/...`에 저장되어 address 결과를 덮어쓰지 않는다.
 
 각 단계를 단독 실행할 수도 있다.
 
@@ -155,6 +160,7 @@ extractions/plain/family_graph_03.O3S.raw.json
 fixtures/direct-in/plain/family_graph_03.O3S.fixture.json
 extractions/angr/plain/family_graph_03.O3S.raw.json
 fixtures/angr/plain/family_graph_03.O3S.fixture.json
+fixtures/angr/role/plain/family_graph_03.O3S.fixture.json
 
 # 기본 rust-nonstd scope의 scope별 산출물
 ground_truth/rust-nonstd/plain/billing-client.O3S.gt.json
@@ -187,6 +193,7 @@ family_graph_03 / O3KS
 - `direct`: user 함수가 직접 호출하는 library/runtime anchor
 - `direct-in`: user 함수의 direct callee와 direct external caller anchor
 - `angr`: direct edge와 singleton angr-resolved indirect edge, 양방향 one-hop anchor
+- `address`와 `role` anchor color policy
 - directed weighted call graph 기반 CG-WL
 - `full`, `out`, `in`, `out-in` relation mode
 - pairwise PR/RE/F1과 ARI

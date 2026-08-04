@@ -42,7 +42,7 @@ shared_recursive
 ## 2. 가장 단순한 실행
 
 ```bash
-# 기본: core/alloc/std를 제외한 모든 관찰 가능한 Rust 함수
+# 기본: core/alloc/std/__rustc를 제외한 모든 관찰 가능한 Rust 함수
 python3 gt_extractor.py billing-client
 
 # frozen micro-corpus의 subject-owned 함수만 재현
@@ -136,7 +136,7 @@ Text symbol kind `t`와 `T`만 사용한다. Data symbol, undefined symbol, 주�
 ### 5.1 기본 `rust-nonstd`
 
 기본 정책은 demangle 가능한 Rust text symbol의 **함수 소유 namespace**를 판정한다.
-소유자가 `core`, `alloc`, `std`이면 제외하고, 그 밖의 subject/dependency crate 함수는
+소유자가 `core`, `alloc`, `std`, `__rustc`이면 제외하고, 그 밖의 subject/dependency crate 함수는
 candidate로 포함한다. Source `main`은 CG-WL root anchor이므로 scored candidate에서
 제외한다.
 
@@ -145,6 +145,7 @@ serde_json::de::parse                       -> candidate
 billing_client::client::decode              -> candidate
 core::ptr::drop_in_place<billing_client::T> -> 제외(core 소유)
 std::rt::lang_start_internal                -> 제외(std 소유)
+__rustc::rust_begin_unwind                  -> 제외(__rustc 소유)
 reconcile::main                             -> 제외(root)
 ```
 
@@ -163,9 +164,8 @@ Trait impl은 맨 앞 문자열만 보지 않는다. 구현 header에서 non-sta
 ```
 
 이 분류는 non-stripped symbol oracle이다. Stripped binary만 보고 standard library를
-식별한 결과가 아니다. 또한 요청한 범위를 문자 그대로 적용하므로 `__rustc`,
-`std_detect`처럼 owner가 정확히 `core/alloc/std`가 아닌 Rust namespace는 candidate가
-될 수 있다.
+식별한 결과가 아니다. `std_detect`처럼 owner가 정확히
+`core/alloc/std/__rustc`가 아닌 Rust namespace는 candidate가 될 수 있다.
 
 ### 5.2 호환 `subject`
 
@@ -469,7 +469,7 @@ Schema version 6은 선택 정책을 명시한다.
   "scope": "rust-nonstd",
   "root_namespace": "reconcile",
   "namespaces": [],
-  "excluded_namespaces": ["core", "alloc", "std"],
+  "excluded_namespaces": ["core", "alloc", "std", "__rustc"],
   "addresses": ["0x2c840", "0x2ce00"],
   "function_bounds": [
     {"address": "0x2c840", "size": 64}

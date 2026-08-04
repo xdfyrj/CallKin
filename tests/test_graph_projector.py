@@ -19,6 +19,7 @@ from paths import (
     DIRECT_IN_TRACK,
     DIRECT_TRACK,
     RUST_NONSTD_CANDIDATE_SCOPE,
+    ROLE_ANCHOR_POLICY,
     SUBJECT_CANDIDATE_SCOPE,
     fixture_json_for,
     raw_graph_for,
@@ -125,7 +126,7 @@ def broad_selection(addresses: set[int], bounds: dict[int, int]):
         "scope": "rust-nonstd",
         "root_namespace": "projector_test",
         "namespaces": [],
-        "excluded_namespaces": ["core", "alloc", "std"],
+        "excluded_namespaces": ["core", "alloc", "std", "__rustc"],
         "addresses": [f"0x{address:x}" for address in sorted(addresses)],
         "function_bounds": [
             {"address": f"0x{address:x}", "size": size}
@@ -183,12 +184,26 @@ def check_track_paths() -> int:
     if default_path != broad:
         print(f"FAIL rust-nonstd is not the default candidate scope: {default_path}")
         return 1
+    role = fixture_json_for(
+        "sample",
+        "O3S",
+        "plain",
+        DIRECT_IN_TRACK,
+        SUBJECT_CANDIDATE_SCOPE,
+        ROLE_ANCHOR_POLICY,
+    )
+    if role != "fixtures/direct-in/role/plain/sample.O3S.fixture.json":
+        print(f"FAIL role fixture path: {role}")
+        return 1
     return 0
 
 
 def check_incoming_projection() -> int:
     # root -> A; A -> outgoing/both; incoming -> A/B; both -> B.
-    addresses = (0x1000, 0x2000, 0x2100, 0x3000, 0x4000, 0x5000, 0x6000)
+    addresses = (
+        0x1000, 0x2000, 0x2100, 0x3000,
+        0x4000, 0x5000, 0x6000, 0x7000,
+    )
     raw = make_raw_graph(
         case="projector-test",
         build="O3S",
@@ -224,6 +239,7 @@ def check_incoming_projection() -> int:
             resolved(0x4000, 0x4008, 0x2100),
             resolved(0x4000, 0x400C, 0x6000),
             resolved(0x5000, 0x5004, 0x2100),
+            resolved(0x7000, 0x7004, 0x2000),
         ],
         boundary_mode="symbol-extent",
         boundary_mismatches=[],
@@ -250,6 +266,7 @@ def check_incoming_projection() -> int:
         "FUN_00003000",
         "FUN_00004000",
         "FUN_00005000",
+        "FUN_00007000",
     }
     if set(nodes) != expected or "FUN_00006000" in nodes:
         print(f"FAIL projected one-hop node set: {sorted(nodes)}")
@@ -260,6 +277,7 @@ def check_incoming_projection() -> int:
         "FUN_00003000": "outgoing",
         "FUN_00004000": "incoming",
         "FUN_00005000": "both",
+        "FUN_00007000": "incoming",
     }
     actual_kinds = {
         node_id: node["anchor_kind"]
@@ -275,6 +293,11 @@ def check_incoming_projection() -> int:
         {"target": "FUN_00002100", "count": 1},
     ]:
         print("FAIL shared incoming anchor did not retain both candidate edges")
+        return 1
+    if nodes["FUN_00007000"]["calls"] != [
+        {"target": "FUN_00002000", "count": 1}
+    ]:
+        print("FAIL second incoming anchor lost its candidate edge")
         return 1
     if nodes["FUN_00003000"]["calls"]:
         print("FAIL outgoing anchor leaked its library-internal edge")
@@ -352,6 +375,41 @@ def check_incoming_projection() -> int:
     broad_direct_nodes = {node["id"]: node for node in broad_direct["nodes"]}
     if "FUN_00004000" in broad_direct_nodes:
         print("FAIL broad direct projection included an incoming-only caller")
+        return 1
+
+    role_fixture = project_fixture(
+        raw,
+        selection=selection(
+            {0x2000, 0x2100},
+            {0x2000: 0x20, 0x2100: 0x20},
+        ),
+        track=DIRECT_IN_TRACK,
+        anchor_policy=ROLE_ANCHOR_POLICY,
+        users_path="users/plain/projector-test.O3S.users.json",
+        id_bias=0,
+    )
+    validate_raw_fixture(role_fixture)
+    role_nodes = {node["id"]: node for node in role_fixture["nodes"]}
+    expected_role_colors = {
+        "FUN_00001000": "ROLE:root",
+        "FUN_00003000": "ROLE:outgoing",
+        "FUN_00004000": "ROLE:incoming",
+        "FUN_00005000": "ROLE:both",
+        "FUN_00007000": "ROLE:incoming",
+    }
+    actual_role_colors = {
+        node_id: node["color_class"]
+        for node_id, node in role_nodes.items()
+        if node["type"] == "anchor"
+    }
+    if actual_role_colors != expected_role_colors:
+        print(
+            f"FAIL role anchor colors: expected {expected_role_colors}, "
+            f"got {actual_role_colors}"
+        )
+        return 1
+    if role_fixture["analysis"]["anchor_policy"] != ROLE_ANCHOR_POLICY:
+        print("FAIL role policy missing from analysis provenance")
         return 1
     return 0
 

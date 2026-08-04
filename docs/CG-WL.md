@@ -166,9 +166,10 @@ color_class=ADDR:FUN_001487a0
 -> ANCHOR:ADDR:FUN_001487a0
 ```
 
-현재 `direct-in`과 `angr`의 `anchor_policy=address`도 anchor마다 서로 다른
-class를 주므로 schema v4와 같은 individualized 의미를 유지한다. 향후 role 또는
-semantic policy에서는 여러 anchor가 같은 `color_class`를 공유할 수 있다.
+기본 `anchor_policy=address`는 anchor마다 서로 다른 class를 주므로 schema v4와
+같은 individualized 의미를 유지한다. 공식 `anchor_policy=role`은 주소를 버리고
+`ROLE:root`, `ROLE:incoming`, `ROLE:outgoing`, `ROLE:both` 중 하나를 사용한다.
+따라서 서로 다른 주소의 anchor도 같은 방향 역할이면 동일한 `color_class`를 공유한다.
 Refinement 중 anchor color는 어느 경우에도 바뀌지 않는다.
 
 따라서 두 user 함수가 서로 다른 library anchor를 호출하면 그 차이가 relation signature에 남는다.

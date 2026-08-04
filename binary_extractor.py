@@ -21,10 +21,12 @@ from graph_projector import project_fixture
 from function_boundaries import load_function_boundaries
 from paths import (
     ANALYSIS_TRACKS,
+    ANCHOR_POLICIES,
     ANGR_TRACK,
     BUILD_PROFILES,
     CANDIDATE_SCOPES,
     DEFAULT_ANALYSIS_TRACK,
+    DEFAULT_ANCHOR_POLICY,
     DEFAULT_BUILD,
     DEFAULT_CANDIDATE_SCOPE,
     DEFAULT_PROFILE,
@@ -33,6 +35,7 @@ from paths import (
     fixture_json_for,
     evidence_backend_for_track,
     normalize_profile,
+    normalize_anchor_policy,
     normalize_candidate_scope,
     normalize_track,
     raw_graph_for,
@@ -1016,6 +1019,9 @@ def extract_artifacts(args: argparse.Namespace) -> ExtractionArtifacts:
             )
 
         track = normalize_track(getattr(args, "track", DEFAULT_ANALYSIS_TRACK))
+        anchor_policy = normalize_anchor_policy(
+            getattr(args, "anchor_policy", DEFAULT_ANCHOR_POLICY)
+        )
         boundary_mode = "symbol-extent"
         raw_graph = extractor.build_raw_graph(
             case=args.case,
@@ -1040,6 +1046,7 @@ def extract_artifacts(args: argparse.Namespace) -> ExtractionArtifacts:
             raw_graph,
             selection=selection,
             track=track,
+            anchor_policy=anchor_policy,
             users_path=args.users,
             id_bias=args.id_bias,
             score_root=args.score_root,
@@ -1102,6 +1109,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
         choices=ANALYSIS_TRACKS,
         default=DEFAULT_ANALYSIS_TRACK,
         help=f"analysis track. Default: {DEFAULT_ANALYSIS_TRACK}",
+    )
+    parser.add_argument(
+        "--anchor-policy",
+        choices=ANCHOR_POLICIES,
+        default=DEFAULT_ANCHOR_POLICY,
+        help=f"anchor color policy. Default: {DEFAULT_ANCHOR_POLICY}",
     )
     parser.add_argument(
         "--candidate-scope",
@@ -1169,6 +1182,7 @@ def apply_cli_defaults(args: argparse.Namespace, parser: argparse.ArgumentParser
     case, build = split_case_build(args.binary, args.build)
     args.profile = normalize_profile(args.profile)
     args.track = normalize_track(args.track)
+    args.anchor_policy = normalize_anchor_policy(args.anchor_policy)
     args.candidate_scope = normalize_candidate_scope(args.candidate_scope)
 
     if not Path(args.binary).exists():
@@ -1188,6 +1202,7 @@ def apply_cli_defaults(args: argparse.Namespace, parser: argparse.ArgumentParser
             args.profile,
             args.track,
             args.candidate_scope,
+            args.anchor_policy,
         )
     if args.raw_output is None:
         args.raw_output = raw_graph_for(

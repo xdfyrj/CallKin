@@ -21,19 +21,21 @@ from graph_evidence import (
 )
 from paths import (
     ANALYSIS_TRACKS,
+    ANCHOR_POLICIES,
     ANGR_TRACK,
+    DEFAULT_ANCHOR_POLICY,
     DEFAULT_ANALYSIS_TRACK,
     DIRECT_IN_TRACK,
     DIRECT_TRACK,
     SUBJECT_CANDIDATE_SCOPE,
     fixture_json_for,
+    normalize_anchor_policy,
     normalize_track,
 )
 from provenance import parse_provenance
 
 
 FIXTURE_SCHEMA_V5 = 5
-ANCHOR_POLICIES = ("address", "role")
 
 
 @dataclass(frozen=True)
@@ -54,27 +56,31 @@ class ProjectionConfig:
         }
 
 
-def projection_config_for(track: str) -> ProjectionConfig:
+def projection_config_for(
+    track: str,
+    anchor_policy: str = DEFAULT_ANCHOR_POLICY,
+) -> ProjectionConfig:
     track = normalize_track(track)
+    anchor_policy = normalize_anchor_policy(anchor_policy)
     if track == DIRECT_TRACK:
         return ProjectionConfig(
             track=track,
             include_incoming_anchors=False,
-            anchor_policy="address",
+            anchor_policy=anchor_policy,
             edge_policy=("direct-immediate", "direct-tail"),
         )
     if track == DIRECT_IN_TRACK:
         return ProjectionConfig(
             track=track,
             include_incoming_anchors=True,
-            anchor_policy="address",
+            anchor_policy=anchor_policy,
             edge_policy=("direct-immediate", "direct-tail"),
         )
     if track == ANGR_TRACK:
         return ProjectionConfig(
             track=track,
             include_incoming_anchors=True,
-            anchor_policy="address",
+            anchor_policy=anchor_policy,
             edge_policy=("direct-immediate", "direct-tail", ANGR_RESOLVER),
         )
     raise ValueError(f"unsupported projection track: {track}")
@@ -372,11 +378,13 @@ def project_fixture(
     *,
     selection: CandidateSelection,
     track: str,
+    anchor_policy: str = DEFAULT_ANCHOR_POLICY,
     users_path: str | None,
     id_bias: int,
     score_root: bool = False,
 ) -> dict[str, Any]:
     track = normalize_track(track)
+    anchor_policy = normalize_anchor_policy(anchor_policy)
     backend = raw["analysis"]["backend"]
     if track == ANGR_TRACK and backend != ANGR_RAW_GRAPH_BACKEND:
         raise ValueError(
@@ -386,7 +394,11 @@ def project_fixture(
         raise ValueError(
             f"the {track} projection requires direct raw evidence"
         )
-    if track == DIRECT_TRACK and selection.scope == SUBJECT_CANDIDATE_SCOPE:
+    if (
+        track == DIRECT_TRACK
+        and selection.scope == SUBJECT_CANDIDATE_SCOPE
+        and anchor_policy == DEFAULT_ANCHOR_POLICY
+    ):
         return project_direct_fixture(
             raw,
             selection=selection,
@@ -400,7 +412,7 @@ def project_fixture(
         users_path=users_path,
         id_bias=id_bias,
         score_root=score_root,
-        config=projection_config_for(track),
+        config=projection_config_for(track, anchor_policy),
     )
 
 
@@ -489,6 +501,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
         help=f"projection track. Default: {DEFAULT_ANALYSIS_TRACK}",
     )
     parser.add_argument(
+        "--anchor-policy",
+        choices=ANCHOR_POLICIES,
+        default=DEFAULT_ANCHOR_POLICY,
+        help=f"anchor color policy. Default: {DEFAULT_ANCHOR_POLICY}",
+    )
+    parser.add_argument(
         "--id-bias",
         type=lambda value: int(value, 0),
         default=0x100000,
@@ -503,6 +521,7 @@ def main(argv: list[str] | None = None) -> int:
     try:
         raw = load_raw_graph(args.raw_graph)
         track = normalize_track(args.track)
+        anchor_policy = normalize_anchor_policy(args.anchor_policy)
         selection = load_candidate_selection(
             args.selection,
             expected_case=raw["case"],
@@ -513,6 +532,7 @@ def main(argv: list[str] | None = None) -> int:
             raw,
             selection=selection,
             track=track,
+            anchor_policy=anchor_policy,
             users_path=args.selection,
             id_bias=args.id_bias,
         )
@@ -522,6 +542,7 @@ def main(argv: list[str] | None = None) -> int:
             raw["profile"],
             track,
             selection.scope,
+            anchor_policy,
         )
         path = Path(output)
         path.parent.mkdir(parents=True, exist_ok=True)

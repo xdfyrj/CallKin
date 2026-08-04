@@ -11,9 +11,11 @@ from loader import load_case
 from model import Case
 from paths import (
     ANALYSIS_TRACKS,
+    ANCHOR_POLICIES,
     BUILD_PROFILES,
     CANDIDATE_SCOPES,
     DEFAULT_ANALYSIS_TRACK,
+    DEFAULT_ANCHOR_POLICY,
     DEFAULT_BUILD,
     DEFAULT_CANDIDATE_SCOPE,
     DEFAULT_PROFILE,
@@ -443,6 +445,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
         help=f"analysis track. Default: {DEFAULT_ANALYSIS_TRACK}",
     )
     parser.add_argument(
+        "--anchor-policy",
+        choices=ANCHOR_POLICIES,
+        default=DEFAULT_ANCHOR_POLICY,
+        help=f"anchor color policy. Default: {DEFAULT_ANCHOR_POLICY}",
+    )
+    parser.add_argument(
         "--candidate-scope",
         choices=CANDIDATE_SCOPES,
         default=DEFAULT_CANDIDATE_SCOPE,
@@ -475,6 +483,7 @@ def main(argv: list[str] | None = None) -> int:
             args.profile,
             args.track,
             args.candidate_scope,
+            args.anchor_policy,
         )
 
     try:

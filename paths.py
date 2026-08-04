@@ -19,6 +19,10 @@ ANALYSIS_TRACKS = (DIRECT_TRACK, DIRECT_IN_TRACK, ANGR_TRACK)
 DIRECT_EVIDENCE = "direct"
 ANGR_EVIDENCE = "angr"
 EVIDENCE_BACKENDS = (DIRECT_EVIDENCE, ANGR_EVIDENCE)
+ADDRESS_ANCHOR_POLICY = "address"
+ROLE_ANCHOR_POLICY = "role"
+DEFAULT_ANCHOR_POLICY = ADDRESS_ANCHOR_POLICY
+ANCHOR_POLICIES = (ADDRESS_ANCHOR_POLICY, ROLE_ANCHOR_POLICY)
 
 
 def normalize_build(build: str | None) -> str:
@@ -51,6 +55,16 @@ def normalize_candidate_scope(scope: str | None) -> str:
         raise ValueError(
             f"unknown candidate scope: {scope!r}. "
             f"expected one of {', '.join(CANDIDATE_SCOPES)}"
+        )
+    return normalized
+
+
+def normalize_anchor_policy(policy: str | None) -> str:
+    normalized = (policy or DEFAULT_ANCHOR_POLICY).lower()
+    if normalized not in ANCHOR_POLICIES:
+        raise ValueError(
+            f"unknown anchor policy: {policy!r}. "
+            f"expected one of {', '.join(ANCHOR_POLICIES)}"
         )
     return normalized
 
@@ -146,14 +160,18 @@ def fixture_json_for(
     profile: str = DEFAULT_PROFILE,
     track: str = DEFAULT_ANALYSIS_TRACK,
     candidate_scope: str = DEFAULT_CANDIDATE_SCOPE,
+    anchor_policy: str = DEFAULT_ANCHOR_POLICY,
 ) -> str:
     normalized_track = normalize_track(track)
     candidate_scope = normalize_candidate_scope(candidate_scope)
+    anchor_policy = normalize_anchor_policy(anchor_policy)
     profile = normalize_profile(profile)
     stem = output_stem(case, build)
     parts = ["fixtures"]
     if normalized_track != DIRECT_TRACK:
         parts.append(normalized_track)
+    if anchor_policy != DEFAULT_ANCHOR_POLICY:
+        parts.append(anchor_policy)
     if candidate_scope != SUBJECT_CANDIDATE_SCOPE:
         parts.append(candidate_scope)
     parts.extend((profile, f"{stem}.fixture.json"))
@@ -217,8 +235,11 @@ def resolve_fixture_json(
     profile: str = DEFAULT_PROFILE,
     track: str = DEFAULT_ANALYSIS_TRACK,
     candidate_scope: str = DEFAULT_CANDIDATE_SCOPE,
+    anchor_policy: str = DEFAULT_ANCHOR_POLICY,
 ) -> str:
-    return fixture_json_for(case, build, profile, track, candidate_scope)
+    return fixture_json_for(
+        case, build, profile, track, candidate_scope, anchor_policy
+    )
 
 
 def resolve_gt_json(

@@ -38,6 +38,7 @@ Canonical 파일명을 사용하는 가장 짧은 명령은 다음과 같다.
 # 기본 rust-nonstd scope
 python3 binary_extractor.py billing-client --track direct-in
 python3 binary_extractor.py billing-client --track angr
+python3 binary_extractor.py billing-client --track angr --anchor-policy role
 
 # frozen subject-only baseline
 python3 binary_extractor.py family_graph_01 --candidate-scope subject
@@ -579,6 +580,33 @@ Direct raw graph는 `extractions/<profile>/`에, angr 보강 raw graph는
 `extractions/angr/<profile>/`에 저장한다. 이 둘은 projection만 다른 것이 아니라
 추출 evidence가 실제로 다르기 때문에 별도 파일이다.
 
+### 10.4 Anchor policy: `address`와 `role`
+
+`address`는 기본값이며 anchor마다 주소 기반 고유 color class를 준다.
+
+```text
+ADDR:FUN_0013105c
+ADDR:FUN_00148976
+```
+
+`role`은 주소를 무시하고 fixture에서의 방향 역할만 사용한다.
+
+```text
+ROLE:root
+ROLE:incoming
+ROLE:outgoing
+ROLE:both
+```
+
+예를 들어 서로 다른 외부 함수 X와 Y가 각각 candidate A와 B를 호출하면 address
+정책에서는 X와 Y가 다른 color지만 role 정책에서는 둘 다 `ROLE:incoming`이다.
+Role 결과는 address 결과를 덮어쓰지 않고 다음처럼 별도 경로에 저장된다.
+
+```text
+fixtures/direct-in/role/rust-nonstd/plain/billing-client.O3S.fixture.json
+fixtures/angr/role/rust-nonstd/plain/billing-client.O3S.fixture.json
+```
+
 ## 11. Fixture JSON
 
 Frozen `subject/direct` 출력만 schema version 4를 유지한다. 새 기본
@@ -676,6 +704,7 @@ config SHA-256, candidate selection SHA-256을 기록한다.
 | `--build` | build label | `--build O3KS` |
 | `--profile` | compiler profile과 artifact directory | `--profile min` |
 | `--track` | `direct`, `direct-in`, `angr` | `--track angr` |
+| `--anchor-policy` | `address`(기본) 또는 `role` | `--anchor-policy role` |
 | `--candidate-scope` | `rust-nonstd`(기본) 또는 `subject` | `--candidate-scope subject` |
 | `--raw-output` | raw evidence 출력 override | `--raw-output /tmp/case.raw.json` |
 | `--root` | root name/ID/address | `--root FUN_00114040` |
@@ -703,7 +732,9 @@ config SHA-256, candidate selection SHA-256을 기록한다.
 - `direct-in`은 복구된 direct caller만 추가하며 완전한 incoming graph를 주장하지 않는다.
 - Root 자동 탐지는 현재 Rust/glibc startup 형태에 맞춘 heuristic이다.
 - Users JSON은 compiler symbol owner에서 얻은 candidate oracle이다. 기본은
-  `core/alloc/std`를 제외한 Rust 함수, 호환 mode는 subject namespace 함수다.
+  `core/alloc/std/__rustc`를 제외한 Rust 함수, 호환 mode는 subject namespace 함수다.
+- 제외된 `core/alloc/std/__rustc` 함수는 삭제되는 것이 아니다. Candidate와 직접
+  연결되면 one-hop `anchor/scored=false` node로 투영된다.
 - 이 범위 판정은 stripped-only library classifier가 아니다.
 - Anchor 내부를 계속 탐색하지 않으므로 library subgraph topology는 feature에 들어가지 않는다.
 - Fixture의 call count는 dynamic execution frequency가 아니다.

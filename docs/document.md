@@ -155,7 +155,7 @@ extent가 들어간다. Extent에는 source `main`도 포함된다.
 analysis provenance에 기록된다.
 
 기본 `rust-nonstd` scope는 demangled Rust text symbol 중 소유 namespace가 `core`,
-`alloc`, `std`인 함수와 source `main`만 제외한다. Subject와 dependency crate 함수는
+`alloc`, `std`, `__rustc`인 함수와 source `main`만 제외한다. Subject와 dependency crate 함수는
 모두 candidate다. `subject` scope는 manifest의 subject namespace만 candidate로 두는
 기존 통제 평가다. 둘 다 non-stripped symbol을 사용하는 oracle이며, stripped-only
 library classifier가 아니다.
@@ -179,7 +179,7 @@ demangle 가능한 모든 Rust text symbol extent를 담는다. 따라서 같은
 | Candidate selection | `users/rust-nonstd/plain/*.users.json`, `users/plain/*.users.json` | scope별 candidate raw address 집합 |
 | Function boundaries | `boundaries/plain/*.boundaries.json` | scope-independent Rust symbol extents |
 | Raw graph | `extractions/plain/*.raw.json`, `extractions/angr/plain/*.raw.json` | candidate/projection 독립 transfer evidence; angr backend만 별도 |
-| Fixture | `fixtures/rust-nonstd/plain/*.fixture.json`, `fixtures/direct-in/rust-nonstd/plain/*.fixture.json`, `fixtures/angr/rust-nonstd/plain/*.fixture.json`, 호환용 `fixtures/plain/*.fixture.json` | scope와 track 정책으로 투영한 node와 weighted edge |
+| Fixture | `fixtures/rust-nonstd/plain/*.fixture.json`, `fixtures/direct-in/rust-nonstd/plain/*.fixture.json`, `fixtures/angr/rust-nonstd/plain/*.fixture.json`, role은 track 아래 `role/`, 호환용 `fixtures/plain/*.fixture.json` | scope, track, anchor 정책으로 투영한 node와 weighted edge |
 | Score result | `results/plain/v0_baseline.json` | cluster, origin별 결과, metric |
 
 `plain`은 Cargo 기본 release 설정을 근사한 CallKin profile로 O3/`lto=false`(thin local LTO 가능)/16 codegen units/panic unwind를 사용한다. `min`은 aggressive minimized stress profile로 O3/fat LTO/1 codegen unit/panic abort를 사용한다. Case는 direct rustc flag로, Cargo subject는 release-profile overlay로 같은 조건을 적용한다. `O3S`는 추가 source cfg가 없으며 `O3KS`는 `--cfg keep`을 추가한다. 어느 조합이든 non-stripped binary를 한 번 만든 뒤 복사본에 `strip --strip-all`을 적용한다.
@@ -220,6 +220,8 @@ anchor로 포함하고 library 내부로 더 내려가지 않는다.
 확정된 unresolved call만 `resolver=angr-cfg`, `confidence=inferred`로 승격한다.
 Singleton 판정은 unknown target을 제거하기 전에 수행한다. Raw에서는 direct exact와
 angr inferred evidence를 구분하지만 현재 fixture는 동일 source-target call count로 합산한다.
+Projector의 공식 anchor policy는 주소별 고정 color인 `address`와 방향 역할별 color인
+`role`이다. Role fixture는 각 track 아래 `role/` 경로에 별도로 저장한다.
 
 상세: [바이너리 추출](binary_extraction.md)
 
@@ -365,7 +367,7 @@ PR=1.00 RE=1.00 F1=1.00 ARI=1.00
 ### Candidate 조건
 
 현재 점수는 compiler symbol에서 얻은 candidate 주소와 Rust 함수 symbol extent가
-제공된 조건의 결과다. 기본 scope는 `core/alloc/std` 소유 함수를 제외한 모든
+제공된 조건의 결과다. 기본 scope는 `core/alloc/std/__rustc` 소유 함수를 제외한 모든
 관찰 가능한 Rust 함수이고, 호환 scope는 subject namespace만 사용한다. Stripped
 binary만으로 함수 소유권이나 경계를 복구하는 성능을 측정하지 않는다.
 

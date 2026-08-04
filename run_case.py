@@ -15,9 +15,11 @@ from engine import (
 from loader import load_case
 from paths import (
     ANALYSIS_TRACKS,
+    ANCHOR_POLICIES,
     BUILD_PROFILES,
     CANDIDATE_SCOPES,
     DEFAULT_ANALYSIS_TRACK,
+    DEFAULT_ANCHOR_POLICY,
     DEFAULT_BUILD,
     DEFAULT_CANDIDATE_SCOPE,
     DEFAULT_PROFILE,
@@ -27,6 +29,7 @@ from paths import (
     evidence_backend_for_track,
     gt_json_for,
     normalize_profile,
+    normalize_anchor_policy,
     normalize_candidate_scope,
     normalize_track,
     raw_graph_for,
@@ -50,6 +53,7 @@ def run_pipeline(args: argparse.Namespace) -> None:
     case_name = args.case or case_from_stem
     profile = normalize_profile(args.profile)
     track = normalize_track(args.track)
+    anchor_policy = normalize_anchor_policy(args.anchor_policy)
     candidate_scope = normalize_candidate_scope(args.candidate_scope)
     manifest_path = args.manifest or build_manifest_for(case_name, build, profile)
     verified = load_and_verify_manifest(
@@ -71,6 +75,7 @@ def run_pipeline(args: argparse.Namespace) -> None:
         profile,
         track,
         candidate_scope,
+        anchor_policy,
     )
     raw_graph_json = args.raw_graph or raw_graph_for(
         case_name,
@@ -93,6 +98,7 @@ def run_pipeline(args: argparse.Namespace) -> None:
     print(f"build: {build}")
     print(f"profile: {profile}")
     print(f"track: {track}")
+    print(f"anchor policy: {anchor_policy}")
     print(f"candidate scope: {candidate_scope}")
     print(f"build manifest: {manifest_path}")
     print(f"build id: {verified.build_id}")
@@ -126,6 +132,7 @@ def run_pipeline(args: argparse.Namespace) -> None:
         build=build,
         profile=profile,
         track=track,
+        anchor_policy=anchor_policy,
         raw_graph_path=raw_graph_json,
         boundaries_path=boundaries_json,
         root=args.root,
@@ -162,6 +169,7 @@ def extract_fixture(
     build: str,
     profile: str,
     track: str,
+    anchor_policy: str,
     raw_graph_path: str,
     boundaries_path: str,
     root: str | None,
@@ -177,6 +185,7 @@ def extract_fixture(
         build=build,
         profile=profile,
         track=track,
+        anchor_policy=anchor_policy,
         root=root,
         score_root=False,
         include_imports=False,
@@ -309,6 +318,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
         choices=ANALYSIS_TRACKS,
         default=DEFAULT_ANALYSIS_TRACK,
         help=f"analysis track. Default: {DEFAULT_ANALYSIS_TRACK}",
+    )
+    parser.add_argument(
+        "--anchor-policy",
+        choices=ANCHOR_POLICIES,
+        default=DEFAULT_ANCHOR_POLICY,
+        help=f"anchor color policy. Default: {DEFAULT_ANCHOR_POLICY}",
     )
     parser.add_argument(
         "--candidate-scope",

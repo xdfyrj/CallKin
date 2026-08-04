@@ -34,7 +34,7 @@ from provenance import BuildProvenance
 GT_SCHEMA_VERSION = 5
 USERS_SCHEMA_VERSION = 5
 DEFAULT_ID_BIAS = 0x100000
-STANDARD_RUST_NAMESPACES = ("core", "alloc", "std")
+ANCHOR_RUST_NAMESPACES = ("core", "alloc", "std", "__rustc")
 _RUST_PATH_RE = re.compile(r"(?<![A-Za-z0-9_:])([A-Za-z_][A-Za-z0-9_]*)::")
 
 
@@ -113,7 +113,7 @@ def rust_symbol_owner(demangled_name: str) -> str | None:
         return None
     roots = _RUST_PATH_RE.findall(header)
     for root in roots:
-        if root not in STANDARD_RUST_NAMESPACES:
+        if root not in ANCHOR_RUST_NAMESPACES:
             return root
     return roots[0] if roots else None
 
@@ -126,7 +126,7 @@ def is_rust_nonstd_candidate(
     if demangled_name == f"{root_namespace}::main":
         return False
     owner = rust_symbol_owner(demangled_name)
-    return owner is not None and owner not in STANDARD_RUST_NAMESPACES
+    return owner is not None and owner not in ANCHOR_RUST_NAMESPACES
 
 
 def _outer_impl_header(name: str) -> str | None:
@@ -530,7 +530,7 @@ def make_users_json(
     common["scope"] = candidate_scope
     common["root_namespace"] = root_namespace
     common["excluded_namespaces"] = (
-        list(STANDARD_RUST_NAMESPACES)
+        list(ANCHOR_RUST_NAMESPACES)
         if candidate_scope == RUST_NONSTD_CANDIDATE_SCOPE
         else []
     )
