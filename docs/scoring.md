@@ -546,7 +546,7 @@ python3 run_case.py billing-client --track angr --all-modes \
       "candidate_count": 320,
       "origin_count": 219,
       "generic_family_count": 42,
-      "true_positive_pair_count": 400
+      "same_family_pair_count": 400
     },
     "extraction": {
       "indirect_call_summary": {
@@ -575,7 +575,7 @@ python3 run_case.py billing-client --track angr --all-modes \
 `candidate_impact`는 accepted angr callsite 중 candidate의 OUT/IN에 실제로 추가된
 수를 센다. `candidate_observability`는 projected fixture 기준 root 도달성,
 zero-OUT, zero-IN, 완전 고립, unresolved indirect call 보유 candidate를 센다.
-`ground_truth.true_positive_pair_count`는 모든 mode에서 `TP + FN`과 같아야 하며,
+`ground_truth.same_family_pair_count`는 모든 mode에서 `TP + FN`과 같아야 하며,
 다르면 JSON 생성을 중단한다. `execution.warnings`는 같은 component/message를 묶어
 count만 저장한다. 시간과 경고는 raw graph SHA에 넣지 않아 evidence hash를 안정적으로
 유지한다.

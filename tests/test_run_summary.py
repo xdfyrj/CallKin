@@ -179,7 +179,7 @@ def main() -> int:
     ):
         print(f"FAIL candidate observability: {observability}")
         return 1
-    if summary["ground_truth"]["true_positive_pair_count"] != 1:
+    if summary["ground_truth"]["same_family_pair_count"] != 1:
         print("FAIL ground truth summary")
         return 1
     comparison = compare_ground_truth_profiles(

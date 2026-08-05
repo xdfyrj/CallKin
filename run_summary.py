@@ -33,10 +33,10 @@ def build_run_summary(
     reports = tuple(reports)
     gt_summary = ground_truth_summary(ground_truth)
     for report in reports:
-        if report.pairwise.tp + report.pairwise.fn != gt_summary["true_positive_pair_count"]:
+        if report.pairwise.tp + report.pairwise.fn != gt_summary["same_family_pair_count"]:
             raise ValueError(
                 "ground-truth pair count does not match score TP+FN: "
-                f"{gt_summary['true_positive_pair_count']} != "
+                f"{gt_summary['same_family_pair_count']} != "
                 f"{report.pairwise.tp + report.pairwise.fn}"
             )
 
@@ -183,7 +183,7 @@ def ground_truth_summary(ground_truth: dict[str, Any]) -> dict[str, Any]:
         "generic_family_count": len(family_sizes),
         "singleton_origin_count": sum(size == 1 for size in sizes),
         "family_member_count": sum(family_sizes),
-        "true_positive_pair_count": true_pairs,
+        "same_family_pair_count": true_pairs,
         "family_size": {
             "min": min(family_sizes) if family_sizes else None,
             "median": median(family_sizes) if family_sizes else None,
