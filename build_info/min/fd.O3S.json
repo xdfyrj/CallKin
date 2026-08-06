@@ -1,0 +1,124 @@
+{
+  "artifacts": {
+    "non_stripped": {
+      "path": "gt_bin/min/fd.O3S.gt.bin",
+      "sha256": "04c5c11149caaf47a26e0e4bc0beec550e6fad5614857278ba944d931a0f531a"
+    },
+    "stripped": {
+      "path": "bin/min/fd.O3S.fixture.bin",
+      "sha256": "ea8787bcf41652724ae16f8899f3840affe48b27068e9ca5071aa012cbc20648",
+      "stripped_from_sha256": "04c5c11149caaf47a26e0e4bc0beec550e6fad5614857278ba944d931a0f531a"
+    }
+  },
+  "build": "O3S",
+  "build_id": "ed602b13a8f6409cab2e69f2bfd9ddfc",
+  "cargo": {
+    "binary": "fd",
+    "candidate_namespaces": [
+      "fd"
+    ],
+    "command": [
+      "cargo",
+      "build",
+      "--release",
+      "--locked",
+      "--manifest-path",
+      "subjects/fd/Cargo.toml",
+      "--package",
+      "fd-find",
+      "--bin",
+      "fd",
+      "--target",
+      "x86_64-unknown-linux-gnu",
+      "--target-dir",
+      "/tmp/fd.min.O3S.9cq69y1m/cargo-target",
+      "--message-format=json-render-diagnostics",
+      "--config",
+      "/tmp/fd.min.O3S.9cq69y1m/callkin-cargo-config.toml"
+    ],
+    "environment": {
+      "RUSTC": "rustc",
+      "RUSTFLAGS": ""
+    },
+    "invoked_path": "/home/xdfyrj/.cargo/bin/cargo",
+    "lockfile": {
+      "path": "subjects/fd/Cargo.lock",
+      "sha256": "ad1600fe99a6978ebd58ea8ac643896e6a8f1143da30e9aa4dff2e0753606736"
+    },
+    "manifest": {
+      "path": "subjects/fd/Cargo.toml",
+      "sha256": "dcf000dd16375a089d6d829354ac1d5d953bc49451cc5f002bdbd6373763e86c"
+    },
+    "package": "fd-find",
+    "profile_config": "[profile.release]\nopt-level = 3\ndebug = 0\ndebug-assertions = false\noverflow-checks = false\ncodegen-units = 1\nlto = true\npanic = \"abort\"\nincremental = false\nstrip = \"none\"\n",
+    "resolved_path": "/home/xdfyrj/.cargo/bin/rustup",
+    "root_namespace": "fd",
+    "version": "cargo 1.93.1 (083ac5135 2025-12-15)\nrelease: 1.93.1\ncommit-hash: 083ac5135f967fd9dc906ab057a2315861c7a80d\ncommit-date: 2025-12-15\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.1 (sys:0.20.2 vendored)\nlibcurl: 8.15.0-DEV (sys:0.4.83+curl-8.15.0 vendored ssl:OpenSSL/3.5.4)\nssl: OpenSSL 3.5.4 30 Sep 2025\nos: Ubuntu 24.4.0 (noble) [64-bit]"
+  },
+  "case": "fd",
+  "compiler": {
+    "command": [
+      "cargo",
+      "build",
+      "--release",
+      "--locked",
+      "--manifest-path",
+      "subjects/fd/Cargo.toml",
+      "--package",
+      "fd-find",
+      "--bin",
+      "fd",
+      "--target",
+      "x86_64-unknown-linux-gnu",
+      "--target-dir",
+      "/tmp/fd.min.O3S.9cq69y1m/cargo-target",
+      "--message-format=json-render-diagnostics",
+      "--config",
+      "/tmp/fd.min.O3S.9cq69y1m/callkin-cargo-config.toml"
+    ],
+    "compiler_binary_path": "/home/xdfyrj/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc",
+    "flags": [
+      "-C",
+      "opt-level=3",
+      "-C",
+      "debuginfo=0",
+      "-C",
+      "debug-assertions=off",
+      "-C",
+      "overflow-checks=off",
+      "-C",
+      "codegen-units=1",
+      "-C",
+      "lto=true",
+      "-C",
+      "panic=abort"
+    ],
+    "invoked_path": "/home/xdfyrj/.cargo/bin/rustc",
+    "resolved_path": "/home/xdfyrj/.cargo/bin/rustup",
+    "sysroot": "/home/xdfyrj/.rustup/toolchains/stable-x86_64-unknown-linux-gnu",
+    "verbose_version": "rustc 1.93.1 (01f6ddf75 2026-02-11)\nbinary: rustc\ncommit-hash: 01f6ddf7588f42ae2d7eb0a2f21d44e8e96674cf\ncommit-date: 2026-02-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.93.1\nLLVM version: 21.1.8"
+  },
+  "crate_name": "fd",
+  "edition": "2024",
+  "profile": "min",
+  "schema_version": 3,
+  "source": {
+    "kind": "subject",
+    "path": "subjects/fd",
+    "sha256": "a01ffcf11c3e42ddcbade0a5453b25b676aa8b3cb410f044eae7a175a461c542"
+  },
+  "strip": {
+    "command": [
+      "strip",
+      "--strip-all",
+      "/tmp/fd.min.O3S.9cq69y1m/.stripped.bin.4otp_8mk.tmp"
+    ],
+    "flags": [
+      "--strip-all"
+    ],
+    "invoked_path": "/usr/bin/strip",
+    "resolved_path": "/usr/bin/x86_64-linux-gnu-strip",
+    "version": "GNU strip (GNU Binutils for Ubuntu) 2.42\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis program is free software; you may redistribute it under the terms of\nthe GNU General Public License version 3 or (at your option) any later version.\nThis program has absolutely no warranty."
+  },
+  "target": "x86_64-unknown-linux-gnu"
+}

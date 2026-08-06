@@ -1,0 +1,1518 @@
+{
+  "case": "billing-client",
+  "build": "O3S",
+  "profile": "min",
+  "schema_version": 5,
+  "provenance": {
+    "build_id": "62d1621fa72043f7bd656ec68178ae06",
+    "source_sha256": "6d8d930c87f876d1f86f371fa25003e102d280fca6b714b796713f5fa5028faa",
+    "non_stripped_sha256": "08faa9069d0de92f984fa7f44a870f1bdafb55c01a4dde23697c137bc624ccef",
+    "stripped_sha256": "3c297184c4f61b23d64a74581a03667d4aaa3dc34c3911b19ffb1716fbb8e2a3"
+  },
+  "origins": [
+    {
+      "origin": "serde_core::de::Error::invalid_length",
+      "members": [
+        "FUN_0011b370"
+      ]
+    },
+    {
+      "origin": "serde_core::de::Error::unknown_variant",
+      "members": [
+        "FUN_0011b3d0",
+        "FUN_0013eb30"
+      ]
+    },
+    {
+      "origin": "serde_core::de::impls::impl_for=i64::deserialize",
+      "members": [
+        "FUN_0011b440",
+        "FUN_0013eea0"
+      ]
+    },
+    {
+      "origin": "serde_core::de::impls::impl_for=alloc::string::String::deserialize",
+      "members": [
+        "FUN_0011b5d0",
+        "FUN_0013e3d0"
+      ]
+    },
+    {
+      "origin": "serde_core::de::MapAccess::next_value",
+      "members": [
+        "FUN_0011b7a0",
+        "FUN_0013d490"
+      ]
+    },
+    {
+      "origin": "serde_core::de::SeqAccess::next_element",
+      "members": [
+        "FUN_0011bde0",
+        "FUN_0011be60",
+        "FUN_0011bef0",
+        "FUN_0011bf70",
+        "FUN_0013f4a0",
+        "FUN_0013f510",
+        "FUN_0013f590",
+        "FUN_00141180",
+        "FUN_00141200",
+        "FUN_00141280"
+      ]
+    },
+    {
+      "origin": "serde_json::de::Deserializer<R>::parse_number",
+      "members": [
+        "FUN_0011bff0"
+      ]
+    },
+    {
+      "origin": "serde_json::de::Deserializer<R>::parse_integer",
+      "members": [
+        "FUN_0011c330",
+        "FUN_0013ebb0"
+      ]
+    },
+    {
+      "origin": "serde_json::de::Deserializer<R>::ignore_integer",
+      "members": [
+        "FUN_0011c530",
+        "FUN_0013db60"
+      ]
+    },
+    {
+      "origin": "serde_json::de::Deserializer<R>::parse_exponent",
+      "members": [
+        "FUN_0011c820",
+        "FUN_001390b0"
+      ]
+    },
+    {
+      "origin": "serde_json::de::Deserializer<R>::peek_invalid_type",
+      "members": [
+        "FUN_0011cb20",
+        "FUN_0013bf00"
+      ]
+    },
+    {
+      "origin": "serde_json::de::Deserializer<R>::end_map",
+      "members": [
+        "FUN_0011cf10"
+      ]
+    },
+    {
+      "origin": "serde_json::de::Deserializer<R>::end_seq",
+      "members": [
+        "FUN_0011d010"
+      ]
+    },
+    {
+      "origin": "<billing_client::resources::_::impl_for=billing_client::resources::InvoiceStatus::deserialize::__FieldVisitor as serde_core::de::Visitor>::visit_str",
+      "members": [
+        "FUN_0011d150",
+        "FUN_001428f0"
+      ]
+    },
+    {
+      "origin": "<T as serde_core::de::Expected>::fmt",
+      "members": [
+        "FUN_0011d920",
+        "FUN_0011d940",
+        "FUN_0011d960",
+        "FUN_0011d980",
+        "FUN_0011d9a0",
+        "FUN_0013eb10",
+        "FUN_0013eb90",
+        "FUN_0013ee80",
+        "FUN_0013f2c0",
+        "FUN_0013f2e0",
+        "FUN_00140be0",
+        "FUN_001428b0",
+        "FUN_001428d0",
+        "FUN_001429a0",
+        "FUN_001429c0",
+        "FUN_00142a80"
+      ]
+    },
+    {
+      "origin": "<serde_json::de::MapAccess<R> as serde_core::de::MapAccess>::next_key_seed::has_next_key",
+      "members": [
+        "FUN_00121590"
+      ]
+    },
+    {
+      "origin": "<serde_json::de::MapAccess<R> as serde_core::de::MapAccess>::next_value_seed",
+      "members": [
+        "FUN_00121760",
+        "FUN_0013e6f0"
+      ]
+    },
+    {
+      "origin": "<core::marker::PhantomData<T> as serde_core::de::DeserializeSeed>::deserialize",
+      "members": [
+        "FUN_00122180",
+        "FUN_00122410",
+        "FUN_00122520",
+        "FUN_00124890",
+        "FUN_00124ba0",
+        "FUN_00125ba0",
+        "FUN_00125d60",
+        "FUN_00125eb0",
+        "FUN_001262a0",
+        "FUN_0013c550",
+        "FUN_0013de50",
+        "FUN_0013e5a0",
+        "FUN_0013f030",
+        "FUN_0013f6b0",
+        "FUN_00140c00",
+        "FUN_00141440",
+        "FUN_00141550",
+        "FUN_00142680"
+      ]
+    },
+    {
+      "origin": "<reconcile::transport::ProxyTransport as billing_client::http::Transport>::execute",
+      "members": [
+        "FUN_00126a10"
+      ]
+    },
+    {
+      "origin": "reconcile::log_action",
+      "members": [
+        "FUN_001299e0"
+      ]
+    },
+    {
+      "origin": "reconcile::run",
+      "members": [
+        "FUN_00129ee0"
+      ]
+    },
+    {
+      "origin": "addr2line::line::path_push",
+      "members": [
+        "FUN_001381ba"
+      ]
+    },
+    {
+      "origin": "addr2line::line::has_backward_slash_root",
+      "members": [
+        "FUN_00138374"
+      ]
+    },
+    {
+      "origin": "serde_json::de::Deserializer<R>::parse_long_integer",
+      "members": [
+        "FUN_00138d90"
+      ]
+    },
+    {
+      "origin": "serde_json::de::Deserializer<R>::f64_from_parts",
+      "members": [
+        "FUN_00138e10"
+      ]
+    },
+    {
+      "origin": "serde_json::de::Deserializer<R>::parse_decimal",
+      "members": [
+        "FUN_00138f20"
+      ]
+    },
+    {
+      "origin": "serde_json::de::Deserializer<R>::parse_exponent_overflow",
+      "members": [
+        "FUN_001392b0"
+      ]
+    },
+    {
+      "origin": "serde_json::de::Deserializer<R>::parse_decimal_overflow",
+      "members": [
+        "FUN_00139360"
+      ]
+    },
+    {
+      "origin": "billing_client::error::Error::request_id",
+      "members": [
+        "FUN_00139770"
+      ]
+    },
+    {
+      "origin": "billing_client::retry::RetryPolicy::delay_for",
+      "members": [
+        "FUN_001397e0"
+      ]
+    },
+    {
+      "origin": "billing_client::client::Client::headers",
+      "members": [
+        "FUN_00139b90"
+      ]
+    },
+    {
+      "origin": "billing_client::client::percent_encode",
+      "members": [
+        "FUN_0013a210"
+      ]
+    },
+    {
+      "origin": "billing_client::client::interpret",
+      "members": [
+        "FUN_0013a420"
+      ]
+    },
+    {
+      "origin": "serde_json::error::Error::fix_position",
+      "members": [
+        "FUN_0013c2f0"
+      ]
+    },
+    {
+      "origin": "<serde_json::de::SeqAccess<R> as serde_core::de::SeqAccess>::next_element_seed::has_next_element",
+      "members": [
+        "FUN_0013c3a0"
+      ]
+    },
+    {
+      "origin": "<serde_json::error::Error as serde_core::de::Error>::custom",
+      "members": [
+        "FUN_0013dad0"
+      ]
+    },
+    {
+      "origin": "<billing_client::error::_::impl_for=billing_client::error::ApiErrorKind::deserialize::__FieldVisitor as serde_core::de::Visitor>::visit_str",
+      "members": [
+        "FUN_0013e810"
+      ]
+    },
+    {
+      "origin": "<serde_json::de::VariantAccess<R> as serde_core::de::VariantAccess>::unit_variant",
+      "members": [
+        "FUN_0013e920"
+      ]
+    },
+    {
+      "origin": "<&mut serde_json::ser::Serializer<W,F> as serde_core::ser::Serializer>::serialize_str",
+      "members": [
+        "FUN_00142aa0",
+        "FUN_0015a600"
+      ]
+    },
+    {
+      "origin": "<serde_json::ser::Compound<W,F> as serde_core::ser::SerializeStruct>::serialize_field",
+      "members": [
+        "FUN_00142d60"
+      ]
+    },
+    {
+      "origin": "billing_client::resources::impl=billing_client::client::Client::mark_uncollectible",
+      "members": [
+        "FUN_00142ea0"
+      ]
+    },
+    {
+      "origin": "<billing_client::error::Error as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_00145f90"
+      ]
+    },
+    {
+      "origin": "gimli::read::abbrev::Abbreviations::insert",
+      "members": [
+        "FUN_0014bb17"
+      ]
+    },
+    {
+      "origin": "<gimli::read::abbrev::Attributes as core::ops::deref::Deref>::deref",
+      "members": [
+        "FUN_0014c459"
+      ]
+    },
+    {
+      "origin": "<u64 as itoa::Unsigned>::fmt",
+      "members": [
+        "FUN_0014c4a0"
+      ]
+    },
+    {
+      "origin": "memchr::arch::x86_64::memchr::memrchr_raw::detect",
+      "members": [
+        "FUN_0014c6e0"
+      ]
+    },
+    {
+      "origin": "memchr::arch::x86_64::memchr::memrchr_raw::find_avx2",
+      "members": [
+        "FUN_0014c750"
+      ]
+    },
+    {
+      "origin": "memchr::arch::x86_64::memchr::memrchr_raw::find_sse2",
+      "members": [
+        "FUN_0014c790"
+      ]
+    },
+    {
+      "origin": "memchr::arch::x86_64::avx2::memchr::One::rfind_raw",
+      "members": [
+        "FUN_0014c950"
+      ]
+    },
+    {
+      "origin": "memchr::arch::x86_64::avx2::memchr::One::rfind_raw_avx2",
+      "members": [
+        "FUN_0014ca40"
+      ]
+    },
+    {
+      "origin": "memchr::arch::x86_64::memchr::count_raw::detect",
+      "members": [
+        "FUN_0014cbb0"
+      ]
+    },
+    {
+      "origin": "memchr::arch::x86_64::memchr::count_raw::find_avx2",
+      "members": [
+        "FUN_0014cc20"
+      ]
+    },
+    {
+      "origin": "memchr::arch::x86_64::memchr::count_raw::find_sse2",
+      "members": [
+        "FUN_0014d4c0"
+      ]
+    },
+    {
+      "origin": "memchr::arch::x86_64::memchr::memchr_raw::detect",
+      "members": [
+        "FUN_0014d8e0"
+      ]
+    },
+    {
+      "origin": "memchr::arch::x86_64::memchr::memchr_raw::find_sse2",
+      "members": [
+        "FUN_0014da90"
+      ]
+    },
+    {
+      "origin": "miniz_oxide::inflate::core::decompress",
+      "members": [
+        "FUN_0014dc2c"
+      ]
+    },
+    {
+      "origin": "miniz_oxide::inflate::core::init_tree",
+      "members": [
+        "FUN_0014f8a5"
+      ]
+    },
+    {
+      "origin": "miniz_oxide::inflate::core::apply_match",
+      "members": [
+        "FUN_0014fc8a"
+      ]
+    },
+    {
+      "origin": "miniz_oxide::inflate::core::transfer",
+      "members": [
+        "FUN_0014fdd1"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::try_demangle",
+      "members": [
+        "FUN_001501ac"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_path",
+      "members": [
+        "FUN_00150f95"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_backref",
+      "members": [
+        "FUN_0015167b",
+        "FUN_00152e5e",
+        "FUN_00154145"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Parser::opt_integer_62",
+      "members": [
+        "FUN_00151767"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Parser::ident",
+      "members": [
+        "FUN_001517d8"
+      ]
+    },
+    {
+      "origin": "<rustc_demangle::v0::Ident as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_0015198f"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Parser::namespace",
+      "members": [
+        "FUN_00151da4"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::skipping_printing",
+      "members": [
+        "FUN_00151df3"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_type",
+      "members": [
+        "FUN_00151e48"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_sep_list",
+      "members": [
+        "FUN_001523f0",
+        "FUN_001535e2",
+        "FUN_0015366b",
+        "FUN_001536ff",
+        "FUN_00154224",
+        "FUN_00154602"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Parser::integer_62",
+      "members": [
+        "FUN_0015253a"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_const",
+      "members": [
+        "FUN_001525d9"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_lifetime_from_index",
+      "members": [
+        "FUN_00152c1e"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_const_uint",
+      "members": [
+        "FUN_00152d09"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Parser::hex_nibbles",
+      "members": [
+        "FUN_00152f4a"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::HexNibbles::try_parse_uint",
+      "members": [
+        "FUN_00152fd5"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_quoted_escaped_chars",
+      "members": [
+        "FUN_0015311b"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_const_str_literal",
+      "members": [
+        "FUN_001532ca"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Parser::backref",
+      "members": [
+        "FUN_00153f22"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::basic_type",
+      "members": [
+        "FUN_00153f9d"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::in_binder",
+      "members": [
+        "FUN_00153fc8",
+        "FUN_001542b3"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_pat",
+      "members": [
+        "FUN_00154427"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_path_maybe_open_generics",
+      "members": [
+        "FUN_0015483a"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_type::{{closure}}",
+      "members": [
+        "FUN_00154983"
+      ]
+    },
+    {
+      "origin": "<rustc_demangle::SizeLimitedFmtAdapter<F> as core::fmt::Write>::write_str",
+      "members": [
+        "FUN_00155b22"
+      ]
+    },
+    {
+      "origin": "<rustc_demangle::SizeLimitExhausted as core::fmt::Debug>::fmt",
+      "members": [
+        "FUN_00155b60"
+      ]
+    },
+    {
+      "origin": "<&str as serde_core::de::Expected>::fmt",
+      "members": [
+        "FUN_00155b80"
+      ]
+    },
+    {
+      "origin": "<serde_core::de::OneOf as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_00155ba0"
+      ]
+    },
+    {
+      "origin": "serde_json::de::ParserNumber::invalid_type",
+      "members": [
+        "FUN_00155d70"
+      ]
+    },
+    {
+      "origin": "<serde_json::error::Error as serde_core::de::Error>::invalid_type",
+      "members": [
+        "FUN_00155de0"
+      ]
+    },
+    {
+      "origin": "<serde_json::error::JsonUnexpected as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_00155e40"
+      ]
+    },
+    {
+      "origin": "serde_json::error::make_error",
+      "members": [
+        "FUN_00156120"
+      ]
+    },
+    {
+      "origin": "serde_json::error::Error::syntax",
+      "members": [
+        "FUN_00156980"
+      ]
+    },
+    {
+      "origin": "<serde_json::error::Error as core::fmt::Debug>::fmt",
+      "members": [
+        "FUN_001569d0"
+      ]
+    },
+    {
+      "origin": "<serde_json::error::ErrorCode as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_00156ad0"
+      ]
+    },
+    {
+      "origin": "serde_json::error::Error::io",
+      "members": [
+        "FUN_00157000"
+      ]
+    },
+    {
+      "origin": "serde_json::read::SliceRead::skip_to_escape",
+      "members": [
+        "FUN_00157040"
+      ]
+    },
+    {
+      "origin": "serde_json::read::error",
+      "members": [
+        "FUN_00157170",
+        "FUN_00157210",
+        "FUN_001572a0",
+        "FUN_001577b0",
+        "FUN_0015bdb0"
+      ]
+    },
+    {
+      "origin": "serde_json::read::parse_unicode_escape",
+      "members": [
+        "FUN_00157330"
+      ]
+    },
+    {
+      "origin": "serde_json::read::SliceRead::skip_to_escape_slow",
+      "members": [
+        "FUN_00157850"
+      ]
+    },
+    {
+      "origin": "<serde_json::value::Value as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_001578a0"
+      ]
+    },
+    {
+      "origin": "serde_json::value::ser::impl_for=serde_json::value::Value::serialize",
+      "members": [
+        "FUN_001579a0",
+        "FUN_00159010"
+      ]
+    },
+    {
+      "origin": "<serde_json::ser::PrettyFormatter as serde_json::ser::Formatter>::end_array",
+      "members": [
+        "FUN_0015ad50"
+      ]
+    },
+    {
+      "origin": "<serde_json::ser::PrettyFormatter as serde_json::ser::Formatter>::end_object",
+      "members": [
+        "FUN_0015b170"
+      ]
+    },
+    {
+      "origin": "<serde_json::error::Error as serde_core::de::Error>::invalid_value",
+      "members": [
+        "FUN_0015b590"
+      ]
+    },
+    {
+      "origin": "<serde_json::read::SliceRead as serde_json::read::Read>::ignore_str",
+      "members": [
+        "FUN_0015b5f0"
+      ]
+    },
+    {
+      "origin": "<serde_json::read::SliceRead as serde_json::read::Read>::peek_position",
+      "members": [
+        "FUN_0015b7c0"
+      ]
+    },
+    {
+      "origin": "<serde_json::read::SliceRead as serde_json::read::Read>::position",
+      "members": [
+        "FUN_0015b830"
+      ]
+    },
+    {
+      "origin": "<serde_json::read::SliceRead as serde_json::read::Read>::parse_str",
+      "members": [
+        "FUN_0015b8b0"
+      ]
+    },
+    {
+      "origin": "addr2line::unit::ResUnit<R>::find_function_or_location",
+      "members": [
+        "FUN_00169220"
+      ]
+    },
+    {
+      "origin": "addr2line::lookup::LoopingLookup<T,L,F>::new_lookup",
+      "members": [
+        "FUN_001696c0"
+      ]
+    },
+    {
+      "origin": "gimli::read::unit::DebugInfoUnitHeadersIter<R>::next",
+      "members": [
+        "FUN_0016a180"
+      ]
+    },
+    {
+      "origin": "gimli::read::dwarf::Unit<R>::new",
+      "members": [
+        "FUN_0016a7d0"
+      ]
+    },
+    {
+      "origin": "addr2line::unit::ResUnit<R>::find_function_or_location::{{closure}}",
+      "members": [
+        "FUN_0016ce00"
+      ]
+    },
+    {
+      "origin": "<gimli::read::line::FileEntry<R,Offset> as core::clone::Clone>::clone",
+      "members": [
+        "FUN_0016f470"
+      ]
+    },
+    {
+      "origin": "addr2line::line::render_file",
+      "members": [
+        "FUN_0016f8d0"
+      ]
+    },
+    {
+      "origin": "gimli::read::dwarf::Dwarf<R>::attr_string",
+      "members": [
+        "FUN_00170470"
+      ]
+    },
+    {
+      "origin": "gimli::read::unit::parse_attribute",
+      "members": [
+        "FUN_00172ea0"
+      ]
+    },
+    {
+      "origin": "addr2line::function::Function<R>::parse_children",
+      "members": [
+        "FUN_00174100"
+      ]
+    },
+    {
+      "origin": "gimli::read::unit::Attribute<R>::value",
+      "members": [
+        "FUN_00175490"
+      ]
+    },
+    {
+      "origin": "addr2line::function::name_attr",
+      "members": [
+        "FUN_00175cf0"
+      ]
+    },
+    {
+      "origin": "addr2line::function::name_entry",
+      "members": [
+        "FUN_00176020"
+      ]
+    },
+    {
+      "origin": "gimli::read::unit::AttributeValue<R,Offset>::u8_value",
+      "members": [
+        "FUN_00176480"
+      ]
+    },
+    {
+      "origin": "gimli::read::unit::AttributeValue<R,Offset>::u16_value",
+      "members": [
+        "FUN_001764f0"
+      ]
+    },
+    {
+      "origin": "gimli::read::unit::skip_attributes",
+      "members": [
+        "FUN_00177830"
+      ]
+    },
+    {
+      "origin": "gimli::read::rnglists::RngListIter<R>::next",
+      "members": [
+        "FUN_00177e40"
+      ]
+    },
+    {
+      "origin": "gimli::read::reader::Reader::read_offset",
+      "members": [
+        "FUN_00179040"
+      ]
+    },
+    {
+      "origin": "gimli::read::reader::Reader::read_sized_offset",
+      "members": [
+        "FUN_001790f0"
+      ]
+    },
+    {
+      "origin": "gimli::read::unit::EntriesCursor<R>::next_entry",
+      "members": [
+        "FUN_0017acb0"
+      ]
+    },
+    {
+      "origin": "gimli::read::line::FileEntryFormat::parse",
+      "members": [
+        "FUN_0017aff0"
+      ]
+    },
+    {
+      "origin": "gimli::read::reader::Reader::read_uleb128",
+      "members": [
+        "FUN_0017b350"
+      ]
+    },
+    {
+      "origin": "gimli::read::line::parse_directory_v5",
+      "members": [
+        "FUN_0017b3f0"
+      ]
+    },
+    {
+      "origin": "gimli::read::line::parse_file_v5",
+      "members": [
+        "FUN_0017b4d0"
+      ]
+    },
+    {
+      "origin": "gimli::read::line::FileEntry<R,Offset>::parse",
+      "members": [
+        "FUN_0017b7c0"
+      ]
+    },
+    {
+      "origin": "gimli::read::line::parse_attribute",
+      "members": [
+        "FUN_0017ba20"
+      ]
+    },
+    {
+      "origin": "gimli::read::aranges::ArangeHeader<R,Offset>::parse",
+      "members": [
+        "FUN_0017d150"
+      ]
+    },
+    {
+      "origin": "gimli::read::index::UnitIndex<R>::parse",
+      "members": [
+        "FUN_0017d960"
+      ]
+    },
+    {
+      "origin": "std_detect::detect::cache::detect_and_initialize",
+      "members": [
+        "FUN_0018aaa0"
+      ]
+    },
+    {
+      "origin": "<f64 as zmij::private::Sealed>::write_to_zmij_buffer",
+      "members": [
+        "FUN_0018b110"
+      ]
+    }
+  ],
+  "symbols": {
+    "FUN_0011b370": [
+      "serde_core::de::Error::invalid_length"
+    ],
+    "FUN_0011b3d0": [
+      "serde_core::de::Error::unknown_variant"
+    ],
+    "FUN_0011b440": [
+      "serde_core::de::impls::<impl serde_core::de::Deserialize for i64>::deserialize"
+    ],
+    "FUN_0011b5d0": [
+      "serde_core::de::impls::<impl serde_core::de::Deserialize for alloc::string::String>::deserialize"
+    ],
+    "FUN_0011b7a0": [
+      "serde_core::de::MapAccess::next_value"
+    ],
+    "FUN_0011bde0": [
+      "serde_core::de::SeqAccess::next_element"
+    ],
+    "FUN_0011be60": [
+      "serde_core::de::SeqAccess::next_element"
+    ],
+    "FUN_0011bef0": [
+      "serde_core::de::SeqAccess::next_element"
+    ],
+    "FUN_0011bf70": [
+      "serde_core::de::SeqAccess::next_element"
+    ],
+    "FUN_0011bff0": [
+      "serde_json::de::Deserializer<R>::parse_number"
+    ],
+    "FUN_0011c330": [
+      "serde_json::de::Deserializer<R>::parse_integer"
+    ],
+    "FUN_0011c530": [
+      "serde_json::de::Deserializer<R>::ignore_integer"
+    ],
+    "FUN_0011c820": [
+      "serde_json::de::Deserializer<R>::parse_exponent"
+    ],
+    "FUN_0011cb20": [
+      "serde_json::de::Deserializer<R>::peek_invalid_type"
+    ],
+    "FUN_0011cf10": [
+      "serde_json::de::Deserializer<R>::end_map"
+    ],
+    "FUN_0011d010": [
+      "serde_json::de::Deserializer<R>::end_seq"
+    ],
+    "FUN_0011d150": [
+      "<billing_client::resources::_::<impl serde_core::de::Deserialize for billing_client::resources::InvoiceStatus>::deserialize::__FieldVisitor as serde_core::de::Visitor>::visit_str"
+    ],
+    "FUN_0011d920": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_0011d940": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_0011d960": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_0011d980": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_0011d9a0": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_00121590": [
+      "<serde_json::de::MapAccess<R> as serde_core::de::MapAccess>::next_key_seed::has_next_key"
+    ],
+    "FUN_00121760": [
+      "<serde_json::de::MapAccess<R> as serde_core::de::MapAccess>::next_value_seed"
+    ],
+    "FUN_00122180": [
+      "<core::marker::PhantomData<T> as serde_core::de::DeserializeSeed>::deserialize"
+    ],
+    "FUN_00122410": [
+      "<core::marker::PhantomData<T> as serde_core::de::DeserializeSeed>::deserialize"
+    ],
+    "FUN_00122520": [
+      "<core::marker::PhantomData<T> as serde_core::de::DeserializeSeed>::deserialize"
+    ],
+    "FUN_00124890": [
+      "<core::marker::PhantomData<T> as serde_core::de::DeserializeSeed>::deserialize"
+    ],
+    "FUN_00124ba0": [
+      "<core::marker::PhantomData<T> as serde_core::de::DeserializeSeed>::deserialize"
+    ],
+    "FUN_00125ba0": [
+      "<core::marker::PhantomData<T> as serde_core::de::DeserializeSeed>::deserialize"
+    ],
+    "FUN_00125d60": [
+      "<core::marker::PhantomData<T> as serde_core::de::DeserializeSeed>::deserialize"
+    ],
+    "FUN_00125eb0": [
+      "<core::marker::PhantomData<T> as serde_core::de::DeserializeSeed>::deserialize"
+    ],
+    "FUN_001262a0": [
+      "<core::marker::PhantomData<T> as serde_core::de::DeserializeSeed>::deserialize"
+    ],
+    "FUN_00126a10": [
+      "<reconcile::transport::ProxyTransport as billing_client::http::Transport>::execute"
+    ],
+    "FUN_001299e0": [
+      "reconcile::log_action"
+    ],
+    "FUN_00129ee0": [
+      "reconcile::run"
+    ],
+    "FUN_001381ba": [
+      "addr2line::line::path_push"
+    ],
+    "FUN_00138374": [
+      "addr2line::line::has_backward_slash_root"
+    ],
+    "FUN_00138d90": [
+      "serde_json::de::Deserializer<R>::parse_long_integer"
+    ],
+    "FUN_00138e10": [
+      "serde_json::de::Deserializer<R>::f64_from_parts"
+    ],
+    "FUN_00138f20": [
+      "serde_json::de::Deserializer<R>::parse_decimal"
+    ],
+    "FUN_001390b0": [
+      "serde_json::de::Deserializer<R>::parse_exponent"
+    ],
+    "FUN_001392b0": [
+      "serde_json::de::Deserializer<R>::parse_exponent_overflow"
+    ],
+    "FUN_00139360": [
+      "serde_json::de::Deserializer<R>::parse_decimal_overflow"
+    ],
+    "FUN_00139770": [
+      "billing_client::error::Error::request_id"
+    ],
+    "FUN_001397e0": [
+      "billing_client::retry::RetryPolicy::delay_for"
+    ],
+    "FUN_00139b90": [
+      "billing_client::client::Client::headers"
+    ],
+    "FUN_0013a210": [
+      "billing_client::client::percent_encode"
+    ],
+    "FUN_0013a420": [
+      "billing_client::client::interpret"
+    ],
+    "FUN_0013bf00": [
+      "serde_json::de::Deserializer<R>::peek_invalid_type"
+    ],
+    "FUN_0013c2f0": [
+      "serde_json::error::Error::fix_position"
+    ],
+    "FUN_0013c3a0": [
+      "<serde_json::de::SeqAccess<R> as serde_core::de::SeqAccess>::next_element_seed::has_next_element"
+    ],
+    "FUN_0013c550": [
+      "<core::marker::PhantomData<T> as serde_core::de::DeserializeSeed>::deserialize"
+    ],
+    "FUN_0013d490": [
+      "serde_core::de::MapAccess::next_value"
+    ],
+    "FUN_0013dad0": [
+      "<serde_json::error::Error as serde_core::de::Error>::custom"
+    ],
+    "FUN_0013db60": [
+      "serde_json::de::Deserializer<R>::ignore_integer"
+    ],
+    "FUN_0013de50": [
+      "<core::marker::PhantomData<T> as serde_core::de::DeserializeSeed>::deserialize"
+    ],
+    "FUN_0013e3d0": [
+      "serde_core::de::impls::<impl serde_core::de::Deserialize for alloc::string::String>::deserialize"
+    ],
+    "FUN_0013e5a0": [
+      "<core::marker::PhantomData<T> as serde_core::de::DeserializeSeed>::deserialize"
+    ],
+    "FUN_0013e6f0": [
+      "<serde_json::de::MapAccess<R> as serde_core::de::MapAccess>::next_value_seed"
+    ],
+    "FUN_0013e810": [
+      "<billing_client::error::_::<impl serde_core::de::Deserialize for billing_client::error::ApiErrorKind>::deserialize::__FieldVisitor as serde_core::de::Visitor>::visit_str"
+    ],
+    "FUN_0013e920": [
+      "<serde_json::de::VariantAccess<R> as serde_core::de::VariantAccess>::unit_variant"
+    ],
+    "FUN_0013eb10": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_0013eb30": [
+      "serde_core::de::Error::unknown_variant"
+    ],
+    "FUN_0013eb90": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_0013ebb0": [
+      "serde_json::de::Deserializer<R>::parse_integer"
+    ],
+    "FUN_0013ee80": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_0013eea0": [
+      "serde_core::de::impls::<impl serde_core::de::Deserialize for i64>::deserialize"
+    ],
+    "FUN_0013f030": [
+      "<core::marker::PhantomData<T> as serde_core::de::DeserializeSeed>::deserialize"
+    ],
+    "FUN_0013f2c0": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_0013f2e0": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_0013f4a0": [
+      "serde_core::de::SeqAccess::next_element"
+    ],
+    "FUN_0013f510": [
+      "serde_core::de::SeqAccess::next_element"
+    ],
+    "FUN_0013f590": [
+      "serde_core::de::SeqAccess::next_element"
+    ],
+    "FUN_0013f6b0": [
+      "<core::marker::PhantomData<T> as serde_core::de::DeserializeSeed>::deserialize"
+    ],
+    "FUN_00140be0": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_00140c00": [
+      "<core::marker::PhantomData<T> as serde_core::de::DeserializeSeed>::deserialize"
+    ],
+    "FUN_00141180": [
+      "serde_core::de::SeqAccess::next_element"
+    ],
+    "FUN_00141200": [
+      "serde_core::de::SeqAccess::next_element"
+    ],
+    "FUN_00141280": [
+      "serde_core::de::SeqAccess::next_element"
+    ],
+    "FUN_00141440": [
+      "<core::marker::PhantomData<T> as serde_core::de::DeserializeSeed>::deserialize"
+    ],
+    "FUN_00141550": [
+      "<core::marker::PhantomData<T> as serde_core::de::DeserializeSeed>::deserialize"
+    ],
+    "FUN_00142680": [
+      "<core::marker::PhantomData<T> as serde_core::de::DeserializeSeed>::deserialize"
+    ],
+    "FUN_001428b0": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_001428d0": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_001428f0": [
+      "<billing_client::resources::_::<impl serde_core::de::Deserialize for billing_client::resources::InvoiceStatus>::deserialize::__FieldVisitor as serde_core::de::Visitor>::visit_str"
+    ],
+    "FUN_001429a0": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_001429c0": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_00142a80": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_00142aa0": [
+      "<&mut serde_json::ser::Serializer<W,F> as serde_core::ser::Serializer>::serialize_str"
+    ],
+    "FUN_00142d60": [
+      "<serde_json::ser::Compound<W,F> as serde_core::ser::SerializeStruct>::serialize_field"
+    ],
+    "FUN_00142ea0": [
+      "billing_client::resources::<impl billing_client::client::Client>::mark_uncollectible"
+    ],
+    "FUN_00145f90": [
+      "<billing_client::error::Error as core::fmt::Display>::fmt"
+    ],
+    "FUN_0014bb17": [
+      "gimli::read::abbrev::Abbreviations::insert"
+    ],
+    "FUN_0014c459": [
+      "<gimli::read::abbrev::Attributes as core::ops::deref::Deref>::deref"
+    ],
+    "FUN_0014c4a0": [
+      "<u64 as itoa::Unsigned>::fmt"
+    ],
+    "FUN_0014c6e0": [
+      "memchr::arch::x86_64::memchr::memrchr_raw::detect"
+    ],
+    "FUN_0014c750": [
+      "memchr::arch::x86_64::memchr::memrchr_raw::find_avx2"
+    ],
+    "FUN_0014c790": [
+      "memchr::arch::x86_64::memchr::memrchr_raw::find_sse2"
+    ],
+    "FUN_0014c950": [
+      "memchr::arch::x86_64::avx2::memchr::One::rfind_raw"
+    ],
+    "FUN_0014ca40": [
+      "memchr::arch::x86_64::avx2::memchr::One::rfind_raw_avx2"
+    ],
+    "FUN_0014cbb0": [
+      "memchr::arch::x86_64::memchr::count_raw::detect"
+    ],
+    "FUN_0014cc20": [
+      "memchr::arch::x86_64::memchr::count_raw::find_avx2"
+    ],
+    "FUN_0014d4c0": [
+      "memchr::arch::x86_64::memchr::count_raw::find_sse2"
+    ],
+    "FUN_0014d8e0": [
+      "memchr::arch::x86_64::memchr::memchr_raw::detect"
+    ],
+    "FUN_0014da90": [
+      "memchr::arch::x86_64::memchr::memchr_raw::find_sse2"
+    ],
+    "FUN_0014dc2c": [
+      "miniz_oxide::inflate::core::decompress"
+    ],
+    "FUN_0014f8a5": [
+      "miniz_oxide::inflate::core::init_tree"
+    ],
+    "FUN_0014fc8a": [
+      "miniz_oxide::inflate::core::apply_match"
+    ],
+    "FUN_0014fdd1": [
+      "miniz_oxide::inflate::core::transfer"
+    ],
+    "FUN_001501ac": [
+      "rustc_demangle::try_demangle"
+    ],
+    "FUN_00150f95": [
+      "rustc_demangle::v0::Printer::print_path"
+    ],
+    "FUN_0015167b": [
+      "rustc_demangle::v0::Printer::print_backref"
+    ],
+    "FUN_00151767": [
+      "rustc_demangle::v0::Parser::opt_integer_62"
+    ],
+    "FUN_001517d8": [
+      "rustc_demangle::v0::Parser::ident"
+    ],
+    "FUN_0015198f": [
+      "<rustc_demangle::v0::Ident as core::fmt::Display>::fmt"
+    ],
+    "FUN_00151da4": [
+      "rustc_demangle::v0::Parser::namespace"
+    ],
+    "FUN_00151df3": [
+      "rustc_demangle::v0::Printer::skipping_printing"
+    ],
+    "FUN_00151e48": [
+      "rustc_demangle::v0::Printer::print_type"
+    ],
+    "FUN_001523f0": [
+      "rustc_demangle::v0::Printer::print_sep_list"
+    ],
+    "FUN_0015253a": [
+      "rustc_demangle::v0::Parser::integer_62"
+    ],
+    "FUN_001525d9": [
+      "rustc_demangle::v0::Printer::print_const"
+    ],
+    "FUN_00152c1e": [
+      "rustc_demangle::v0::Printer::print_lifetime_from_index"
+    ],
+    "FUN_00152d09": [
+      "rustc_demangle::v0::Printer::print_const_uint"
+    ],
+    "FUN_00152e5e": [
+      "rustc_demangle::v0::Printer::print_backref"
+    ],
+    "FUN_00152f4a": [
+      "rustc_demangle::v0::Parser::hex_nibbles"
+    ],
+    "FUN_00152fd5": [
+      "rustc_demangle::v0::HexNibbles::try_parse_uint"
+    ],
+    "FUN_0015311b": [
+      "rustc_demangle::v0::Printer::print_quoted_escaped_chars"
+    ],
+    "FUN_001532ca": [
+      "rustc_demangle::v0::Printer::print_const_str_literal"
+    ],
+    "FUN_001535e2": [
+      "rustc_demangle::v0::Printer::print_sep_list"
+    ],
+    "FUN_0015366b": [
+      "rustc_demangle::v0::Printer::print_sep_list"
+    ],
+    "FUN_001536ff": [
+      "rustc_demangle::v0::Printer::print_sep_list"
+    ],
+    "FUN_00153f22": [
+      "rustc_demangle::v0::Parser::backref"
+    ],
+    "FUN_00153f9d": [
+      "rustc_demangle::v0::basic_type"
+    ],
+    "FUN_00153fc8": [
+      "rustc_demangle::v0::Printer::in_binder"
+    ],
+    "FUN_00154145": [
+      "rustc_demangle::v0::Printer::print_backref"
+    ],
+    "FUN_00154224": [
+      "rustc_demangle::v0::Printer::print_sep_list"
+    ],
+    "FUN_001542b3": [
+      "rustc_demangle::v0::Printer::in_binder"
+    ],
+    "FUN_00154427": [
+      "rustc_demangle::v0::Printer::print_pat"
+    ],
+    "FUN_00154602": [
+      "rustc_demangle::v0::Printer::print_sep_list"
+    ],
+    "FUN_0015483a": [
+      "rustc_demangle::v0::Printer::print_path_maybe_open_generics"
+    ],
+    "FUN_00154983": [
+      "rustc_demangle::v0::Printer::print_type::{{closure}}"
+    ],
+    "FUN_00155b22": [
+      "<rustc_demangle::SizeLimitedFmtAdapter<F> as core::fmt::Write>::write_str"
+    ],
+    "FUN_00155b60": [
+      "<rustc_demangle::SizeLimitExhausted as core::fmt::Debug>::fmt"
+    ],
+    "FUN_00155b80": [
+      "<&str as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_00155ba0": [
+      "<serde_core::de::OneOf as core::fmt::Display>::fmt"
+    ],
+    "FUN_00155d70": [
+      "serde_json::de::ParserNumber::invalid_type"
+    ],
+    "FUN_00155de0": [
+      "<serde_json::error::Error as serde_core::de::Error>::invalid_type"
+    ],
+    "FUN_00155e40": [
+      "<serde_json::error::JsonUnexpected as core::fmt::Display>::fmt"
+    ],
+    "FUN_00156120": [
+      "serde_json::error::make_error"
+    ],
+    "FUN_00156980": [
+      "serde_json::error::Error::syntax"
+    ],
+    "FUN_001569d0": [
+      "<serde_json::error::Error as core::fmt::Debug>::fmt"
+    ],
+    "FUN_00156ad0": [
+      "<serde_json::error::ErrorCode as core::fmt::Display>::fmt"
+    ],
+    "FUN_00157000": [
+      "serde_json::error::Error::io"
+    ],
+    "FUN_00157040": [
+      "serde_json::read::SliceRead::skip_to_escape"
+    ],
+    "FUN_00157170": [
+      "serde_json::read::error"
+    ],
+    "FUN_00157210": [
+      "serde_json::read::error"
+    ],
+    "FUN_001572a0": [
+      "serde_json::read::error"
+    ],
+    "FUN_00157330": [
+      "serde_json::read::parse_unicode_escape"
+    ],
+    "FUN_001577b0": [
+      "serde_json::read::error"
+    ],
+    "FUN_00157850": [
+      "serde_json::read::SliceRead::skip_to_escape_slow"
+    ],
+    "FUN_001578a0": [
+      "<serde_json::value::Value as core::fmt::Display>::fmt"
+    ],
+    "FUN_001579a0": [
+      "serde_json::value::ser::<impl serde_core::ser::Serialize for serde_json::value::Value>::serialize"
+    ],
+    "FUN_00159010": [
+      "serde_json::value::ser::<impl serde_core::ser::Serialize for serde_json::value::Value>::serialize"
+    ],
+    "FUN_0015a600": [
+      "<&mut serde_json::ser::Serializer<W,F> as serde_core::ser::Serializer>::serialize_str"
+    ],
+    "FUN_0015ad50": [
+      "<serde_json::ser::PrettyFormatter as serde_json::ser::Formatter>::end_array"
+    ],
+    "FUN_0015b170": [
+      "<serde_json::ser::PrettyFormatter as serde_json::ser::Formatter>::end_object"
+    ],
+    "FUN_0015b590": [
+      "<serde_json::error::Error as serde_core::de::Error>::invalid_value"
+    ],
+    "FUN_0015b5f0": [
+      "<serde_json::read::SliceRead as serde_json::read::Read>::ignore_str"
+    ],
+    "FUN_0015b7c0": [
+      "<serde_json::read::SliceRead as serde_json::read::Read>::peek_position"
+    ],
+    "FUN_0015b830": [
+      "<serde_json::read::SliceRead as serde_json::read::Read>::position"
+    ],
+    "FUN_0015b8b0": [
+      "<serde_json::read::SliceRead as serde_json::read::Read>::parse_str"
+    ],
+    "FUN_0015bdb0": [
+      "serde_json::read::error"
+    ],
+    "FUN_00169220": [
+      "addr2line::unit::ResUnit<R>::find_function_or_location"
+    ],
+    "FUN_001696c0": [
+      "addr2line::lookup::LoopingLookup<T,L,F>::new_lookup"
+    ],
+    "FUN_0016a180": [
+      "gimli::read::unit::DebugInfoUnitHeadersIter<R>::next"
+    ],
+    "FUN_0016a7d0": [
+      "gimli::read::dwarf::Unit<R>::new"
+    ],
+    "FUN_0016ce00": [
+      "addr2line::unit::ResUnit<R>::find_function_or_location::{{closure}}"
+    ],
+    "FUN_0016f470": [
+      "<gimli::read::line::FileEntry<R,Offset> as core::clone::Clone>::clone"
+    ],
+    "FUN_0016f8d0": [
+      "addr2line::line::render_file"
+    ],
+    "FUN_00170470": [
+      "gimli::read::dwarf::Dwarf<R>::attr_string"
+    ],
+    "FUN_00172ea0": [
+      "gimli::read::unit::parse_attribute"
+    ],
+    "FUN_00174100": [
+      "addr2line::function::Function<R>::parse_children"
+    ],
+    "FUN_00175490": [
+      "gimli::read::unit::Attribute<R>::value"
+    ],
+    "FUN_00175cf0": [
+      "addr2line::function::name_attr"
+    ],
+    "FUN_00176020": [
+      "addr2line::function::name_entry"
+    ],
+    "FUN_00176480": [
+      "gimli::read::unit::AttributeValue<R,Offset>::u8_value"
+    ],
+    "FUN_001764f0": [
+      "gimli::read::unit::AttributeValue<R,Offset>::u16_value"
+    ],
+    "FUN_00177830": [
+      "gimli::read::unit::skip_attributes"
+    ],
+    "FUN_00177e40": [
+      "gimli::read::rnglists::RngListIter<R>::next"
+    ],
+    "FUN_00179040": [
+      "gimli::read::reader::Reader::read_offset"
+    ],
+    "FUN_001790f0": [
+      "gimli::read::reader::Reader::read_sized_offset"
+    ],
+    "FUN_0017acb0": [
+      "gimli::read::unit::EntriesCursor<R>::next_entry"
+    ],
+    "FUN_0017aff0": [
+      "gimli::read::line::FileEntryFormat::parse"
+    ],
+    "FUN_0017b350": [
+      "gimli::read::reader::Reader::read_uleb128"
+    ],
+    "FUN_0017b3f0": [
+      "gimli::read::line::parse_directory_v5"
+    ],
+    "FUN_0017b4d0": [
+      "gimli::read::line::parse_file_v5"
+    ],
+    "FUN_0017b7c0": [
+      "gimli::read::line::FileEntry<R,Offset>::parse"
+    ],
+    "FUN_0017ba20": [
+      "gimli::read::line::parse_attribute"
+    ],
+    "FUN_0017d150": [
+      "gimli::read::aranges::ArangeHeader<R,Offset>::parse"
+    ],
+    "FUN_0017d960": [
+      "gimli::read::index::UnitIndex<R>::parse"
+    ],
+    "FUN_0018aaa0": [
+      "std_detect::detect::cache::detect_and_initialize"
+    ],
+    "FUN_0018b110": [
+      "<f64 as zmij::private::Sealed>::write_to_zmij_buffer"
+    ]
+  }
+}

@@ -1,0 +1,2442 @@
+{
+  "case": "billing-client",
+  "build": "O3S",
+  "profile": "plain",
+  "schema_version": 6,
+  "provenance": {
+    "build_id": "58d8c8e65c2c4134b6e1de68b45de4a6",
+    "source_sha256": "6d8d930c87f876d1f86f371fa25003e102d280fca6b714b796713f5fa5028faa",
+    "non_stripped_sha256": "1f0b102c19873483c9c70077eaa741ae3faa93bd1c84c1b7215d4d331b4f7953",
+    "stripped_sha256": "3940270dce5d78e1ceb340c07438640445c2dcdf4d594e75cd4ffb0af710b023"
+  },
+  "origins": [
+    {
+      "origin": "serde_core::de::MapAccess::next_value",
+      "members": [
+        "FUN_0012c840",
+        "FUN_001449f0"
+      ]
+    },
+    {
+      "origin": "serde_core::de::SeqAccess::next_element",
+      "members": [
+        "FUN_0012ce00",
+        "FUN_0012ce90",
+        "FUN_0012cf10",
+        "FUN_0012cf90",
+        "FUN_00144fb0",
+        "FUN_00145030",
+        "FUN_001450c0",
+        "FUN_00145140",
+        "FUN_001451b0",
+        "FUN_00145230"
+      ]
+    },
+    {
+      "origin": "serde_json::de::from_trait",
+      "members": [
+        "FUN_0012d010",
+        "FUN_001452b0",
+        "FUN_00145400",
+        "FUN_00145590",
+        "FUN_001456e0"
+      ]
+    },
+    {
+      "origin": "serde_json::de::Deserializer<R>::peek_error",
+      "members": [
+        "FUN_0012d180",
+        "FUN_00145830"
+      ]
+    },
+    {
+      "origin": "serde_json::de::Deserializer<R>::parse_number",
+      "members": [
+        "FUN_0012d1c0"
+      ]
+    },
+    {
+      "origin": "serde_json::de::Deserializer<R>::parse_integer",
+      "members": [
+        "FUN_0012d4f0",
+        "FUN_00145aa0"
+      ]
+    },
+    {
+      "origin": "serde_json::de::Deserializer<R>::ignore_integer",
+      "members": [
+        "FUN_0012d670",
+        "FUN_00145d10"
+      ]
+    },
+    {
+      "origin": "serde_json::de::Deserializer<R>::parse_exponent",
+      "members": [
+        "FUN_0012d8c0",
+        "FUN_00145f60"
+      ]
+    },
+    {
+      "origin": "serde_json::de::Deserializer<R>::peek_invalid_type",
+      "members": [
+        "FUN_0012db10",
+        "FUN_001461b0"
+      ]
+    },
+    {
+      "origin": "serde_json::de::Deserializer<R>::error",
+      "members": [
+        "FUN_0012de20",
+        "FUN_00146840"
+      ]
+    },
+    {
+      "origin": "serde_json::de::Deserializer<R>::end_map",
+      "members": [
+        "FUN_0012de60",
+        "FUN_00146880"
+      ]
+    },
+    {
+      "origin": "serde_json::de::Deserializer<R>::end_seq",
+      "members": [
+        "FUN_0012df10",
+        "FUN_00146930"
+      ]
+    },
+    {
+      "origin": "<serde_json::de::MapAccess<R> as serde_core::de::MapAccess>::next_key_seed::has_next_key",
+      "members": [
+        "FUN_0012e7c0",
+        "FUN_00147240"
+      ]
+    },
+    {
+      "origin": "<serde_json::de::SeqAccess<R> as serde_core::de::SeqAccess>::next_element_seed::has_next_element",
+      "members": [
+        "FUN_0012e900",
+        "FUN_00147380"
+      ]
+    },
+    {
+      "origin": "<serde_json::de::VariantAccess<R> as serde_core::de::EnumAccess>::variant_seed",
+      "members": [
+        "FUN_0012ea20",
+        "FUN_001474a0",
+        "FUN_00147610"
+      ]
+    },
+    {
+      "origin": "<core::marker::PhantomData<T> as serde_core::de::DeserializeSeed>::deserialize",
+      "members": [
+        "FUN_0012eb90",
+        "FUN_00147780"
+      ]
+    },
+    {
+      "origin": "<serde_json::de::VariantAccess<R> as serde_core::de::VariantAccess>::unit_variant",
+      "members": [
+        "FUN_0012ed00",
+        "FUN_001478f0"
+      ]
+    },
+    {
+      "origin": "<serde_json::de::UnitVariantAccess<R> as serde_core::de::EnumAccess>::variant_seed",
+      "members": [
+        "FUN_0012ee20",
+        "FUN_00147a10",
+        "FUN_00147b20"
+      ]
+    },
+    {
+      "origin": "<&mut serde_json::de::Deserializer<R> as serde_core::de::Deserializer>::deserialize_i64",
+      "members": [
+        "FUN_0012ef30",
+        "FUN_00147c30"
+      ]
+    },
+    {
+      "origin": "<&mut serde_json::de::Deserializer<R> as serde_core::de::Deserializer>::deserialize_map",
+      "members": [
+        "FUN_0012f0a0",
+        "FUN_00147da0"
+      ]
+    },
+    {
+      "origin": "<&mut serde_json::de::Deserializer<R> as serde_core::de::Deserializer>::deserialize_seq",
+      "members": [
+        "FUN_0012f560",
+        "FUN_0012f780",
+        "FUN_00148260"
+      ]
+    },
+    {
+      "origin": "<&mut serde_json::de::Deserializer<R> as serde_core::de::Deserializer>::deserialize_u64",
+      "members": [
+        "FUN_0012f9a0"
+      ]
+    },
+    {
+      "origin": "<&mut serde_json::de::Deserializer<R> as serde_core::de::Deserializer>::deserialize_bool",
+      "members": [
+        "FUN_0012fb10",
+        "FUN_00148480"
+      ]
+    },
+    {
+      "origin": "<&mut serde_json::de::Deserializer<R> as serde_core::de::Deserializer>::deserialize_string",
+      "members": [
+        "FUN_0012fcd0",
+        "FUN_00148640"
+      ]
+    },
+    {
+      "origin": "<&mut serde_json::de::Deserializer<R> as serde_core::de::Deserializer>::deserialize_struct",
+      "members": [
+        "FUN_0012fe30",
+        "FUN_00130e20",
+        "FUN_00133dd0",
+        "FUN_001487a0",
+        "FUN_0014aa50",
+        "FUN_0014bce0",
+        "FUN_0014c6c0",
+        "FUN_0014d730",
+        "FUN_0014fc60"
+      ]
+    },
+    {
+      "origin": "<reconcile::transport::ProxyTransport as billing_client::http::Transport>::execute",
+      "members": [
+        "FUN_00135470"
+      ]
+    },
+    {
+      "origin": "reconcile::log_action",
+      "members": [
+        "FUN_00138190"
+      ]
+    },
+    {
+      "origin": "serde_json::value::to_value",
+      "members": [
+        "FUN_0013e3d0",
+        "FUN_0013e450",
+        "FUN_0013e4d0"
+      ]
+    },
+    {
+      "origin": "serde_core::de::impls::impl_for=core::option::Option<T>::deserialize",
+      "members": [
+        "FUN_0013fcc0",
+        "FUN_0013fe20",
+        "FUN_0013ff30",
+        "FUN_00157250",
+        "FUN_00157360"
+      ]
+    },
+    {
+      "origin": "billing_client::resources::CreateCharge::against_invoice",
+      "members": [
+        "FUN_00140040"
+      ]
+    },
+    {
+      "origin": "billing_client::resources::CreateCharge::new",
+      "members": [
+        "FUN_001400e0"
+      ]
+    },
+    {
+      "origin": "billing_client::resources::CreateCharge::tag",
+      "members": [
+        "FUN_001401a0"
+      ]
+    },
+    {
+      "origin": "billing_client::resources::_::impl_for=billing_client::resources::InvoiceStatus::deserialize",
+      "members": [
+        "FUN_001402e0",
+        "FUN_00155df0"
+      ]
+    },
+    {
+      "origin": "<billing_client::resources::_::impl_for=billing_client::resources::Invoice::deserialize::__FieldVisitor as serde_core::de::Visitor>::visit_str",
+      "members": [
+        "FUN_001404a0",
+        "FUN_00156190"
+      ]
+    },
+    {
+      "origin": "<billing_client::resources::_::impl_for=billing_client::resources::InvoiceStatus::deserialize::__FieldVisitor as serde_core::de::Visitor>::visit_str",
+      "members": [
+        "FUN_001405f0",
+        "FUN_00156430"
+      ]
+    },
+    {
+      "origin": "<T as serde_core::de::Expected>::fmt",
+      "members": [
+        "FUN_001406b0",
+        "FUN_001406c0",
+        "FUN_001406d0",
+        "FUN_001440c0",
+        "FUN_001440d0",
+        "FUN_001440f0",
+        "FUN_00144100",
+        "FUN_00144110",
+        "FUN_00144120",
+        "FUN_00144130",
+        "FUN_00144140",
+        "FUN_00144160",
+        "FUN_001564f0",
+        "FUN_00157770",
+        "FUN_00157780",
+        "FUN_00157790",
+        "FUN_001577a0",
+        "FUN_001577b0",
+        "FUN_001577d0",
+        "FUN_001577e0",
+        "FUN_001581c0"
+      ]
+    },
+    {
+      "origin": "serde_core::de::Error::invalid_length",
+      "members": [
+        "FUN_00140b40",
+        "FUN_00157160"
+      ]
+    },
+    {
+      "origin": "serde_core::de::Error::unknown_variant",
+      "members": [
+        "FUN_00140ba0",
+        "FUN_001571c0"
+      ]
+    },
+    {
+      "origin": "serde_json::error::Error::fix_position",
+      "members": [
+        "FUN_00140c30",
+        "FUN_001574c0"
+      ]
+    },
+    {
+      "origin": "billing_client::retry::with_retry",
+      "members": [
+        "FUN_00140c90",
+        "FUN_00156510"
+      ]
+    },
+    {
+      "origin": "<serde_json::error::Error as serde_core::de::Error>::custom",
+      "members": [
+        "FUN_00141460",
+        "FUN_001578e0",
+        "FUN_0015ceb0"
+      ]
+    },
+    {
+      "origin": "billing_client::client::ClientBuilder::base_url",
+      "members": [
+        "FUN_00141500"
+      ]
+    },
+    {
+      "origin": "billing_client::client::Client::list_all",
+      "members": [
+        "FUN_00141680"
+      ]
+    },
+    {
+      "origin": "billing_client::client::Client::list_page",
+      "members": [
+        "FUN_00141ab0"
+      ]
+    },
+    {
+      "origin": "serde_core::ser::Serializer::collect_map",
+      "members": [
+        "FUN_001435b0"
+      ]
+    },
+    {
+      "origin": "billing_client::page::ListParams::filter",
+      "members": [
+        "FUN_00143a20"
+      ]
+    },
+    {
+      "origin": "<serde_core::de::impls::impl_for=alloc::vec::Vec<T>::deserialize::VecVisitor<T> as serde_core::de::Visitor>::visit_seq",
+      "members": [
+        "FUN_00143c00",
+        "FUN_00143e50",
+        "FUN_00157520"
+      ]
+    },
+    {
+      "origin": "<billing_client::page::Paginator<T> as core::iter::traits::iterator::Iterator>::next",
+      "members": [
+        "FUN_00144580"
+      ]
+    },
+    {
+      "origin": "serde_json::de::Deserializer<R>::parse_decimal",
+      "members": [
+        "FUN_00145870"
+      ]
+    },
+    {
+      "origin": "serde_json::de::Deserializer<R>::parse_long_integer",
+      "members": [
+        "FUN_001464c0"
+      ]
+    },
+    {
+      "origin": "serde_json::de::Deserializer<R>::parse_decimal_overflow",
+      "members": [
+        "FUN_00146630"
+      ]
+    },
+    {
+      "origin": "serde_json::de::Deserializer<R>::parse_exponent_overflow",
+      "members": [
+        "FUN_00146790"
+      ]
+    },
+    {
+      "origin": "billing_client::client::ClientBuilder::build",
+      "members": [
+        "FUN_00152c10"
+      ]
+    },
+    {
+      "origin": "billing_client::client::ClientBuilder::transport",
+      "members": [
+        "FUN_00152d40"
+      ]
+    },
+    {
+      "origin": "billing_client::client::percent_encode",
+      "members": [
+        "FUN_00152dd0"
+      ]
+    },
+    {
+      "origin": "billing_client::client::Client::post",
+      "members": [
+        "FUN_00153050"
+      ]
+    },
+    {
+      "origin": "billing_client::client::Client::send",
+      "members": [
+        "FUN_00153480"
+      ]
+    },
+    {
+      "origin": "billing_client::client::Client::headers",
+      "members": [
+        "FUN_00153830"
+      ]
+    },
+    {
+      "origin": "billing_client::client::Client::build_url",
+      "members": [
+        "FUN_00154150"
+      ]
+    },
+    {
+      "origin": "billing_client::client::decode",
+      "members": [
+        "FUN_00154590",
+        "FUN_001546f0",
+        "FUN_00154850"
+      ]
+    },
+    {
+      "origin": "billing_client::client::interpret",
+      "members": [
+        "FUN_001549b0"
+      ]
+    },
+    {
+      "origin": "billing_client::resources::impl=billing_client::client::Client::get_customer",
+      "members": [
+        "FUN_001553c0"
+      ]
+    },
+    {
+      "origin": "billing_client::resources::impl=billing_client::client::Client::mark_uncollectible",
+      "members": [
+        "FUN_00155730"
+      ]
+    },
+    {
+      "origin": "billing_client::resources::impl=billing_client::client::Client::create_charge_keyed",
+      "members": [
+        "FUN_001557e0"
+      ]
+    },
+    {
+      "origin": "shared-address@FUN_001557f0",
+      "members": [
+        "FUN_001557f0"
+      ]
+    },
+    {
+      "origin": "billing_client::resources::_::impl_for=billing_client::resources::CreateCharge::serialize",
+      "members": [
+        "FUN_00155c40"
+      ]
+    },
+    {
+      "origin": "billing_client::resources::Invoice::outstanding",
+      "members": [
+        "FUN_00155fb0"
+      ]
+    },
+    {
+      "origin": "shared-address@FUN_00155fd0",
+      "members": [
+        "FUN_00155fd0"
+      ]
+    },
+    {
+      "origin": "shared-address@FUN_00155ff0",
+      "members": [
+        "FUN_00155ff0"
+      ]
+    },
+    {
+      "origin": "shared-address@FUN_00156010",
+      "members": [
+        "FUN_00156010"
+      ]
+    },
+    {
+      "origin": "shared-address@FUN_00156030",
+      "members": [
+        "FUN_00156030"
+      ]
+    },
+    {
+      "origin": "<billing_client::resources::_::impl_for=billing_client::resources::Charge::deserialize::__FieldVisitor as serde_core::de::Visitor>::visit_str",
+      "members": [
+        "FUN_00156050"
+      ]
+    },
+    {
+      "origin": "<billing_client::resources::_::impl_for=billing_client::resources::Customer::deserialize::__FieldVisitor as serde_core::de::Visitor>::visit_str",
+      "members": [
+        "FUN_001562e0"
+      ]
+    },
+    {
+      "origin": "<billing_client::resources::_::impl_for=billing_client::resources::InvoiceStatus::deserialize::__FieldVisitor as serde_core::de::Visitor>::expecting",
+      "members": [
+        "FUN_00156410"
+      ]
+    },
+    {
+      "origin": "billing_client::retry::RetryPolicy::delay_for",
+      "members": [
+        "FUN_00156940"
+      ]
+    },
+    {
+      "origin": "billing_client::retry::finalize",
+      "members": [
+        "FUN_00156c70"
+      ]
+    },
+    {
+      "origin": "billing_client::error::_::impl_for=billing_client::error::ApiErrorKind::deserialize",
+      "members": [
+        "FUN_00157e40"
+      ]
+    },
+    {
+      "origin": "billing_client::error::Error::request_id",
+      "members": [
+        "FUN_00158000"
+      ]
+    },
+    {
+      "origin": "shared-address@FUN_00158070",
+      "members": [
+        "FUN_00158070"
+      ]
+    },
+    {
+      "origin": "<billing_client::error::_::impl_for=billing_client::error::ApiErrorKind::deserialize::__FieldVisitor as serde_core::de::Visitor>::visit_str",
+      "members": [
+        "FUN_00158090"
+      ]
+    },
+    {
+      "origin": "<billing_client::error::Error as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_00158200"
+      ]
+    },
+    {
+      "origin": "<billing_client::error::ApiError as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_001583f0"
+      ]
+    },
+    {
+      "origin": "<billing_client::error::TransportError as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_00158530"
+      ]
+    },
+    {
+      "origin": "billing_client::page::ListParams::limit",
+      "members": [
+        "FUN_00158650"
+      ]
+    },
+    {
+      "origin": "billing_client::page::ListParams::to_query",
+      "members": [
+        "FUN_001586b0"
+      ]
+    },
+    {
+      "origin": "<&mut serde_json::ser::Serializer<W,F> as serde_core::ser::Serializer>::serialize_str",
+      "members": [
+        "FUN_0015a980"
+      ]
+    },
+    {
+      "origin": "serde_core::ser::SerializeMap::serialize_entry",
+      "members": [
+        "FUN_0015ac50",
+        "FUN_0015ad40",
+        "FUN_0015b260",
+        "FUN_0015b390",
+        "FUN_0015b500",
+        "FUN_0015f0b0",
+        "FUN_0015f140"
+      ]
+    },
+    {
+      "origin": "<serde_json::value::Value as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_0015b900"
+      ]
+    },
+    {
+      "origin": "serde_json::error::make_error",
+      "members": [
+        "FUN_0015c050"
+      ]
+    },
+    {
+      "origin": "serde_json::error::Error::io",
+      "members": [
+        "FUN_0015c860"
+      ]
+    },
+    {
+      "origin": "serde_json::error::Error::syntax",
+      "members": [
+        "FUN_0015c8f0"
+      ]
+    },
+    {
+      "origin": "<serde_json::error::Error as core::fmt::Debug>::fmt",
+      "members": [
+        "FUN_0015cc30"
+      ]
+    },
+    {
+      "origin": "<serde_json::error::Error as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_0015cd80"
+      ]
+    },
+    {
+      "origin": "<serde_json::error::Error as serde_core::de::Error>::invalid_type",
+      "members": [
+        "FUN_0015cdf0"
+      ]
+    },
+    {
+      "origin": "<serde_json::error::Error as serde_core::de::Error>::invalid_value",
+      "members": [
+        "FUN_0015ce50"
+      ]
+    },
+    {
+      "origin": "<serde_json::error::ErrorCode as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_0015cf50"
+      ]
+    },
+    {
+      "origin": "<serde_json::error::JsonUnexpected as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_0015d1b0"
+      ]
+    },
+    {
+      "origin": "serde_json::de::ParserNumber::invalid_type",
+      "members": [
+        "FUN_0015d2d0"
+      ]
+    },
+    {
+      "origin": "serde_json::read::parse_escape",
+      "members": [
+        "FUN_0015d340"
+      ]
+    },
+    {
+      "origin": "serde_json::read::push_wtf8_codepoint",
+      "members": [
+        "FUN_0015d5d0"
+      ]
+    },
+    {
+      "origin": "serde_json::read::parse_unicode_escape",
+      "members": [
+        "FUN_0015d6b0"
+      ]
+    },
+    {
+      "origin": "serde_json::read::error",
+      "members": [
+        "FUN_0015dfa0"
+      ]
+    },
+    {
+      "origin": "serde_json::read::SliceRead::skip_to_escape",
+      "members": [
+        "FUN_0015e050"
+      ]
+    },
+    {
+      "origin": "serde_json::read::SliceRead::skip_to_escape_slow",
+      "members": [
+        "FUN_0015e1e0"
+      ]
+    },
+    {
+      "origin": "<serde_json::read::SliceRead as serde_json::read::Read>::ignore_str",
+      "members": [
+        "FUN_0015e300"
+      ]
+    },
+    {
+      "origin": "<serde_json::read::SliceRead as serde_json::read::Read>::peek_position",
+      "members": [
+        "FUN_0015e720"
+      ]
+    },
+    {
+      "origin": "<serde_json::read::SliceRead as serde_json::read::Read>::position",
+      "members": [
+        "FUN_0015e790"
+      ]
+    },
+    {
+      "origin": "<serde_json::read::SliceRead as serde_json::read::Read>::parse_str",
+      "members": [
+        "FUN_0015e810"
+      ]
+    },
+    {
+      "origin": "serde_core::ser::Serializer::collect_seq",
+      "members": [
+        "FUN_0015ec70",
+        "FUN_0015efe0"
+      ]
+    },
+    {
+      "origin": "serde_json::ser::format_escaped_str",
+      "members": [
+        "FUN_0015f250",
+        "FUN_0015f390"
+      ]
+    },
+    {
+      "origin": "serde_json::value::ser::impl_for=serde_json::value::Value::serialize",
+      "members": [
+        "FUN_0015f4d0",
+        "FUN_0015f950"
+      ]
+    },
+    {
+      "origin": "<serde_json::value::ser::SerializeMap as serde_core::ser::SerializeMap>::end",
+      "members": [
+        "FUN_0015fe20"
+      ]
+    },
+    {
+      "origin": "<serde_json::number::Number as serde_core::ser::Serialize>::serialize",
+      "members": [
+        "FUN_001601e0",
+        "FUN_001602f0"
+      ]
+    },
+    {
+      "origin": "memchr::arch::x86_64::avx2::memchr::One::rfind_raw_avx2",
+      "members": [
+        "FUN_00160400"
+      ]
+    },
+    {
+      "origin": "memchr::arch::x86_64::avx2::memchr::One::rfind_raw",
+      "members": [
+        "FUN_00160560"
+      ]
+    },
+    {
+      "origin": "memchr::arch::x86_64::avx2::memchr::Two::find_raw_avx2",
+      "members": [
+        "FUN_00160650"
+      ]
+    },
+    {
+      "origin": "memchr::arch::x86_64::avx2::memchr::Two::find_raw",
+      "members": [
+        "FUN_001607b0"
+      ]
+    },
+    {
+      "origin": "memchr::arch::x86_64::memchr::memchr2_raw::detect",
+      "members": [
+        "FUN_001608d0"
+      ]
+    },
+    {
+      "origin": "memchr::arch::x86_64::memchr::memchr2_raw::find_avx2",
+      "members": [
+        "FUN_00160940"
+      ]
+    },
+    {
+      "origin": "memchr::arch::x86_64::memchr::memchr2_raw::find_sse2",
+      "members": [
+        "FUN_001609b0"
+      ]
+    },
+    {
+      "origin": "memchr::arch::x86_64::memchr::memrchr_raw::detect",
+      "members": [
+        "FUN_00160b50"
+      ]
+    },
+    {
+      "origin": "memchr::arch::x86_64::memchr::memrchr_raw::find_avx2",
+      "members": [
+        "FUN_00160bb0"
+      ]
+    },
+    {
+      "origin": "memchr::arch::x86_64::memchr::memrchr_raw::find_sse2",
+      "members": [
+        "FUN_00160bf0"
+      ]
+    },
+    {
+      "origin": "memchr::arch::x86_64::memchr::count_raw::detect",
+      "members": [
+        "FUN_00160de0"
+      ]
+    },
+    {
+      "origin": "memchr::arch::x86_64::memchr::count_raw::find_avx2",
+      "members": [
+        "FUN_00160e40"
+      ]
+    },
+    {
+      "origin": "memchr::arch::x86_64::memchr::count_raw::find_sse2",
+      "members": [
+        "FUN_001616e0"
+      ]
+    },
+    {
+      "origin": "<u64 as itoa::Unsigned>::fmt",
+      "members": [
+        "FUN_00161b00"
+      ]
+    },
+    {
+      "origin": "<f64 as zmij::private::Sealed>::write_to_zmij_buffer",
+      "members": [
+        "FUN_00161d50"
+      ]
+    },
+    {
+      "origin": "zmij::write",
+      "members": [
+        "FUN_00161d60"
+      ]
+    },
+    {
+      "origin": "<<serde_core::de::WithDecimalPoint as core::fmt::Display>::fmt::LookForDecimalPoint as core::fmt::Write>::write_char",
+      "members": [
+        "FUN_00162220"
+      ]
+    },
+    {
+      "origin": "<<serde_core::de::WithDecimalPoint as core::fmt::Display>::fmt::LookForDecimalPoint as core::fmt::Write>::write_str",
+      "members": [
+        "FUN_00162240"
+      ]
+    },
+    {
+      "origin": "<&str as serde_core::de::Expected>::fmt",
+      "members": [
+        "FUN_001622d0"
+      ]
+    },
+    {
+      "origin": "<serde_core::de::OneOf as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_001622f0"
+      ]
+    },
+    {
+      "origin": "<serde_core::de::Unexpected as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_00162490"
+      ]
+    },
+    {
+      "origin": "<dyn serde_core::de::Expected as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_00162710"
+      ]
+    },
+    {
+      "origin": "<serde_core::de::WithDecimalPoint as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_00162720"
+      ]
+    },
+    {
+      "origin": "<serde_core::de::impls::impl_for=i64::deserialize::PrimitiveVisitor as serde_core::de::Visitor>::expecting",
+      "members": [
+        "FUN_001627e0"
+      ]
+    },
+    {
+      "origin": "<serde_core::de::impls::impl_for=u32::deserialize::PrimitiveVisitor as serde_core::de::Visitor>::expecting",
+      "members": [
+        "FUN_00162800"
+      ]
+    },
+    {
+      "origin": "<serde_core::de::impls::impl_for=u64::deserialize::PrimitiveVisitor as serde_core::de::Visitor>::expecting",
+      "members": [
+        "FUN_00162820"
+      ]
+    },
+    {
+      "origin": "<serde_core::de::impls::BoolVisitor as serde_core::de::Visitor>::expecting",
+      "members": [
+        "FUN_00162840"
+      ]
+    },
+    {
+      "origin": "<serde_core::de::impls::UnitVisitor as serde_core::de::Visitor>::expecting",
+      "members": [
+        "FUN_00162860"
+      ]
+    },
+    {
+      "origin": "<serde_core::de::impls::StringVisitor as serde_core::de::Visitor>::expecting",
+      "members": [
+        "FUN_00162880"
+      ]
+    },
+    {
+      "origin": "gimli::read::line::parse_file_v5",
+      "members": [
+        "FUN_00186770"
+      ]
+    },
+    {
+      "origin": "gimli::read::line::FileEntryFormat::parse",
+      "members": [
+        "FUN_00186a60"
+      ]
+    },
+    {
+      "origin": "gimli::read::line::parse_attribute",
+      "members": [
+        "FUN_00186e10"
+      ]
+    },
+    {
+      "origin": "gimli::read::line::parse_directory_v5",
+      "members": [
+        "FUN_00187850"
+      ]
+    },
+    {
+      "origin": "gimli::read::line::FileEntry<R,Offset>::parse",
+      "members": [
+        "FUN_00187940"
+      ]
+    },
+    {
+      "origin": "gimli::read::unit::parse_attribute",
+      "members": [
+        "FUN_00187ba0"
+      ]
+    },
+    {
+      "origin": "gimli::read::unit::skip_attributes",
+      "members": [
+        "FUN_00189000"
+      ]
+    },
+    {
+      "origin": "gimli::read::unit::Attribute<R>::value",
+      "members": [
+        "FUN_00189560"
+      ]
+    },
+    {
+      "origin": "gimli::read::unit::EntriesCursor<R>::next_entry",
+      "members": [
+        "FUN_00189b50"
+      ]
+    },
+    {
+      "origin": "gimli::read::unit::AttributeValue<R,Offset>::u8_value",
+      "members": [
+        "FUN_00189e80"
+      ]
+    },
+    {
+      "origin": "gimli::read::unit::AttributeValue<R,Offset>::u16_value",
+      "members": [
+        "FUN_00189ef0"
+      ]
+    },
+    {
+      "origin": "gimli::read::unit::DebugInfoUnitHeadersIter<R>::next",
+      "members": [
+        "FUN_00189f60"
+      ]
+    },
+    {
+      "origin": "gimli::read::dwarf::Unit<R>::new",
+      "members": [
+        "FUN_0018a5b0"
+      ]
+    },
+    {
+      "origin": "gimli::read::dwarf::Dwarf<R>::attr_string",
+      "members": [
+        "FUN_0018cb10"
+      ]
+    },
+    {
+      "origin": "gimli::read::index::UnitIndex<R>::parse",
+      "members": [
+        "FUN_0018cd00"
+      ]
+    },
+    {
+      "origin": "gimli::read::reader::Reader::read_offset",
+      "members": [
+        "FUN_0018d5e0"
+      ]
+    },
+    {
+      "origin": "gimli::read::reader::Reader::read_uleb128",
+      "members": [
+        "FUN_0018d690"
+      ]
+    },
+    {
+      "origin": "gimli::read::reader::Reader::read_sized_offset",
+      "members": [
+        "FUN_0018d740"
+      ]
+    },
+    {
+      "origin": "gimli::read::aranges::ArangeHeader<R,Offset>::parse",
+      "members": [
+        "FUN_0018d840"
+      ]
+    },
+    {
+      "origin": "gimli::read::rnglists::RngListIter<R>::next",
+      "members": [
+        "FUN_0018daf0"
+      ]
+    },
+    {
+      "origin": "<gimli::read::line::FileEntry<R,Offset> as core::clone::Clone>::clone",
+      "members": [
+        "FUN_00190630"
+      ]
+    },
+    {
+      "origin": "<gimli::read::unit::AttributeValue<R,Offset> as core::clone::Clone>::clone",
+      "members": [
+        "FUN_00190a50"
+      ]
+    },
+    {
+      "origin": "addr2line::Context<R>::find_unit",
+      "members": [
+        "FUN_00191320"
+      ]
+    },
+    {
+      "origin": "addr2line::line::render_file",
+      "members": [
+        "FUN_00191480"
+      ]
+    },
+    {
+      "origin": "addr2line::unit::ResUnit<R>::find_function_or_location",
+      "members": [
+        "FUN_001918d0"
+      ]
+    },
+    {
+      "origin": "addr2line::unit::ResUnit<R>::find_function_or_location::{{closure}}",
+      "members": [
+        "FUN_00191d70"
+      ]
+    },
+    {
+      "origin": "addr2line::lookup::LoopingLookup<T,L,F>::new_lookup",
+      "members": [
+        "FUN_00192050"
+      ]
+    },
+    {
+      "origin": "addr2line::function::name_entry",
+      "members": [
+        "FUN_001925d0"
+      ]
+    },
+    {
+      "origin": "addr2line::function::Function<R>::parse_children",
+      "members": [
+        "FUN_001929e0"
+      ]
+    },
+    {
+      "origin": "addr2line::function::name_attr",
+      "members": [
+        "FUN_00193b80"
+      ]
+    },
+    {
+      "origin": "panic_unwind::imp::panic::exception_cleanup",
+      "members": [
+        "FUN_001943f0"
+      ]
+    },
+    {
+      "origin": "<&[u8] as object::read::read_ref::ReadRef>::read_bytes_at_until",
+      "members": [
+        "FUN_00194510"
+      ]
+    },
+    {
+      "origin": "memchr::arch::x86_64::memchr::memchr_raw::detect",
+      "members": [
+        "FUN_00194560"
+      ]
+    },
+    {
+      "origin": "memchr::arch::x86_64::memchr::memchr_raw::find_sse2",
+      "members": [
+        "FUN_00194730"
+      ]
+    },
+    {
+      "origin": "addr2line::line::has_backward_slash_root",
+      "members": [
+        "FUN_001949a1"
+      ]
+    },
+    {
+      "origin": "addr2line::line::Lines::find_location",
+      "members": [
+        "FUN_001949d4"
+      ]
+    },
+    {
+      "origin": "addr2line::line::path_push",
+      "members": [
+        "FUN_00194afe"
+      ]
+    },
+    {
+      "origin": "gimli::read::abbrev::Attributes::push",
+      "members": [
+        "FUN_00195e09"
+      ]
+    },
+    {
+      "origin": "gimli::read::abbrev::Abbreviation::new",
+      "members": [
+        "FUN_00195f42"
+      ]
+    },
+    {
+      "origin": "gimli::read::abbrev::Abbreviations::insert",
+      "members": [
+        "FUN_00195fc4"
+      ]
+    },
+    {
+      "origin": "<gimli::read::abbrev::Attributes as core::ops::deref::Deref>::deref",
+      "members": [
+        "FUN_001960bf"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::try_demangle",
+      "members": [
+        "FUN_001963f0"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::HexNibbles::try_parse_uint",
+      "members": [
+        "FUN_00196445"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::basic_type",
+      "members": [
+        "FUN_00196543"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Parser::integer_62",
+      "members": [
+        "FUN_0019656e"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Parser::hex_nibbles",
+      "members": [
+        "FUN_00196610"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Parser::opt_integer_62",
+      "members": [
+        "FUN_001966af"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Parser::ident",
+      "members": [
+        "FUN_00196723"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Parser::backref",
+      "members": [
+        "FUN_001968fd"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Parser::namespace",
+      "members": [
+        "FUN_0019697b"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_path",
+      "members": [
+        "FUN_001969ca"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_type",
+      "members": [
+        "FUN_001970a9"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_type::{{closure}}",
+      "members": [
+        "FUN_001975e4"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_const",
+      "members": [
+        "FUN_00197970"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_backref",
+      "members": [
+        "FUN_00197fe4",
+        "FUN_001980d2",
+        "FUN_001981b3"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_sep_list",
+      "members": [
+        "FUN_001982a1",
+        "FUN_001984ce",
+        "FUN_00198613",
+        "FUN_001986b0",
+        "FUN_00198747",
+        "FUN_00198920"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_const_uint",
+      "members": [
+        "FUN_001989c2"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::skipping_printing",
+      "members": [
+        "FUN_00198b2b"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_const_str_literal",
+      "members": [
+        "FUN_00198b81"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_lifetime_from_index",
+      "members": [
+        "FUN_00198eb8"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_quoted_escaped_chars",
+      "members": [
+        "FUN_00198fa9"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_path_maybe_open_generics",
+      "members": [
+        "FUN_00199158"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::in_binder",
+      "members": [
+        "FUN_0019929f",
+        "FUN_0019941d"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_pat",
+      "members": [
+        "FUN_001995a0"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::demangle",
+      "members": [
+        "FUN_00199783"
+      ]
+    },
+    {
+      "origin": "<rustc_demangle::Demangle as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_0019a6ec"
+      ]
+    },
+    {
+      "origin": "<rustc_demangle::v0::Ident as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_0019a7f1"
+      ]
+    },
+    {
+      "origin": "<rustc_demangle::DemangleStyle as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_0019ac43"
+      ]
+    },
+    {
+      "origin": "<rustc_demangle::SizeLimitExhausted as core::fmt::Debug>::fmt",
+      "members": [
+        "FUN_0019ac86"
+      ]
+    },
+    {
+      "origin": "<rustc_demangle::legacy::Demangle as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_0019ac9b"
+      ]
+    },
+    {
+      "origin": "<rustc_demangle::SizeLimitedFmtAdapter<F> as core::fmt::Write>::write_str",
+      "members": [
+        "FUN_0019bb6d"
+      ]
+    },
+    {
+      "origin": "std_detect::detect::cache::detect_and_initialize",
+      "members": [
+        "FUN_0019bba0"
+      ]
+    },
+    {
+      "origin": "miniz_oxide::inflate::core::decompress",
+      "members": [
+        "FUN_0019c22d"
+      ]
+    },
+    {
+      "origin": "miniz_oxide::inflate::core::apply_match",
+      "members": [
+        "FUN_0019dc0f"
+      ]
+    },
+    {
+      "origin": "miniz_oxide::inflate::core::transfer",
+      "members": [
+        "FUN_0019dd5e"
+      ]
+    },
+    {
+      "origin": "miniz_oxide::inflate::core::init_tree",
+      "members": [
+        "FUN_0019e14c"
+      ]
+    },
+    {
+      "origin": "adler2::Adler32::write_slice",
+      "members": [
+        "FUN_0019e5f0"
+      ]
+    }
+  ],
+  "symbols": {
+    "FUN_0012c840": [
+      "serde_core::de::MapAccess::next_value"
+    ],
+    "FUN_0012ce00": [
+      "serde_core::de::SeqAccess::next_element"
+    ],
+    "FUN_0012ce90": [
+      "serde_core::de::SeqAccess::next_element"
+    ],
+    "FUN_0012cf10": [
+      "serde_core::de::SeqAccess::next_element"
+    ],
+    "FUN_0012cf90": [
+      "serde_core::de::SeqAccess::next_element"
+    ],
+    "FUN_0012d010": [
+      "serde_json::de::from_trait"
+    ],
+    "FUN_0012d180": [
+      "serde_json::de::Deserializer<R>::peek_error"
+    ],
+    "FUN_0012d1c0": [
+      "serde_json::de::Deserializer<R>::parse_number"
+    ],
+    "FUN_0012d4f0": [
+      "serde_json::de::Deserializer<R>::parse_integer"
+    ],
+    "FUN_0012d670": [
+      "serde_json::de::Deserializer<R>::ignore_integer"
+    ],
+    "FUN_0012d8c0": [
+      "serde_json::de::Deserializer<R>::parse_exponent"
+    ],
+    "FUN_0012db10": [
+      "serde_json::de::Deserializer<R>::peek_invalid_type"
+    ],
+    "FUN_0012de20": [
+      "serde_json::de::Deserializer<R>::error"
+    ],
+    "FUN_0012de60": [
+      "serde_json::de::Deserializer<R>::end_map"
+    ],
+    "FUN_0012df10": [
+      "serde_json::de::Deserializer<R>::end_seq"
+    ],
+    "FUN_0012e7c0": [
+      "<serde_json::de::MapAccess<R> as serde_core::de::MapAccess>::next_key_seed::has_next_key"
+    ],
+    "FUN_0012e900": [
+      "<serde_json::de::SeqAccess<R> as serde_core::de::SeqAccess>::next_element_seed::has_next_element"
+    ],
+    "FUN_0012ea20": [
+      "<serde_json::de::VariantAccess<R> as serde_core::de::EnumAccess>::variant_seed"
+    ],
+    "FUN_0012eb90": [
+      "<core::marker::PhantomData<T> as serde_core::de::DeserializeSeed>::deserialize"
+    ],
+    "FUN_0012ed00": [
+      "<serde_json::de::VariantAccess<R> as serde_core::de::VariantAccess>::unit_variant"
+    ],
+    "FUN_0012ee20": [
+      "<serde_json::de::UnitVariantAccess<R> as serde_core::de::EnumAccess>::variant_seed"
+    ],
+    "FUN_0012ef30": [
+      "<&mut serde_json::de::Deserializer<R> as serde_core::de::Deserializer>::deserialize_i64"
+    ],
+    "FUN_0012f0a0": [
+      "<&mut serde_json::de::Deserializer<R> as serde_core::de::Deserializer>::deserialize_map"
+    ],
+    "FUN_0012f560": [
+      "<&mut serde_json::de::Deserializer<R> as serde_core::de::Deserializer>::deserialize_seq"
+    ],
+    "FUN_0012f780": [
+      "<&mut serde_json::de::Deserializer<R> as serde_core::de::Deserializer>::deserialize_seq"
+    ],
+    "FUN_0012f9a0": [
+      "<&mut serde_json::de::Deserializer<R> as serde_core::de::Deserializer>::deserialize_u64"
+    ],
+    "FUN_0012fb10": [
+      "<&mut serde_json::de::Deserializer<R> as serde_core::de::Deserializer>::deserialize_bool"
+    ],
+    "FUN_0012fcd0": [
+      "<&mut serde_json::de::Deserializer<R> as serde_core::de::Deserializer>::deserialize_string"
+    ],
+    "FUN_0012fe30": [
+      "<&mut serde_json::de::Deserializer<R> as serde_core::de::Deserializer>::deserialize_struct"
+    ],
+    "FUN_00130e20": [
+      "<&mut serde_json::de::Deserializer<R> as serde_core::de::Deserializer>::deserialize_struct"
+    ],
+    "FUN_00133dd0": [
+      "<&mut serde_json::de::Deserializer<R> as serde_core::de::Deserializer>::deserialize_struct"
+    ],
+    "FUN_00135470": [
+      "<reconcile::transport::ProxyTransport as billing_client::http::Transport>::execute"
+    ],
+    "FUN_00138190": [
+      "reconcile::log_action"
+    ],
+    "FUN_0013e3d0": [
+      "serde_json::value::to_value"
+    ],
+    "FUN_0013e450": [
+      "serde_json::value::to_value"
+    ],
+    "FUN_0013e4d0": [
+      "serde_json::value::to_value"
+    ],
+    "FUN_0013fcc0": [
+      "serde_core::de::impls::<impl serde_core::de::Deserialize for core::option::Option<T>>::deserialize"
+    ],
+    "FUN_0013fe20": [
+      "serde_core::de::impls::<impl serde_core::de::Deserialize for core::option::Option<T>>::deserialize"
+    ],
+    "FUN_0013ff30": [
+      "serde_core::de::impls::<impl serde_core::de::Deserialize for core::option::Option<T>>::deserialize"
+    ],
+    "FUN_00140040": [
+      "billing_client::resources::CreateCharge::against_invoice"
+    ],
+    "FUN_001400e0": [
+      "billing_client::resources::CreateCharge::new"
+    ],
+    "FUN_001401a0": [
+      "billing_client::resources::CreateCharge::tag"
+    ],
+    "FUN_001402e0": [
+      "billing_client::resources::_::<impl serde_core::de::Deserialize for billing_client::resources::InvoiceStatus>::deserialize"
+    ],
+    "FUN_001404a0": [
+      "<billing_client::resources::_::<impl serde_core::de::Deserialize for billing_client::resources::Invoice>::deserialize::__FieldVisitor as serde_core::de::Visitor>::visit_str"
+    ],
+    "FUN_001405f0": [
+      "<billing_client::resources::_::<impl serde_core::de::Deserialize for billing_client::resources::InvoiceStatus>::deserialize::__FieldVisitor as serde_core::de::Visitor>::visit_str"
+    ],
+    "FUN_001406b0": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_001406c0": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_001406d0": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_00140b40": [
+      "serde_core::de::Error::invalid_length"
+    ],
+    "FUN_00140ba0": [
+      "serde_core::de::Error::unknown_variant"
+    ],
+    "FUN_00140c30": [
+      "serde_json::error::Error::fix_position"
+    ],
+    "FUN_00140c90": [
+      "billing_client::retry::with_retry"
+    ],
+    "FUN_00141460": [
+      "<serde_json::error::Error as serde_core::de::Error>::custom"
+    ],
+    "FUN_00141500": [
+      "billing_client::client::ClientBuilder::base_url"
+    ],
+    "FUN_00141680": [
+      "billing_client::client::Client::list_all"
+    ],
+    "FUN_00141ab0": [
+      "billing_client::client::Client::list_page"
+    ],
+    "FUN_001435b0": [
+      "serde_core::ser::Serializer::collect_map"
+    ],
+    "FUN_00143a20": [
+      "billing_client::page::ListParams::filter"
+    ],
+    "FUN_00143c00": [
+      "<serde_core::de::impls::<impl serde_core::de::Deserialize for alloc::vec::Vec<T>>::deserialize::VecVisitor<T> as serde_core::de::Visitor>::visit_seq"
+    ],
+    "FUN_00143e50": [
+      "<serde_core::de::impls::<impl serde_core::de::Deserialize for alloc::vec::Vec<T>>::deserialize::VecVisitor<T> as serde_core::de::Visitor>::visit_seq"
+    ],
+    "FUN_001440c0": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_001440d0": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_001440f0": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_00144100": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_00144110": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_00144120": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_00144130": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_00144140": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_00144160": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_00144580": [
+      "<billing_client::page::Paginator<T> as core::iter::traits::iterator::Iterator>::next"
+    ],
+    "FUN_001449f0": [
+      "serde_core::de::MapAccess::next_value"
+    ],
+    "FUN_00144fb0": [
+      "serde_core::de::SeqAccess::next_element"
+    ],
+    "FUN_00145030": [
+      "serde_core::de::SeqAccess::next_element"
+    ],
+    "FUN_001450c0": [
+      "serde_core::de::SeqAccess::next_element"
+    ],
+    "FUN_00145140": [
+      "serde_core::de::SeqAccess::next_element"
+    ],
+    "FUN_001451b0": [
+      "serde_core::de::SeqAccess::next_element"
+    ],
+    "FUN_00145230": [
+      "serde_core::de::SeqAccess::next_element"
+    ],
+    "FUN_001452b0": [
+      "serde_json::de::from_trait"
+    ],
+    "FUN_00145400": [
+      "serde_json::de::from_trait"
+    ],
+    "FUN_00145590": [
+      "serde_json::de::from_trait"
+    ],
+    "FUN_001456e0": [
+      "serde_json::de::from_trait"
+    ],
+    "FUN_00145830": [
+      "serde_json::de::Deserializer<R>::peek_error"
+    ],
+    "FUN_00145870": [
+      "serde_json::de::Deserializer<R>::parse_decimal"
+    ],
+    "FUN_00145aa0": [
+      "serde_json::de::Deserializer<R>::parse_integer"
+    ],
+    "FUN_00145d10": [
+      "serde_json::de::Deserializer<R>::ignore_integer"
+    ],
+    "FUN_00145f60": [
+      "serde_json::de::Deserializer<R>::parse_exponent"
+    ],
+    "FUN_001461b0": [
+      "serde_json::de::Deserializer<R>::peek_invalid_type"
+    ],
+    "FUN_001464c0": [
+      "serde_json::de::Deserializer<R>::parse_long_integer"
+    ],
+    "FUN_00146630": [
+      "serde_json::de::Deserializer<R>::parse_decimal_overflow"
+    ],
+    "FUN_00146790": [
+      "serde_json::de::Deserializer<R>::parse_exponent_overflow"
+    ],
+    "FUN_00146840": [
+      "serde_json::de::Deserializer<R>::error"
+    ],
+    "FUN_00146880": [
+      "serde_json::de::Deserializer<R>::end_map"
+    ],
+    "FUN_00146930": [
+      "serde_json::de::Deserializer<R>::end_seq"
+    ],
+    "FUN_00147240": [
+      "<serde_json::de::MapAccess<R> as serde_core::de::MapAccess>::next_key_seed::has_next_key"
+    ],
+    "FUN_00147380": [
+      "<serde_json::de::SeqAccess<R> as serde_core::de::SeqAccess>::next_element_seed::has_next_element"
+    ],
+    "FUN_001474a0": [
+      "<serde_json::de::VariantAccess<R> as serde_core::de::EnumAccess>::variant_seed"
+    ],
+    "FUN_00147610": [
+      "<serde_json::de::VariantAccess<R> as serde_core::de::EnumAccess>::variant_seed"
+    ],
+    "FUN_00147780": [
+      "<core::marker::PhantomData<T> as serde_core::de::DeserializeSeed>::deserialize"
+    ],
+    "FUN_001478f0": [
+      "<serde_json::de::VariantAccess<R> as serde_core::de::VariantAccess>::unit_variant"
+    ],
+    "FUN_00147a10": [
+      "<serde_json::de::UnitVariantAccess<R> as serde_core::de::EnumAccess>::variant_seed"
+    ],
+    "FUN_00147b20": [
+      "<serde_json::de::UnitVariantAccess<R> as serde_core::de::EnumAccess>::variant_seed"
+    ],
+    "FUN_00147c30": [
+      "<&mut serde_json::de::Deserializer<R> as serde_core::de::Deserializer>::deserialize_i64"
+    ],
+    "FUN_00147da0": [
+      "<&mut serde_json::de::Deserializer<R> as serde_core::de::Deserializer>::deserialize_map"
+    ],
+    "FUN_00148260": [
+      "<&mut serde_json::de::Deserializer<R> as serde_core::de::Deserializer>::deserialize_seq"
+    ],
+    "FUN_00148480": [
+      "<&mut serde_json::de::Deserializer<R> as serde_core::de::Deserializer>::deserialize_bool"
+    ],
+    "FUN_00148640": [
+      "<&mut serde_json::de::Deserializer<R> as serde_core::de::Deserializer>::deserialize_string"
+    ],
+    "FUN_001487a0": [
+      "<&mut serde_json::de::Deserializer<R> as serde_core::de::Deserializer>::deserialize_struct"
+    ],
+    "FUN_0014aa50": [
+      "<&mut serde_json::de::Deserializer<R> as serde_core::de::Deserializer>::deserialize_struct"
+    ],
+    "FUN_0014bce0": [
+      "<&mut serde_json::de::Deserializer<R> as serde_core::de::Deserializer>::deserialize_struct"
+    ],
+    "FUN_0014c6c0": [
+      "<&mut serde_json::de::Deserializer<R> as serde_core::de::Deserializer>::deserialize_struct"
+    ],
+    "FUN_0014d730": [
+      "<&mut serde_json::de::Deserializer<R> as serde_core::de::Deserializer>::deserialize_struct"
+    ],
+    "FUN_0014fc60": [
+      "<&mut serde_json::de::Deserializer<R> as serde_core::de::Deserializer>::deserialize_struct"
+    ],
+    "FUN_00152c10": [
+      "billing_client::client::ClientBuilder::build"
+    ],
+    "FUN_00152d40": [
+      "billing_client::client::ClientBuilder::transport"
+    ],
+    "FUN_00152dd0": [
+      "billing_client::client::percent_encode"
+    ],
+    "FUN_00153050": [
+      "billing_client::client::Client::post"
+    ],
+    "FUN_00153480": [
+      "billing_client::client::Client::send"
+    ],
+    "FUN_00153830": [
+      "billing_client::client::Client::headers"
+    ],
+    "FUN_00154150": [
+      "billing_client::client::Client::build_url"
+    ],
+    "FUN_00154590": [
+      "billing_client::client::decode"
+    ],
+    "FUN_001546f0": [
+      "billing_client::client::decode"
+    ],
+    "FUN_00154850": [
+      "billing_client::client::decode"
+    ],
+    "FUN_001549b0": [
+      "billing_client::client::interpret"
+    ],
+    "FUN_001553c0": [
+      "billing_client::resources::<impl billing_client::client::Client>::get_customer"
+    ],
+    "FUN_00155730": [
+      "billing_client::resources::<impl billing_client::client::Client>::mark_uncollectible"
+    ],
+    "FUN_001557e0": [
+      "billing_client::resources::<impl billing_client::client::Client>::create_charge_keyed"
+    ],
+    "FUN_001557f0": [
+      "<billing_client::client::interpret::_::<impl serde_core::de::Deserialize for billing_client::client::interpret::Envelope>::deserialize::__Visitor as serde_core::de::Visitor>::expecting",
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_00155c40": [
+      "billing_client::resources::_::<impl serde_core::ser::Serialize for billing_client::resources::CreateCharge>::serialize"
+    ],
+    "FUN_00155df0": [
+      "billing_client::resources::_::<impl serde_core::de::Deserialize for billing_client::resources::InvoiceStatus>::deserialize"
+    ],
+    "FUN_00155fb0": [
+      "billing_client::resources::Invoice::outstanding"
+    ],
+    "FUN_00155fd0": [
+      "<billing_client::resources::_::<impl serde_core::de::Deserialize for billing_client::resources::Charge>::deserialize::__Visitor as serde_core::de::Visitor>::expecting",
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_00155ff0": [
+      "<billing_client::resources::_::<impl serde_core::de::Deserialize for billing_client::resources::Invoice>::deserialize::__Visitor as serde_core::de::Visitor>::expecting",
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_00156010": [
+      "<billing_client::resources::_::<impl serde_core::de::Deserialize for billing_client::resources::Customer>::deserialize::__Visitor as serde_core::de::Visitor>::expecting",
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_00156030": [
+      "<billing_client::resources::_::<impl serde_core::de::Deserialize for billing_client::resources::LineItem>::deserialize::__Visitor as serde_core::de::Visitor>::expecting",
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_00156050": [
+      "<billing_client::resources::_::<impl serde_core::de::Deserialize for billing_client::resources::Charge>::deserialize::__FieldVisitor as serde_core::de::Visitor>::visit_str"
+    ],
+    "FUN_00156190": [
+      "<billing_client::resources::_::<impl serde_core::de::Deserialize for billing_client::resources::Invoice>::deserialize::__FieldVisitor as serde_core::de::Visitor>::visit_str"
+    ],
+    "FUN_001562e0": [
+      "<billing_client::resources::_::<impl serde_core::de::Deserialize for billing_client::resources::Customer>::deserialize::__FieldVisitor as serde_core::de::Visitor>::visit_str"
+    ],
+    "FUN_00156410": [
+      "<billing_client::resources::_::<impl serde_core::de::Deserialize for billing_client::resources::InvoiceStatus>::deserialize::__FieldVisitor as serde_core::de::Visitor>::expecting"
+    ],
+    "FUN_00156430": [
+      "<billing_client::resources::_::<impl serde_core::de::Deserialize for billing_client::resources::InvoiceStatus>::deserialize::__FieldVisitor as serde_core::de::Visitor>::visit_str"
+    ],
+    "FUN_001564f0": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_00156510": [
+      "billing_client::retry::with_retry"
+    ],
+    "FUN_00156940": [
+      "billing_client::retry::RetryPolicy::delay_for"
+    ],
+    "FUN_00156c70": [
+      "billing_client::retry::finalize"
+    ],
+    "FUN_00157160": [
+      "serde_core::de::Error::invalid_length"
+    ],
+    "FUN_001571c0": [
+      "serde_core::de::Error::unknown_variant"
+    ],
+    "FUN_00157250": [
+      "serde_core::de::impls::<impl serde_core::de::Deserialize for core::option::Option<T>>::deserialize"
+    ],
+    "FUN_00157360": [
+      "serde_core::de::impls::<impl serde_core::de::Deserialize for core::option::Option<T>>::deserialize"
+    ],
+    "FUN_001574c0": [
+      "serde_json::error::Error::fix_position"
+    ],
+    "FUN_00157520": [
+      "<serde_core::de::impls::<impl serde_core::de::Deserialize for alloc::vec::Vec<T>>::deserialize::VecVisitor<T> as serde_core::de::Visitor>::visit_seq"
+    ],
+    "FUN_00157770": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_00157780": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_00157790": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_001577a0": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_001577b0": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_001577d0": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_001577e0": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_001578e0": [
+      "<serde_json::error::Error as serde_core::de::Error>::custom"
+    ],
+    "FUN_00157e40": [
+      "billing_client::error::_::<impl serde_core::de::Deserialize for billing_client::error::ApiErrorKind>::deserialize"
+    ],
+    "FUN_00158000": [
+      "billing_client::error::Error::request_id"
+    ],
+    "FUN_00158070": [
+      "<billing_client::error::_::<impl serde_core::de::Deserialize for billing_client::error::ApiError>::deserialize::__Visitor as serde_core::de::Visitor>::expecting",
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_00158090": [
+      "<billing_client::error::_::<impl serde_core::de::Deserialize for billing_client::error::ApiErrorKind>::deserialize::__FieldVisitor as serde_core::de::Visitor>::visit_str"
+    ],
+    "FUN_001581c0": [
+      "<T as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_00158200": [
+      "<billing_client::error::Error as core::fmt::Display>::fmt"
+    ],
+    "FUN_001583f0": [
+      "<billing_client::error::ApiError as core::fmt::Display>::fmt"
+    ],
+    "FUN_00158530": [
+      "<billing_client::error::TransportError as core::fmt::Display>::fmt"
+    ],
+    "FUN_00158650": [
+      "billing_client::page::ListParams::limit"
+    ],
+    "FUN_001586b0": [
+      "billing_client::page::ListParams::to_query"
+    ],
+    "FUN_0015a980": [
+      "<&mut serde_json::ser::Serializer<W,F> as serde_core::ser::Serializer>::serialize_str"
+    ],
+    "FUN_0015ac50": [
+      "serde_core::ser::SerializeMap::serialize_entry"
+    ],
+    "FUN_0015ad40": [
+      "serde_core::ser::SerializeMap::serialize_entry"
+    ],
+    "FUN_0015b260": [
+      "serde_core::ser::SerializeMap::serialize_entry"
+    ],
+    "FUN_0015b390": [
+      "serde_core::ser::SerializeMap::serialize_entry"
+    ],
+    "FUN_0015b500": [
+      "serde_core::ser::SerializeMap::serialize_entry"
+    ],
+    "FUN_0015b900": [
+      "<serde_json::value::Value as core::fmt::Display>::fmt"
+    ],
+    "FUN_0015c050": [
+      "serde_json::error::make_error"
+    ],
+    "FUN_0015c860": [
+      "serde_json::error::Error::io"
+    ],
+    "FUN_0015c8f0": [
+      "serde_json::error::Error::syntax"
+    ],
+    "FUN_0015cc30": [
+      "<serde_json::error::Error as core::fmt::Debug>::fmt"
+    ],
+    "FUN_0015cd80": [
+      "<serde_json::error::Error as core::fmt::Display>::fmt"
+    ],
+    "FUN_0015cdf0": [
+      "<serde_json::error::Error as serde_core::de::Error>::invalid_type"
+    ],
+    "FUN_0015ce50": [
+      "<serde_json::error::Error as serde_core::de::Error>::invalid_value"
+    ],
+    "FUN_0015ceb0": [
+      "<serde_json::error::Error as serde_core::de::Error>::custom"
+    ],
+    "FUN_0015cf50": [
+      "<serde_json::error::ErrorCode as core::fmt::Display>::fmt"
+    ],
+    "FUN_0015d1b0": [
+      "<serde_json::error::JsonUnexpected as core::fmt::Display>::fmt"
+    ],
+    "FUN_0015d2d0": [
+      "serde_json::de::ParserNumber::invalid_type"
+    ],
+    "FUN_0015d340": [
+      "serde_json::read::parse_escape"
+    ],
+    "FUN_0015d5d0": [
+      "serde_json::read::push_wtf8_codepoint"
+    ],
+    "FUN_0015d6b0": [
+      "serde_json::read::parse_unicode_escape"
+    ],
+    "FUN_0015dfa0": [
+      "serde_json::read::error"
+    ],
+    "FUN_0015e050": [
+      "serde_json::read::SliceRead::skip_to_escape"
+    ],
+    "FUN_0015e1e0": [
+      "serde_json::read::SliceRead::skip_to_escape_slow"
+    ],
+    "FUN_0015e300": [
+      "<serde_json::read::SliceRead as serde_json::read::Read>::ignore_str"
+    ],
+    "FUN_0015e720": [
+      "<serde_json::read::SliceRead as serde_json::read::Read>::peek_position"
+    ],
+    "FUN_0015e790": [
+      "<serde_json::read::SliceRead as serde_json::read::Read>::position"
+    ],
+    "FUN_0015e810": [
+      "<serde_json::read::SliceRead as serde_json::read::Read>::parse_str"
+    ],
+    "FUN_0015ec70": [
+      "serde_core::ser::Serializer::collect_seq"
+    ],
+    "FUN_0015efe0": [
+      "serde_core::ser::Serializer::collect_seq"
+    ],
+    "FUN_0015f0b0": [
+      "serde_core::ser::SerializeMap::serialize_entry"
+    ],
+    "FUN_0015f140": [
+      "serde_core::ser::SerializeMap::serialize_entry"
+    ],
+    "FUN_0015f250": [
+      "serde_json::ser::format_escaped_str"
+    ],
+    "FUN_0015f390": [
+      "serde_json::ser::format_escaped_str"
+    ],
+    "FUN_0015f4d0": [
+      "serde_json::value::ser::<impl serde_core::ser::Serialize for serde_json::value::Value>::serialize"
+    ],
+    "FUN_0015f950": [
+      "serde_json::value::ser::<impl serde_core::ser::Serialize for serde_json::value::Value>::serialize"
+    ],
+    "FUN_0015fe20": [
+      "<serde_json::value::ser::SerializeMap as serde_core::ser::SerializeMap>::end"
+    ],
+    "FUN_001601e0": [
+      "<serde_json::number::Number as serde_core::ser::Serialize>::serialize"
+    ],
+    "FUN_001602f0": [
+      "<serde_json::number::Number as serde_core::ser::Serialize>::serialize"
+    ],
+    "FUN_00160400": [
+      "memchr::arch::x86_64::avx2::memchr::One::rfind_raw_avx2"
+    ],
+    "FUN_00160560": [
+      "memchr::arch::x86_64::avx2::memchr::One::rfind_raw"
+    ],
+    "FUN_00160650": [
+      "memchr::arch::x86_64::avx2::memchr::Two::find_raw_avx2"
+    ],
+    "FUN_001607b0": [
+      "memchr::arch::x86_64::avx2::memchr::Two::find_raw"
+    ],
+    "FUN_001608d0": [
+      "memchr::arch::x86_64::memchr::memchr2_raw::detect"
+    ],
+    "FUN_00160940": [
+      "memchr::arch::x86_64::memchr::memchr2_raw::find_avx2"
+    ],
+    "FUN_001609b0": [
+      "memchr::arch::x86_64::memchr::memchr2_raw::find_sse2"
+    ],
+    "FUN_00160b50": [
+      "memchr::arch::x86_64::memchr::memrchr_raw::detect"
+    ],
+    "FUN_00160bb0": [
+      "memchr::arch::x86_64::memchr::memrchr_raw::find_avx2"
+    ],
+    "FUN_00160bf0": [
+      "memchr::arch::x86_64::memchr::memrchr_raw::find_sse2"
+    ],
+    "FUN_00160de0": [
+      "memchr::arch::x86_64::memchr::count_raw::detect"
+    ],
+    "FUN_00160e40": [
+      "memchr::arch::x86_64::memchr::count_raw::find_avx2"
+    ],
+    "FUN_001616e0": [
+      "memchr::arch::x86_64::memchr::count_raw::find_sse2"
+    ],
+    "FUN_00161b00": [
+      "<u64 as itoa::Unsigned>::fmt"
+    ],
+    "FUN_00161d50": [
+      "<f64 as zmij::private::Sealed>::write_to_zmij_buffer"
+    ],
+    "FUN_00161d60": [
+      "zmij::write"
+    ],
+    "FUN_00162220": [
+      "<<serde_core::de::WithDecimalPoint as core::fmt::Display>::fmt::LookForDecimalPoint as core::fmt::Write>::write_char"
+    ],
+    "FUN_00162240": [
+      "<<serde_core::de::WithDecimalPoint as core::fmt::Display>::fmt::LookForDecimalPoint as core::fmt::Write>::write_str"
+    ],
+    "FUN_001622d0": [
+      "<&str as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_001622f0": [
+      "<serde_core::de::OneOf as core::fmt::Display>::fmt"
+    ],
+    "FUN_00162490": [
+      "<serde_core::de::Unexpected as core::fmt::Display>::fmt"
+    ],
+    "FUN_00162710": [
+      "<dyn serde_core::de::Expected as core::fmt::Display>::fmt"
+    ],
+    "FUN_00162720": [
+      "<serde_core::de::WithDecimalPoint as core::fmt::Display>::fmt"
+    ],
+    "FUN_001627e0": [
+      "<serde_core::de::impls::<impl serde_core::de::Deserialize for i64>::deserialize::PrimitiveVisitor as serde_core::de::Visitor>::expecting"
+    ],
+    "FUN_00162800": [
+      "<serde_core::de::impls::<impl serde_core::de::Deserialize for u32>::deserialize::PrimitiveVisitor as serde_core::de::Visitor>::expecting"
+    ],
+    "FUN_00162820": [
+      "<serde_core::de::impls::<impl serde_core::de::Deserialize for u64>::deserialize::PrimitiveVisitor as serde_core::de::Visitor>::expecting"
+    ],
+    "FUN_00162840": [
+      "<serde_core::de::impls::BoolVisitor as serde_core::de::Visitor>::expecting"
+    ],
+    "FUN_00162860": [
+      "<serde_core::de::impls::UnitVisitor as serde_core::de::Visitor>::expecting"
+    ],
+    "FUN_00162880": [
+      "<serde_core::de::impls::StringVisitor as serde_core::de::Visitor>::expecting"
+    ],
+    "FUN_00186770": [
+      "gimli::read::line::parse_file_v5"
+    ],
+    "FUN_00186a60": [
+      "gimli::read::line::FileEntryFormat::parse"
+    ],
+    "FUN_00186e10": [
+      "gimli::read::line::parse_attribute"
+    ],
+    "FUN_00187850": [
+      "gimli::read::line::parse_directory_v5"
+    ],
+    "FUN_00187940": [
+      "gimli::read::line::FileEntry<R,Offset>::parse"
+    ],
+    "FUN_00187ba0": [
+      "gimli::read::unit::parse_attribute"
+    ],
+    "FUN_00189000": [
+      "gimli::read::unit::skip_attributes"
+    ],
+    "FUN_00189560": [
+      "gimli::read::unit::Attribute<R>::value"
+    ],
+    "FUN_00189b50": [
+      "gimli::read::unit::EntriesCursor<R>::next_entry"
+    ],
+    "FUN_00189e80": [
+      "gimli::read::unit::AttributeValue<R,Offset>::u8_value"
+    ],
+    "FUN_00189ef0": [
+      "gimli::read::unit::AttributeValue<R,Offset>::u16_value"
+    ],
+    "FUN_00189f60": [
+      "gimli::read::unit::DebugInfoUnitHeadersIter<R>::next"
+    ],
+    "FUN_0018a5b0": [
+      "gimli::read::dwarf::Unit<R>::new"
+    ],
+    "FUN_0018cb10": [
+      "gimli::read::dwarf::Dwarf<R>::attr_string"
+    ],
+    "FUN_0018cd00": [
+      "gimli::read::index::UnitIndex<R>::parse"
+    ],
+    "FUN_0018d5e0": [
+      "gimli::read::reader::Reader::read_offset"
+    ],
+    "FUN_0018d690": [
+      "gimli::read::reader::Reader::read_uleb128"
+    ],
+    "FUN_0018d740": [
+      "gimli::read::reader::Reader::read_sized_offset"
+    ],
+    "FUN_0018d840": [
+      "gimli::read::aranges::ArangeHeader<R,Offset>::parse"
+    ],
+    "FUN_0018daf0": [
+      "gimli::read::rnglists::RngListIter<R>::next"
+    ],
+    "FUN_00190630": [
+      "<gimli::read::line::FileEntry<R,Offset> as core::clone::Clone>::clone"
+    ],
+    "FUN_00190a50": [
+      "<gimli::read::unit::AttributeValue<R,Offset> as core::clone::Clone>::clone"
+    ],
+    "FUN_00191320": [
+      "addr2line::Context<R>::find_unit"
+    ],
+    "FUN_00191480": [
+      "addr2line::line::render_file"
+    ],
+    "FUN_001918d0": [
+      "addr2line::unit::ResUnit<R>::find_function_or_location"
+    ],
+    "FUN_00191d70": [
+      "addr2line::unit::ResUnit<R>::find_function_or_location::{{closure}}"
+    ],
+    "FUN_00192050": [
+      "addr2line::lookup::LoopingLookup<T,L,F>::new_lookup"
+    ],
+    "FUN_001925d0": [
+      "addr2line::function::name_entry"
+    ],
+    "FUN_001929e0": [
+      "addr2line::function::Function<R>::parse_children"
+    ],
+    "FUN_00193b80": [
+      "addr2line::function::name_attr"
+    ],
+    "FUN_001943f0": [
+      "panic_unwind::imp::panic::exception_cleanup"
+    ],
+    "FUN_00194510": [
+      "<&[u8] as object::read::read_ref::ReadRef>::read_bytes_at_until"
+    ],
+    "FUN_00194560": [
+      "memchr::arch::x86_64::memchr::memchr_raw::detect"
+    ],
+    "FUN_00194730": [
+      "memchr::arch::x86_64::memchr::memchr_raw::find_sse2"
+    ],
+    "FUN_001949a1": [
+      "addr2line::line::has_backward_slash_root"
+    ],
+    "FUN_001949d4": [
+      "addr2line::line::Lines::find_location"
+    ],
+    "FUN_00194afe": [
+      "addr2line::line::path_push"
+    ],
+    "FUN_00195e09": [
+      "gimli::read::abbrev::Attributes::push"
+    ],
+    "FUN_00195f42": [
+      "gimli::read::abbrev::Abbreviation::new"
+    ],
+    "FUN_00195fc4": [
+      "gimli::read::abbrev::Abbreviations::insert"
+    ],
+    "FUN_001960bf": [
+      "<gimli::read::abbrev::Attributes as core::ops::deref::Deref>::deref"
+    ],
+    "FUN_001963f0": [
+      "rustc_demangle::try_demangle"
+    ],
+    "FUN_00196445": [
+      "rustc_demangle::v0::HexNibbles::try_parse_uint"
+    ],
+    "FUN_00196543": [
+      "rustc_demangle::v0::basic_type"
+    ],
+    "FUN_0019656e": [
+      "rustc_demangle::v0::Parser::integer_62"
+    ],
+    "FUN_00196610": [
+      "rustc_demangle::v0::Parser::hex_nibbles"
+    ],
+    "FUN_001966af": [
+      "rustc_demangle::v0::Parser::opt_integer_62"
+    ],
+    "FUN_00196723": [
+      "rustc_demangle::v0::Parser::ident"
+    ],
+    "FUN_001968fd": [
+      "rustc_demangle::v0::Parser::backref"
+    ],
+    "FUN_0019697b": [
+      "rustc_demangle::v0::Parser::namespace"
+    ],
+    "FUN_001969ca": [
+      "rustc_demangle::v0::Printer::print_path"
+    ],
+    "FUN_001970a9": [
+      "rustc_demangle::v0::Printer::print_type"
+    ],
+    "FUN_001975e4": [
+      "rustc_demangle::v0::Printer::print_type::{{closure}}"
+    ],
+    "FUN_00197970": [
+      "rustc_demangle::v0::Printer::print_const"
+    ],
+    "FUN_00197fe4": [
+      "rustc_demangle::v0::Printer::print_backref"
+    ],
+    "FUN_001980d2": [
+      "rustc_demangle::v0::Printer::print_backref"
+    ],
+    "FUN_001981b3": [
+      "rustc_demangle::v0::Printer::print_backref"
+    ],
+    "FUN_001982a1": [
+      "rustc_demangle::v0::Printer::print_sep_list"
+    ],
+    "FUN_001984ce": [
+      "rustc_demangle::v0::Printer::print_sep_list"
+    ],
+    "FUN_00198613": [
+      "rustc_demangle::v0::Printer::print_sep_list"
+    ],
+    "FUN_001986b0": [
+      "rustc_demangle::v0::Printer::print_sep_list"
+    ],
+    "FUN_00198747": [
+      "rustc_demangle::v0::Printer::print_sep_list"
+    ],
+    "FUN_00198920": [
+      "rustc_demangle::v0::Printer::print_sep_list"
+    ],
+    "FUN_001989c2": [
+      "rustc_demangle::v0::Printer::print_const_uint"
+    ],
+    "FUN_00198b2b": [
+      "rustc_demangle::v0::Printer::skipping_printing"
+    ],
+    "FUN_00198b81": [
+      "rustc_demangle::v0::Printer::print_const_str_literal"
+    ],
+    "FUN_00198eb8": [
+      "rustc_demangle::v0::Printer::print_lifetime_from_index"
+    ],
+    "FUN_00198fa9": [
+      "rustc_demangle::v0::Printer::print_quoted_escaped_chars"
+    ],
+    "FUN_00199158": [
+      "rustc_demangle::v0::Printer::print_path_maybe_open_generics"
+    ],
+    "FUN_0019929f": [
+      "rustc_demangle::v0::Printer::in_binder"
+    ],
+    "FUN_0019941d": [
+      "rustc_demangle::v0::Printer::in_binder"
+    ],
+    "FUN_001995a0": [
+      "rustc_demangle::v0::Printer::print_pat"
+    ],
+    "FUN_00199783": [
+      "rustc_demangle::demangle"
+    ],
+    "FUN_0019a6ec": [
+      "<rustc_demangle::Demangle as core::fmt::Display>::fmt"
+    ],
+    "FUN_0019a7f1": [
+      "<rustc_demangle::v0::Ident as core::fmt::Display>::fmt"
+    ],
+    "FUN_0019ac43": [
+      "<rustc_demangle::DemangleStyle as core::fmt::Display>::fmt"
+    ],
+    "FUN_0019ac86": [
+      "<rustc_demangle::SizeLimitExhausted as core::fmt::Debug>::fmt"
+    ],
+    "FUN_0019ac9b": [
+      "<rustc_demangle::legacy::Demangle as core::fmt::Display>::fmt"
+    ],
+    "FUN_0019bb6d": [
+      "<rustc_demangle::SizeLimitedFmtAdapter<F> as core::fmt::Write>::write_str"
+    ],
+    "FUN_0019bba0": [
+      "std_detect::detect::cache::detect_and_initialize"
+    ],
+    "FUN_0019c22d": [
+      "miniz_oxide::inflate::core::decompress"
+    ],
+    "FUN_0019dc0f": [
+      "miniz_oxide::inflate::core::apply_match"
+    ],
+    "FUN_0019dd5e": [
+      "miniz_oxide::inflate::core::transfer"
+    ],
+    "FUN_0019e14c": [
+      "miniz_oxide::inflate::core::init_tree"
+    ],
+    "FUN_0019e5f0": [
+      "adler2::Adler32::write_slice"
+    ]
+  },
+  "note": "address aliases/duplicates: FUN_001440d0: duplicate symbol for origin '<T as serde_core::de::Expected>::fmt' kept once (<T as serde_core::de::Expected>::fmt); FUN_00156510: duplicate symbol for origin 'billing_client::retry::with_retry' kept once (billing_client::retry::with_retry); FUN_00156510: duplicate symbol for origin 'billing_client::retry::with_retry' kept once (billing_client::retry::with_retry); FUN_00156510: duplicate symbol for origin 'billing_client::retry::with_retry' kept once (billing_client::retry::with_retry); FUN_00156510: duplicate symbol for origin 'billing_client::retry::with_retry' kept once (billing_client::retry::with_retry); FUN_00156510: duplicate symbol for origin 'billing_client::retry::with_retry' kept once (billing_client::retry::with_retry); FUN_00156510: duplicate symbol for origin 'billing_client::retry::with_retry' kept once (billing_client::retry::with_retry); FUN_00156510: duplicate symbol for origin 'billing_client::retry::with_retry' kept once (billing_client::retry::with_retry); FUN_00156510: duplicate symbol for origin 'billing_client::retry::with_retry' kept once (billing_client::retry::with_retry)",
+  "cross_origin_aliases": [
+    {
+      "member": "FUN_001557f0",
+      "origins": [
+        "<T as serde_core::de::Expected>::fmt",
+        "<billing_client::client::interpret::_::impl_for=billing_client::client::interpret::Envelope::deserialize::__Visitor as serde_core::de::Visitor>::expecting"
+      ]
+    },
+    {
+      "member": "FUN_00155fd0",
+      "origins": [
+        "<T as serde_core::de::Expected>::fmt",
+        "<billing_client::resources::_::impl_for=billing_client::resources::Charge::deserialize::__Visitor as serde_core::de::Visitor>::expecting"
+      ]
+    },
+    {
+      "member": "FUN_00155ff0",
+      "origins": [
+        "<T as serde_core::de::Expected>::fmt",
+        "<billing_client::resources::_::impl_for=billing_client::resources::Invoice::deserialize::__Visitor as serde_core::de::Visitor>::expecting"
+      ]
+    },
+    {
+      "member": "FUN_00156010",
+      "origins": [
+        "<T as serde_core::de::Expected>::fmt",
+        "<billing_client::resources::_::impl_for=billing_client::resources::Customer::deserialize::__Visitor as serde_core::de::Visitor>::expecting"
+      ]
+    },
+    {
+      "member": "FUN_00156030",
+      "origins": [
+        "<T as serde_core::de::Expected>::fmt",
+        "<billing_client::resources::_::impl_for=billing_client::resources::LineItem::deserialize::__Visitor as serde_core::de::Visitor>::expecting"
+      ]
+    },
+    {
+      "member": "FUN_00158070",
+      "origins": [
+        "<T as serde_core::de::Expected>::fmt",
+        "<billing_client::error::_::impl_for=billing_client::error::ApiError::deserialize::__Visitor as serde_core::de::Visitor>::expecting"
+      ]
+    }
+  ]
+}

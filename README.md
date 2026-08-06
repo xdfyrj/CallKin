@@ -37,8 +37,8 @@ python3 scores.py family_graph_03 --build O3KS --profile min --candidate-scope s
 각 profile의 네 canonical build를 채점하고 profile별 JSON으로 기록한다.
 
 ```bash
-python3 scores.py --baseline --profile plain --json-output results/plain/v0_baseline.json
-python3 scores.py --baseline --profile min --json-output results/min/v0_baseline.json
+python3 scores.py --baseline --profile plain --json-output results/micro-corpus/plain/baseline.json
+python3 scores.py --baseline --profile min --json-output results/micro-corpus/min/baseline.json
 ```
 
 Rust source부터 두 profile의 8개 canonical artifact set을 전부 다시 생성하고 검증한다.
@@ -46,6 +46,9 @@ Rust source부터 두 profile의 8개 canonical artifact set을 전부 다시 �
 ```bash
 python3 run_baseline.py
 ```
+
+각 profile의 `baseline.json`과 `all_modes.json`도
+`results/micro-corpus/<profile>/`에 함께 갱신된다.
 
 이 명령에는 `rustc`, GNU `strip`, GNU `nm`, `radare2`, Python `r2pipe`와 `capstone`이 필요하다. 현재 canonical target은 `x86_64-unknown-linux-gnu`이다.
 
@@ -74,7 +77,7 @@ python3 run_case.py billing-client --profile plain --build O3S --track direct-in
 python3 run_case.py billing-client --profile plain --build O3S --track angr
 python3 run_case.py billing-client --track angr --anchor-policy role
 python3 run_case.py billing-client --track angr --all-modes \
-  --json-output results/billing-client.angr.json
+  --json-output results/billing-client/plain/angr.address.all_modes.json
 ```
 
 이미 컴파일된 한 build에서 GT, users, fixture를 생성하고 grouping과 scoring까지 수행한다.
@@ -188,7 +191,10 @@ family_graph_03 / O3S
 family_graph_03 / O3KS
 ```
 
-저장된 결과는 [plain baseline](results/plain/v0_baseline.json)과 [min baseline](results/min/v0_baseline.json)에 있다.
+저장된 canonical 결과는 [plain baseline](results/micro-corpus/plain/baseline.json)과
+[min baseline](results/micro-corpus/min/baseline.json)에 있다. 결과 경로는 원칙적으로
+`results/<case>/<profile>/`이며, 여러 `family_graph_*` case를 합친 canonical
+결과만 `results/micro-corpus/<profile>/`에 둔다.
 
 ## Scope
 

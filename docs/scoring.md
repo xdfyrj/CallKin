@@ -532,7 +532,7 @@ trace (`--trace`를 요청한 경우)
 
 ```bash
 python3 run_case.py billing-client --track angr --all-modes \
-  --json-output results/billing-client.angr.json
+  --json-output results/billing-client/plain/angr.address.all_modes.json
 ```
 
 이 경로의 top-level schema는 version 5다. `run_summary`는 mode와 무관하므로 한 번만
@@ -605,14 +605,14 @@ count만 저장한다. 시간과 경고는 raw graph SHA에 넣지 않아 eviden
 python3 scores.py family_graph_03 \
   --profile plain \
   --candidate-scope subject \
-  --json-output results/plain/family_graph_03.O3S.json
+  --json-output results/family_graph_03/plain/O3S.json
 ```
 
 네 canonical build를 저장한다.
 
 ```bash
 python3 scores.py --baseline --profile plain \
-  --json-output results/plain/v0_baseline.json
+  --json-output results/micro-corpus/plain/baseline.json
 ```
 
 이 경우에는 extraction 실행 정보가 없으므로 기존 score-only schema를 유지한다.
@@ -695,7 +695,7 @@ python3 scores.py --baseline --profile min
 
 ```bash
 python3 scores.py --baseline --profile min --all-modes \
-  --json-output results/min/v0_all_modes.json
+  --json-output results/micro-corpus/min/all_modes.json
 ```
 
 `scores.py --baseline`은 이미 존재하는 fixture/GT를 채점한다. Source compile이나 manifest 검증을 직접 실행하지 않는다. Source부터 재생성하고 manifest를 검증하려면 다음을 사용한다.
@@ -703,6 +703,9 @@ python3 scores.py --baseline --profile min --all-modes \
 ```bash
 python3 run_baseline.py
 ```
+
+이 명령은 profile마다 full mode의 `baseline.json`과 네 mode를 모두 담은
+`all_modes.json`을 `results/micro-corpus/<profile>/`에 생성한다.
 
 ## 16. Exact regression
 
@@ -716,7 +719,8 @@ python3 run_baseline.py
 - TP/FP/FN/TN
 - PR/RE/F1/ARI
 - origin별 split/collision 결과
-- 저장된 `results/plain/v0_baseline.json`, `results/min/v0_baseline.json` 전체
+- 저장된 `results/micro-corpus/plain/baseline.json`,
+  `results/micro-corpus/min/baseline.json` 전체
 
 실행:
 

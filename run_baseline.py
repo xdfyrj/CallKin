@@ -6,7 +6,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from paths import BUILD_PROFILES, baseline_result_for
+from paths import BUILD_PROFILES, all_modes_result_for, baseline_result_for
 from scores import V0_BASELINE_JOBS
 
 
@@ -90,6 +90,15 @@ def main(argv: list[str] | None = None) -> int:
                 profile,
                 "--json-output",
                 baseline_result_for(profile),
+            ])
+            run_step([
+                "scores.py",
+                "--baseline",
+                "--all-modes",
+                "--profile",
+                profile,
+                "--json-output",
+                all_modes_result_for(profile),
             ])
         test_arguments = ["tests/test_scores.py"]
         for profile in profiles:

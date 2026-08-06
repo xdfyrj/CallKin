@@ -1,0 +1,464 @@
+{
+  "case": "billing-client",
+  "build": "O3S",
+  "profile": "plain",
+  "schema_version": 5,
+  "provenance": {
+    "build_id": "0baa6bc26c944a0baf17a7a1abf7d2f5",
+    "source_sha256": "6d8d930c87f876d1f86f371fa25003e102d280fca6b714b796713f5fa5028faa",
+    "non_stripped_sha256": "1f0b102c19873483c9c70077eaa741ae3faa93bd1c84c1b7215d4d331b4f7953",
+    "stripped_sha256": "3940270dce5d78e1ceb340c07438640445c2dcdf4d594e75cd4ffb0af710b023"
+  },
+  "origins": [
+    {
+      "origin": "<reconcile::transport::ProxyTransport as billing_client::http::Transport>::execute",
+      "members": [
+        "FUN_00135470"
+      ]
+    },
+    {
+      "origin": "reconcile::log_action",
+      "members": [
+        "FUN_00138190"
+      ]
+    },
+    {
+      "origin": "billing_client::resources::CreateCharge::against_invoice",
+      "members": [
+        "FUN_00140040"
+      ]
+    },
+    {
+      "origin": "billing_client::resources::CreateCharge::new",
+      "members": [
+        "FUN_001400e0"
+      ]
+    },
+    {
+      "origin": "billing_client::resources::CreateCharge::tag",
+      "members": [
+        "FUN_001401a0"
+      ]
+    },
+    {
+      "origin": "billing_client::resources::_::impl_for=billing_client::resources::InvoiceStatus::deserialize",
+      "members": [
+        "FUN_001402e0",
+        "FUN_00155df0"
+      ]
+    },
+    {
+      "origin": "<billing_client::resources::_::impl_for=billing_client::resources::Invoice::deserialize::__FieldVisitor as serde_core::de::Visitor>::visit_str",
+      "members": [
+        "FUN_001404a0",
+        "FUN_00156190"
+      ]
+    },
+    {
+      "origin": "<billing_client::resources::_::impl_for=billing_client::resources::InvoiceStatus::deserialize::__FieldVisitor as serde_core::de::Visitor>::visit_str",
+      "members": [
+        "FUN_001405f0",
+        "FUN_00156430"
+      ]
+    },
+    {
+      "origin": "billing_client::retry::with_retry",
+      "members": [
+        "FUN_00140c90",
+        "FUN_00156510"
+      ]
+    },
+    {
+      "origin": "billing_client::client::ClientBuilder::base_url",
+      "members": [
+        "FUN_00141500"
+      ]
+    },
+    {
+      "origin": "billing_client::client::Client::list_all",
+      "members": [
+        "FUN_00141680"
+      ]
+    },
+    {
+      "origin": "billing_client::client::Client::list_page",
+      "members": [
+        "FUN_00141ab0"
+      ]
+    },
+    {
+      "origin": "billing_client::page::ListParams::filter",
+      "members": [
+        "FUN_00143a20"
+      ]
+    },
+    {
+      "origin": "<billing_client::page::Paginator<T> as core::iter::traits::iterator::Iterator>::next",
+      "members": [
+        "FUN_00144580"
+      ]
+    },
+    {
+      "origin": "billing_client::client::ClientBuilder::build",
+      "members": [
+        "FUN_00152c10"
+      ]
+    },
+    {
+      "origin": "billing_client::client::ClientBuilder::transport",
+      "members": [
+        "FUN_00152d40"
+      ]
+    },
+    {
+      "origin": "billing_client::client::percent_encode",
+      "members": [
+        "FUN_00152dd0"
+      ]
+    },
+    {
+      "origin": "billing_client::client::Client::post",
+      "members": [
+        "FUN_00153050"
+      ]
+    },
+    {
+      "origin": "billing_client::client::Client::send",
+      "members": [
+        "FUN_00153480"
+      ]
+    },
+    {
+      "origin": "billing_client::client::Client::headers",
+      "members": [
+        "FUN_00153830"
+      ]
+    },
+    {
+      "origin": "billing_client::client::Client::build_url",
+      "members": [
+        "FUN_00154150"
+      ]
+    },
+    {
+      "origin": "billing_client::client::decode",
+      "members": [
+        "FUN_00154590",
+        "FUN_001546f0",
+        "FUN_00154850"
+      ]
+    },
+    {
+      "origin": "billing_client::client::interpret",
+      "members": [
+        "FUN_001549b0"
+      ]
+    },
+    {
+      "origin": "billing_client::resources::impl=billing_client::client::Client::get_customer",
+      "members": [
+        "FUN_001553c0"
+      ]
+    },
+    {
+      "origin": "billing_client::resources::impl=billing_client::client::Client::mark_uncollectible",
+      "members": [
+        "FUN_00155730"
+      ]
+    },
+    {
+      "origin": "billing_client::resources::impl=billing_client::client::Client::create_charge_keyed",
+      "members": [
+        "FUN_001557e0"
+      ]
+    },
+    {
+      "origin": "<billing_client::client::interpret::_::impl_for=billing_client::client::interpret::Envelope::deserialize::__Visitor as serde_core::de::Visitor>::expecting",
+      "members": [
+        "FUN_001557f0"
+      ]
+    },
+    {
+      "origin": "billing_client::resources::_::impl_for=billing_client::resources::CreateCharge::serialize",
+      "members": [
+        "FUN_00155c40"
+      ]
+    },
+    {
+      "origin": "billing_client::resources::Invoice::outstanding",
+      "members": [
+        "FUN_00155fb0"
+      ]
+    },
+    {
+      "origin": "<billing_client::resources::_::impl_for=billing_client::resources::Charge::deserialize::__Visitor as serde_core::de::Visitor>::expecting",
+      "members": [
+        "FUN_00155fd0"
+      ]
+    },
+    {
+      "origin": "<billing_client::resources::_::impl_for=billing_client::resources::Invoice::deserialize::__Visitor as serde_core::de::Visitor>::expecting",
+      "members": [
+        "FUN_00155ff0"
+      ]
+    },
+    {
+      "origin": "<billing_client::resources::_::impl_for=billing_client::resources::Customer::deserialize::__Visitor as serde_core::de::Visitor>::expecting",
+      "members": [
+        "FUN_00156010"
+      ]
+    },
+    {
+      "origin": "<billing_client::resources::_::impl_for=billing_client::resources::LineItem::deserialize::__Visitor as serde_core::de::Visitor>::expecting",
+      "members": [
+        "FUN_00156030"
+      ]
+    },
+    {
+      "origin": "<billing_client::resources::_::impl_for=billing_client::resources::Charge::deserialize::__FieldVisitor as serde_core::de::Visitor>::visit_str",
+      "members": [
+        "FUN_00156050"
+      ]
+    },
+    {
+      "origin": "<billing_client::resources::_::impl_for=billing_client::resources::Customer::deserialize::__FieldVisitor as serde_core::de::Visitor>::visit_str",
+      "members": [
+        "FUN_001562e0"
+      ]
+    },
+    {
+      "origin": "<billing_client::resources::_::impl_for=billing_client::resources::InvoiceStatus::deserialize::__FieldVisitor as serde_core::de::Visitor>::expecting",
+      "members": [
+        "FUN_00156410"
+      ]
+    },
+    {
+      "origin": "billing_client::retry::RetryPolicy::delay_for",
+      "members": [
+        "FUN_00156940"
+      ]
+    },
+    {
+      "origin": "billing_client::retry::finalize",
+      "members": [
+        "FUN_00156c70"
+      ]
+    },
+    {
+      "origin": "billing_client::error::_::impl_for=billing_client::error::ApiErrorKind::deserialize",
+      "members": [
+        "FUN_00157e40"
+      ]
+    },
+    {
+      "origin": "billing_client::error::Error::request_id",
+      "members": [
+        "FUN_00158000"
+      ]
+    },
+    {
+      "origin": "<billing_client::error::_::impl_for=billing_client::error::ApiError::deserialize::__Visitor as serde_core::de::Visitor>::expecting",
+      "members": [
+        "FUN_00158070"
+      ]
+    },
+    {
+      "origin": "<billing_client::error::_::impl_for=billing_client::error::ApiErrorKind::deserialize::__FieldVisitor as serde_core::de::Visitor>::visit_str",
+      "members": [
+        "FUN_00158090"
+      ]
+    },
+    {
+      "origin": "<billing_client::error::Error as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_00158200"
+      ]
+    },
+    {
+      "origin": "<billing_client::error::ApiError as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_001583f0"
+      ]
+    },
+    {
+      "origin": "<billing_client::error::TransportError as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_00158530"
+      ]
+    },
+    {
+      "origin": "billing_client::page::ListParams::limit",
+      "members": [
+        "FUN_00158650"
+      ]
+    },
+    {
+      "origin": "billing_client::page::ListParams::to_query",
+      "members": [
+        "FUN_001586b0"
+      ]
+    }
+  ],
+  "symbols": {
+    "FUN_00135470": [
+      "<reconcile::transport::ProxyTransport as billing_client::http::Transport>::execute"
+    ],
+    "FUN_00138190": [
+      "reconcile::log_action"
+    ],
+    "FUN_00140040": [
+      "billing_client::resources::CreateCharge::against_invoice"
+    ],
+    "FUN_001400e0": [
+      "billing_client::resources::CreateCharge::new"
+    ],
+    "FUN_001401a0": [
+      "billing_client::resources::CreateCharge::tag"
+    ],
+    "FUN_001402e0": [
+      "billing_client::resources::_::<impl serde_core::de::Deserialize for billing_client::resources::InvoiceStatus>::deserialize"
+    ],
+    "FUN_001404a0": [
+      "<billing_client::resources::_::<impl serde_core::de::Deserialize for billing_client::resources::Invoice>::deserialize::__FieldVisitor as serde_core::de::Visitor>::visit_str"
+    ],
+    "FUN_001405f0": [
+      "<billing_client::resources::_::<impl serde_core::de::Deserialize for billing_client::resources::InvoiceStatus>::deserialize::__FieldVisitor as serde_core::de::Visitor>::visit_str"
+    ],
+    "FUN_00140c90": [
+      "billing_client::retry::with_retry"
+    ],
+    "FUN_00141500": [
+      "billing_client::client::ClientBuilder::base_url"
+    ],
+    "FUN_00141680": [
+      "billing_client::client::Client::list_all"
+    ],
+    "FUN_00141ab0": [
+      "billing_client::client::Client::list_page"
+    ],
+    "FUN_00143a20": [
+      "billing_client::page::ListParams::filter"
+    ],
+    "FUN_00144580": [
+      "<billing_client::page::Paginator<T> as core::iter::traits::iterator::Iterator>::next"
+    ],
+    "FUN_00152c10": [
+      "billing_client::client::ClientBuilder::build"
+    ],
+    "FUN_00152d40": [
+      "billing_client::client::ClientBuilder::transport"
+    ],
+    "FUN_00152dd0": [
+      "billing_client::client::percent_encode"
+    ],
+    "FUN_00153050": [
+      "billing_client::client::Client::post"
+    ],
+    "FUN_00153480": [
+      "billing_client::client::Client::send"
+    ],
+    "FUN_00153830": [
+      "billing_client::client::Client::headers"
+    ],
+    "FUN_00154150": [
+      "billing_client::client::Client::build_url"
+    ],
+    "FUN_00154590": [
+      "billing_client::client::decode"
+    ],
+    "FUN_001546f0": [
+      "billing_client::client::decode"
+    ],
+    "FUN_00154850": [
+      "billing_client::client::decode"
+    ],
+    "FUN_001549b0": [
+      "billing_client::client::interpret"
+    ],
+    "FUN_001553c0": [
+      "billing_client::resources::<impl billing_client::client::Client>::get_customer"
+    ],
+    "FUN_00155730": [
+      "billing_client::resources::<impl billing_client::client::Client>::mark_uncollectible"
+    ],
+    "FUN_001557e0": [
+      "billing_client::resources::<impl billing_client::client::Client>::create_charge_keyed"
+    ],
+    "FUN_001557f0": [
+      "<billing_client::client::interpret::_::<impl serde_core::de::Deserialize for billing_client::client::interpret::Envelope>::deserialize::__Visitor as serde_core::de::Visitor>::expecting"
+    ],
+    "FUN_00155c40": [
+      "billing_client::resources::_::<impl serde_core::ser::Serialize for billing_client::resources::CreateCharge>::serialize"
+    ],
+    "FUN_00155df0": [
+      "billing_client::resources::_::<impl serde_core::de::Deserialize for billing_client::resources::InvoiceStatus>::deserialize"
+    ],
+    "FUN_00155fb0": [
+      "billing_client::resources::Invoice::outstanding"
+    ],
+    "FUN_00155fd0": [
+      "<billing_client::resources::_::<impl serde_core::de::Deserialize for billing_client::resources::Charge>::deserialize::__Visitor as serde_core::de::Visitor>::expecting"
+    ],
+    "FUN_00155ff0": [
+      "<billing_client::resources::_::<impl serde_core::de::Deserialize for billing_client::resources::Invoice>::deserialize::__Visitor as serde_core::de::Visitor>::expecting"
+    ],
+    "FUN_00156010": [
+      "<billing_client::resources::_::<impl serde_core::de::Deserialize for billing_client::resources::Customer>::deserialize::__Visitor as serde_core::de::Visitor>::expecting"
+    ],
+    "FUN_00156030": [
+      "<billing_client::resources::_::<impl serde_core::de::Deserialize for billing_client::resources::LineItem>::deserialize::__Visitor as serde_core::de::Visitor>::expecting"
+    ],
+    "FUN_00156050": [
+      "<billing_client::resources::_::<impl serde_core::de::Deserialize for billing_client::resources::Charge>::deserialize::__FieldVisitor as serde_core::de::Visitor>::visit_str"
+    ],
+    "FUN_00156190": [
+      "<billing_client::resources::_::<impl serde_core::de::Deserialize for billing_client::resources::Invoice>::deserialize::__FieldVisitor as serde_core::de::Visitor>::visit_str"
+    ],
+    "FUN_001562e0": [
+      "<billing_client::resources::_::<impl serde_core::de::Deserialize for billing_client::resources::Customer>::deserialize::__FieldVisitor as serde_core::de::Visitor>::visit_str"
+    ],
+    "FUN_00156410": [
+      "<billing_client::resources::_::<impl serde_core::de::Deserialize for billing_client::resources::InvoiceStatus>::deserialize::__FieldVisitor as serde_core::de::Visitor>::expecting"
+    ],
+    "FUN_00156430": [
+      "<billing_client::resources::_::<impl serde_core::de::Deserialize for billing_client::resources::InvoiceStatus>::deserialize::__FieldVisitor as serde_core::de::Visitor>::visit_str"
+    ],
+    "FUN_00156510": [
+      "billing_client::retry::with_retry"
+    ],
+    "FUN_00156940": [
+      "billing_client::retry::RetryPolicy::delay_for"
+    ],
+    "FUN_00156c70": [
+      "billing_client::retry::finalize"
+    ],
+    "FUN_00157e40": [
+      "billing_client::error::_::<impl serde_core::de::Deserialize for billing_client::error::ApiErrorKind>::deserialize"
+    ],
+    "FUN_00158000": [
+      "billing_client::error::Error::request_id"
+    ],
+    "FUN_00158070": [
+      "<billing_client::error::_::<impl serde_core::de::Deserialize for billing_client::error::ApiError>::deserialize::__Visitor as serde_core::de::Visitor>::expecting"
+    ],
+    "FUN_00158090": [
+      "<billing_client::error::_::<impl serde_core::de::Deserialize for billing_client::error::ApiErrorKind>::deserialize::__FieldVisitor as serde_core::de::Visitor>::visit_str"
+    ],
+    "FUN_00158200": [
+      "<billing_client::error::Error as core::fmt::Display>::fmt"
+    ],
+    "FUN_001583f0": [
+      "<billing_client::error::ApiError as core::fmt::Display>::fmt"
+    ],
+    "FUN_00158530": [
+      "<billing_client::error::TransportError as core::fmt::Display>::fmt"
+    ],
+    "FUN_00158650": [
+      "billing_client::page::ListParams::limit"
+    ],
+    "FUN_001586b0": [
+      "billing_client::page::ListParams::to_query"
+    ]
+  },
+  "note": "address aliases/duplicates: FUN_00156510: duplicate symbol for origin 'billing_client::retry::with_retry' kept once (billing_client::retry::with_retry); FUN_00156510: duplicate symbol for origin 'billing_client::retry::with_retry' kept once (billing_client::retry::with_retry); FUN_00156510: duplicate symbol for origin 'billing_client::retry::with_retry' kept once (billing_client::retry::with_retry); FUN_00156510: duplicate symbol for origin 'billing_client::retry::with_retry' kept once (billing_client::retry::with_retry); FUN_00156510: duplicate symbol for origin 'billing_client::retry::with_retry' kept once (billing_client::retry::with_retry); FUN_00156510: duplicate symbol for origin 'billing_client::retry::with_retry' kept once (billing_client::retry::with_retry); FUN_00156510: duplicate symbol for origin 'billing_client::retry::with_retry' kept once (billing_client::retry::with_retry); FUN_00156510: duplicate symbol for origin 'billing_client::retry::with_retry' kept once (billing_client::retry::with_retry)"
+}

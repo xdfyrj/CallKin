@@ -1,0 +1,4831 @@
+{
+  "case": "zoxide",
+  "build": "O3S",
+  "profile": "plain",
+  "schema_version": 6,
+  "provenance": {
+    "build_id": "5d3e743e26b643c591b111a8fefbd3cb",
+    "source_sha256": "3302869e7a42a926fc3e6113bf793f9bed85f75850c466838064a12db66a2154",
+    "non_stripped_sha256": "a37ccf63601b2012ba0edbc2ab63d9442f4830fbb41e6b87f1c43a16f32dba7c",
+    "stripped_sha256": "3c07eb724eefb1bc5052c3cdf3e8597f9c51eb42a9b09b86265d9994bc8bbf83"
+  },
+  "origins": [
+    {
+      "origin": "clap_builder::derive::Parser::parse",
+      "members": [
+        "FUN_00158de0"
+      ]
+    },
+    {
+      "origin": "<() as askama::values::Values>::get_value",
+      "members": [
+        "FUN_0015c620"
+      ]
+    },
+    {
+      "origin": "<zoxide::cmd::cmd::Cmd as zoxide::cmd::Run>::run",
+      "members": [
+        "FUN_0015c7b0"
+      ]
+    },
+    {
+      "origin": "anyhow::__private::format_err",
+      "members": [
+        "FUN_0015f090",
+        "FUN_00182da0",
+        "FUN_00184d60",
+        "FUN_00191310"
+      ]
+    },
+    {
+      "origin": "zoxide::db::impl=zoxide::db::ouroboros_impl_database::Database::add::{{closure}}",
+      "members": [
+        "FUN_0015f0d0"
+      ]
+    },
+    {
+      "origin": "zoxide::cmd::edit::impl=zoxide::cmd::cmd::Edit::get_fzf",
+      "members": [
+        "FUN_0015f220"
+      ]
+    },
+    {
+      "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::type_id",
+      "members": [
+        "FUN_0015f4b0",
+        "FUN_0017c590",
+        "FUN_0017c5a0",
+        "FUN_001c7210",
+        "FUN_001c7220",
+        "FUN_001c7230",
+        "FUN_001c7240",
+        "FUN_001c7250",
+        "FUN_001deda0"
+      ]
+    },
+    {
+      "origin": "<zoxide::cmd::cmd::Cmd as clap_builder::derive::Subcommand>::augment_subcommands",
+      "members": [
+        "FUN_0015f4c0"
+      ]
+    },
+    {
+      "origin": "<zoxide::cmd::cmd::InitShell as clap_builder::derive::ValueEnum>::to_possible_value",
+      "members": [
+        "FUN_00167330"
+      ]
+    },
+    {
+      "origin": "zoxide::shell::_::impl_for=zoxide::shell::Zsh::render_into_with_values",
+      "members": [
+        "FUN_001675f0"
+      ]
+    },
+    {
+      "origin": "zoxide::shell::_::impl_for=zoxide::shell::Bash::render_into_with_values",
+      "members": [
+        "FUN_00167a40"
+      ]
+    },
+    {
+      "origin": "zoxide::shell::_::impl_for=zoxide::shell::Fish::render_into_with_values",
+      "members": [
+        "FUN_00167ec0"
+      ]
+    },
+    {
+      "origin": "zoxide::shell::_::impl_for=zoxide::shell::Tcsh::render_into_with_values",
+      "members": [
+        "FUN_00168330"
+      ]
+    },
+    {
+      "origin": "zoxide::shell::_::impl_for=zoxide::shell::Posix::render_into_with_values",
+      "members": [
+        "FUN_00168690"
+      ]
+    },
+    {
+      "origin": "zoxide::shell::_::impl_for=zoxide::shell::Xonsh::render_into_with_values",
+      "members": [
+        "FUN_00168a70"
+      ]
+    },
+    {
+      "origin": "zoxide::shell::_::impl_for=zoxide::shell::Elvish::render_into_with_values",
+      "members": [
+        "FUN_00168dc0"
+      ]
+    },
+    {
+      "origin": "zoxide::shell::_::impl_for=zoxide::shell::Nushell::render_into_with_values",
+      "members": [
+        "FUN_00169100"
+      ]
+    },
+    {
+      "origin": "zoxide::shell::_::impl_for=zoxide::shell::Powershell::render_into_with_values",
+      "members": [
+        "FUN_00169400"
+      ]
+    },
+    {
+      "origin": "clap_builder::util::any_value::AnyValue::downcast_into",
+      "members": [
+        "FUN_001696b0",
+        "FUN_001697b0",
+        "FUN_001698b0",
+        "FUN_00169a10",
+        "FUN_00169b20",
+        "FUN_00169cc0"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::ext::Extensions::set",
+      "members": [
+        "FUN_00169dc0"
+      ]
+    },
+    {
+      "origin": "<glob::PatternError as core::fmt::Debug>::fmt",
+      "members": [
+        "FUN_0016aba0",
+        "FUN_0016d3e0"
+      ]
+    },
+    {
+      "origin": "<askama::error::Error as core::fmt::Debug>::fmt",
+      "members": [
+        "FUN_0016ac00",
+        "FUN_0016d440"
+      ]
+    },
+    {
+      "origin": "<glob::PatternError as core::error::Error>::description",
+      "members": [
+        "FUN_0016ac80",
+        "FUN_0016d4c0"
+      ]
+    },
+    {
+      "origin": "<askama::error::Error as core::error::Error>::source",
+      "members": [
+        "FUN_0016ac90",
+        "FUN_0016d4d0"
+      ]
+    },
+    {
+      "origin": "<time::error::parse::Parse as core::fmt::Debug>::fmt",
+      "members": [
+        "FUN_0016b090",
+        "FUN_0016d500"
+      ]
+    },
+    {
+      "origin": "<time::error::parse::Parse as core::error::Error>::source",
+      "members": [
+        "FUN_0016b190",
+        "FUN_0016d600"
+      ]
+    },
+    {
+      "origin": "<time::error::parse::Parse as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_0016b1b0",
+        "FUN_0016d620"
+      ]
+    },
+    {
+      "origin": "anyhow::error::object_ref",
+      "members": [
+        "FUN_0016b2f0",
+        "FUN_0016b300",
+        "FUN_0016b310",
+        "FUN_0016b320",
+        "FUN_0016b330",
+        "FUN_0016b340",
+        "FUN_0016b350",
+        "FUN_0016b360",
+        "FUN_0016b370",
+        "FUN_0016b380",
+        "FUN_0016b390",
+        "FUN_0016b3a0",
+        "FUN_0016b3b0",
+        "FUN_0016b3c0",
+        "FUN_0016b3d0",
+        "FUN_0016b3e0",
+        "FUN_0016b3f0",
+        "FUN_0016b400",
+        "FUN_0016b410"
+      ]
+    },
+    {
+      "origin": "anyhow::error::no_backtrace",
+      "members": [
+        "FUN_0016b420"
+      ]
+    },
+    {
+      "origin": "anyhow::error::object_boxed",
+      "members": [
+        "FUN_0016b430",
+        "FUN_0016b440",
+        "FUN_0016b450",
+        "FUN_0016b460",
+        "FUN_0016b470",
+        "FUN_0016b480",
+        "FUN_0016b490",
+        "FUN_0016b4a0",
+        "FUN_0016b4b0",
+        "FUN_0016b4c0",
+        "FUN_0016b4d0",
+        "FUN_0016b4e0",
+        "FUN_0016b4f0",
+        "FUN_0016b500",
+        "FUN_0016b510",
+        "FUN_0016b520",
+        "FUN_0016b530",
+        "FUN_0016b540",
+        "FUN_0016b550"
+      ]
+    },
+    {
+      "origin": "anyhow::error::object_downcast",
+      "members": [
+        "FUN_0016b560",
+        "FUN_0016b590",
+        "FUN_0016b5c0",
+        "FUN_0016b5f0",
+        "FUN_0016b620",
+        "FUN_0016b650",
+        "FUN_0016b680",
+        "FUN_0016b6b0"
+      ]
+    },
+    {
+      "origin": "anyhow::error::context_downcast",
+      "members": [
+        "FUN_0016b6e0",
+        "FUN_0016b730",
+        "FUN_0016b780",
+        "FUN_0016b7d0",
+        "FUN_0016b820",
+        "FUN_0016b870",
+        "FUN_0016b8c0"
+      ]
+    },
+    {
+      "origin": "anyhow::error::impl=anyhow::Error::msg",
+      "members": [
+        "FUN_0016b910",
+        "FUN_0016b990"
+      ]
+    },
+    {
+      "origin": "anyhow::error::impl=anyhow::Error::construct",
+      "members": [
+        "FUN_0016b9d0",
+        "FUN_0016baa0",
+        "FUN_0016bb60",
+        "FUN_0016bc20",
+        "FUN_0016bcd0",
+        "FUN_0016bd80",
+        "FUN_0016be50",
+        "FUN_0016bf10",
+        "FUN_0016bfd0",
+        "FUN_0016c090",
+        "FUN_0016c170",
+        "FUN_0016c230",
+        "FUN_0016c2f0",
+        "FUN_0016c3b0",
+        "FUN_0016c480",
+        "FUN_0016c540",
+        "FUN_0016c600",
+        "FUN_0016c6a0",
+        "FUN_0016c740"
+      ]
+    },
+    {
+      "origin": "anyhow::error::impl_for=anyhow::Error::from",
+      "members": [
+        "FUN_0016c800",
+        "FUN_0016c870",
+        "FUN_0016c8a0",
+        "FUN_0016c910",
+        "FUN_0016c940"
+      ]
+    },
+    {
+      "origin": "anyhow::context::impl_for=anyhow::error::ContextError<C,E>::source",
+      "members": [
+        "FUN_0016c970",
+        "FUN_0016c980",
+        "FUN_0016c990",
+        "FUN_0016c9a0",
+        "FUN_0016c9b0",
+        "FUN_0016c9c0",
+        "FUN_0016c9d0"
+      ]
+    },
+    {
+      "origin": "<time::error::try_from_parsed::TryFromParsed as core::fmt::Debug>::fmt",
+      "members": [
+        "FUN_0016ca30",
+        "FUN_0016fde0"
+      ]
+    },
+    {
+      "origin": "<time::error::component_range::ComponentRange as core::fmt::Debug>::fmt",
+      "members": [
+        "FUN_0016ca80",
+        "FUN_0016fe30"
+      ]
+    },
+    {
+      "origin": "<time::error::try_from_parsed::TryFromParsed as core::error::Error>::source",
+      "members": [
+        "FUN_0016caf0",
+        "FUN_0016fea0"
+      ]
+    },
+    {
+      "origin": "<time::error::try_from_parsed::TryFromParsed as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_0016cb10",
+        "FUN_0016fec0"
+      ]
+    },
+    {
+      "origin": "<time::error::component_range::ComponentRange as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_0016cb70",
+        "FUN_0016ff20"
+      ]
+    },
+    {
+      "origin": "<time::error::parse_from_description::ParseFromDescription as core::fmt::Debug>::fmt",
+      "members": [
+        "FUN_0016cbb0",
+        "FUN_0016ff60"
+      ]
+    },
+    {
+      "origin": "<time::error::parse_from_description::ParseFromDescription as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_0016cc20",
+        "FUN_0016ffd0"
+      ]
+    },
+    {
+      "origin": "anyhow::error::object_drop",
+      "members": [
+        "FUN_0016d760",
+        "FUN_0016d7b0",
+        "FUN_0016d890",
+        "FUN_0016d8e0",
+        "FUN_0016d930",
+        "FUN_0016da10",
+        "FUN_0016dad0",
+        "FUN_0016db60",
+        "FUN_0016dbd0",
+        "FUN_0016dc40",
+        "FUN_0016dcc0",
+        "FUN_0016dd50",
+        "FUN_0016ddc0",
+        "FUN_0016de40"
+      ]
+    },
+    {
+      "origin": "anyhow::error::context_backtrace",
+      "members": [
+        "FUN_0016dec0",
+        "FUN_0016ded0"
+      ]
+    },
+    {
+      "origin": "anyhow::error::context_drop_rest",
+      "members": [
+        "FUN_0016dee0",
+        "FUN_0016df80",
+        "FUN_0016e030",
+        "FUN_0016e140",
+        "FUN_0016e1c0",
+        "FUN_0016e2b0",
+        "FUN_0016e360"
+      ]
+    },
+    {
+      "origin": "anyhow::error::object_drop_front",
+      "members": [
+        "FUN_0016e430",
+        "FUN_0016e480",
+        "FUN_0016e4d0",
+        "FUN_0016e520"
+      ]
+    },
+    {
+      "origin": "anyhow::error::context_chain_downcast",
+      "members": [
+        "FUN_0016e570",
+        "FUN_0016e5a0"
+      ]
+    },
+    {
+      "origin": "anyhow::error::context_chain_drop_rest",
+      "members": [
+        "FUN_0016e5d0",
+        "FUN_0016e6a0"
+      ]
+    },
+    {
+      "origin": "anyhow::error::object_reallocate_boxed",
+      "members": [
+        "FUN_0016e7a0",
+        "FUN_0016e880",
+        "FUN_0016e960",
+        "FUN_0016ea30",
+        "FUN_0016eb00",
+        "FUN_0016ebc0",
+        "FUN_0016ec90",
+        "FUN_0016ed70",
+        "FUN_0016ee50",
+        "FUN_0016ef30",
+        "FUN_0016f020",
+        "FUN_0016f0e0",
+        "FUN_0016f1d0",
+        "FUN_0016f280",
+        "FUN_0016f360",
+        "FUN_0016f410",
+        "FUN_0016f510",
+        "FUN_0016f5e0",
+        "FUN_0016f6a0"
+      ]
+    },
+    {
+      "origin": "anyhow::context::impl_for=anyhow::error::ContextError<C,anyhow::Error>::source",
+      "members": [
+        "FUN_0016f780",
+        "FUN_0016f790"
+      ]
+    },
+    {
+      "origin": "anyhow::context::impl_for=anyhow::error::ContextError<C,E>::fmt",
+      "members": [
+        "FUN_0016f7a0",
+        "FUN_0016f830",
+        "FUN_0016f8c0",
+        "FUN_0016f950",
+        "FUN_0016f9e0",
+        "FUN_0016fa70",
+        "FUN_0016fb00",
+        "FUN_0016fb90",
+        "FUN_0016fc20",
+        "FUN_0016fcb0",
+        "FUN_0016fcd0",
+        "FUN_0016fcf0",
+        "FUN_0016fd10",
+        "FUN_0016fd30"
+      ]
+    },
+    {
+      "origin": "<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt",
+      "members": [
+        "FUN_0016fd50"
+      ]
+    },
+    {
+      "origin": "<anyhow::error::ErrorImpl<E> as core::error::Error>::source",
+      "members": [
+        "FUN_0016fd60"
+      ]
+    },
+    {
+      "origin": "<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_0016fd70"
+      ]
+    },
+    {
+      "origin": "serde_core::de::Error::invalid_length",
+      "members": [
+        "FUN_00170240"
+      ]
+    },
+    {
+      "origin": "<core::result::Result<(),std::io::error::Error> as zoxide::error::BrokenPipeHandler>::pipe_exit",
+      "members": [
+        "FUN_00170300"
+      ]
+    },
+    {
+      "origin": "<serde_core::de::impls::impl_for=alloc::vec::Vec<T>::deserialize::VecVisitor<T> as serde_core::de::Visitor>::visit_seq",
+      "members": [
+        "FUN_001703c0"
+      ]
+    },
+    {
+      "origin": "<E as anyhow::context::ext::StdError>::ext_context",
+      "members": [
+        "FUN_00170980",
+        "FUN_00171ea0",
+        "FUN_001776e0",
+        "FUN_00177760",
+        "FUN_0017e9c0",
+        "FUN_001849f0",
+        "FUN_00187ff0"
+      ]
+    },
+    {
+      "origin": "anyhow::context::impl_for=core::result::Result<T,E>::with_context",
+      "members": [
+        "FUN_00170b80"
+      ]
+    },
+    {
+      "origin": "zoxide::config::exclude_dirs",
+      "members": [
+        "FUN_00170c40"
+      ]
+    },
+    {
+      "origin": "zoxide::config::resolve_symlinks",
+      "members": [
+        "FUN_00170ef0"
+      ]
+    },
+    {
+      "origin": "zoxide::config::maxage",
+      "members": [
+        "FUN_00170f60"
+      ]
+    },
+    {
+      "origin": "zoxide::config::data_dir",
+      "members": [
+        "FUN_001711a0"
+      ]
+    },
+    {
+      "origin": "<zoxide::import::z_lua::ZLua as zoxide::import::Importer>::dirs",
+      "members": [
+        "FUN_00171470"
+      ]
+    },
+    {
+      "origin": "zoxide::import::run",
+      "members": [
+        "FUN_00171fe0",
+        "FUN_00172750",
+        "FUN_00172ec0",
+        "FUN_00173630",
+        "FUN_00173da0",
+        "FUN_001744d0"
+      ]
+    },
+    {
+      "origin": "<zoxide::db::dir::DirDisplay as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_00176d50"
+      ]
+    },
+    {
+      "origin": "zoxide::db::dir::_::impl_for=zoxide::db::dir::Dir::serialize",
+      "members": [
+        "FUN_00176e70"
+      ]
+    },
+    {
+      "origin": "<&mut bincode::de::Deserializer<R,O> as serde_core::de::Deserializer>::deserialize_str",
+      "members": [
+        "FUN_00177cf0"
+      ]
+    },
+    {
+      "origin": "<&mut bincode::de::Deserializer<R,O> as serde_core::de::Deserializer>::deserialize_struct",
+      "members": [
+        "FUN_00177ea0"
+      ]
+    },
+    {
+      "origin": "clap_builder::error::Error<F>::invalid_value",
+      "members": [
+        "FUN_001780e0",
+        "FUN_001b9eb0"
+      ]
+    },
+    {
+      "origin": "clap_builder::error::Error<F>::raw",
+      "members": [
+        "FUN_00178670",
+        "FUN_00178910"
+      ]
+    },
+    {
+      "origin": "clap_builder::error::Error<F>::exit",
+      "members": [
+        "FUN_00178bf0"
+      ]
+    },
+    {
+      "origin": "clap_builder::error::Error<F>::print",
+      "members": [
+        "FUN_00178c20"
+      ]
+    },
+    {
+      "origin": "clap_builder::error::Error<F>::with_cmd",
+      "members": [
+        "FUN_00178d40",
+        "FUN_001bdc10"
+      ]
+    },
+    {
+      "origin": "clap_builder::derive::format_error",
+      "members": [
+        "FUN_00179150"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::error::MatchesError::unwrap",
+      "members": [
+        "FUN_001792b0",
+        "FUN_00179330",
+        "FUN_001cb110"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::arg::Arg::value_names",
+      "members": [
+        "FUN_001793c0",
+        "FUN_001df6d0"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::arg::Arg::value_parser",
+      "members": [
+        "FUN_00179490",
+        "FUN_00179570",
+        "FUN_00179650"
+      ]
+    },
+    {
+      "origin": "<clap_builder::builder::value_parser::EnumValueParser<E> as clap_builder::builder::value_parser::TypedValueParser>::parse_ref",
+      "members": [
+        "FUN_00179730",
+        "FUN_0017a2c0"
+      ]
+    },
+    {
+      "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref_",
+      "members": [
+        "FUN_0017c2f0",
+        "FUN_0017c390",
+        "FUN_0017c440",
+        "FUN_001c6cc0",
+        "FUN_001c6dc0",
+        "FUN_001c6e60",
+        "FUN_001c6fb0",
+        "FUN_001c7100"
+      ]
+    },
+    {
+      "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::possible_values",
+      "members": [
+        "FUN_0017c4e0",
+        "FUN_0017c530",
+        "FUN_0017c580",
+        "FUN_001c71a0",
+        "FUN_001c71f0",
+        "FUN_001c7200"
+      ]
+    },
+    {
+      "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::clone_any",
+      "members": [
+        "FUN_0017c5b0",
+        "FUN_0017c5c0",
+        "FUN_0017c600",
+        "FUN_001c7260",
+        "FUN_001c7270",
+        "FUN_001c72e0",
+        "FUN_001c72f0",
+        "FUN_001c7300"
+      ]
+    },
+    {
+      "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref",
+      "members": [
+        "FUN_0017c610",
+        "FUN_0017c6b0",
+        "FUN_0017c750",
+        "FUN_001c7310",
+        "FUN_001c7460",
+        "FUN_001c7500",
+        "FUN_001c75a0",
+        "FUN_001c76f0"
+      ]
+    },
+    {
+      "origin": "<F as clap_builder::builder::value_parser::TypedValueParser>::parse_ref",
+      "members": [
+        "FUN_0017c800"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::features::suggestions::did_you_mean",
+      "members": [
+        "FUN_0017d030",
+        "FUN_001c7d80",
+        "FUN_001c8180",
+        "FUN_001c8410"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::arg_group::ArgGroup::args",
+      "members": [
+        "FUN_0017d2c0",
+        "FUN_0017d6e0",
+        "FUN_0017dde0"
+      ]
+    },
+    {
+      "origin": "zoxide::db::stream::StreamOptions::with_keywords",
+      "members": [
+        "FUN_0017ea40"
+      ]
+    },
+    {
+      "origin": "zoxide::db::stream::Stream::next",
+      "members": [
+        "FUN_0017eb40"
+      ]
+    },
+    {
+      "origin": "bincode::internal::deserialize_seed",
+      "members": [
+        "FUN_0017f2c0",
+        "FUN_0017f3d0"
+      ]
+    },
+    {
+      "origin": "<aliasable::boxed::AliasableBox<T> as core::ops::drop::Drop>::drop",
+      "members": [
+        "FUN_0017f610"
+      ]
+    },
+    {
+      "origin": "time::parsing::parsed::impl_for=time::format_description::borrowed_format_item::BorrowedFormatItem::parse_item",
+      "members": [
+        "FUN_00182a20"
+      ]
+    },
+    {
+      "origin": "<zoxide::import::atuin::Iter as core::ops::drop::Drop>::drop",
+      "members": [
+        "FUN_00182c70"
+      ]
+    },
+    {
+      "origin": "zoxide::import::atuin::Iter::parse_line::{{closure}}",
+      "members": [
+        "FUN_00182df0"
+      ]
+    },
+    {
+      "origin": "<zoxide::import::atuin::Atuin as zoxide::import::Importer>::dirs",
+      "members": [
+        "FUN_00182eb0"
+      ]
+    },
+    {
+      "origin": "<zoxide::import::atuin::Iter as core::iter::traits::iterator::Iterator>::next",
+      "members": [
+        "FUN_001835f0"
+      ]
+    },
+    {
+      "origin": "<zoxide::import::z::Z as zoxide::import::Importer>::dirs",
+      "members": [
+        "FUN_00184ae0"
+      ]
+    },
+    {
+      "origin": "zoxide::db::impl=zoxide::db::ouroboros_impl_database::Database::sort_by_score",
+      "members": [
+        "FUN_00184db0"
+      ]
+    },
+    {
+      "origin": "zoxide::db::impl=zoxide::db::ouroboros_impl_database::Database::age",
+      "members": [
+        "FUN_00184e20"
+      ]
+    },
+    {
+      "origin": "zoxide::db::impl=zoxide::db::ouroboros_impl_database::Database::open",
+      "members": [
+        "FUN_00184fd0"
+      ]
+    },
+    {
+      "origin": "zoxide::db::impl=zoxide::db::ouroboros_impl_database::Database::save",
+      "members": [
+        "FUN_001857a0"
+      ]
+    },
+    {
+      "origin": "zoxide::db::impl=zoxide::db::ouroboros_impl_database::Database::dedup",
+      "members": [
+        "FUN_00185b10"
+      ]
+    },
+    {
+      "origin": "zoxide::db::impl=zoxide::db::ouroboros_impl_database::Database::remove",
+      "members": [
+        "FUN_00185c90"
+      ]
+    },
+    {
+      "origin": "zoxide::import::z::Iter<R>::parse_line::{{closure}}",
+      "members": [
+        "FUN_00185d80",
+        "FUN_00185e60"
+      ]
+    },
+    {
+      "origin": "<zoxide::db::ouroboros_impl_database::Database as core::ops::drop::Drop>::drop",
+      "members": [
+        "FUN_001860a0"
+      ]
+    },
+    {
+      "origin": "<zoxide::import::z::Iter<R> as core::iter::traits::iterator::Iterator>::next",
+      "members": [
+        "FUN_00186170"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::command::Command::get_matches_from",
+      "members": [
+        "FUN_00186710"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::command::Command::new",
+      "members": [
+        "FUN_00186da0"
+      ]
+    },
+    {
+      "origin": "shared-address@FUN_00188200",
+      "members": [
+        "FUN_00188200"
+      ]
+    },
+    {
+      "origin": "anyhow::context::impl_for=core::option::Option<T>::context",
+      "members": [
+        "FUN_00188220"
+      ]
+    },
+    {
+      "origin": "zoxide::util::path_to_str",
+      "members": [
+        "FUN_00188270"
+      ]
+    },
+    {
+      "origin": "zoxide::util::canonicalize",
+      "members": [
+        "FUN_00188370"
+      ]
+    },
+    {
+      "origin": "zoxide::util::resolve_path",
+      "members": [
+        "FUN_00188440"
+      ]
+    },
+    {
+      "origin": "zoxide::util::to_lowercase",
+      "members": [
+        "FUN_00188aa0"
+      ]
+    },
+    {
+      "origin": "zoxide::util::Fzf::enable_preview",
+      "members": [
+        "FUN_00188dd0"
+      ]
+    },
+    {
+      "origin": "zoxide::util::Fzf::new",
+      "members": [
+        "FUN_00188e80"
+      ]
+    },
+    {
+      "origin": "zoxide::util::Fzf::spawn",
+      "members": [
+        "FUN_00188f40"
+      ]
+    },
+    {
+      "origin": "zoxide::util::write",
+      "members": [
+        "FUN_00188ff0"
+      ]
+    },
+    {
+      "origin": "zoxide::util::FzfChild::wait",
+      "members": [
+        "FUN_00189b70"
+      ]
+    },
+    {
+      "origin": "zoxide::util::FzfChild::write",
+      "members": [
+        "FUN_00189d60"
+      ]
+    },
+    {
+      "origin": "<zoxide::import::fasd::Fasd as zoxide::import::Importer>::dirs",
+      "members": [
+        "FUN_00189f20"
+      ]
+    },
+    {
+      "origin": "shared-address@FUN_0018a1a0",
+      "members": [
+        "FUN_0018a1a0"
+      ]
+    },
+    {
+      "origin": "<anyhow::wrapper::MessageError<M> as core::fmt::Debug>::fmt",
+      "members": [
+        "FUN_0018a1c0",
+        "FUN_0018a1e0",
+        "FUN_0018a200"
+      ]
+    },
+    {
+      "origin": "<anyhow::wrapper::MessageError<M> as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_0018a250"
+      ]
+    },
+    {
+      "origin": "<clap_builder::parser::matches::arg_matches::Values<T> as core::iter::traits::iterator::Iterator>::next",
+      "members": [
+        "FUN_0018a260"
+      ]
+    },
+    {
+      "origin": "clap_builder::util::flat_map::FlatMap<K,V>::insert",
+      "members": [
+        "FUN_0018a3b0",
+        "FUN_0018a5a0",
+        "FUN_001cbf40",
+        "FUN_001cc130"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::matches::arg_matches::ArgMatches::try_remove_one",
+      "members": [
+        "FUN_0018a810",
+        "FUN_0018aae0",
+        "FUN_0018b140",
+        "FUN_0018b790",
+        "FUN_0018bde0"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::matches::arg_matches::ArgMatches::try_remove_many",
+      "members": [
+        "FUN_0018c430"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::matches::arg_matches::ArgMatches::try_remove_arg_t",
+      "members": [
+        "FUN_0018c910"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::matches::arg_matches::unwrap_downcast_into{{reify.shim}}",
+      "members": [
+        "FUN_0018cca0",
+        "FUN_0018cd40"
+      ]
+    },
+    {
+      "origin": "<anyhow::context::Quoted<C> as core::fmt::Debug>::fmt",
+      "members": [
+        "FUN_001911a0",
+        "FUN_00191220"
+      ]
+    },
+    {
+      "origin": "anyhow::kind::Adhoc::new",
+      "members": [
+        "FUN_001912a0",
+        "FUN_001912e0"
+      ]
+    },
+    {
+      "origin": "zoxide::import::autojump::Iter<R>::parse_line::{{closure}}",
+      "members": [
+        "FUN_00191360",
+        "FUN_00191460",
+        "FUN_001915a0"
+      ]
+    },
+    {
+      "origin": "<zoxide::import::zsh_z::ZshZ as zoxide::import::Importer>::dirs",
+      "members": [
+        "FUN_00191680"
+      ]
+    },
+    {
+      "origin": "<zoxide::import::autojump::Autojump as zoxide::import::Importer>::dirs",
+      "members": [
+        "FUN_00191930"
+      ]
+    },
+    {
+      "origin": "<zoxide::import::autojump::Iter<R> as core::iter::traits::iterator::Iterator>::next",
+      "members": [
+        "FUN_00191e90"
+      ]
+    },
+    {
+      "origin": "fastrand::global_rng::random_seed",
+      "members": [
+        "FUN_00192590"
+      ]
+    },
+    {
+      "origin": "shared-address@FUN_00192760",
+      "members": [
+        "FUN_00192760"
+      ]
+    },
+    {
+      "origin": "dirs::home_dir",
+      "members": [
+        "FUN_00192770"
+      ]
+    },
+    {
+      "origin": "dirs::lin::data_dir",
+      "members": [
+        "FUN_00192780"
+      ]
+    },
+    {
+      "origin": "dirs_sys::target_unix_not_redox::home_dir",
+      "members": [
+        "FUN_00192880"
+      ]
+    },
+    {
+      "origin": "dirs_sys::is_absolute_path",
+      "members": [
+        "FUN_00192a70"
+      ]
+    },
+    {
+      "origin": "time::parsing::parsed::Parsed::parse_component",
+      "members": [
+        "FUN_00192af0"
+      ]
+    },
+    {
+      "origin": "time::parsing::combinator::n_to_m_digits_padded::{{closure}}",
+      "members": [
+        "FUN_001945d0"
+      ]
+    },
+    {
+      "origin": "time::parsing::component::parse_year",
+      "members": [
+        "FUN_001948c0"
+      ]
+    },
+    {
+      "origin": "time::parsing::component::parse_subsecond",
+      "members": [
+        "FUN_00194dd0"
+      ]
+    },
+    {
+      "origin": "time::parsing::component::parse_week_number",
+      "members": [
+        "FUN_00195430"
+      ]
+    },
+    {
+      "origin": "time::parsing::component::parse_unix_timestamp",
+      "members": [
+        "FUN_001955a0"
+      ]
+    },
+    {
+      "origin": "time::date::Date::from_iso_week_date",
+      "members": [
+        "FUN_00196980"
+      ]
+    },
+    {
+      "origin": "bincode::config::int::cast_u64_to_usize",
+      "members": [
+        "FUN_00196c20"
+      ]
+    },
+    {
+      "origin": "<bincode::error::ErrorKind as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_00196c30"
+      ]
+    },
+    {
+      "origin": "bincode::error::impl_for=alloc::boxed::Box<bincode::error::ErrorKind>::from",
+      "members": [
+        "FUN_00196f70"
+      ]
+    },
+    {
+      "origin": "<&str as serde_core::de::Expected>::fmt",
+      "members": [
+        "FUN_00197020"
+      ]
+    },
+    {
+      "origin": "<dyn serde_core::de::Expected as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_00197040"
+      ]
+    },
+    {
+      "origin": "glob::in_char_specifiers",
+      "members": [
+        "FUN_001970e0"
+      ]
+    },
+    {
+      "origin": "glob::parse_char_specifiers",
+      "members": [
+        "FUN_001973d0"
+      ]
+    },
+    {
+      "origin": "glob::Pattern::matches_from",
+      "members": [
+        "FUN_00197530"
+      ]
+    },
+    {
+      "origin": "glob::Pattern::new",
+      "members": [
+        "FUN_00197970"
+      ]
+    },
+    {
+      "origin": "glob::Pattern::escape",
+      "members": [
+        "FUN_00198020"
+      ]
+    },
+    {
+      "origin": "glob::Pattern::matches",
+      "members": [
+        "FUN_00198370"
+      ]
+    },
+    {
+      "origin": "<glob::PatternError as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_001983a0"
+      ]
+    },
+    {
+      "origin": "<askama::error::Error as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_00198900"
+      ]
+    },
+    {
+      "origin": "<clap_builder::builder::command::Command as core::ops::index::Index<&clap_builder::util::id::Id>>::index",
+      "members": [
+        "FUN_00198960"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::command::Command::_build_self",
+      "members": [
+        "FUN_00198a00"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::command::Command::subcommands",
+      "members": [
+        "FUN_0019c930"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::command::Command::arg_internal",
+      "members": [
+        "FUN_0019ce40"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::command::Command::format_group",
+      "members": [
+        "FUN_0019cf30"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::command::Command::render_usage_",
+      "members": [
+        "FUN_0019d270"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::command::Command::required_graph",
+      "members": [
+        "FUN_0019d3a0"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::command::Command::write_help_err",
+      "members": [
+        "FUN_0019d780"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::command::Command::_build_recursive",
+      "members": [
+        "FUN_0019d910"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::command::Command::find_long_subcmd",
+      "members": [
+        "FUN_0019d960"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::command::Command::_build_subcommand",
+      "members": [
+        "FUN_0019daa0"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::command::Command::find_short_subcmd",
+      "members": [
+        "FUN_0019e5f0"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::command::Command::subcommand_internal",
+      "members": [
+        "FUN_0019e670"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::command::Command::unroll_arg_requires",
+      "members": [
+        "FUN_0019e730",
+        "FUN_0019ec20",
+        "FUN_0019f200"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::command::Command::unroll_args_in_group",
+      "members": [
+        "FUN_0019f6a0"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::command::Command::_build_bin_names_internal",
+      "members": [
+        "FUN_0019fa10"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::command::Command::find",
+      "members": [
+        "FUN_001a0620"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::command::Command::about",
+      "members": [
+        "FUN_001a06a0"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::command::Command::_do_parse",
+      "members": [
+        "FUN_001a07e0"
+      ]
+    },
+    {
+      "origin": "<clap_builder::builder::str::Str as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_001ac0e0"
+      ]
+    },
+    {
+      "origin": "<clap_builder::util::flat_map::FlatMap<K,V> as core::clone::Clone>::clone",
+      "members": [
+        "FUN_001ac100"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::parser::Parser::add_defaults",
+      "members": [
+        "FUN_001ac3c0"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::parser::Parser::match_arg_error",
+      "members": [
+        "FUN_001ac8d0"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::parser::Parser::parse_opt_value",
+      "members": [
+        "FUN_001ad960"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::parser::Parser::push_arg_values",
+      "members": [
+        "FUN_001ade00"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::parser::Parser::resolve_pending",
+      "members": [
+        "FUN_001ae0d0"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::parser::Parser::get_matches_with",
+      "members": [
+        "FUN_001ae360"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::parser::Parser::start_custom_arg",
+      "members": [
+        "FUN_001b3720"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::parser::Parser::possible_subcommand",
+      "members": [
+        "FUN_001b3c90"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::parser::Parser::parse_help_subcommand",
+      "members": [
+        "FUN_001b3fb0"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::parser::Parser::react",
+      "members": [
+        "FUN_001b59f0"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::matches::arg_matches::ArgMatches::contains_id",
+      "members": [
+        "FUN_001b9690"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::matches::arg_matches::ArgMatches::try_get_one",
+      "members": [
+        "FUN_001b9700"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::matches::arg_matches::ArgMatches::remove_subcommand",
+      "members": [
+        "FUN_001b9920"
+      ]
+    },
+    {
+      "origin": "clap_builder::error::Error<F>::invalid_utf8",
+      "members": [
+        "FUN_001b9c50"
+      ]
+    },
+    {
+      "origin": "clap_builder::error::Error<F>::too_few_values",
+      "members": [
+        "FUN_001ba450"
+      ]
+    },
+    {
+      "origin": "clap_builder::error::Error<F>::too_many_values",
+      "members": [
+        "FUN_001ba7a0"
+      ]
+    },
+    {
+      "origin": "clap_builder::error::Error<F>::unknown_argument",
+      "members": [
+        "FUN_001bab10"
+      ]
+    },
+    {
+      "origin": "clap_builder::error::Error<F>::value_validation",
+      "members": [
+        "FUN_001bb3f0"
+      ]
+    },
+    {
+      "origin": "clap_builder::error::Error<F>::argument_conflict",
+      "members": [
+        "FUN_001bb770"
+      ]
+    },
+    {
+      "origin": "clap_builder::error::Error<F>::invalid_subcommand",
+      "members": [
+        "FUN_001bbb70"
+      ]
+    },
+    {
+      "origin": "clap_builder::error::Error<F>::missing_subcommand",
+      "members": [
+        "FUN_001bc200"
+      ]
+    },
+    {
+      "origin": "clap_builder::error::Error<F>::subcommand_conflict",
+      "members": [
+        "FUN_001bc560"
+      ]
+    },
+    {
+      "origin": "clap_builder::error::Error<F>::wrong_number_of_values",
+      "members": [
+        "FUN_001bc960"
+      ]
+    },
+    {
+      "origin": "clap_builder::error::Error<F>::unnecessary_double_dash",
+      "members": [
+        "FUN_001bccb0"
+      ]
+    },
+    {
+      "origin": "clap_builder::error::Error<F>::unrecognized_subcommand",
+      "members": [
+        "FUN_001bd230"
+      ]
+    },
+    {
+      "origin": "clap_builder::error::Error<F>::extend_context_unchecked",
+      "members": [
+        "FUN_001bd540",
+        "FUN_001bd5a0",
+        "FUN_001bd5e0"
+      ]
+    },
+    {
+      "origin": "clap_builder::error::Error<F>::insert_context_unchecked",
+      "members": [
+        "FUN_001bd620"
+      ]
+    },
+    {
+      "origin": "clap_builder::error::Error<F>::missing_required_argument",
+      "members": [
+        "FUN_001bd660"
+      ]
+    },
+    {
+      "origin": "clap_builder::error::Error<F>::get",
+      "members": [
+        "FUN_001bd960"
+      ]
+    },
+    {
+      "origin": "clap_builder::error::Error<F>::for_app",
+      "members": [
+        "FUN_001bd9c0"
+      ]
+    },
+    {
+      "origin": "clap_builder::error::Error<F>::no_equals",
+      "members": [
+        "FUN_001be020"
+      ]
+    },
+    {
+      "origin": "clap_builder::error::Message::format",
+      "members": [
+        "FUN_001be330"
+      ]
+    },
+    {
+      "origin": "clap_builder::error::Message::formatted",
+      "members": [
+        "FUN_001be580"
+      ]
+    },
+    {
+      "origin": "clap_builder::output::fmt::Colorizer::with_content",
+      "members": [
+        "FUN_001be5c0"
+      ]
+    },
+    {
+      "origin": "clap_builder::output::fmt::Colorizer::print",
+      "members": [
+        "FUN_001be620"
+      ]
+    },
+    {
+      "origin": "<std::io::stdio::StderrLock as anstream::stream::IsTerminal>::is_terminal",
+      "members": [
+        "FUN_001bfe90"
+      ]
+    },
+    {
+      "origin": "<std::io::stdio::StdoutLock as anstream::stream::IsTerminal>::is_terminal",
+      "members": [
+        "FUN_001bfeb0"
+      ]
+    },
+    {
+      "origin": "<clap_builder::builder::styled_str::StyledStr as core::fmt::Write>::write_char",
+      "members": [
+        "FUN_001bfed0",
+        "FUN_001c23a0",
+        "FUN_001cb4f0",
+        "FUN_001dd8c0",
+        "FUN_001e1960"
+      ]
+    },
+    {
+      "origin": "<clap_builder::builder::styled_str::StyledStr as core::fmt::Write>::write_str",
+      "members": [
+        "FUN_001bffe0",
+        "FUN_001c24b0",
+        "FUN_001cb600",
+        "FUN_001dd9d0",
+        "FUN_001e1a70"
+      ]
+    },
+    {
+      "origin": "anstream::auto::AutoStream<S>::new",
+      "members": [
+        "FUN_001c01f0",
+        "FUN_001c0290"
+      ]
+    },
+    {
+      "origin": "clap_builder::util::escape::Escape::needs_escaping",
+      "members": [
+        "FUN_001c0520"
+      ]
+    },
+    {
+      "origin": "clap_builder::output::textwrap::core::display_width",
+      "members": [
+        "FUN_001c0670"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::styled_str::StyledStr::display_width",
+      "members": [
+        "FUN_001c0810"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::styled_str::StyledStr::trim_start_lines",
+      "members": [
+        "FUN_001c0880"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::styled_str::StyledStr::replace_newline_var",
+      "members": [
+        "FUN_001c0c10"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::styled_str::StyledStr::indent",
+      "members": [
+        "FUN_001c1530"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::styled_str::StyledStr::push_str",
+      "members": [
+        "FUN_001c1b60"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::styled_str::StyledStr::trim_end",
+      "members": [
+        "FUN_001c1bd0"
+      ]
+    },
+    {
+      "origin": "<clap_builder::util::escape::Escape as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_001c2360"
+      ]
+    },
+    {
+      "origin": "anstream::adapter::strip::next_str",
+      "members": [
+        "FUN_001c2730"
+      ]
+    },
+    {
+      "origin": "<clap_builder::builder::styled_str::StyledStr as core::convert::From<&str>>::from",
+      "members": [
+        "FUN_001c2900"
+      ]
+    },
+    {
+      "origin": "<clap_builder::builder::value_parser::BoolValueParser as clap_builder::builder::value_parser::TypedValueParser>::parse_ref",
+      "members": [
+        "FUN_001c5180"
+      ]
+    },
+    {
+      "origin": "<clap_builder::builder::value_parser::StringValueParser as clap_builder::builder::value_parser::TypedValueParser>::parse",
+      "members": [
+        "FUN_001c5550"
+      ]
+    },
+    {
+      "origin": "<clap_builder::builder::value_parser::PathBufValueParser as clap_builder::builder::value_parser::TypedValueParser>::parse",
+      "members": [
+        "FUN_001c5760"
+      ]
+    },
+    {
+      "origin": "<clap_builder::builder::value_parser::RangedI64ValueParser<T> as clap_builder::builder::value_parser::TypedValueParser>::parse_ref",
+      "members": [
+        "FUN_001c5940"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::features::suggestions::did_you_mean_flag",
+      "members": [
+        "FUN_001c8790"
+      ]
+    },
+    {
+      "origin": "<clap_builder::error::format::RichFormatter as clap_builder::error::format::ErrorFormatter>::format_error",
+      "members": [
+        "FUN_001c9280"
+      ]
+    },
+    {
+      "origin": "clap_builder::error::format::did_you_mean",
+      "members": [
+        "FUN_001ca810"
+      ]
+    },
+    {
+      "origin": "clap_builder::error::format::get_help_flag",
+      "members": [
+        "FUN_001caa80"
+      ]
+    },
+    {
+      "origin": "clap_builder::error::format::write_values_list",
+      "members": [
+        "FUN_001cac40"
+      ]
+    },
+    {
+      "origin": "clap_builder::error::format::format_error_message",
+      "members": [
+        "FUN_001cae20"
+      ]
+    },
+    {
+      "origin": "<clap_builder::parser::error::MatchesError as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_001cb470"
+      ]
+    },
+    {
+      "origin": "<clap_builder::error::context::ContextValue as core::cmp::PartialEq>::eq",
+      "members": [
+        "FUN_001cb670"
+      ]
+    },
+    {
+      "origin": "<I as clap_builder::builder::resettable::IntoResettable<clap_builder::builder::styled_str::StyledStr>>::into_resettable",
+      "members": [
+        "FUN_001cb7a0"
+      ]
+    },
+    {
+      "origin": "clap_builder::util::flat_map::Entry<K,V>::or_insert",
+      "members": [
+        "FUN_001cb860"
+      ]
+    },
+    {
+      "origin": "clap_builder::util::flat_map::FlatMap<K,V>::extend_unchecked",
+      "members": [
+        "FUN_001cb9a0",
+        "FUN_001cbb10",
+        "FUN_001cbcd0"
+      ]
+    },
+    {
+      "origin": "clap_builder::util::flat_map::FlatMap<K,V>::insert_unchecked",
+      "members": [
+        "FUN_001cbeb0"
+      ]
+    },
+    {
+      "origin": "clap_builder::output::help::write_help",
+      "members": [
+        "FUN_001cc3a0"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::arg_matcher::ArgMatcher::add_val_to",
+      "members": [
+        "FUN_001cc4e0"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::arg_matcher::ArgMatcher::into_inner",
+      "members": [
+        "FUN_001cc7c0"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::arg_matcher::ArgMatcher::subcommand",
+      "members": [
+        "FUN_001cc860"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::arg_matcher::ArgMatcher::add_index_to",
+      "members": [
+        "FUN_001cc940"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::arg_matcher::ArgMatcher::check_explicit",
+      "members": [
+        "FUN_001cca40"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::arg_matcher::ArgMatcher::start_custom_arg",
+      "members": [
+        "FUN_001ccb90"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::arg_matcher::ArgMatcher::start_custom_group",
+      "members": [
+        "FUN_001ccd90"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::arg_matcher::ArgMatcher::fill_in_global_values",
+      "members": [
+        "FUN_001cced0"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::arg_matcher::ArgMatcher::start_occurrence_of_external",
+      "members": [
+        "FUN_001cd670"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::arg_matcher::ArgMatcher::remove",
+      "members": [
+        "FUN_001cd7f0"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::matches::matched_arg::MatchedArg::infer_type_id",
+      "members": [
+        "FUN_001cd9d0"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::matches::matched_arg::MatchedArg::new_val_group",
+      "members": [
+        "FUN_001cda80"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::matches::matched_arg::MatchedArg::into_vals_flatten",
+      "members": [
+        "FUN_001cdb60"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::matches::matched_arg::MatchedArg::num_vals",
+      "members": [
+        "FUN_001cdca0"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::possible_value::PossibleValue::matches",
+      "members": [
+        "FUN_001cdd20"
+      ]
+    },
+    {
+      "origin": "clap_builder::output::help_template::HelpTemplate::write_args",
+      "members": [
+        "FUN_001ce870"
+      ]
+    },
+    {
+      "origin": "clap_builder::output::help_template::HelpTemplate::write_about",
+      "members": [
+        "FUN_001cfa80"
+      ]
+    },
+    {
+      "origin": "clap_builder::output::help_template::HelpTemplate::sc_spec_vals",
+      "members": [
+        "FUN_001cfc50"
+      ]
+    },
+    {
+      "origin": "clap_builder::output::help_template::HelpTemplate::write_subcommands",
+      "members": [
+        "FUN_001d0020"
+      ]
+    },
+    {
+      "origin": "clap_builder::output::help_template::HelpTemplate::write_templated_help",
+      "members": [
+        "FUN_001d0a80"
+      ]
+    },
+    {
+      "origin": "clap_builder::output::help_template::HelpTemplate::write_flat_subcommands",
+      "members": [
+        "FUN_001d40e0"
+      ]
+    },
+    {
+      "origin": "clap_builder::output::help_template::HelpTemplate::new",
+      "members": [
+        "FUN_001d4790"
+      ]
+    },
+    {
+      "origin": "clap_builder::output::help_template::HelpTemplate::help",
+      "members": [
+        "FUN_001d4ab0"
+      ]
+    },
+    {
+      "origin": "clap_builder::output::help_template::HelpTemplate::spec_vals",
+      "members": [
+        "FUN_001d5810"
+      ]
+    },
+    {
+      "origin": "clap_builder::output::help_template::option_sort_key",
+      "members": [
+        "FUN_001d6470"
+      ]
+    },
+    {
+      "origin": "clap_builder::output::help_template::positional_sort_key",
+      "members": [
+        "FUN_001d6780"
+      ]
+    },
+    {
+      "origin": "clap_builder::output::help_template::AutoHelp::write_help",
+      "members": [
+        "FUN_001d67b0"
+      ]
+    },
+    {
+      "origin": "clap_builder::output::help_template::AutoHelp::new",
+      "members": [
+        "FUN_001d6aa0"
+      ]
+    },
+    {
+      "origin": "clap_builder::output::usage::Usage::write_arg_usage",
+      "members": [
+        "FUN_001d8580"
+      ]
+    },
+    {
+      "origin": "clap_builder::output::usage::Usage::write_usage_no_title",
+      "members": [
+        "FUN_001d9e40"
+      ]
+    },
+    {
+      "origin": "clap_builder::output::usage::Usage::create_usage_with_title",
+      "members": [
+        "FUN_001dbb40"
+      ]
+    },
+    {
+      "origin": "clap_builder::output::usage::Usage::get_required_usage_from",
+      "members": [
+        "FUN_001dbc90"
+      ]
+    },
+    {
+      "origin": "clap_builder::output::usage::Usage::new",
+      "members": [
+        "FUN_001dca50"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::ext::Extensions::update",
+      "members": [
+        "FUN_001dda40"
+      ]
+    },
+    {
+      "origin": "<clap_builder::util::any_value::AnyValue as core::fmt::Debug>::fmt",
+      "members": [
+        "FUN_001dedb0"
+      ]
+    },
+    {
+      "origin": "<clap_builder::util::any_value::AnyValueId as core::fmt::Debug>::fmt",
+      "members": [
+        "FUN_001dee30"
+      ]
+    },
+    {
+      "origin": "<clap_builder::util::flat_set::FlatSet<T> as core::iter::traits::collect::Extend<T>>::extend",
+      "members": [
+        "FUN_001dee40"
+      ]
+    },
+    {
+      "origin": "<clap_builder::util::flat_set::FlatSet<T> as core::iter::traits::collect::FromIterator<T>>::from_iter",
+      "members": [
+        "FUN_001defc0",
+        "FUN_001df130"
+      ]
+    },
+    {
+      "origin": "clap_builder::util::flat_set::FlatSet<T>::insert",
+      "members": [
+        "FUN_001df5b0"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::arg::Arg::name_no_brackets",
+      "members": [
+        "FUN_001df7a0"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::arg::Arg::stylize_arg_suffix",
+      "members": [
+        "FUN_001df920"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::arg::Arg::_build",
+      "members": [
+        "FUN_001e0480"
+      ]
+    },
+    {
+      "origin": "clap_builder::builder::arg::Arg::stylized",
+      "members": [
+        "FUN_001e0790"
+      ]
+    },
+    {
+      "origin": "clap_builder::mkeymap::MKeyMap::get",
+      "members": [
+        "FUN_001e0970",
+        "FUN_001e09e0"
+      ]
+    },
+    {
+      "origin": "clap_builder::mkeymap::MKeyMap::push",
+      "members": [
+        "FUN_001e0a90"
+      ]
+    },
+    {
+      "origin": "clap_builder::mkeymap::MKeyMap::_build",
+      "members": [
+        "FUN_001e0af0"
+      ]
+    },
+    {
+      "origin": "<core::option::Option<&str> as clap_builder::builder::resettable::IntoResettable<clap_builder::builder::styled_str::StyledStr>>::into_resettable",
+      "members": [
+        "FUN_001e0df0"
+      ]
+    },
+    {
+      "origin": "<clap_builder::builder::arg::Arg as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_001e17b0"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::validator::gather_direct_conflicts",
+      "members": [
+        "FUN_001e1ce0"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::validator::Conflicts::gather_conflicts",
+      "members": [
+        "FUN_001e23a0"
+      ]
+    },
+    {
+      "origin": "clap_builder::parser::validator::Validator::validate",
+      "members": [
+        "FUN_001e2750"
+      ]
+    },
+    {
+      "origin": "strsim::generic_jaro",
+      "members": [
+        "FUN_001e4fa0"
+      ]
+    },
+    {
+      "origin": "strsim::jaro",
+      "members": [
+        "FUN_001e5660"
+      ]
+    },
+    {
+      "origin": "anstream::strip::write_all",
+      "members": [
+        "FUN_001e5670"
+      ]
+    },
+    {
+      "origin": "anstream::adapter::strip::next_bytes",
+      "members": [
+        "FUN_001e56f0"
+      ]
+    },
+    {
+      "origin": "anstream::auto::choice",
+      "members": [
+        "FUN_001e5970"
+      ]
+    },
+    {
+      "origin": "utf8parse::Parser::advance",
+      "members": [
+        "FUN_001e5c00"
+      ]
+    },
+    {
+      "origin": "colorchoice::ColorChoice::global",
+      "members": [
+        "FUN_001e5d20"
+      ]
+    },
+    {
+      "origin": "<clap_lex::ShortFlags as core::iter::traits::iterator::Iterator>::next",
+      "members": [
+        "FUN_001e5dd0"
+      ]
+    },
+    {
+      "origin": "clap_lex::ShortFlags::advance_by",
+      "members": [
+        "FUN_001e5eb0"
+      ]
+    },
+    {
+      "origin": "clap_lex::ShortFlags::next_value_os",
+      "members": [
+        "FUN_001e5f40"
+      ]
+    },
+    {
+      "origin": "clap_lex::ShortFlags::is_negative_number",
+      "members": [
+        "FUN_001e5fb0"
+      ]
+    },
+    {
+      "origin": "clap_lex::ShortFlags::next_flag",
+      "members": [
+        "FUN_001e6060"
+      ]
+    },
+    {
+      "origin": "clap_lex::RawArgs::peek",
+      "members": [
+        "FUN_001e6140"
+      ]
+    },
+    {
+      "origin": "clap_lex::RawArgs::seek",
+      "members": [
+        "FUN_001e6160"
+      ]
+    },
+    {
+      "origin": "clap_lex::RawArgs::remaining",
+      "members": [
+        "FUN_001e61b0"
+      ]
+    },
+    {
+      "origin": "clap_lex::ParsedArg::is_negative_number",
+      "members": [
+        "FUN_001e61f0"
+      ]
+    },
+    {
+      "origin": "clap_lex::ParsedArg::display",
+      "members": [
+        "FUN_001e62f0"
+      ]
+    },
+    {
+      "origin": "clap_lex::ParsedArg::is_long",
+      "members": [
+        "FUN_001e6310"
+      ]
+    },
+    {
+      "origin": "clap_lex::ParsedArg::to_long",
+      "members": [
+        "FUN_001e6340"
+      ]
+    },
+    {
+      "origin": "clap_lex::ParsedArg::is_short",
+      "members": [
+        "FUN_001e6450"
+      ]
+    },
+    {
+      "origin": "clap_lex::ParsedArg::to_short",
+      "members": [
+        "FUN_001e6480"
+      ]
+    },
+    {
+      "origin": "clap_lex::ParsedArg::to_value",
+      "members": [
+        "FUN_001e65a0"
+      ]
+    },
+    {
+      "origin": "<std::ffi::os_str::OsStr as clap_lex::ext::OsStrExt>::strip_prefix",
+      "members": [
+        "FUN_001e65f0"
+      ]
+    },
+    {
+      "origin": "<std::ffi::os_str::OsStr as clap_lex::ext::OsStrExt>::split",
+      "members": [
+        "FUN_001e6630"
+      ]
+    },
+    {
+      "origin": "<std::ffi::os_str::OsStr as clap_lex::ext::OsStrExt>::contains",
+      "members": [
+        "FUN_001e6680"
+      ]
+    },
+    {
+      "origin": "<clap_lex::ext::Split as core::iter::traits::iterator::Iterator>::next",
+      "members": [
+        "FUN_001e6700"
+      ]
+    },
+    {
+      "origin": "<anstyle::style::StyleDisplay as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_001e68f0"
+      ]
+    },
+    {
+      "origin": "anstyle::style::Style::fmt_to",
+      "members": [
+        "FUN_001e6900"
+      ]
+    },
+    {
+      "origin": "anstyle::color::DisplayBuffer::write_code",
+      "members": [
+        "FUN_001e6fb0"
+      ]
+    },
+    {
+      "origin": "anstyle::color::DisplayBuffer::write_str",
+      "members": [
+        "FUN_001e70a0"
+      ]
+    },
+    {
+      "origin": "anyhow::fmt::impl=anyhow::error::ErrorImpl::debug",
+      "members": [
+        "FUN_001e73a0"
+      ]
+    },
+    {
+      "origin": "anyhow::fmt::impl=anyhow::error::ErrorImpl::display",
+      "members": [
+        "FUN_001e7760"
+      ]
+    },
+    {
+      "origin": "shared-address@FUN_001e78a0",
+      "members": [
+        "FUN_001e78a0"
+      ]
+    },
+    {
+      "origin": "anyhow::error::ErrorImpl::backtrace",
+      "members": [
+        "FUN_001e78b0"
+      ]
+    },
+    {
+      "origin": "anyhow::error::impl_for=anyhow::Error::fmt",
+      "members": [
+        "FUN_001e78f0",
+        "FUN_001e7900"
+      ]
+    },
+    {
+      "origin": "anyhow::error::impl_for=anyhow::Error::drop",
+      "members": [
+        "FUN_001e7910"
+      ]
+    },
+    {
+      "origin": "<anyhow::fmt::Indented<T> as core::fmt::Write>::write_str",
+      "members": [
+        "FUN_001e7b50"
+      ]
+    },
+    {
+      "origin": "<anyhow::context::Quoted<&mut core::fmt::Formatter> as core::fmt::Write>::write_str",
+      "members": [
+        "FUN_001e8780"
+      ]
+    },
+    {
+      "origin": "gimli::read::line::parse_file_v5",
+      "members": [
+        "FUN_00216850"
+      ]
+    },
+    {
+      "origin": "gimli::read::line::FileEntryFormat::parse",
+      "members": [
+        "FUN_00216b40"
+      ]
+    },
+    {
+      "origin": "gimli::read::line::parse_attribute",
+      "members": [
+        "FUN_00216ef0"
+      ]
+    },
+    {
+      "origin": "gimli::read::line::parse_directory_v5",
+      "members": [
+        "FUN_00217930"
+      ]
+    },
+    {
+      "origin": "gimli::read::line::FileEntry<R,Offset>::parse",
+      "members": [
+        "FUN_00217a20"
+      ]
+    },
+    {
+      "origin": "gimli::read::unit::parse_attribute",
+      "members": [
+        "FUN_00217c80"
+      ]
+    },
+    {
+      "origin": "gimli::read::unit::skip_attributes",
+      "members": [
+        "FUN_002190e0"
+      ]
+    },
+    {
+      "origin": "gimli::read::unit::Attribute<R>::value",
+      "members": [
+        "FUN_00219640"
+      ]
+    },
+    {
+      "origin": "gimli::read::unit::EntriesCursor<R>::next_entry",
+      "members": [
+        "FUN_00219c30"
+      ]
+    },
+    {
+      "origin": "gimli::read::unit::AttributeValue<R,Offset>::u8_value",
+      "members": [
+        "FUN_00219f60"
+      ]
+    },
+    {
+      "origin": "gimli::read::unit::AttributeValue<R,Offset>::u16_value",
+      "members": [
+        "FUN_00219fd0"
+      ]
+    },
+    {
+      "origin": "gimli::read::unit::DebugInfoUnitHeadersIter<R>::next",
+      "members": [
+        "FUN_0021a040"
+      ]
+    },
+    {
+      "origin": "gimli::read::dwarf::Unit<R>::new",
+      "members": [
+        "FUN_0021a690"
+      ]
+    },
+    {
+      "origin": "gimli::read::dwarf::Dwarf<R>::attr_string",
+      "members": [
+        "FUN_0021cbf0"
+      ]
+    },
+    {
+      "origin": "gimli::read::index::UnitIndex<R>::parse",
+      "members": [
+        "FUN_0021cde0"
+      ]
+    },
+    {
+      "origin": "gimli::read::reader::Reader::read_offset",
+      "members": [
+        "FUN_0021d6c0"
+      ]
+    },
+    {
+      "origin": "gimli::read::reader::Reader::read_uleb128",
+      "members": [
+        "FUN_0021d770"
+      ]
+    },
+    {
+      "origin": "gimli::read::reader::Reader::read_sized_offset",
+      "members": [
+        "FUN_0021d820"
+      ]
+    },
+    {
+      "origin": "gimli::read::aranges::ArangeHeader<R,Offset>::parse",
+      "members": [
+        "FUN_0021d920"
+      ]
+    },
+    {
+      "origin": "gimli::read::rnglists::RngListIter<R>::next",
+      "members": [
+        "FUN_0021dbd0"
+      ]
+    },
+    {
+      "origin": "<gimli::read::line::FileEntry<R,Offset> as core::clone::Clone>::clone",
+      "members": [
+        "FUN_002213b0"
+      ]
+    },
+    {
+      "origin": "<gimli::read::unit::AttributeValue<R,Offset> as core::clone::Clone>::clone",
+      "members": [
+        "FUN_00221610"
+      ]
+    },
+    {
+      "origin": "addr2line::Context<R>::find_unit",
+      "members": [
+        "FUN_00222440"
+      ]
+    },
+    {
+      "origin": "addr2line::line::render_file",
+      "members": [
+        "FUN_002225a0"
+      ]
+    },
+    {
+      "origin": "addr2line::unit::ResUnit<R>::find_function_or_location",
+      "members": [
+        "FUN_002229f0"
+      ]
+    },
+    {
+      "origin": "addr2line::unit::ResUnit<R>::find_function_or_location::{{closure}}",
+      "members": [
+        "FUN_00222e90"
+      ]
+    },
+    {
+      "origin": "addr2line::lookup::LoopingLookup<T,L,F>::new_lookup",
+      "members": [
+        "FUN_00223170"
+      ]
+    },
+    {
+      "origin": "addr2line::function::name_entry",
+      "members": [
+        "FUN_002236f0"
+      ]
+    },
+    {
+      "origin": "addr2line::function::Function<R>::parse_children",
+      "members": [
+        "FUN_00223b00"
+      ]
+    },
+    {
+      "origin": "addr2line::function::name_attr",
+      "members": [
+        "FUN_00224ca0"
+      ]
+    },
+    {
+      "origin": "panic_unwind::imp::panic::exception_cleanup",
+      "members": [
+        "FUN_00225510"
+      ]
+    },
+    {
+      "origin": "<&[u8] as object::read::read_ref::ReadRef>::read_bytes_at_until",
+      "members": [
+        "FUN_00225630"
+      ]
+    },
+    {
+      "origin": "memchr::arch::x86_64::memchr::memchr_raw::detect",
+      "members": [
+        "FUN_00225680"
+      ]
+    },
+    {
+      "origin": "memchr::arch::x86_64::memchr::memchr_raw::find_sse2",
+      "members": [
+        "FUN_00225850"
+      ]
+    },
+    {
+      "origin": "addr2line::line::has_backward_slash_root",
+      "members": [
+        "FUN_00225ac1"
+      ]
+    },
+    {
+      "origin": "addr2line::line::Lines::find_location",
+      "members": [
+        "FUN_00225af4"
+      ]
+    },
+    {
+      "origin": "addr2line::line::path_push",
+      "members": [
+        "FUN_00225c1e"
+      ]
+    },
+    {
+      "origin": "gimli::read::abbrev::Attributes::push",
+      "members": [
+        "FUN_00226f29"
+      ]
+    },
+    {
+      "origin": "gimli::read::abbrev::Abbreviation::new",
+      "members": [
+        "FUN_00227062"
+      ]
+    },
+    {
+      "origin": "gimli::read::abbrev::Abbreviations::insert",
+      "members": [
+        "FUN_002270e4"
+      ]
+    },
+    {
+      "origin": "<gimli::read::abbrev::Attributes as core::ops::deref::Deref>::deref",
+      "members": [
+        "FUN_002271df"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::try_demangle",
+      "members": [
+        "FUN_00227510"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::HexNibbles::try_parse_uint",
+      "members": [
+        "FUN_00227565"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::basic_type",
+      "members": [
+        "FUN_00227663"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Parser::integer_62",
+      "members": [
+        "FUN_0022768e"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Parser::hex_nibbles",
+      "members": [
+        "FUN_00227730"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Parser::opt_integer_62",
+      "members": [
+        "FUN_002277cf"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Parser::ident",
+      "members": [
+        "FUN_00227843"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Parser::backref",
+      "members": [
+        "FUN_00227a1d"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Parser::namespace",
+      "members": [
+        "FUN_00227a9b"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_path",
+      "members": [
+        "FUN_00227aea"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_type",
+      "members": [
+        "FUN_002281c9"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_type::{{closure}}",
+      "members": [
+        "FUN_00228704"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_const",
+      "members": [
+        "FUN_00228a90"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_backref",
+      "members": [
+        "FUN_00229104",
+        "FUN_002291f2",
+        "FUN_002292d3"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_sep_list",
+      "members": [
+        "FUN_002293c1",
+        "FUN_002295ee",
+        "FUN_00229733",
+        "FUN_002297d0",
+        "FUN_00229867",
+        "FUN_00229a40"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_const_uint",
+      "members": [
+        "FUN_00229ae2"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::skipping_printing",
+      "members": [
+        "FUN_00229c4b"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_const_str_literal",
+      "members": [
+        "FUN_00229ca1"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_lifetime_from_index",
+      "members": [
+        "FUN_00229fd8"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_quoted_escaped_chars",
+      "members": [
+        "FUN_0022a0c9"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_path_maybe_open_generics",
+      "members": [
+        "FUN_0022a278"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::in_binder",
+      "members": [
+        "FUN_0022a3bf",
+        "FUN_0022a53d"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::v0::Printer::print_pat",
+      "members": [
+        "FUN_0022a6c0"
+      ]
+    },
+    {
+      "origin": "rustc_demangle::demangle",
+      "members": [
+        "FUN_0022a8a3"
+      ]
+    },
+    {
+      "origin": "<rustc_demangle::Demangle as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_0022b80c"
+      ]
+    },
+    {
+      "origin": "<rustc_demangle::v0::Ident as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_0022b911"
+      ]
+    },
+    {
+      "origin": "<rustc_demangle::DemangleStyle as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_0022bd63"
+      ]
+    },
+    {
+      "origin": "<rustc_demangle::SizeLimitExhausted as core::fmt::Debug>::fmt",
+      "members": [
+        "FUN_0022bda6"
+      ]
+    },
+    {
+      "origin": "<rustc_demangle::legacy::Demangle as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_0022bdbb"
+      ]
+    },
+    {
+      "origin": "<rustc_demangle::SizeLimitedFmtAdapter<F> as core::fmt::Write>::write_str",
+      "members": [
+        "FUN_0022cc8d"
+      ]
+    },
+    {
+      "origin": "miniz_oxide::inflate::core::decompress",
+      "members": [
+        "FUN_0022ccb2"
+      ]
+    },
+    {
+      "origin": "miniz_oxide::inflate::core::apply_match",
+      "members": [
+        "FUN_0022e694"
+      ]
+    },
+    {
+      "origin": "miniz_oxide::inflate::core::transfer",
+      "members": [
+        "FUN_0022e7e3"
+      ]
+    },
+    {
+      "origin": "miniz_oxide::inflate::core::init_tree",
+      "members": [
+        "FUN_0022ebd1"
+      ]
+    },
+    {
+      "origin": "adler2::Adler32::write_slice",
+      "members": [
+        "FUN_0022f070"
+      ]
+    }
+  ],
+  "symbols": {
+    "FUN_00158de0": [
+      "clap_builder::derive::Parser::parse"
+    ],
+    "FUN_0015c620": [
+      "<() as askama::values::Values>::get_value"
+    ],
+    "FUN_0015c7b0": [
+      "<zoxide::cmd::cmd::Cmd as zoxide::cmd::Run>::run"
+    ],
+    "FUN_0015f090": [
+      "anyhow::__private::format_err"
+    ],
+    "FUN_0015f0d0": [
+      "zoxide::db::<impl zoxide::db::ouroboros_impl_database::Database>::add::{{closure}}"
+    ],
+    "FUN_0015f220": [
+      "zoxide::cmd::edit::<impl zoxide::cmd::cmd::Edit>::get_fzf"
+    ],
+    "FUN_0015f4b0": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::type_id"
+    ],
+    "FUN_0015f4c0": [
+      "<zoxide::cmd::cmd::Cmd as clap_builder::derive::Subcommand>::augment_subcommands"
+    ],
+    "FUN_00167330": [
+      "<zoxide::cmd::cmd::InitShell as clap_builder::derive::ValueEnum>::to_possible_value"
+    ],
+    "FUN_001675f0": [
+      "zoxide::shell::_::<impl askama::Template for zoxide::shell::Zsh>::render_into_with_values"
+    ],
+    "FUN_00167a40": [
+      "zoxide::shell::_::<impl askama::Template for zoxide::shell::Bash>::render_into_with_values"
+    ],
+    "FUN_00167ec0": [
+      "zoxide::shell::_::<impl askama::Template for zoxide::shell::Fish>::render_into_with_values"
+    ],
+    "FUN_00168330": [
+      "zoxide::shell::_::<impl askama::Template for zoxide::shell::Tcsh>::render_into_with_values"
+    ],
+    "FUN_00168690": [
+      "zoxide::shell::_::<impl askama::Template for zoxide::shell::Posix>::render_into_with_values"
+    ],
+    "FUN_00168a70": [
+      "zoxide::shell::_::<impl askama::Template for zoxide::shell::Xonsh>::render_into_with_values"
+    ],
+    "FUN_00168dc0": [
+      "zoxide::shell::_::<impl askama::Template for zoxide::shell::Elvish>::render_into_with_values"
+    ],
+    "FUN_00169100": [
+      "zoxide::shell::_::<impl askama::Template for zoxide::shell::Nushell>::render_into_with_values"
+    ],
+    "FUN_00169400": [
+      "zoxide::shell::_::<impl askama::Template for zoxide::shell::Powershell>::render_into_with_values"
+    ],
+    "FUN_001696b0": [
+      "clap_builder::util::any_value::AnyValue::downcast_into"
+    ],
+    "FUN_001697b0": [
+      "clap_builder::util::any_value::AnyValue::downcast_into"
+    ],
+    "FUN_001698b0": [
+      "clap_builder::util::any_value::AnyValue::downcast_into"
+    ],
+    "FUN_00169a10": [
+      "clap_builder::util::any_value::AnyValue::downcast_into"
+    ],
+    "FUN_00169b20": [
+      "clap_builder::util::any_value::AnyValue::downcast_into"
+    ],
+    "FUN_00169cc0": [
+      "clap_builder::util::any_value::AnyValue::downcast_into"
+    ],
+    "FUN_00169dc0": [
+      "clap_builder::builder::ext::Extensions::set"
+    ],
+    "FUN_0016aba0": [
+      "<glob::PatternError as core::fmt::Debug>::fmt"
+    ],
+    "FUN_0016ac00": [
+      "<askama::error::Error as core::fmt::Debug>::fmt"
+    ],
+    "FUN_0016ac80": [
+      "<glob::PatternError as core::error::Error>::description"
+    ],
+    "FUN_0016ac90": [
+      "<askama::error::Error as core::error::Error>::source"
+    ],
+    "FUN_0016b090": [
+      "<time::error::parse::Parse as core::fmt::Debug>::fmt"
+    ],
+    "FUN_0016b190": [
+      "<time::error::parse::Parse as core::error::Error>::source"
+    ],
+    "FUN_0016b1b0": [
+      "<time::error::parse::Parse as core::fmt::Display>::fmt"
+    ],
+    "FUN_0016b2f0": [
+      "anyhow::error::object_ref"
+    ],
+    "FUN_0016b300": [
+      "anyhow::error::object_ref"
+    ],
+    "FUN_0016b310": [
+      "anyhow::error::object_ref"
+    ],
+    "FUN_0016b320": [
+      "anyhow::error::object_ref"
+    ],
+    "FUN_0016b330": [
+      "anyhow::error::object_ref"
+    ],
+    "FUN_0016b340": [
+      "anyhow::error::object_ref"
+    ],
+    "FUN_0016b350": [
+      "anyhow::error::object_ref"
+    ],
+    "FUN_0016b360": [
+      "anyhow::error::object_ref"
+    ],
+    "FUN_0016b370": [
+      "anyhow::error::object_ref"
+    ],
+    "FUN_0016b380": [
+      "anyhow::error::object_ref"
+    ],
+    "FUN_0016b390": [
+      "anyhow::error::object_ref"
+    ],
+    "FUN_0016b3a0": [
+      "anyhow::error::object_ref"
+    ],
+    "FUN_0016b3b0": [
+      "anyhow::error::object_ref"
+    ],
+    "FUN_0016b3c0": [
+      "anyhow::error::object_ref"
+    ],
+    "FUN_0016b3d0": [
+      "anyhow::error::object_ref"
+    ],
+    "FUN_0016b3e0": [
+      "anyhow::error::object_ref"
+    ],
+    "FUN_0016b3f0": [
+      "anyhow::error::object_ref"
+    ],
+    "FUN_0016b400": [
+      "anyhow::error::object_ref"
+    ],
+    "FUN_0016b410": [
+      "anyhow::error::object_ref"
+    ],
+    "FUN_0016b420": [
+      "anyhow::error::no_backtrace"
+    ],
+    "FUN_0016b430": [
+      "anyhow::error::object_boxed"
+    ],
+    "FUN_0016b440": [
+      "anyhow::error::object_boxed"
+    ],
+    "FUN_0016b450": [
+      "anyhow::error::object_boxed"
+    ],
+    "FUN_0016b460": [
+      "anyhow::error::object_boxed"
+    ],
+    "FUN_0016b470": [
+      "anyhow::error::object_boxed"
+    ],
+    "FUN_0016b480": [
+      "anyhow::error::object_boxed"
+    ],
+    "FUN_0016b490": [
+      "anyhow::error::object_boxed"
+    ],
+    "FUN_0016b4a0": [
+      "anyhow::error::object_boxed"
+    ],
+    "FUN_0016b4b0": [
+      "anyhow::error::object_boxed"
+    ],
+    "FUN_0016b4c0": [
+      "anyhow::error::object_boxed"
+    ],
+    "FUN_0016b4d0": [
+      "anyhow::error::object_boxed"
+    ],
+    "FUN_0016b4e0": [
+      "anyhow::error::object_boxed"
+    ],
+    "FUN_0016b4f0": [
+      "anyhow::error::object_boxed"
+    ],
+    "FUN_0016b500": [
+      "anyhow::error::object_boxed"
+    ],
+    "FUN_0016b510": [
+      "anyhow::error::object_boxed"
+    ],
+    "FUN_0016b520": [
+      "anyhow::error::object_boxed"
+    ],
+    "FUN_0016b530": [
+      "anyhow::error::object_boxed"
+    ],
+    "FUN_0016b540": [
+      "anyhow::error::object_boxed"
+    ],
+    "FUN_0016b550": [
+      "anyhow::error::object_boxed"
+    ],
+    "FUN_0016b560": [
+      "anyhow::error::object_downcast"
+    ],
+    "FUN_0016b590": [
+      "anyhow::error::object_downcast"
+    ],
+    "FUN_0016b5c0": [
+      "anyhow::error::object_downcast"
+    ],
+    "FUN_0016b5f0": [
+      "anyhow::error::object_downcast"
+    ],
+    "FUN_0016b620": [
+      "anyhow::error::object_downcast"
+    ],
+    "FUN_0016b650": [
+      "anyhow::error::object_downcast"
+    ],
+    "FUN_0016b680": [
+      "anyhow::error::object_downcast"
+    ],
+    "FUN_0016b6b0": [
+      "anyhow::error::object_downcast"
+    ],
+    "FUN_0016b6e0": [
+      "anyhow::error::context_downcast"
+    ],
+    "FUN_0016b730": [
+      "anyhow::error::context_downcast"
+    ],
+    "FUN_0016b780": [
+      "anyhow::error::context_downcast"
+    ],
+    "FUN_0016b7d0": [
+      "anyhow::error::context_downcast"
+    ],
+    "FUN_0016b820": [
+      "anyhow::error::context_downcast"
+    ],
+    "FUN_0016b870": [
+      "anyhow::error::context_downcast"
+    ],
+    "FUN_0016b8c0": [
+      "anyhow::error::context_downcast"
+    ],
+    "FUN_0016b910": [
+      "anyhow::error::<impl anyhow::Error>::msg"
+    ],
+    "FUN_0016b990": [
+      "anyhow::error::<impl anyhow::Error>::msg"
+    ],
+    "FUN_0016b9d0": [
+      "anyhow::error::<impl anyhow::Error>::construct"
+    ],
+    "FUN_0016baa0": [
+      "anyhow::error::<impl anyhow::Error>::construct"
+    ],
+    "FUN_0016bb60": [
+      "anyhow::error::<impl anyhow::Error>::construct"
+    ],
+    "FUN_0016bc20": [
+      "anyhow::error::<impl anyhow::Error>::construct"
+    ],
+    "FUN_0016bcd0": [
+      "anyhow::error::<impl anyhow::Error>::construct"
+    ],
+    "FUN_0016bd80": [
+      "anyhow::error::<impl anyhow::Error>::construct"
+    ],
+    "FUN_0016be50": [
+      "anyhow::error::<impl anyhow::Error>::construct"
+    ],
+    "FUN_0016bf10": [
+      "anyhow::error::<impl anyhow::Error>::construct"
+    ],
+    "FUN_0016bfd0": [
+      "anyhow::error::<impl anyhow::Error>::construct"
+    ],
+    "FUN_0016c090": [
+      "anyhow::error::<impl anyhow::Error>::construct"
+    ],
+    "FUN_0016c170": [
+      "anyhow::error::<impl anyhow::Error>::construct"
+    ],
+    "FUN_0016c230": [
+      "anyhow::error::<impl anyhow::Error>::construct"
+    ],
+    "FUN_0016c2f0": [
+      "anyhow::error::<impl anyhow::Error>::construct"
+    ],
+    "FUN_0016c3b0": [
+      "anyhow::error::<impl anyhow::Error>::construct"
+    ],
+    "FUN_0016c480": [
+      "anyhow::error::<impl anyhow::Error>::construct"
+    ],
+    "FUN_0016c540": [
+      "anyhow::error::<impl anyhow::Error>::construct"
+    ],
+    "FUN_0016c600": [
+      "anyhow::error::<impl anyhow::Error>::construct"
+    ],
+    "FUN_0016c6a0": [
+      "anyhow::error::<impl anyhow::Error>::construct"
+    ],
+    "FUN_0016c740": [
+      "anyhow::error::<impl anyhow::Error>::construct"
+    ],
+    "FUN_0016c800": [
+      "anyhow::error::<impl core::convert::From<E> for anyhow::Error>::from"
+    ],
+    "FUN_0016c870": [
+      "anyhow::error::<impl core::convert::From<E> for anyhow::Error>::from"
+    ],
+    "FUN_0016c8a0": [
+      "anyhow::error::<impl core::convert::From<E> for anyhow::Error>::from"
+    ],
+    "FUN_0016c910": [
+      "anyhow::error::<impl core::convert::From<E> for anyhow::Error>::from"
+    ],
+    "FUN_0016c940": [
+      "anyhow::error::<impl core::convert::From<E> for anyhow::Error>::from"
+    ],
+    "FUN_0016c970": [
+      "anyhow::context::<impl core::error::Error for anyhow::error::ContextError<C,E>>::source"
+    ],
+    "FUN_0016c980": [
+      "anyhow::context::<impl core::error::Error for anyhow::error::ContextError<C,E>>::source"
+    ],
+    "FUN_0016c990": [
+      "anyhow::context::<impl core::error::Error for anyhow::error::ContextError<C,E>>::source"
+    ],
+    "FUN_0016c9a0": [
+      "anyhow::context::<impl core::error::Error for anyhow::error::ContextError<C,E>>::source"
+    ],
+    "FUN_0016c9b0": [
+      "anyhow::context::<impl core::error::Error for anyhow::error::ContextError<C,E>>::source"
+    ],
+    "FUN_0016c9c0": [
+      "anyhow::context::<impl core::error::Error for anyhow::error::ContextError<C,E>>::source"
+    ],
+    "FUN_0016c9d0": [
+      "anyhow::context::<impl core::error::Error for anyhow::error::ContextError<C,E>>::source"
+    ],
+    "FUN_0016ca30": [
+      "<time::error::try_from_parsed::TryFromParsed as core::fmt::Debug>::fmt"
+    ],
+    "FUN_0016ca80": [
+      "<time::error::component_range::ComponentRange as core::fmt::Debug>::fmt"
+    ],
+    "FUN_0016caf0": [
+      "<time::error::try_from_parsed::TryFromParsed as core::error::Error>::source"
+    ],
+    "FUN_0016cb10": [
+      "<time::error::try_from_parsed::TryFromParsed as core::fmt::Display>::fmt"
+    ],
+    "FUN_0016cb70": [
+      "<time::error::component_range::ComponentRange as core::fmt::Display>::fmt"
+    ],
+    "FUN_0016cbb0": [
+      "<time::error::parse_from_description::ParseFromDescription as core::fmt::Debug>::fmt"
+    ],
+    "FUN_0016cc20": [
+      "<time::error::parse_from_description::ParseFromDescription as core::fmt::Display>::fmt"
+    ],
+    "FUN_0016d3e0": [
+      "<glob::PatternError as core::fmt::Debug>::fmt"
+    ],
+    "FUN_0016d440": [
+      "<askama::error::Error as core::fmt::Debug>::fmt"
+    ],
+    "FUN_0016d4c0": [
+      "<glob::PatternError as core::error::Error>::description"
+    ],
+    "FUN_0016d4d0": [
+      "<askama::error::Error as core::error::Error>::source"
+    ],
+    "FUN_0016d500": [
+      "<time::error::parse::Parse as core::fmt::Debug>::fmt"
+    ],
+    "FUN_0016d600": [
+      "<time::error::parse::Parse as core::error::Error>::source"
+    ],
+    "FUN_0016d620": [
+      "<time::error::parse::Parse as core::fmt::Display>::fmt"
+    ],
+    "FUN_0016d760": [
+      "anyhow::error::object_drop"
+    ],
+    "FUN_0016d7b0": [
+      "anyhow::error::object_drop"
+    ],
+    "FUN_0016d890": [
+      "anyhow::error::object_drop"
+    ],
+    "FUN_0016d8e0": [
+      "anyhow::error::object_drop"
+    ],
+    "FUN_0016d930": [
+      "anyhow::error::object_drop"
+    ],
+    "FUN_0016da10": [
+      "anyhow::error::object_drop"
+    ],
+    "FUN_0016dad0": [
+      "anyhow::error::object_drop"
+    ],
+    "FUN_0016db60": [
+      "anyhow::error::object_drop"
+    ],
+    "FUN_0016dbd0": [
+      "anyhow::error::object_drop"
+    ],
+    "FUN_0016dc40": [
+      "anyhow::error::object_drop"
+    ],
+    "FUN_0016dcc0": [
+      "anyhow::error::object_drop"
+    ],
+    "FUN_0016dd50": [
+      "anyhow::error::object_drop"
+    ],
+    "FUN_0016ddc0": [
+      "anyhow::error::object_drop"
+    ],
+    "FUN_0016de40": [
+      "anyhow::error::object_drop"
+    ],
+    "FUN_0016dec0": [
+      "anyhow::error::context_backtrace"
+    ],
+    "FUN_0016ded0": [
+      "anyhow::error::context_backtrace"
+    ],
+    "FUN_0016dee0": [
+      "anyhow::error::context_drop_rest"
+    ],
+    "FUN_0016df80": [
+      "anyhow::error::context_drop_rest"
+    ],
+    "FUN_0016e030": [
+      "anyhow::error::context_drop_rest"
+    ],
+    "FUN_0016e140": [
+      "anyhow::error::context_drop_rest"
+    ],
+    "FUN_0016e1c0": [
+      "anyhow::error::context_drop_rest"
+    ],
+    "FUN_0016e2b0": [
+      "anyhow::error::context_drop_rest"
+    ],
+    "FUN_0016e360": [
+      "anyhow::error::context_drop_rest"
+    ],
+    "FUN_0016e430": [
+      "anyhow::error::object_drop_front"
+    ],
+    "FUN_0016e480": [
+      "anyhow::error::object_drop_front"
+    ],
+    "FUN_0016e4d0": [
+      "anyhow::error::object_drop_front"
+    ],
+    "FUN_0016e520": [
+      "anyhow::error::object_drop_front"
+    ],
+    "FUN_0016e570": [
+      "anyhow::error::context_chain_downcast"
+    ],
+    "FUN_0016e5a0": [
+      "anyhow::error::context_chain_downcast"
+    ],
+    "FUN_0016e5d0": [
+      "anyhow::error::context_chain_drop_rest"
+    ],
+    "FUN_0016e6a0": [
+      "anyhow::error::context_chain_drop_rest"
+    ],
+    "FUN_0016e7a0": [
+      "anyhow::error::object_reallocate_boxed"
+    ],
+    "FUN_0016e880": [
+      "anyhow::error::object_reallocate_boxed"
+    ],
+    "FUN_0016e960": [
+      "anyhow::error::object_reallocate_boxed"
+    ],
+    "FUN_0016ea30": [
+      "anyhow::error::object_reallocate_boxed"
+    ],
+    "FUN_0016eb00": [
+      "anyhow::error::object_reallocate_boxed"
+    ],
+    "FUN_0016ebc0": [
+      "anyhow::error::object_reallocate_boxed"
+    ],
+    "FUN_0016ec90": [
+      "anyhow::error::object_reallocate_boxed"
+    ],
+    "FUN_0016ed70": [
+      "anyhow::error::object_reallocate_boxed"
+    ],
+    "FUN_0016ee50": [
+      "anyhow::error::object_reallocate_boxed"
+    ],
+    "FUN_0016ef30": [
+      "anyhow::error::object_reallocate_boxed"
+    ],
+    "FUN_0016f020": [
+      "anyhow::error::object_reallocate_boxed"
+    ],
+    "FUN_0016f0e0": [
+      "anyhow::error::object_reallocate_boxed"
+    ],
+    "FUN_0016f1d0": [
+      "anyhow::error::object_reallocate_boxed"
+    ],
+    "FUN_0016f280": [
+      "anyhow::error::object_reallocate_boxed"
+    ],
+    "FUN_0016f360": [
+      "anyhow::error::object_reallocate_boxed"
+    ],
+    "FUN_0016f410": [
+      "anyhow::error::object_reallocate_boxed"
+    ],
+    "FUN_0016f510": [
+      "anyhow::error::object_reallocate_boxed"
+    ],
+    "FUN_0016f5e0": [
+      "anyhow::error::object_reallocate_boxed"
+    ],
+    "FUN_0016f6a0": [
+      "anyhow::error::object_reallocate_boxed"
+    ],
+    "FUN_0016f780": [
+      "anyhow::context::<impl core::error::Error for anyhow::error::ContextError<C,anyhow::Error>>::source"
+    ],
+    "FUN_0016f790": [
+      "anyhow::context::<impl core::error::Error for anyhow::error::ContextError<C,anyhow::Error>>::source"
+    ],
+    "FUN_0016f7a0": [
+      "anyhow::context::<impl core::fmt::Debug for anyhow::error::ContextError<C,E>>::fmt"
+    ],
+    "FUN_0016f830": [
+      "anyhow::context::<impl core::fmt::Debug for anyhow::error::ContextError<C,E>>::fmt"
+    ],
+    "FUN_0016f8c0": [
+      "anyhow::context::<impl core::fmt::Debug for anyhow::error::ContextError<C,E>>::fmt"
+    ],
+    "FUN_0016f950": [
+      "anyhow::context::<impl core::fmt::Debug for anyhow::error::ContextError<C,E>>::fmt"
+    ],
+    "FUN_0016f9e0": [
+      "anyhow::context::<impl core::fmt::Debug for anyhow::error::ContextError<C,E>>::fmt"
+    ],
+    "FUN_0016fa70": [
+      "anyhow::context::<impl core::fmt::Debug for anyhow::error::ContextError<C,E>>::fmt"
+    ],
+    "FUN_0016fb00": [
+      "anyhow::context::<impl core::fmt::Debug for anyhow::error::ContextError<C,E>>::fmt"
+    ],
+    "FUN_0016fb90": [
+      "anyhow::context::<impl core::fmt::Debug for anyhow::error::ContextError<C,E>>::fmt"
+    ],
+    "FUN_0016fc20": [
+      "anyhow::context::<impl core::fmt::Debug for anyhow::error::ContextError<C,E>>::fmt"
+    ],
+    "FUN_0016fcb0": [
+      "anyhow::context::<impl core::fmt::Display for anyhow::error::ContextError<C,E>>::fmt"
+    ],
+    "FUN_0016fcd0": [
+      "anyhow::context::<impl core::fmt::Display for anyhow::error::ContextError<C,E>>::fmt"
+    ],
+    "FUN_0016fcf0": [
+      "anyhow::context::<impl core::fmt::Display for anyhow::error::ContextError<C,E>>::fmt"
+    ],
+    "FUN_0016fd10": [
+      "anyhow::context::<impl core::fmt::Display for anyhow::error::ContextError<C,E>>::fmt"
+    ],
+    "FUN_0016fd30": [
+      "anyhow::context::<impl core::fmt::Display for anyhow::error::ContextError<C,E>>::fmt"
+    ],
+    "FUN_0016fd50": [
+      "<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt"
+    ],
+    "FUN_0016fd60": [
+      "<anyhow::error::ErrorImpl<E> as core::error::Error>::source"
+    ],
+    "FUN_0016fd70": [
+      "<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt"
+    ],
+    "FUN_0016fde0": [
+      "<time::error::try_from_parsed::TryFromParsed as core::fmt::Debug>::fmt"
+    ],
+    "FUN_0016fe30": [
+      "<time::error::component_range::ComponentRange as core::fmt::Debug>::fmt"
+    ],
+    "FUN_0016fea0": [
+      "<time::error::try_from_parsed::TryFromParsed as core::error::Error>::source"
+    ],
+    "FUN_0016fec0": [
+      "<time::error::try_from_parsed::TryFromParsed as core::fmt::Display>::fmt"
+    ],
+    "FUN_0016ff20": [
+      "<time::error::component_range::ComponentRange as core::fmt::Display>::fmt"
+    ],
+    "FUN_0016ff60": [
+      "<time::error::parse_from_description::ParseFromDescription as core::fmt::Debug>::fmt"
+    ],
+    "FUN_0016ffd0": [
+      "<time::error::parse_from_description::ParseFromDescription as core::fmt::Display>::fmt"
+    ],
+    "FUN_00170240": [
+      "serde_core::de::Error::invalid_length"
+    ],
+    "FUN_00170300": [
+      "<core::result::Result<(),std::io::error::Error> as zoxide::error::BrokenPipeHandler>::pipe_exit"
+    ],
+    "FUN_001703c0": [
+      "<serde_core::de::impls::<impl serde_core::de::Deserialize for alloc::vec::Vec<T>>::deserialize::VecVisitor<T> as serde_core::de::Visitor>::visit_seq"
+    ],
+    "FUN_00170980": [
+      "<E as anyhow::context::ext::StdError>::ext_context"
+    ],
+    "FUN_00170b80": [
+      "anyhow::context::<impl anyhow::Context<T,E> for core::result::Result<T,E>>::with_context"
+    ],
+    "FUN_00170c40": [
+      "zoxide::config::exclude_dirs"
+    ],
+    "FUN_00170ef0": [
+      "zoxide::config::resolve_symlinks"
+    ],
+    "FUN_00170f60": [
+      "zoxide::config::maxage"
+    ],
+    "FUN_001711a0": [
+      "zoxide::config::data_dir"
+    ],
+    "FUN_00171470": [
+      "<zoxide::import::z_lua::ZLua as zoxide::import::Importer>::dirs"
+    ],
+    "FUN_00171ea0": [
+      "<E as anyhow::context::ext::StdError>::ext_context"
+    ],
+    "FUN_00171fe0": [
+      "zoxide::import::run"
+    ],
+    "FUN_00172750": [
+      "zoxide::import::run"
+    ],
+    "FUN_00172ec0": [
+      "zoxide::import::run"
+    ],
+    "FUN_00173630": [
+      "zoxide::import::run"
+    ],
+    "FUN_00173da0": [
+      "zoxide::import::run"
+    ],
+    "FUN_001744d0": [
+      "zoxide::import::run"
+    ],
+    "FUN_00176d50": [
+      "<zoxide::db::dir::DirDisplay as core::fmt::Display>::fmt"
+    ],
+    "FUN_00176e70": [
+      "zoxide::db::dir::_::<impl serde_core::ser::Serialize for zoxide::db::dir::Dir>::serialize"
+    ],
+    "FUN_001776e0": [
+      "<E as anyhow::context::ext::StdError>::ext_context"
+    ],
+    "FUN_00177760": [
+      "<E as anyhow::context::ext::StdError>::ext_context"
+    ],
+    "FUN_00177cf0": [
+      "<&mut bincode::de::Deserializer<R,O> as serde_core::de::Deserializer>::deserialize_str"
+    ],
+    "FUN_00177ea0": [
+      "<&mut bincode::de::Deserializer<R,O> as serde_core::de::Deserializer>::deserialize_struct"
+    ],
+    "FUN_001780e0": [
+      "clap_builder::error::Error<F>::invalid_value"
+    ],
+    "FUN_00178670": [
+      "clap_builder::error::Error<F>::raw"
+    ],
+    "FUN_00178910": [
+      "clap_builder::error::Error<F>::raw"
+    ],
+    "FUN_00178bf0": [
+      "clap_builder::error::Error<F>::exit"
+    ],
+    "FUN_00178c20": [
+      "clap_builder::error::Error<F>::print"
+    ],
+    "FUN_00178d40": [
+      "clap_builder::error::Error<F>::with_cmd"
+    ],
+    "FUN_00179150": [
+      "clap_builder::derive::format_error"
+    ],
+    "FUN_001792b0": [
+      "clap_builder::parser::error::MatchesError::unwrap"
+    ],
+    "FUN_00179330": [
+      "clap_builder::parser::error::MatchesError::unwrap"
+    ],
+    "FUN_001793c0": [
+      "clap_builder::builder::arg::Arg::value_names"
+    ],
+    "FUN_00179490": [
+      "clap_builder::builder::arg::Arg::value_parser"
+    ],
+    "FUN_00179570": [
+      "clap_builder::builder::arg::Arg::value_parser"
+    ],
+    "FUN_00179650": [
+      "clap_builder::builder::arg::Arg::value_parser"
+    ],
+    "FUN_00179730": [
+      "<clap_builder::builder::value_parser::EnumValueParser<E> as clap_builder::builder::value_parser::TypedValueParser>::parse_ref"
+    ],
+    "FUN_0017a2c0": [
+      "<clap_builder::builder::value_parser::EnumValueParser<E> as clap_builder::builder::value_parser::TypedValueParser>::parse_ref"
+    ],
+    "FUN_0017c2f0": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref_"
+    ],
+    "FUN_0017c390": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref_"
+    ],
+    "FUN_0017c440": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref_"
+    ],
+    "FUN_0017c4e0": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::possible_values"
+    ],
+    "FUN_0017c530": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::possible_values"
+    ],
+    "FUN_0017c580": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::possible_values"
+    ],
+    "FUN_0017c590": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::type_id"
+    ],
+    "FUN_0017c5a0": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::type_id"
+    ],
+    "FUN_0017c5b0": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::clone_any"
+    ],
+    "FUN_0017c5c0": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::clone_any"
+    ],
+    "FUN_0017c600": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::clone_any"
+    ],
+    "FUN_0017c610": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref"
+    ],
+    "FUN_0017c6b0": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref"
+    ],
+    "FUN_0017c750": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref"
+    ],
+    "FUN_0017c800": [
+      "<F as clap_builder::builder::value_parser::TypedValueParser>::parse_ref"
+    ],
+    "FUN_0017d030": [
+      "clap_builder::parser::features::suggestions::did_you_mean"
+    ],
+    "FUN_0017d2c0": [
+      "clap_builder::builder::arg_group::ArgGroup::args"
+    ],
+    "FUN_0017d6e0": [
+      "clap_builder::builder::arg_group::ArgGroup::args"
+    ],
+    "FUN_0017dde0": [
+      "clap_builder::builder::arg_group::ArgGroup::args"
+    ],
+    "FUN_0017e9c0": [
+      "<E as anyhow::context::ext::StdError>::ext_context"
+    ],
+    "FUN_0017ea40": [
+      "zoxide::db::stream::StreamOptions::with_keywords"
+    ],
+    "FUN_0017eb40": [
+      "zoxide::db::stream::Stream::next"
+    ],
+    "FUN_0017f2c0": [
+      "bincode::internal::deserialize_seed"
+    ],
+    "FUN_0017f3d0": [
+      "bincode::internal::deserialize_seed"
+    ],
+    "FUN_0017f610": [
+      "<aliasable::boxed::AliasableBox<T> as core::ops::drop::Drop>::drop"
+    ],
+    "FUN_00182a20": [
+      "time::parsing::parsed::<impl time::parsing::parsed::sealed::AnyFormatItem for time::format_description::borrowed_format_item::BorrowedFormatItem>::parse_item"
+    ],
+    "FUN_00182c70": [
+      "<zoxide::import::atuin::Iter as core::ops::drop::Drop>::drop"
+    ],
+    "FUN_00182da0": [
+      "anyhow::__private::format_err"
+    ],
+    "FUN_00182df0": [
+      "zoxide::import::atuin::Iter::parse_line::{{closure}}"
+    ],
+    "FUN_00182eb0": [
+      "<zoxide::import::atuin::Atuin as zoxide::import::Importer>::dirs"
+    ],
+    "FUN_001835f0": [
+      "<zoxide::import::atuin::Iter as core::iter::traits::iterator::Iterator>::next"
+    ],
+    "FUN_001849f0": [
+      "<E as anyhow::context::ext::StdError>::ext_context"
+    ],
+    "FUN_00184ae0": [
+      "<zoxide::import::z::Z as zoxide::import::Importer>::dirs"
+    ],
+    "FUN_00184d60": [
+      "anyhow::__private::format_err"
+    ],
+    "FUN_00184db0": [
+      "zoxide::db::<impl zoxide::db::ouroboros_impl_database::Database>::sort_by_score"
+    ],
+    "FUN_00184e20": [
+      "zoxide::db::<impl zoxide::db::ouroboros_impl_database::Database>::age"
+    ],
+    "FUN_00184fd0": [
+      "zoxide::db::<impl zoxide::db::ouroboros_impl_database::Database>::open"
+    ],
+    "FUN_001857a0": [
+      "zoxide::db::<impl zoxide::db::ouroboros_impl_database::Database>::save"
+    ],
+    "FUN_00185b10": [
+      "zoxide::db::<impl zoxide::db::ouroboros_impl_database::Database>::dedup"
+    ],
+    "FUN_00185c90": [
+      "zoxide::db::<impl zoxide::db::ouroboros_impl_database::Database>::remove"
+    ],
+    "FUN_00185d80": [
+      "zoxide::import::z::Iter<R>::parse_line::{{closure}}"
+    ],
+    "FUN_00185e60": [
+      "zoxide::import::z::Iter<R>::parse_line::{{closure}}"
+    ],
+    "FUN_001860a0": [
+      "<zoxide::db::ouroboros_impl_database::Database as core::ops::drop::Drop>::drop"
+    ],
+    "FUN_00186170": [
+      "<zoxide::import::z::Iter<R> as core::iter::traits::iterator::Iterator>::next"
+    ],
+    "FUN_00186710": [
+      "clap_builder::builder::command::Command::get_matches_from"
+    ],
+    "FUN_00186da0": [
+      "clap_builder::builder::command::Command::new"
+    ],
+    "FUN_00187ff0": [
+      "<E as anyhow::context::ext::StdError>::ext_context"
+    ],
+    "FUN_00188200": [
+      "<anyhow::wrapper::DisplayError<M> as core::fmt::Debug>::fmt",
+      "<anyhow::wrapper::DisplayError<M> as core::fmt::Display>::fmt",
+      "<anyhow::wrapper::MessageError<M> as core::fmt::Display>::fmt"
+    ],
+    "FUN_00188220": [
+      "anyhow::context::<impl anyhow::Context<T,core::convert::Infallible> for core::option::Option<T>>::context"
+    ],
+    "FUN_00188270": [
+      "zoxide::util::path_to_str"
+    ],
+    "FUN_00188370": [
+      "zoxide::util::canonicalize"
+    ],
+    "FUN_00188440": [
+      "zoxide::util::resolve_path"
+    ],
+    "FUN_00188aa0": [
+      "zoxide::util::to_lowercase"
+    ],
+    "FUN_00188dd0": [
+      "zoxide::util::Fzf::enable_preview"
+    ],
+    "FUN_00188e80": [
+      "zoxide::util::Fzf::new"
+    ],
+    "FUN_00188f40": [
+      "zoxide::util::Fzf::spawn"
+    ],
+    "FUN_00188ff0": [
+      "zoxide::util::write"
+    ],
+    "FUN_00189b70": [
+      "zoxide::util::FzfChild::wait"
+    ],
+    "FUN_00189d60": [
+      "zoxide::util::FzfChild::write"
+    ],
+    "FUN_00189f20": [
+      "<zoxide::import::fasd::Fasd as zoxide::import::Importer>::dirs"
+    ],
+    "FUN_0018a1a0": [
+      "<anyhow::wrapper::DisplayError<M> as core::fmt::Debug>::fmt",
+      "<anyhow::wrapper::DisplayError<M> as core::fmt::Display>::fmt",
+      "<anyhow::wrapper::MessageError<M> as core::fmt::Display>::fmt"
+    ],
+    "FUN_0018a1c0": [
+      "<anyhow::wrapper::MessageError<M> as core::fmt::Debug>::fmt"
+    ],
+    "FUN_0018a1e0": [
+      "<anyhow::wrapper::MessageError<M> as core::fmt::Debug>::fmt"
+    ],
+    "FUN_0018a200": [
+      "<anyhow::wrapper::MessageError<M> as core::fmt::Debug>::fmt"
+    ],
+    "FUN_0018a250": [
+      "<anyhow::wrapper::MessageError<M> as core::fmt::Display>::fmt"
+    ],
+    "FUN_0018a260": [
+      "<clap_builder::parser::matches::arg_matches::Values<T> as core::iter::traits::iterator::Iterator>::next"
+    ],
+    "FUN_0018a3b0": [
+      "clap_builder::util::flat_map::FlatMap<K,V>::insert"
+    ],
+    "FUN_0018a5a0": [
+      "clap_builder::util::flat_map::FlatMap<K,V>::insert"
+    ],
+    "FUN_0018a810": [
+      "clap_builder::parser::matches::arg_matches::ArgMatches::try_remove_one"
+    ],
+    "FUN_0018aae0": [
+      "clap_builder::parser::matches::arg_matches::ArgMatches::try_remove_one"
+    ],
+    "FUN_0018b140": [
+      "clap_builder::parser::matches::arg_matches::ArgMatches::try_remove_one"
+    ],
+    "FUN_0018b790": [
+      "clap_builder::parser::matches::arg_matches::ArgMatches::try_remove_one"
+    ],
+    "FUN_0018bde0": [
+      "clap_builder::parser::matches::arg_matches::ArgMatches::try_remove_one"
+    ],
+    "FUN_0018c430": [
+      "clap_builder::parser::matches::arg_matches::ArgMatches::try_remove_many"
+    ],
+    "FUN_0018c910": [
+      "clap_builder::parser::matches::arg_matches::ArgMatches::try_remove_arg_t"
+    ],
+    "FUN_0018cca0": [
+      "clap_builder::parser::matches::arg_matches::unwrap_downcast_into{{reify.shim}}"
+    ],
+    "FUN_0018cd40": [
+      "clap_builder::parser::matches::arg_matches::unwrap_downcast_into{{reify.shim}}"
+    ],
+    "FUN_001911a0": [
+      "<anyhow::context::Quoted<C> as core::fmt::Debug>::fmt"
+    ],
+    "FUN_00191220": [
+      "<anyhow::context::Quoted<C> as core::fmt::Debug>::fmt"
+    ],
+    "FUN_001912a0": [
+      "anyhow::kind::Adhoc::new"
+    ],
+    "FUN_001912e0": [
+      "anyhow::kind::Adhoc::new"
+    ],
+    "FUN_00191310": [
+      "anyhow::__private::format_err"
+    ],
+    "FUN_00191360": [
+      "zoxide::import::autojump::Iter<R>::parse_line::{{closure}}"
+    ],
+    "FUN_00191460": [
+      "zoxide::import::autojump::Iter<R>::parse_line::{{closure}}"
+    ],
+    "FUN_001915a0": [
+      "zoxide::import::autojump::Iter<R>::parse_line::{{closure}}"
+    ],
+    "FUN_00191680": [
+      "<zoxide::import::zsh_z::ZshZ as zoxide::import::Importer>::dirs"
+    ],
+    "FUN_00191930": [
+      "<zoxide::import::autojump::Autojump as zoxide::import::Importer>::dirs"
+    ],
+    "FUN_00191e90": [
+      "<zoxide::import::autojump::Iter<R> as core::iter::traits::iterator::Iterator>::next"
+    ],
+    "FUN_00192590": [
+      "fastrand::global_rng::random_seed"
+    ],
+    "FUN_00192760": [
+      "dirs::data_local_dir",
+      "dirs::data_dir"
+    ],
+    "FUN_00192770": [
+      "dirs::home_dir"
+    ],
+    "FUN_00192780": [
+      "dirs::lin::data_dir"
+    ],
+    "FUN_00192880": [
+      "dirs_sys::target_unix_not_redox::home_dir"
+    ],
+    "FUN_00192a70": [
+      "dirs_sys::is_absolute_path"
+    ],
+    "FUN_00192af0": [
+      "time::parsing::parsed::Parsed::parse_component"
+    ],
+    "FUN_001945d0": [
+      "time::parsing::combinator::n_to_m_digits_padded::{{closure}}"
+    ],
+    "FUN_001948c0": [
+      "time::parsing::component::parse_year"
+    ],
+    "FUN_00194dd0": [
+      "time::parsing::component::parse_subsecond"
+    ],
+    "FUN_00195430": [
+      "time::parsing::component::parse_week_number"
+    ],
+    "FUN_001955a0": [
+      "time::parsing::component::parse_unix_timestamp"
+    ],
+    "FUN_00196980": [
+      "time::date::Date::from_iso_week_date"
+    ],
+    "FUN_00196c20": [
+      "bincode::config::int::cast_u64_to_usize"
+    ],
+    "FUN_00196c30": [
+      "<bincode::error::ErrorKind as core::fmt::Display>::fmt"
+    ],
+    "FUN_00196f70": [
+      "bincode::error::<impl core::convert::From<std::io::error::Error> for alloc::boxed::Box<bincode::error::ErrorKind>>::from"
+    ],
+    "FUN_00197020": [
+      "<&str as serde_core::de::Expected>::fmt"
+    ],
+    "FUN_00197040": [
+      "<dyn serde_core::de::Expected as core::fmt::Display>::fmt"
+    ],
+    "FUN_001970e0": [
+      "glob::in_char_specifiers"
+    ],
+    "FUN_001973d0": [
+      "glob::parse_char_specifiers"
+    ],
+    "FUN_00197530": [
+      "glob::Pattern::matches_from"
+    ],
+    "FUN_00197970": [
+      "glob::Pattern::new"
+    ],
+    "FUN_00198020": [
+      "glob::Pattern::escape"
+    ],
+    "FUN_00198370": [
+      "glob::Pattern::matches"
+    ],
+    "FUN_001983a0": [
+      "<glob::PatternError as core::fmt::Display>::fmt"
+    ],
+    "FUN_00198900": [
+      "<askama::error::Error as core::fmt::Display>::fmt"
+    ],
+    "FUN_00198960": [
+      "<clap_builder::builder::command::Command as core::ops::index::Index<&clap_builder::util::id::Id>>::index"
+    ],
+    "FUN_00198a00": [
+      "clap_builder::builder::command::Command::_build_self"
+    ],
+    "FUN_0019c930": [
+      "clap_builder::builder::command::Command::subcommands"
+    ],
+    "FUN_0019ce40": [
+      "clap_builder::builder::command::Command::arg_internal"
+    ],
+    "FUN_0019cf30": [
+      "clap_builder::builder::command::Command::format_group"
+    ],
+    "FUN_0019d270": [
+      "clap_builder::builder::command::Command::render_usage_"
+    ],
+    "FUN_0019d3a0": [
+      "clap_builder::builder::command::Command::required_graph"
+    ],
+    "FUN_0019d780": [
+      "clap_builder::builder::command::Command::write_help_err"
+    ],
+    "FUN_0019d910": [
+      "clap_builder::builder::command::Command::_build_recursive"
+    ],
+    "FUN_0019d960": [
+      "clap_builder::builder::command::Command::find_long_subcmd"
+    ],
+    "FUN_0019daa0": [
+      "clap_builder::builder::command::Command::_build_subcommand"
+    ],
+    "FUN_0019e5f0": [
+      "clap_builder::builder::command::Command::find_short_subcmd"
+    ],
+    "FUN_0019e670": [
+      "clap_builder::builder::command::Command::subcommand_internal"
+    ],
+    "FUN_0019e730": [
+      "clap_builder::builder::command::Command::unroll_arg_requires"
+    ],
+    "FUN_0019ec20": [
+      "clap_builder::builder::command::Command::unroll_arg_requires"
+    ],
+    "FUN_0019f200": [
+      "clap_builder::builder::command::Command::unroll_arg_requires"
+    ],
+    "FUN_0019f6a0": [
+      "clap_builder::builder::command::Command::unroll_args_in_group"
+    ],
+    "FUN_0019fa10": [
+      "clap_builder::builder::command::Command::_build_bin_names_internal"
+    ],
+    "FUN_001a0620": [
+      "clap_builder::builder::command::Command::find"
+    ],
+    "FUN_001a06a0": [
+      "clap_builder::builder::command::Command::about"
+    ],
+    "FUN_001a07e0": [
+      "clap_builder::builder::command::Command::_do_parse"
+    ],
+    "FUN_001ac0e0": [
+      "<clap_builder::builder::str::Str as core::fmt::Display>::fmt"
+    ],
+    "FUN_001ac100": [
+      "<clap_builder::util::flat_map::FlatMap<K,V> as core::clone::Clone>::clone"
+    ],
+    "FUN_001ac3c0": [
+      "clap_builder::parser::parser::Parser::add_defaults"
+    ],
+    "FUN_001ac8d0": [
+      "clap_builder::parser::parser::Parser::match_arg_error"
+    ],
+    "FUN_001ad960": [
+      "clap_builder::parser::parser::Parser::parse_opt_value"
+    ],
+    "FUN_001ade00": [
+      "clap_builder::parser::parser::Parser::push_arg_values"
+    ],
+    "FUN_001ae0d0": [
+      "clap_builder::parser::parser::Parser::resolve_pending"
+    ],
+    "FUN_001ae360": [
+      "clap_builder::parser::parser::Parser::get_matches_with"
+    ],
+    "FUN_001b3720": [
+      "clap_builder::parser::parser::Parser::start_custom_arg"
+    ],
+    "FUN_001b3c90": [
+      "clap_builder::parser::parser::Parser::possible_subcommand"
+    ],
+    "FUN_001b3fb0": [
+      "clap_builder::parser::parser::Parser::parse_help_subcommand"
+    ],
+    "FUN_001b59f0": [
+      "clap_builder::parser::parser::Parser::react"
+    ],
+    "FUN_001b9690": [
+      "clap_builder::parser::matches::arg_matches::ArgMatches::contains_id"
+    ],
+    "FUN_001b9700": [
+      "clap_builder::parser::matches::arg_matches::ArgMatches::try_get_one"
+    ],
+    "FUN_001b9920": [
+      "clap_builder::parser::matches::arg_matches::ArgMatches::remove_subcommand"
+    ],
+    "FUN_001b9c50": [
+      "clap_builder::error::Error<F>::invalid_utf8"
+    ],
+    "FUN_001b9eb0": [
+      "clap_builder::error::Error<F>::invalid_value"
+    ],
+    "FUN_001ba450": [
+      "clap_builder::error::Error<F>::too_few_values"
+    ],
+    "FUN_001ba7a0": [
+      "clap_builder::error::Error<F>::too_many_values"
+    ],
+    "FUN_001bab10": [
+      "clap_builder::error::Error<F>::unknown_argument"
+    ],
+    "FUN_001bb3f0": [
+      "clap_builder::error::Error<F>::value_validation"
+    ],
+    "FUN_001bb770": [
+      "clap_builder::error::Error<F>::argument_conflict"
+    ],
+    "FUN_001bbb70": [
+      "clap_builder::error::Error<F>::invalid_subcommand"
+    ],
+    "FUN_001bc200": [
+      "clap_builder::error::Error<F>::missing_subcommand"
+    ],
+    "FUN_001bc560": [
+      "clap_builder::error::Error<F>::subcommand_conflict"
+    ],
+    "FUN_001bc960": [
+      "clap_builder::error::Error<F>::wrong_number_of_values"
+    ],
+    "FUN_001bccb0": [
+      "clap_builder::error::Error<F>::unnecessary_double_dash"
+    ],
+    "FUN_001bd230": [
+      "clap_builder::error::Error<F>::unrecognized_subcommand"
+    ],
+    "FUN_001bd540": [
+      "clap_builder::error::Error<F>::extend_context_unchecked"
+    ],
+    "FUN_001bd5a0": [
+      "clap_builder::error::Error<F>::extend_context_unchecked"
+    ],
+    "FUN_001bd5e0": [
+      "clap_builder::error::Error<F>::extend_context_unchecked"
+    ],
+    "FUN_001bd620": [
+      "clap_builder::error::Error<F>::insert_context_unchecked"
+    ],
+    "FUN_001bd660": [
+      "clap_builder::error::Error<F>::missing_required_argument"
+    ],
+    "FUN_001bd960": [
+      "clap_builder::error::Error<F>::get"
+    ],
+    "FUN_001bd9c0": [
+      "clap_builder::error::Error<F>::for_app"
+    ],
+    "FUN_001bdc10": [
+      "clap_builder::error::Error<F>::with_cmd"
+    ],
+    "FUN_001be020": [
+      "clap_builder::error::Error<F>::no_equals"
+    ],
+    "FUN_001be330": [
+      "clap_builder::error::Message::format"
+    ],
+    "FUN_001be580": [
+      "clap_builder::error::Message::formatted"
+    ],
+    "FUN_001be5c0": [
+      "clap_builder::output::fmt::Colorizer::with_content"
+    ],
+    "FUN_001be620": [
+      "clap_builder::output::fmt::Colorizer::print"
+    ],
+    "FUN_001bfe90": [
+      "<std::io::stdio::StderrLock as anstream::stream::IsTerminal>::is_terminal"
+    ],
+    "FUN_001bfeb0": [
+      "<std::io::stdio::StdoutLock as anstream::stream::IsTerminal>::is_terminal"
+    ],
+    "FUN_001bfed0": [
+      "<clap_builder::builder::styled_str::StyledStr as core::fmt::Write>::write_char"
+    ],
+    "FUN_001bffe0": [
+      "<clap_builder::builder::styled_str::StyledStr as core::fmt::Write>::write_str"
+    ],
+    "FUN_001c01f0": [
+      "anstream::auto::AutoStream<S>::new"
+    ],
+    "FUN_001c0290": [
+      "anstream::auto::AutoStream<S>::new"
+    ],
+    "FUN_001c0520": [
+      "clap_builder::util::escape::Escape::needs_escaping"
+    ],
+    "FUN_001c0670": [
+      "clap_builder::output::textwrap::core::display_width"
+    ],
+    "FUN_001c0810": [
+      "clap_builder::builder::styled_str::StyledStr::display_width"
+    ],
+    "FUN_001c0880": [
+      "clap_builder::builder::styled_str::StyledStr::trim_start_lines"
+    ],
+    "FUN_001c0c10": [
+      "clap_builder::builder::styled_str::StyledStr::replace_newline_var"
+    ],
+    "FUN_001c1530": [
+      "clap_builder::builder::styled_str::StyledStr::indent"
+    ],
+    "FUN_001c1b60": [
+      "clap_builder::builder::styled_str::StyledStr::push_str"
+    ],
+    "FUN_001c1bd0": [
+      "clap_builder::builder::styled_str::StyledStr::trim_end"
+    ],
+    "FUN_001c2360": [
+      "<clap_builder::util::escape::Escape as core::fmt::Display>::fmt"
+    ],
+    "FUN_001c23a0": [
+      "<clap_builder::builder::styled_str::StyledStr as core::fmt::Write>::write_char"
+    ],
+    "FUN_001c24b0": [
+      "<clap_builder::builder::styled_str::StyledStr as core::fmt::Write>::write_str"
+    ],
+    "FUN_001c2730": [
+      "anstream::adapter::strip::next_str"
+    ],
+    "FUN_001c2900": [
+      "<clap_builder::builder::styled_str::StyledStr as core::convert::From<&str>>::from"
+    ],
+    "FUN_001c5180": [
+      "<clap_builder::builder::value_parser::BoolValueParser as clap_builder::builder::value_parser::TypedValueParser>::parse_ref"
+    ],
+    "FUN_001c5550": [
+      "<clap_builder::builder::value_parser::StringValueParser as clap_builder::builder::value_parser::TypedValueParser>::parse"
+    ],
+    "FUN_001c5760": [
+      "<clap_builder::builder::value_parser::PathBufValueParser as clap_builder::builder::value_parser::TypedValueParser>::parse"
+    ],
+    "FUN_001c5940": [
+      "<clap_builder::builder::value_parser::RangedI64ValueParser<T> as clap_builder::builder::value_parser::TypedValueParser>::parse_ref"
+    ],
+    "FUN_001c6cc0": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref_"
+    ],
+    "FUN_001c6dc0": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref_"
+    ],
+    "FUN_001c6e60": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref_"
+    ],
+    "FUN_001c6fb0": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref_"
+    ],
+    "FUN_001c7100": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref_"
+    ],
+    "FUN_001c71a0": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::possible_values"
+    ],
+    "FUN_001c71f0": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::possible_values"
+    ],
+    "FUN_001c7200": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::possible_values"
+    ],
+    "FUN_001c7210": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::type_id"
+    ],
+    "FUN_001c7220": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::type_id"
+    ],
+    "FUN_001c7230": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::type_id"
+    ],
+    "FUN_001c7240": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::type_id"
+    ],
+    "FUN_001c7250": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::type_id"
+    ],
+    "FUN_001c7260": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::clone_any"
+    ],
+    "FUN_001c7270": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::clone_any"
+    ],
+    "FUN_001c72e0": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::clone_any"
+    ],
+    "FUN_001c72f0": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::clone_any"
+    ],
+    "FUN_001c7300": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::clone_any"
+    ],
+    "FUN_001c7310": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref"
+    ],
+    "FUN_001c7460": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref"
+    ],
+    "FUN_001c7500": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref"
+    ],
+    "FUN_001c75a0": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref"
+    ],
+    "FUN_001c76f0": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref"
+    ],
+    "FUN_001c7d80": [
+      "clap_builder::parser::features::suggestions::did_you_mean"
+    ],
+    "FUN_001c8180": [
+      "clap_builder::parser::features::suggestions::did_you_mean"
+    ],
+    "FUN_001c8410": [
+      "clap_builder::parser::features::suggestions::did_you_mean"
+    ],
+    "FUN_001c8790": [
+      "clap_builder::parser::features::suggestions::did_you_mean_flag"
+    ],
+    "FUN_001c9280": [
+      "<clap_builder::error::format::RichFormatter as clap_builder::error::format::ErrorFormatter>::format_error"
+    ],
+    "FUN_001ca810": [
+      "clap_builder::error::format::did_you_mean"
+    ],
+    "FUN_001caa80": [
+      "clap_builder::error::format::get_help_flag"
+    ],
+    "FUN_001cac40": [
+      "clap_builder::error::format::write_values_list"
+    ],
+    "FUN_001cae20": [
+      "clap_builder::error::format::format_error_message"
+    ],
+    "FUN_001cb110": [
+      "clap_builder::parser::error::MatchesError::unwrap"
+    ],
+    "FUN_001cb470": [
+      "<clap_builder::parser::error::MatchesError as core::fmt::Display>::fmt"
+    ],
+    "FUN_001cb4f0": [
+      "<clap_builder::builder::styled_str::StyledStr as core::fmt::Write>::write_char"
+    ],
+    "FUN_001cb600": [
+      "<clap_builder::builder::styled_str::StyledStr as core::fmt::Write>::write_str"
+    ],
+    "FUN_001cb670": [
+      "<clap_builder::error::context::ContextValue as core::cmp::PartialEq>::eq"
+    ],
+    "FUN_001cb7a0": [
+      "<I as clap_builder::builder::resettable::IntoResettable<clap_builder::builder::styled_str::StyledStr>>::into_resettable"
+    ],
+    "FUN_001cb860": [
+      "clap_builder::util::flat_map::Entry<K,V>::or_insert"
+    ],
+    "FUN_001cb9a0": [
+      "clap_builder::util::flat_map::FlatMap<K,V>::extend_unchecked"
+    ],
+    "FUN_001cbb10": [
+      "clap_builder::util::flat_map::FlatMap<K,V>::extend_unchecked"
+    ],
+    "FUN_001cbcd0": [
+      "clap_builder::util::flat_map::FlatMap<K,V>::extend_unchecked"
+    ],
+    "FUN_001cbeb0": [
+      "clap_builder::util::flat_map::FlatMap<K,V>::insert_unchecked"
+    ],
+    "FUN_001cbf40": [
+      "clap_builder::util::flat_map::FlatMap<K,V>::insert"
+    ],
+    "FUN_001cc130": [
+      "clap_builder::util::flat_map::FlatMap<K,V>::insert"
+    ],
+    "FUN_001cc3a0": [
+      "clap_builder::output::help::write_help"
+    ],
+    "FUN_001cc4e0": [
+      "clap_builder::parser::arg_matcher::ArgMatcher::add_val_to"
+    ],
+    "FUN_001cc7c0": [
+      "clap_builder::parser::arg_matcher::ArgMatcher::into_inner"
+    ],
+    "FUN_001cc860": [
+      "clap_builder::parser::arg_matcher::ArgMatcher::subcommand"
+    ],
+    "FUN_001cc940": [
+      "clap_builder::parser::arg_matcher::ArgMatcher::add_index_to"
+    ],
+    "FUN_001cca40": [
+      "clap_builder::parser::arg_matcher::ArgMatcher::check_explicit"
+    ],
+    "FUN_001ccb90": [
+      "clap_builder::parser::arg_matcher::ArgMatcher::start_custom_arg"
+    ],
+    "FUN_001ccd90": [
+      "clap_builder::parser::arg_matcher::ArgMatcher::start_custom_group"
+    ],
+    "FUN_001cced0": [
+      "clap_builder::parser::arg_matcher::ArgMatcher::fill_in_global_values"
+    ],
+    "FUN_001cd670": [
+      "clap_builder::parser::arg_matcher::ArgMatcher::start_occurrence_of_external"
+    ],
+    "FUN_001cd7f0": [
+      "clap_builder::parser::arg_matcher::ArgMatcher::remove"
+    ],
+    "FUN_001cd9d0": [
+      "clap_builder::parser::matches::matched_arg::MatchedArg::infer_type_id"
+    ],
+    "FUN_001cda80": [
+      "clap_builder::parser::matches::matched_arg::MatchedArg::new_val_group"
+    ],
+    "FUN_001cdb60": [
+      "clap_builder::parser::matches::matched_arg::MatchedArg::into_vals_flatten"
+    ],
+    "FUN_001cdca0": [
+      "clap_builder::parser::matches::matched_arg::MatchedArg::num_vals"
+    ],
+    "FUN_001cdd20": [
+      "clap_builder::builder::possible_value::PossibleValue::matches"
+    ],
+    "FUN_001ce870": [
+      "clap_builder::output::help_template::HelpTemplate::write_args"
+    ],
+    "FUN_001cfa80": [
+      "clap_builder::output::help_template::HelpTemplate::write_about"
+    ],
+    "FUN_001cfc50": [
+      "clap_builder::output::help_template::HelpTemplate::sc_spec_vals"
+    ],
+    "FUN_001d0020": [
+      "clap_builder::output::help_template::HelpTemplate::write_subcommands"
+    ],
+    "FUN_001d0a80": [
+      "clap_builder::output::help_template::HelpTemplate::write_templated_help"
+    ],
+    "FUN_001d40e0": [
+      "clap_builder::output::help_template::HelpTemplate::write_flat_subcommands"
+    ],
+    "FUN_001d4790": [
+      "clap_builder::output::help_template::HelpTemplate::new"
+    ],
+    "FUN_001d4ab0": [
+      "clap_builder::output::help_template::HelpTemplate::help"
+    ],
+    "FUN_001d5810": [
+      "clap_builder::output::help_template::HelpTemplate::spec_vals"
+    ],
+    "FUN_001d6470": [
+      "clap_builder::output::help_template::option_sort_key"
+    ],
+    "FUN_001d6780": [
+      "clap_builder::output::help_template::positional_sort_key"
+    ],
+    "FUN_001d67b0": [
+      "clap_builder::output::help_template::AutoHelp::write_help"
+    ],
+    "FUN_001d6aa0": [
+      "clap_builder::output::help_template::AutoHelp::new"
+    ],
+    "FUN_001d8580": [
+      "clap_builder::output::usage::Usage::write_arg_usage"
+    ],
+    "FUN_001d9e40": [
+      "clap_builder::output::usage::Usage::write_usage_no_title"
+    ],
+    "FUN_001dbb40": [
+      "clap_builder::output::usage::Usage::create_usage_with_title"
+    ],
+    "FUN_001dbc90": [
+      "clap_builder::output::usage::Usage::get_required_usage_from"
+    ],
+    "FUN_001dca50": [
+      "clap_builder::output::usage::Usage::new"
+    ],
+    "FUN_001dd8c0": [
+      "<clap_builder::builder::styled_str::StyledStr as core::fmt::Write>::write_char"
+    ],
+    "FUN_001dd9d0": [
+      "<clap_builder::builder::styled_str::StyledStr as core::fmt::Write>::write_str"
+    ],
+    "FUN_001dda40": [
+      "clap_builder::builder::ext::Extensions::update"
+    ],
+    "FUN_001deda0": [
+      "<P as clap_builder::builder::value_parser::AnyValueParser>::type_id"
+    ],
+    "FUN_001dedb0": [
+      "<clap_builder::util::any_value::AnyValue as core::fmt::Debug>::fmt"
+    ],
+    "FUN_001dee30": [
+      "<clap_builder::util::any_value::AnyValueId as core::fmt::Debug>::fmt"
+    ],
+    "FUN_001dee40": [
+      "<clap_builder::util::flat_set::FlatSet<T> as core::iter::traits::collect::Extend<T>>::extend"
+    ],
+    "FUN_001defc0": [
+      "<clap_builder::util::flat_set::FlatSet<T> as core::iter::traits::collect::FromIterator<T>>::from_iter"
+    ],
+    "FUN_001df130": [
+      "<clap_builder::util::flat_set::FlatSet<T> as core::iter::traits::collect::FromIterator<T>>::from_iter"
+    ],
+    "FUN_001df5b0": [
+      "clap_builder::util::flat_set::FlatSet<T>::insert"
+    ],
+    "FUN_001df6d0": [
+      "clap_builder::builder::arg::Arg::value_names"
+    ],
+    "FUN_001df7a0": [
+      "clap_builder::builder::arg::Arg::name_no_brackets"
+    ],
+    "FUN_001df920": [
+      "clap_builder::builder::arg::Arg::stylize_arg_suffix"
+    ],
+    "FUN_001e0480": [
+      "clap_builder::builder::arg::Arg::_build"
+    ],
+    "FUN_001e0790": [
+      "clap_builder::builder::arg::Arg::stylized"
+    ],
+    "FUN_001e0970": [
+      "clap_builder::mkeymap::MKeyMap::get"
+    ],
+    "FUN_001e09e0": [
+      "clap_builder::mkeymap::MKeyMap::get"
+    ],
+    "FUN_001e0a90": [
+      "clap_builder::mkeymap::MKeyMap::push"
+    ],
+    "FUN_001e0af0": [
+      "clap_builder::mkeymap::MKeyMap::_build"
+    ],
+    "FUN_001e0df0": [
+      "<core::option::Option<&str> as clap_builder::builder::resettable::IntoResettable<clap_builder::builder::styled_str::StyledStr>>::into_resettable"
+    ],
+    "FUN_001e17b0": [
+      "<clap_builder::builder::arg::Arg as core::fmt::Display>::fmt"
+    ],
+    "FUN_001e1960": [
+      "<clap_builder::builder::styled_str::StyledStr as core::fmt::Write>::write_char"
+    ],
+    "FUN_001e1a70": [
+      "<clap_builder::builder::styled_str::StyledStr as core::fmt::Write>::write_str"
+    ],
+    "FUN_001e1ce0": [
+      "clap_builder::parser::validator::gather_direct_conflicts"
+    ],
+    "FUN_001e23a0": [
+      "clap_builder::parser::validator::Conflicts::gather_conflicts"
+    ],
+    "FUN_001e2750": [
+      "clap_builder::parser::validator::Validator::validate"
+    ],
+    "FUN_001e4fa0": [
+      "strsim::generic_jaro"
+    ],
+    "FUN_001e5660": [
+      "strsim::jaro"
+    ],
+    "FUN_001e5670": [
+      "anstream::strip::write_all"
+    ],
+    "FUN_001e56f0": [
+      "anstream::adapter::strip::next_bytes"
+    ],
+    "FUN_001e5970": [
+      "anstream::auto::choice"
+    ],
+    "FUN_001e5c00": [
+      "utf8parse::Parser::advance"
+    ],
+    "FUN_001e5d20": [
+      "colorchoice::ColorChoice::global"
+    ],
+    "FUN_001e5dd0": [
+      "<clap_lex::ShortFlags as core::iter::traits::iterator::Iterator>::next"
+    ],
+    "FUN_001e5eb0": [
+      "clap_lex::ShortFlags::advance_by"
+    ],
+    "FUN_001e5f40": [
+      "clap_lex::ShortFlags::next_value_os"
+    ],
+    "FUN_001e5fb0": [
+      "clap_lex::ShortFlags::is_negative_number"
+    ],
+    "FUN_001e6060": [
+      "clap_lex::ShortFlags::next_flag"
+    ],
+    "FUN_001e6140": [
+      "clap_lex::RawArgs::peek"
+    ],
+    "FUN_001e6160": [
+      "clap_lex::RawArgs::seek"
+    ],
+    "FUN_001e61b0": [
+      "clap_lex::RawArgs::remaining"
+    ],
+    "FUN_001e61f0": [
+      "clap_lex::ParsedArg::is_negative_number"
+    ],
+    "FUN_001e62f0": [
+      "clap_lex::ParsedArg::display"
+    ],
+    "FUN_001e6310": [
+      "clap_lex::ParsedArg::is_long"
+    ],
+    "FUN_001e6340": [
+      "clap_lex::ParsedArg::to_long"
+    ],
+    "FUN_001e6450": [
+      "clap_lex::ParsedArg::is_short"
+    ],
+    "FUN_001e6480": [
+      "clap_lex::ParsedArg::to_short"
+    ],
+    "FUN_001e65a0": [
+      "clap_lex::ParsedArg::to_value"
+    ],
+    "FUN_001e65f0": [
+      "<std::ffi::os_str::OsStr as clap_lex::ext::OsStrExt>::strip_prefix"
+    ],
+    "FUN_001e6630": [
+      "<std::ffi::os_str::OsStr as clap_lex::ext::OsStrExt>::split"
+    ],
+    "FUN_001e6680": [
+      "<std::ffi::os_str::OsStr as clap_lex::ext::OsStrExt>::contains"
+    ],
+    "FUN_001e6700": [
+      "<clap_lex::ext::Split as core::iter::traits::iterator::Iterator>::next"
+    ],
+    "FUN_001e68f0": [
+      "<anstyle::style::StyleDisplay as core::fmt::Display>::fmt"
+    ],
+    "FUN_001e6900": [
+      "anstyle::style::Style::fmt_to"
+    ],
+    "FUN_001e6fb0": [
+      "anstyle::color::DisplayBuffer::write_code"
+    ],
+    "FUN_001e70a0": [
+      "anstyle::color::DisplayBuffer::write_str"
+    ],
+    "FUN_001e73a0": [
+      "anyhow::fmt::<impl anyhow::error::ErrorImpl>::debug"
+    ],
+    "FUN_001e7760": [
+      "anyhow::fmt::<impl anyhow::error::ErrorImpl>::display"
+    ],
+    "FUN_001e78a0": [
+      "anyhow::error::ErrorImpl::error",
+      "anyhow::error::ErrorImpl::error_mut"
+    ],
+    "FUN_001e78b0": [
+      "anyhow::error::ErrorImpl::backtrace"
+    ],
+    "FUN_001e78f0": [
+      "anyhow::error::<impl core::fmt::Debug for anyhow::Error>::fmt"
+    ],
+    "FUN_001e7900": [
+      "anyhow::error::<impl core::fmt::Display for anyhow::Error>::fmt"
+    ],
+    "FUN_001e7910": [
+      "anyhow::error::<impl core::ops::drop::Drop for anyhow::Error>::drop"
+    ],
+    "FUN_001e7b50": [
+      "<anyhow::fmt::Indented<T> as core::fmt::Write>::write_str"
+    ],
+    "FUN_001e8780": [
+      "<anyhow::context::Quoted<&mut core::fmt::Formatter> as core::fmt::Write>::write_str"
+    ],
+    "FUN_00216850": [
+      "gimli::read::line::parse_file_v5"
+    ],
+    "FUN_00216b40": [
+      "gimli::read::line::FileEntryFormat::parse"
+    ],
+    "FUN_00216ef0": [
+      "gimli::read::line::parse_attribute"
+    ],
+    "FUN_00217930": [
+      "gimli::read::line::parse_directory_v5"
+    ],
+    "FUN_00217a20": [
+      "gimli::read::line::FileEntry<R,Offset>::parse"
+    ],
+    "FUN_00217c80": [
+      "gimli::read::unit::parse_attribute"
+    ],
+    "FUN_002190e0": [
+      "gimli::read::unit::skip_attributes"
+    ],
+    "FUN_00219640": [
+      "gimli::read::unit::Attribute<R>::value"
+    ],
+    "FUN_00219c30": [
+      "gimli::read::unit::EntriesCursor<R>::next_entry"
+    ],
+    "FUN_00219f60": [
+      "gimli::read::unit::AttributeValue<R,Offset>::u8_value"
+    ],
+    "FUN_00219fd0": [
+      "gimli::read::unit::AttributeValue<R,Offset>::u16_value"
+    ],
+    "FUN_0021a040": [
+      "gimli::read::unit::DebugInfoUnitHeadersIter<R>::next"
+    ],
+    "FUN_0021a690": [
+      "gimli::read::dwarf::Unit<R>::new"
+    ],
+    "FUN_0021cbf0": [
+      "gimli::read::dwarf::Dwarf<R>::attr_string"
+    ],
+    "FUN_0021cde0": [
+      "gimli::read::index::UnitIndex<R>::parse"
+    ],
+    "FUN_0021d6c0": [
+      "gimli::read::reader::Reader::read_offset"
+    ],
+    "FUN_0021d770": [
+      "gimli::read::reader::Reader::read_uleb128"
+    ],
+    "FUN_0021d820": [
+      "gimli::read::reader::Reader::read_sized_offset"
+    ],
+    "FUN_0021d920": [
+      "gimli::read::aranges::ArangeHeader<R,Offset>::parse"
+    ],
+    "FUN_0021dbd0": [
+      "gimli::read::rnglists::RngListIter<R>::next"
+    ],
+    "FUN_002213b0": [
+      "<gimli::read::line::FileEntry<R,Offset> as core::clone::Clone>::clone"
+    ],
+    "FUN_00221610": [
+      "<gimli::read::unit::AttributeValue<R,Offset> as core::clone::Clone>::clone"
+    ],
+    "FUN_00222440": [
+      "addr2line::Context<R>::find_unit"
+    ],
+    "FUN_002225a0": [
+      "addr2line::line::render_file"
+    ],
+    "FUN_002229f0": [
+      "addr2line::unit::ResUnit<R>::find_function_or_location"
+    ],
+    "FUN_00222e90": [
+      "addr2line::unit::ResUnit<R>::find_function_or_location::{{closure}}"
+    ],
+    "FUN_00223170": [
+      "addr2line::lookup::LoopingLookup<T,L,F>::new_lookup"
+    ],
+    "FUN_002236f0": [
+      "addr2line::function::name_entry"
+    ],
+    "FUN_00223b00": [
+      "addr2line::function::Function<R>::parse_children"
+    ],
+    "FUN_00224ca0": [
+      "addr2line::function::name_attr"
+    ],
+    "FUN_00225510": [
+      "panic_unwind::imp::panic::exception_cleanup"
+    ],
+    "FUN_00225630": [
+      "<&[u8] as object::read::read_ref::ReadRef>::read_bytes_at_until"
+    ],
+    "FUN_00225680": [
+      "memchr::arch::x86_64::memchr::memchr_raw::detect"
+    ],
+    "FUN_00225850": [
+      "memchr::arch::x86_64::memchr::memchr_raw::find_sse2"
+    ],
+    "FUN_00225ac1": [
+      "addr2line::line::has_backward_slash_root"
+    ],
+    "FUN_00225af4": [
+      "addr2line::line::Lines::find_location"
+    ],
+    "FUN_00225c1e": [
+      "addr2line::line::path_push"
+    ],
+    "FUN_00226f29": [
+      "gimli::read::abbrev::Attributes::push"
+    ],
+    "FUN_00227062": [
+      "gimli::read::abbrev::Abbreviation::new"
+    ],
+    "FUN_002270e4": [
+      "gimli::read::abbrev::Abbreviations::insert"
+    ],
+    "FUN_002271df": [
+      "<gimli::read::abbrev::Attributes as core::ops::deref::Deref>::deref"
+    ],
+    "FUN_00227510": [
+      "rustc_demangle::try_demangle"
+    ],
+    "FUN_00227565": [
+      "rustc_demangle::v0::HexNibbles::try_parse_uint"
+    ],
+    "FUN_00227663": [
+      "rustc_demangle::v0::basic_type"
+    ],
+    "FUN_0022768e": [
+      "rustc_demangle::v0::Parser::integer_62"
+    ],
+    "FUN_00227730": [
+      "rustc_demangle::v0::Parser::hex_nibbles"
+    ],
+    "FUN_002277cf": [
+      "rustc_demangle::v0::Parser::opt_integer_62"
+    ],
+    "FUN_00227843": [
+      "rustc_demangle::v0::Parser::ident"
+    ],
+    "FUN_00227a1d": [
+      "rustc_demangle::v0::Parser::backref"
+    ],
+    "FUN_00227a9b": [
+      "rustc_demangle::v0::Parser::namespace"
+    ],
+    "FUN_00227aea": [
+      "rustc_demangle::v0::Printer::print_path"
+    ],
+    "FUN_002281c9": [
+      "rustc_demangle::v0::Printer::print_type"
+    ],
+    "FUN_00228704": [
+      "rustc_demangle::v0::Printer::print_type::{{closure}}"
+    ],
+    "FUN_00228a90": [
+      "rustc_demangle::v0::Printer::print_const"
+    ],
+    "FUN_00229104": [
+      "rustc_demangle::v0::Printer::print_backref"
+    ],
+    "FUN_002291f2": [
+      "rustc_demangle::v0::Printer::print_backref"
+    ],
+    "FUN_002292d3": [
+      "rustc_demangle::v0::Printer::print_backref"
+    ],
+    "FUN_002293c1": [
+      "rustc_demangle::v0::Printer::print_sep_list"
+    ],
+    "FUN_002295ee": [
+      "rustc_demangle::v0::Printer::print_sep_list"
+    ],
+    "FUN_00229733": [
+      "rustc_demangle::v0::Printer::print_sep_list"
+    ],
+    "FUN_002297d0": [
+      "rustc_demangle::v0::Printer::print_sep_list"
+    ],
+    "FUN_00229867": [
+      "rustc_demangle::v0::Printer::print_sep_list"
+    ],
+    "FUN_00229a40": [
+      "rustc_demangle::v0::Printer::print_sep_list"
+    ],
+    "FUN_00229ae2": [
+      "rustc_demangle::v0::Printer::print_const_uint"
+    ],
+    "FUN_00229c4b": [
+      "rustc_demangle::v0::Printer::skipping_printing"
+    ],
+    "FUN_00229ca1": [
+      "rustc_demangle::v0::Printer::print_const_str_literal"
+    ],
+    "FUN_00229fd8": [
+      "rustc_demangle::v0::Printer::print_lifetime_from_index"
+    ],
+    "FUN_0022a0c9": [
+      "rustc_demangle::v0::Printer::print_quoted_escaped_chars"
+    ],
+    "FUN_0022a278": [
+      "rustc_demangle::v0::Printer::print_path_maybe_open_generics"
+    ],
+    "FUN_0022a3bf": [
+      "rustc_demangle::v0::Printer::in_binder"
+    ],
+    "FUN_0022a53d": [
+      "rustc_demangle::v0::Printer::in_binder"
+    ],
+    "FUN_0022a6c0": [
+      "rustc_demangle::v0::Printer::print_pat"
+    ],
+    "FUN_0022a8a3": [
+      "rustc_demangle::demangle"
+    ],
+    "FUN_0022b80c": [
+      "<rustc_demangle::Demangle as core::fmt::Display>::fmt"
+    ],
+    "FUN_0022b911": [
+      "<rustc_demangle::v0::Ident as core::fmt::Display>::fmt"
+    ],
+    "FUN_0022bd63": [
+      "<rustc_demangle::DemangleStyle as core::fmt::Display>::fmt"
+    ],
+    "FUN_0022bda6": [
+      "<rustc_demangle::SizeLimitExhausted as core::fmt::Debug>::fmt"
+    ],
+    "FUN_0022bdbb": [
+      "<rustc_demangle::legacy::Demangle as core::fmt::Display>::fmt"
+    ],
+    "FUN_0022cc8d": [
+      "<rustc_demangle::SizeLimitedFmtAdapter<F> as core::fmt::Write>::write_str"
+    ],
+    "FUN_0022ccb2": [
+      "miniz_oxide::inflate::core::decompress"
+    ],
+    "FUN_0022e694": [
+      "miniz_oxide::inflate::core::apply_match"
+    ],
+    "FUN_0022e7e3": [
+      "miniz_oxide::inflate::core::transfer"
+    ],
+    "FUN_0022ebd1": [
+      "miniz_oxide::inflate::core::init_tree"
+    ],
+    "FUN_0022f070": [
+      "adler2::Adler32::write_slice"
+    ]
+  },
+  "note": "address aliases/duplicates: FUN_0016d760: duplicate symbol for origin 'anyhow::error::object_drop' kept once (anyhow::error::object_drop); FUN_0016d890: duplicate symbol for origin 'anyhow::error::object_drop' kept once (anyhow::error::object_drop); FUN_0016d8e0: duplicate symbol for origin 'anyhow::error::object_drop' kept once (anyhow::error::object_drop); FUN_0016d8e0: duplicate symbol for origin 'anyhow::error::object_drop' kept once (anyhow::error::object_drop); FUN_0016ddc0: duplicate symbol for origin 'anyhow::error::object_drop' kept once (anyhow::error::object_drop); FUN_0016e430: duplicate symbol for origin 'anyhow::error::object_drop_front' kept once (anyhow::error::object_drop_front); FUN_0016e520: duplicate symbol for origin 'anyhow::error::object_drop_front' kept once (anyhow::error::object_drop_front); FUN_0016e520: duplicate symbol for origin 'anyhow::error::object_drop_front' kept once (anyhow::error::object_drop_front); FUN_0016e520: duplicate symbol for origin 'anyhow::error::object_drop_front' kept once (anyhow::error::object_drop_front); FUN_0016fcb0: duplicate symbol for origin 'anyhow::context::impl_for=anyhow::error::ContextError<C,E>::fmt' kept once (anyhow::context::<impl core::fmt::Display for anyhow::error::ContextError<C,E>>::fmt); FUN_0016fcb0: duplicate symbol for origin 'anyhow::context::impl_for=anyhow::error::ContextError<C,E>::fmt' kept once (anyhow::context::<impl core::fmt::Display for anyhow::error::ContextError<C,E>>::fmt); FUN_0016fd10: duplicate symbol for origin 'anyhow::context::impl_for=anyhow::error::ContextError<C,E>::fmt' kept once (anyhow::context::<impl core::fmt::Display for anyhow::error::ContextError<C,E>>::fmt); FUN_0016fd10: duplicate symbol for origin 'anyhow::context::impl_for=anyhow::error::ContextError<C,E>::fmt' kept once (anyhow::context::<impl core::fmt::Display for anyhow::error::ContextError<C,E>>::fmt); FUN_0016fd50: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt); FUN_0016fd50: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt); FUN_0016fd50: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt); FUN_0016fd50: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt); FUN_0016fd50: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt); FUN_0016fd50: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt); FUN_0016fd50: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt); FUN_0016fd50: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt); FUN_0016fd50: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt); FUN_0016fd50: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt); FUN_0016fd50: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt); FUN_0016fd50: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt); FUN_0016fd50: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt); FUN_0016fd50: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt); FUN_0016fd50: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt); FUN_0016fd50: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt); FUN_0016fd50: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt); FUN_0016fd50: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Debug>::fmt); FUN_0016fd60: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::error::Error>::source' kept once (<anyhow::error::ErrorImpl<E> as core::error::Error>::source); FUN_0016fd60: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::error::Error>::source' kept once (<anyhow::error::ErrorImpl<E> as core::error::Error>::source); FUN_0016fd60: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::error::Error>::source' kept once (<anyhow::error::ErrorImpl<E> as core::error::Error>::source); FUN_0016fd60: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::error::Error>::source' kept once (<anyhow::error::ErrorImpl<E> as core::error::Error>::source); FUN_0016fd60: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::error::Error>::source' kept once (<anyhow::error::ErrorImpl<E> as core::error::Error>::source); FUN_0016fd60: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::error::Error>::source' kept once (<anyhow::error::ErrorImpl<E> as core::error::Error>::source); FUN_0016fd60: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::error::Error>::source' kept once (<anyhow::error::ErrorImpl<E> as core::error::Error>::source); FUN_0016fd60: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::error::Error>::source' kept once (<anyhow::error::ErrorImpl<E> as core::error::Error>::source); FUN_0016fd60: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::error::Error>::source' kept once (<anyhow::error::ErrorImpl<E> as core::error::Error>::source); FUN_0016fd60: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::error::Error>::source' kept once (<anyhow::error::ErrorImpl<E> as core::error::Error>::source); FUN_0016fd60: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::error::Error>::source' kept once (<anyhow::error::ErrorImpl<E> as core::error::Error>::source); FUN_0016fd60: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::error::Error>::source' kept once (<anyhow::error::ErrorImpl<E> as core::error::Error>::source); FUN_0016fd60: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::error::Error>::source' kept once (<anyhow::error::ErrorImpl<E> as core::error::Error>::source); FUN_0016fd60: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::error::Error>::source' kept once (<anyhow::error::ErrorImpl<E> as core::error::Error>::source); FUN_0016fd60: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::error::Error>::source' kept once (<anyhow::error::ErrorImpl<E> as core::error::Error>::source); FUN_0016fd60: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::error::Error>::source' kept once (<anyhow::error::ErrorImpl<E> as core::error::Error>::source); FUN_0016fd60: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::error::Error>::source' kept once (<anyhow::error::ErrorImpl<E> as core::error::Error>::source); FUN_0016fd60: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::error::Error>::source' kept once (<anyhow::error::ErrorImpl<E> as core::error::Error>::source); FUN_0016fd70: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt); FUN_0016fd70: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt); FUN_0016fd70: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt); FUN_0016fd70: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt); FUN_0016fd70: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt); FUN_0016fd70: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt); FUN_0016fd70: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt); FUN_0016fd70: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt); FUN_0016fd70: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt); FUN_0016fd70: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt); FUN_0016fd70: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt); FUN_0016fd70: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt); FUN_0016fd70: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt); FUN_0016fd70: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt); FUN_0016fd70: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt); FUN_0016fd70: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt); FUN_0016fd70: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt); FUN_0016fd70: duplicate symbol for origin '<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt' kept once (<anyhow::error::ErrorImpl<E> as core::fmt::Display>::fmt); FUN_00179570: duplicate symbol for origin 'clap_builder::builder::arg::Arg::value_parser' kept once (clap_builder::builder::arg::Arg::value_parser); FUN_00188440: duplicate symbol for origin 'zoxide::util::resolve_path' kept once (zoxide::util::resolve_path); FUN_0018a260: duplicate symbol for origin '<clap_builder::parser::matches::arg_matches::Values<T> as core::iter::traits::iterator::Iterator>::next' kept once (<clap_builder::parser::matches::arg_matches::Values<T> as core::iter::traits::iterator::Iterator>::next); FUN_001c71f0: duplicate symbol for origin '<P as clap_builder::builder::value_parser::AnyValueParser>::possible_values' kept once (<P as clap_builder::builder::value_parser::AnyValueParser>::possible_values); FUN_001c71f0: duplicate symbol for origin '<P as clap_builder::builder::value_parser::AnyValueParser>::possible_values' kept once (<P as clap_builder::builder::value_parser::AnyValueParser>::possible_values); FUN_001cb110: duplicate symbol for origin 'clap_builder::parser::error::MatchesError::unwrap' kept once (clap_builder::parser::error::MatchesError::unwrap)",
+  "cross_origin_aliases": [
+    {
+      "member": "FUN_00188200",
+      "origins": [
+        "<anyhow::wrapper::DisplayError<M> as core::fmt::Debug>::fmt",
+        "<anyhow::wrapper::DisplayError<M> as core::fmt::Display>::fmt",
+        "<anyhow::wrapper::MessageError<M> as core::fmt::Display>::fmt"
+      ]
+    },
+    {
+      "member": "FUN_0018a1a0",
+      "origins": [
+        "<anyhow::wrapper::DisplayError<M> as core::fmt::Debug>::fmt",
+        "<anyhow::wrapper::DisplayError<M> as core::fmt::Display>::fmt",
+        "<anyhow::wrapper::MessageError<M> as core::fmt::Display>::fmt"
+      ]
+    },
+    {
+      "member": "FUN_00192760",
+      "origins": [
+        "dirs::data_dir",
+        "dirs::data_local_dir"
+      ]
+    },
+    {
+      "member": "FUN_001e78a0",
+      "origins": [
+        "anyhow::error::ErrorImpl::error",
+        "anyhow::error::ErrorImpl::error_mut"
+      ]
+    }
+  ]
+}

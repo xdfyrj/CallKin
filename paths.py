@@ -276,5 +276,31 @@ def _scoped_artifact_path(
     return "/".join(parts)
 
 
+def result_dir_for(case: str, profile: str = DEFAULT_PROFILE) -> str:
+    """Return the directory for one case's score results."""
+    case_name = Path(case).name
+    if not case_name or case_name in (".", ".."):
+        raise ValueError(f"invalid result case: {case!r}")
+    return f"results/{case_name}/{normalize_profile(profile)}"
+
+
+def result_json_for(
+    case: str,
+    name: str,
+    profile: str = DEFAULT_PROFILE,
+) -> str:
+    """Return a case/profile result path for a simple JSON filename."""
+    filename = Path(name).name
+    if not filename or filename in (".", ".."):
+        raise ValueError(f"invalid result name: {name!r}")
+    if not filename.endswith(".json"):
+        filename += ".json"
+    return f"{result_dir_for(case, profile)}/{filename}"
+
+
 def baseline_result_for(profile: str = DEFAULT_PROFILE) -> str:
-    return f"results/{normalize_profile(profile)}/v0_baseline.json"
+    return result_json_for("micro-corpus", "baseline", profile)
+
+
+def all_modes_result_for(profile: str = DEFAULT_PROFILE) -> str:
+    return result_json_for("micro-corpus", "all_modes", profile)

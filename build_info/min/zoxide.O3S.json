@@ -1,0 +1,124 @@
+{
+  "artifacts": {
+    "non_stripped": {
+      "path": "gt_bin/min/zoxide.O3S.gt.bin",
+      "sha256": "1d0f8d13956f752ba1508a506dd5d404e1e844761d638a04dffb109b1ee0247e"
+    },
+    "stripped": {
+      "path": "bin/min/zoxide.O3S.fixture.bin",
+      "sha256": "baef7b8237bfa01cfc92f1587fad16c9aaed64875db5192f7a344f8c7e12826d",
+      "stripped_from_sha256": "1d0f8d13956f752ba1508a506dd5d404e1e844761d638a04dffb109b1ee0247e"
+    }
+  },
+  "build": "O3S",
+  "build_id": "d4c5bc87e73144e8b215172391dd71db",
+  "cargo": {
+    "binary": "zoxide",
+    "candidate_namespaces": [
+      "zoxide"
+    ],
+    "command": [
+      "cargo",
+      "build",
+      "--release",
+      "--locked",
+      "--manifest-path",
+      "subjects/zoxide/Cargo.toml",
+      "--package",
+      "zoxide",
+      "--bin",
+      "zoxide",
+      "--target",
+      "x86_64-unknown-linux-gnu",
+      "--target-dir",
+      "/tmp/zoxide.min.O3S.3n11xitq/cargo-target",
+      "--message-format=json-render-diagnostics",
+      "--config",
+      "/tmp/zoxide.min.O3S.3n11xitq/callkin-cargo-config.toml"
+    ],
+    "environment": {
+      "RUSTC": "rustc",
+      "RUSTFLAGS": ""
+    },
+    "invoked_path": "/home/xdfyrj/.cargo/bin/cargo",
+    "lockfile": {
+      "path": "subjects/zoxide/Cargo.lock",
+      "sha256": "71b25bc9910a0587d7a719bd8f2910a88d77ef2f9f3c8b6eb477f9ff7d552508"
+    },
+    "manifest": {
+      "path": "subjects/zoxide/Cargo.toml",
+      "sha256": "17c749d4633ce9b24382b2d18c1456d451f6c200f97b041bf16a24e762add453"
+    },
+    "package": "zoxide",
+    "profile_config": "[profile.release]\nopt-level = 3\ndebug = 0\ndebug-assertions = false\noverflow-checks = false\ncodegen-units = 1\nlto = true\npanic = \"abort\"\nincremental = false\nstrip = \"none\"\n",
+    "resolved_path": "/home/xdfyrj/.cargo/bin/rustup",
+    "root_namespace": "zoxide",
+    "version": "cargo 1.93.1 (083ac5135 2025-12-15)\nrelease: 1.93.1\ncommit-hash: 083ac5135f967fd9dc906ab057a2315861c7a80d\ncommit-date: 2025-12-15\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.1 (sys:0.20.2 vendored)\nlibcurl: 8.15.0-DEV (sys:0.4.83+curl-8.15.0 vendored ssl:OpenSSL/3.5.4)\nssl: OpenSSL 3.5.4 30 Sep 2025\nos: Ubuntu 24.4.0 (noble) [64-bit]"
+  },
+  "case": "zoxide",
+  "compiler": {
+    "command": [
+      "cargo",
+      "build",
+      "--release",
+      "--locked",
+      "--manifest-path",
+      "subjects/zoxide/Cargo.toml",
+      "--package",
+      "zoxide",
+      "--bin",
+      "zoxide",
+      "--target",
+      "x86_64-unknown-linux-gnu",
+      "--target-dir",
+      "/tmp/zoxide.min.O3S.3n11xitq/cargo-target",
+      "--message-format=json-render-diagnostics",
+      "--config",
+      "/tmp/zoxide.min.O3S.3n11xitq/callkin-cargo-config.toml"
+    ],
+    "compiler_binary_path": "/home/xdfyrj/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc",
+    "flags": [
+      "-C",
+      "opt-level=3",
+      "-C",
+      "debuginfo=0",
+      "-C",
+      "debug-assertions=off",
+      "-C",
+      "overflow-checks=off",
+      "-C",
+      "codegen-units=1",
+      "-C",
+      "lto=true",
+      "-C",
+      "panic=abort"
+    ],
+    "invoked_path": "/home/xdfyrj/.cargo/bin/rustc",
+    "resolved_path": "/home/xdfyrj/.cargo/bin/rustup",
+    "sysroot": "/home/xdfyrj/.rustup/toolchains/stable-x86_64-unknown-linux-gnu",
+    "verbose_version": "rustc 1.93.1 (01f6ddf75 2026-02-11)\nbinary: rustc\ncommit-hash: 01f6ddf7588f42ae2d7eb0a2f21d44e8e96674cf\ncommit-date: 2026-02-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.93.1\nLLVM version: 21.1.8"
+  },
+  "crate_name": "zoxide",
+  "edition": "2024",
+  "profile": "min",
+  "schema_version": 3,
+  "source": {
+    "kind": "subject",
+    "path": "subjects/zoxide",
+    "sha256": "3302869e7a42a926fc3e6113bf793f9bed85f75850c466838064a12db66a2154"
+  },
+  "strip": {
+    "command": [
+      "strip",
+      "--strip-all",
+      "/tmp/zoxide.min.O3S.3n11xitq/.stripped.bin.5t1bn4b2.tmp"
+    ],
+    "flags": [
+      "--strip-all"
+    ],
+    "invoked_path": "/usr/bin/strip",
+    "resolved_path": "/usr/bin/x86_64-linux-gnu-strip",
+    "version": "GNU strip (GNU Binutils for Ubuntu) 2.42\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis program is free software; you may redistribute it under the terms of\nthe GNU General Public License version 3 or (at your option) any later version.\nThis program has absolutely no warranty."
+  },
+  "target": "x86_64-unknown-linux-gnu"
+}

@@ -1,0 +1,293 @@
+{
+  "case": "billing-client",
+  "build": "O3S",
+  "profile": "plain",
+  "schema_version": 6,
+  "provenance": {
+    "build_id": "0baa6bc26c944a0baf17a7a1abf7d2f5",
+    "source_sha256": "6d8d930c87f876d1f86f371fa25003e102d280fca6b714b796713f5fa5028faa",
+    "non_stripped_sha256": "1f0b102c19873483c9c70077eaa741ae3faa93bd1c84c1b7215d4d331b4f7953",
+    "stripped_sha256": "3940270dce5d78e1ceb340c07438640445c2dcdf4d594e75cd4ffb0af710b023"
+  },
+  "source": "gt_bin/plain/billing-client.O3S.gt.bin",
+  "namespaces": [
+    "billing_client",
+    "reconcile"
+  ],
+  "addresses": [
+    "0x35470",
+    "0x38190",
+    "0x40040",
+    "0x400e0",
+    "0x401a0",
+    "0x402e0",
+    "0x404a0",
+    "0x405f0",
+    "0x40c90",
+    "0x41500",
+    "0x41680",
+    "0x41ab0",
+    "0x43a20",
+    "0x44580",
+    "0x52c10",
+    "0x52d40",
+    "0x52dd0",
+    "0x53050",
+    "0x53480",
+    "0x53830",
+    "0x54150",
+    "0x54590",
+    "0x546f0",
+    "0x54850",
+    "0x549b0",
+    "0x553c0",
+    "0x55730",
+    "0x557e0",
+    "0x557f0",
+    "0x55c40",
+    "0x55df0",
+    "0x55fb0",
+    "0x55fd0",
+    "0x55ff0",
+    "0x56010",
+    "0x56030",
+    "0x56050",
+    "0x56190",
+    "0x562e0",
+    "0x56410",
+    "0x56430",
+    "0x56510",
+    "0x56940",
+    "0x56c70",
+    "0x57e40",
+    "0x58000",
+    "0x58070",
+    "0x58090",
+    "0x58200",
+    "0x583f0",
+    "0x58530",
+    "0x58650",
+    "0x586b0"
+  ],
+  "function_bounds": [
+    {
+      "address": "0x35470",
+      "size": 8463
+    },
+    {
+      "address": "0x38190",
+      "size": 1640
+    },
+    {
+      "address": "0x38800",
+      "size": 17233
+    },
+    {
+      "address": "0x40040",
+      "size": 153
+    },
+    {
+      "address": "0x400e0",
+      "size": 178
+    },
+    {
+      "address": "0x401a0",
+      "size": 305
+    },
+    {
+      "address": "0x402e0",
+      "size": 439
+    },
+    {
+      "address": "0x404a0",
+      "size": 322
+    },
+    {
+      "address": "0x405f0",
+      "size": 186
+    },
+    {
+      "address": "0x40c90",
+      "size": 1062
+    },
+    {
+      "address": "0x41500",
+      "size": 382
+    },
+    {
+      "address": "0x41680",
+      "size": 1072
+    },
+    {
+      "address": "0x41ab0",
+      "size": 1324
+    },
+    {
+      "address": "0x43a20",
+      "size": 473
+    },
+    {
+      "address": "0x44580",
+      "size": 1039
+    },
+    {
+      "address": "0x52c10",
+      "size": 292
+    },
+    {
+      "address": "0x52d40",
+      "size": 136
+    },
+    {
+      "address": "0x52dd0",
+      "size": 625
+    },
+    {
+      "address": "0x53050",
+      "size": 1067
+    },
+    {
+      "address": "0x53480",
+      "size": 942
+    },
+    {
+      "address": "0x53830",
+      "size": 2323
+    },
+    {
+      "address": "0x54150",
+      "size": 1083
+    },
+    {
+      "address": "0x54590",
+      "size": 337
+    },
+    {
+      "address": "0x546f0",
+      "size": 339
+    },
+    {
+      "address": "0x54850",
+      "size": 339
+    },
+    {
+      "address": "0x549b0",
+      "size": 2562
+    },
+    {
+      "address": "0x553c0",
+      "size": 876
+    },
+    {
+      "address": "0x55730",
+      "size": 166
+    },
+    {
+      "address": "0x557e0",
+      "size": 14
+    },
+    {
+      "address": "0x557f0",
+      "size": 21
+    },
+    {
+      "address": "0x55c40",
+      "size": 421
+    },
+    {
+      "address": "0x55df0",
+      "size": 439
+    },
+    {
+      "address": "0x55fb0",
+      "size": 18
+    },
+    {
+      "address": "0x55fd0",
+      "size": 21
+    },
+    {
+      "address": "0x55ff0",
+      "size": 21
+    },
+    {
+      "address": "0x56010",
+      "size": 21
+    },
+    {
+      "address": "0x56030",
+      "size": 21
+    },
+    {
+      "address": "0x56050",
+      "size": 313
+    },
+    {
+      "address": "0x56190",
+      "size": 322
+    },
+    {
+      "address": "0x562e0",
+      "size": 297
+    },
+    {
+      "address": "0x56410",
+      "size": 21
+    },
+    {
+      "address": "0x56430",
+      "size": 186
+    },
+    {
+      "address": "0x56510",
+      "size": 1062
+    },
+    {
+      "address": "0x56940",
+      "size": 804
+    },
+    {
+      "address": "0x56c70",
+      "size": 335
+    },
+    {
+      "address": "0x57e40",
+      "size": 439
+    },
+    {
+      "address": "0x58000",
+      "size": 98
+    },
+    {
+      "address": "0x58070",
+      "size": 21
+    },
+    {
+      "address": "0x58090",
+      "size": 272
+    },
+    {
+      "address": "0x58200",
+      "size": 485
+    },
+    {
+      "address": "0x583f0",
+      "size": 307
+    },
+    {
+      "address": "0x58530",
+      "size": 284
+    },
+    {
+      "address": "0x58650",
+      "size": 81
+    },
+    {
+      "address": "0x586b0",
+      "size": 1238
+    }
+  ],
+  "scope": "subject",
+  "root_namespace": "reconcile",
+  "excluded_namespaces": []
+}

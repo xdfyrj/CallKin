@@ -181,7 +181,7 @@ demangle 가능한 모든 Rust text symbol extent와 startup root 탐지용 C `m
 | Function boundaries | `boundaries/plain/*.boundaries.json` | scope-independent Rust/startup symbol extents |
 | Raw graph | `extractions/plain/*.raw.json`, `extractions/angr/plain/*.raw.json` | candidate/projection 독립 transfer evidence; angr backend만 별도 |
 | Fixture | `fixtures/rust-nonstd/plain/*.fixture.json`, `fixtures/direct-in/rust-nonstd/plain/*.fixture.json`, `fixtures/angr/rust-nonstd/plain/*.fixture.json`, role은 track 아래 `role/`, 호환용 `fixtures/plain/*.fixture.json` | scope, track, anchor 정책으로 투영한 node와 weighted edge |
-| Score result | `results/plain/v0_baseline.json` | cluster, origin별 결과, metric |
+| Score result | `results/micro-corpus/plain/baseline.json`, `results/billing-client/plain/*.json` | case/profile별 cluster, origin별 결과, metric |
 
 `plain`은 Cargo 기본 release 설정을 근사한 CallKin profile로 O3/`lto=false`(thin local LTO 가능)/16 codegen units/panic unwind를 사용한다. `min`은 aggressive minimized stress profile로 O3/fat LTO/1 codegen unit/panic abort를 사용한다. Case는 direct rustc flag로, Cargo subject는 release-profile overlay로 같은 조건을 적용한다. `O3S`는 추가 source cfg가 없으며 `O3KS`는 `--cfg keep`을 추가한다. 어느 조합이든 non-stripped binary를 한 번 만든 뒤 복사본에 `strip --strip-all`을 적용한다.
 
