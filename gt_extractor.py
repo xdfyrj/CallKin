@@ -450,14 +450,14 @@ def user_function_bounds(
 
 
 def rust_function_bounds(symbols: list[Symbol]) -> dict[int, int]:
-    """Return scope-independent extents for demangled Rust text symbols."""
+    """Return Rust text extents plus the C main startup-wrapper extent."""
     bounds: dict[int, int] = {}
     for symbol in symbols:
-        if rust_symbol_owner(symbol.name) is None:
+        if rust_symbol_owner(symbol.name) is None and symbol.name != "main":
             continue
         if symbol.size <= 0:
             raise ValueError(
-                f"missing Rust symbol size for {symbol.name!r} at "
+                f"missing analysis symbol size for {symbol.name!r} at "
                 f"0x{symbol.addr:x}"
             )
         previous = bounds.get(symbol.addr)
@@ -468,7 +468,7 @@ def rust_function_bounds(symbols: list[Symbol]) -> dict[int, int]:
             )
         bounds[symbol.addr] = symbol.size
     if not bounds:
-        raise ValueError("no sized demangled Rust text symbols were found")
+        raise ValueError("no sized Rust/startup text symbols were found")
     return dict(sorted(bounds.items()))
 
 

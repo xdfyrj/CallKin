@@ -213,15 +213,41 @@ call __libc_start_main
 
 ### 7.2 Wrapper에서 Rust user main 찾기
 
-`_rust_main_from_start_wrapper()`는 wrapper 앞부분을 `pdj 64`로 읽는다. 다음과 같은 흐름을 찾는다.
+`_rust_main_from_start_wrapper()`는 boundary JSON에 C `main`의 symbol size가 있으면
+stripped binary에서 해당 byte 범위 전체를 `p8j`로 읽고 Capstone으로 선형
+디코딩한다. 따라서 radare2의 `pdfj`가 C `main` 앞부분만 반환해도 뒤쪽 startup
+코드를 검사한다. Symbol extent가 없는 비표준 입력에서만 기존 `pdfj`/`pdj 64`
+경로를 fallback으로 사용한다.
+
+Non-LTO startup에서는 다음 흐름을 찾는다.
 
 ```text
 lea rax, [rust_user_main]
-mov [rsp], rax
+mov qword ptr [rsp], rax
 call std::rt::lang_start_internal
 ```
 
 여기서 `rax`에 적재된 immediate address를 실제 Rust user main으로 사용한다.
+Capstone이 실제 plain `billing-client`의 `48 89 04 24`를 어떤 문자열로 출력하는지에
+의존하지 않는다. Instruction operand에서 destination이 offset 없는 `[rsp]` memory이고
+source가 `rax` register인지 검사해 startup argument store로 인식한다. 문자열 비교는
+symbol extent가 없는 radare2 fallback에만 남는다. Plain에서는 C `main=0x3cb60`의
+`0x27` bytes 전체를 디코딩해 `reconcile::main=0x38800`을 root로 선택한다.
+
+Fat LTO로 `lang_start_internal`이 C `main` 안에 인라인된 경우에는 다음 흐름도
+찾는다.
+
+```text
+lea rdi, [rust_user_main]
+call __rust_begin_short_backtrace
+
+__rust_begin_short_backtrace:
+call rdi
+```
+
+예를 들어 min `billing-client`에서는 C `main=0x37c40`, symbol size `0x54a`의
+전체 범위를 디코딩하여 `main+0x450`의 `lea rdi, [0x35440]`을 찾고,
+`0x35440`의 `reconcile::main`을 root로 선택한다.
 
 이것은 일반 indirect dispatch recovery가 아니다. Rust startup에서 main function pointer constant를 회수하는 제한된 heuristic이다. 실패하면 `--list-functions`로 목록을 본 뒤 `--root`를 지정한다.
 
@@ -341,7 +367,7 @@ GOT/PLT 형태도 direct track에서 target을 확정하지 못하면 동일하�
 
 `CFGFast(function_starts=...)`에는 boundaries JSON의 함수 시작점을 angr load base에
 맞게 rebasing하여 전달한다. 이 boundaries JSON은 non-stripped binary의 demangle 가능한
-전체 Rust text symbol에서 얻는다. 따라서 angr target recovery는 stripped binary의
+전체 Rust text symbol과 startup C `main`에서 얻는다. 따라서 angr target recovery는 stripped binary의
 instruction을 분석하지만, 함수 시작점은 symbol-boundary oracle을 사용하는 조건이며
 stripped-only function discovery가 아니다.
 
@@ -362,10 +388,13 @@ confidence=inferred
 ```
 
 target이 두 개 이상이거나 알려진 함수 시작점이 아니면 기존 `unresolved` 상태를
-유지한다. Raw schema v4는 각 간접 callsite에 `angr_status`와 `angr_targets`를 추가해
-`accepted`, `multiple_targets`, `unknown_target`, `ambiguous_source`,
-`no_angr_result`를 구분한다. `indirect_call_summary`는 이 판정을 operand 종류별로
-합산한다. Direct raw graph에서는 분석 전 상태를 `not_run`으로 기록한다. 이미
+유지한다. Raw schema v5는 각 간접 callsite에 `angr_status`, `angr_targets`,
+`angr_target_names`를 추가해 `resolved_internal`, `resolved_import`,
+`unresolvable_target`, `multiple_targets`, `unknown_target`, `ambiguous_source`,
+`no_angr_result`를 구분한다. 이름 있는 외부 import는 복원 성공이지만 현재 graph
+정책에서 제외되므로 `status=filtered`, `filter_reason=import`로 기록한다.
+`indirect_call_summary`는 이 판정을 operand 종류별로 합산한다. Direct raw graph에서는
+분석 전 상태를 `not_run`으로 기록한다. 이미
 `direct-immediate` 또는 `direct-tail`로 확정된 edge는 angr 결과가 달라도 덮어쓰지
 않는다.
 
@@ -387,6 +416,10 @@ filter_reason=import
 ```
 
 따라서 `unresolved`는 target을 정하지 못한 callsite만 의미한다.
+
+Angr가 이름 있는 import를 복원한 경우도 같은 정책을 사용하되
+`resolver=angr-cfg`, `confidence=inferred`, `angr_status=resolved_import`로 기록한다.
+따라서 import는 간접호출 복원 실패 수에 포함되지 않는다.
 
 ### 8.6 주소는 알지만 함수에 매핑하지 못한 direct call
 
@@ -450,8 +483,9 @@ address-to-size map으로 바꾼다. `function_bounds`에는 source `main`도 �
 }
 ```
 
-공용 `boundaries/*.boundaries.json`은 demangle 가능한 모든 Rust text symbol extent를
-담으며 candidate 주소나 scope를 담지 않는다. Candidate 주소가 radare2 함수 시작점에
+공용 `boundaries/*.boundaries.json`은 demangle 가능한 모든 Rust text symbol extent와
+startup root 탐지에 필요한 C `main` extent를 담으며 candidate 주소나 scope를 담지
+않는다. Candidate 주소가 radare2 함수 시작점에
 없더라도 이 검증된 boundary에 있으면 symbol-bound 함수로 보충한다. 이 함수의 byte 범위는
 Capstone으로 직접 디코딩하고, fixture의 `boundary_mismatches`에는
 `radare2_size=0`으로 기록한다. Symbol에도 없는 주소는 users 생성 단계에서
@@ -461,7 +495,7 @@ Root reachability는 candidate 필터로 사용하지 않는다. 대신 namespac
 relation은 symbol extent로 추출하며 radare2 size가 다르면 mismatch를 fixture에
 남긴다.
 
-Raw schema v4는 각 함수가 radare2에서도 발견됐는지
+Raw schema v5는 각 함수가 radare2에서도 발견됐는지
 `discovered_by_radare2`로 기록하고 boundary JSON의 SHA-256을
 `analysis.boundary_input_sha256`에 기록한다. Projection track과 candidate 주소는 raw에
 없다.

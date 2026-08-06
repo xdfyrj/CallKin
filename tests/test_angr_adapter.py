@@ -5,7 +5,11 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from angr_adapter import AngrCallResolution, merge_angr_resolutions
+from angr_adapter import (
+    AngrCallResolution,
+    AngrTargetMetadata,
+    merge_angr_resolutions,
+)
 from candidate_selection import parse_candidate_selection
 from graph_evidence import (
     ANGR_RAW_GRAPH_BACKEND,
@@ -84,6 +88,8 @@ def _raw_graph():
             _unresolved(0x2000, 0x2050),
             _unresolved(0x2000, 0x2060),
             _unresolved(0x2000, 0x2070),
+            _unresolved(0x2000, 0x2080),
+            _unresolved(0x2000, 0x2090),
         ],
         boundary_mode="symbol-extent",
         boundary_mismatches=[],
@@ -133,6 +139,28 @@ def main() -> int:
                 0x2000, 0x2060, (), ambiguous_source=True
             ),
             # 0x2070 is intentionally absent: angr returned no target.
+            # Named external target: resolved, but filtered from the graph.
+            AngrCallResolution(
+                0x2000,
+                0x2080,
+                (0xF000,),
+                target_metadata=(
+                    AngrTargetMetadata(0xF000, "import", "malloc"),
+                ),
+            ),
+            # angr's synthetic unresolved target is a real analysis failure.
+            AngrCallResolution(
+                0x2000,
+                0x2090,
+                (0xF100,),
+                target_metadata=(
+                    AngrTargetMetadata(
+                        0xF100,
+                        "unresolvable",
+                        "UnresolvableCallTarget",
+                    ),
+                ),
+            ),
         ),
         angr_version="test",
     )
@@ -167,12 +195,14 @@ def main() -> int:
         print("FAIL mixed known/unknown target set became a singleton edge")
         return 1
     expected_statuses = {
-        0x2010: "accepted",
+        0x2010: "resolved_internal",
         0x2020: "multiple_targets",
         0x2040: "unknown_target",
         0x2050: "multiple_targets",
         0x2060: "ambiguous_source",
         0x2070: "no_angr_result",
+        0x2080: "resolved_import",
+        0x2090: "unresolvable_target",
     }
     actual_statuses = {
         callsite: by_callsite[callsite]["angr_status"]
@@ -183,10 +213,12 @@ def main() -> int:
         return 1
     summary = augmented["indirect_call_summary"]
     if (
-        summary["total"] != 6
-        or summary["resolved_by_angr"] != 1
-        or summary["unresolved"] != 5
+        summary["total"] != 8
+        or summary["resolved_internal"] != 1
+        or summary["resolved_import"] != 1
+        or summary["unresolved"] != 6
         or summary["rejected"] != {
+            "unresolvable_target": 1,
             "multiple_targets": 2,
             "unknown_target": 1,
             "ambiguous_source": 1,
@@ -194,6 +226,14 @@ def main() -> int:
         }
     ):
         print(f"FAIL indirect call summary: {summary}")
+        return 1
+    imported = by_callsite[0x2080]
+    if (
+        imported["status"] != "filtered"
+        or imported["filter_reason"] != "import"
+        or imported["angr_target_names"] != {"0xf000": "malloc"}
+    ):
+        print(f"FAIL resolved import evidence: {imported}")
         return 1
     if augmented["analysis"]["backend"] != ANGR_RAW_GRAPH_BACKEND:
         print("FAIL angr backend provenance")

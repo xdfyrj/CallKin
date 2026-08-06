@@ -260,6 +260,7 @@ def main() -> int:
         "0000000000030100 0000000000000010 t reconcile::main",
         "0000000000030110 0000000000000010 t __rustc::rust_begin_unwind",
         "0000000000030120 0000000000000010 T _start",
+        "0000000000030130 0000000000000020 T main",
     ])
     broad_gt = make_ground_truth(
         symbols=broad_symbols,
@@ -359,7 +360,12 @@ def main() -> int:
         return 1
 
     all_bounds = rust_function_bounds(broad_symbols)
-    if 0x30120 in all_bounds or 0x30110 not in all_bounds or len(all_bounds) != 10:
+    if (
+        0x30120 in all_bounds
+        or 0x30110 not in all_bounds
+        or all_bounds.get(0x30130) != 0x20
+        or len(all_bounds) != 11
+    ):
         print(f"FAIL scope-independent Rust boundaries: {all_bounds}")
         return 1
     boundary_json = make_function_boundaries_json(

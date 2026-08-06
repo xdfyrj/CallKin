@@ -175,14 +175,19 @@ class BinaryExtractor:
         for func in self.functions:
             print(f"{self._function_id(func.addr)}  raw={func.addr:#x}  {func.name}  size={func.size}")
 
-    def resolve_root(self, root: str | None) -> R2Function:
+    def resolve_root(
+        self,
+        root: str | None,
+        *,
+        function_bounds: dict[int, int] | None = None,
+    ) -> R2Function:
         if root:
             resolved = self._resolve_function_spec(root)
             if resolved is None:
                 raise ValueError(f"cannot resolve root function: {root}")
             return resolved
 
-        entry_root = self._root_from_libc_start_main()
+        entry_root = self._root_from_libc_start_main(function_bounds or {})
         if entry_root is not None:
             return entry_root
 
@@ -222,7 +227,10 @@ class BinaryExtractor:
     def _function_id(self, addr: int) -> str:
         return function_id(addr, id_bias=self.id_bias)
 
-    def _root_from_libc_start_main(self) -> R2Function | None:
+    def _root_from_libc_start_main(
+        self,
+        function_bounds: dict[int, int] | None = None,
+    ) -> R2Function | None:
         entry = self._resolve_function_spec("entry0")
         if entry is None:
             return None
@@ -232,7 +240,11 @@ class BinaryExtractor:
             return None
 
         self._ensure_function_at(wrapper_addr)
-        rust_main_addr = self._rust_main_from_start_wrapper(wrapper_addr)
+        wrapper_size = (function_bounds or {}).get(wrapper_addr)
+        rust_main_addr = self._rust_main_from_start_wrapper(
+            wrapper_addr,
+            symbol_size=wrapper_size,
+        )
         if rust_main_addr is not None:
             return self._ensure_function_at(rust_main_addr)
 
@@ -253,13 +265,22 @@ class BinaryExtractor:
 
         return None
 
-    def _rust_main_from_start_wrapper(self, wrapper_addr: int) -> int | None:
-        pdf = self.r2.cmdj(f"pdfj @ {wrapper_addr}") or {}
-        ops = (pdf.get("ops") or []) if isinstance(pdf, dict) else []
-        if not ops:
-            ops = self.r2.cmdj(f"pdj 64 @ {wrapper_addr}") or []
-        if isinstance(ops, dict):
-            ops = ops.get("ops") or []
+    def _rust_main_from_start_wrapper(
+        self,
+        wrapper_addr: int,
+        *,
+        symbol_size: int | None = None,
+    ) -> int | None:
+        scan_full_extent = symbol_size is not None
+        if symbol_size is not None:
+            ops = self._startup_ops_from_symbol_extent(wrapper_addr, symbol_size)
+        else:
+            pdf = self.r2.cmdj(f"pdfj @ {wrapper_addr}") or {}
+            ops = (pdf.get("ops") or []) if isinstance(pdf, dict) else []
+            if not ops:
+                ops = self.r2.cmdj(f"pdj 64 @ {wrapper_addr}") or []
+            if isinstance(ops, dict):
+                ops = ops.get("ops") or []
 
         pending_main_addr: int | None = None
         pending_register: str | None = None
@@ -300,9 +321,109 @@ class BinaryExtractor:
                 saw_main_pointer_store = False
 
             if op_type in {"ret", "trap"} or opcode.startswith(("ret", "hlt", "int3")):
-                break
+                if not scan_full_extent:
+                    break
+                pending_main_addr = None
+                pending_register = None
+                saw_main_pointer_store = False
 
         return None
+
+    def _startup_ops_from_symbol_extent(
+        self,
+        address: int,
+        size: int,
+    ) -> list[dict[str, Any]]:
+        """Decode a complete startup wrapper extent without trusting r2 pdfj."""
+        try:
+            from capstone import CS_ARCH_X86, CS_MODE_64, Cs
+            from capstone.x86_const import (
+                X86_OP_IMM,
+                X86_OP_MEM,
+                X86_OP_REG,
+                X86_REG_RAX,
+                X86_REG_RIP,
+                X86_REG_RSP,
+            )
+        except ImportError as exc:
+            raise RuntimeError(
+                "Python package capstone is required for full startup root "
+                "detection. Install dependencies with `python3 -m pip install "
+                "-r requirements.txt`."
+            ) from exc
+
+        raw_bytes = self.r2.cmdj(f"p8j {size} @ {address}") or []
+        if not isinstance(raw_bytes, list) or len(raw_bytes) != size or not all(
+            isinstance(value, int) and 0 <= value <= 0xFF for value in raw_bytes
+        ):
+            raise ValueError(
+                f"radare2 could not read startup symbol extent "
+                f"0x{address:x}+0x{size:x}"
+            )
+
+        decoder = Cs(CS_ARCH_X86, CS_MODE_64)
+        decoder.detail = True
+        instructions = list(decoder.disasm(bytes(raw_bytes), address))
+        expected = address
+        end = address + size
+        ops: list[dict[str, Any]] = []
+
+        for instruction in instructions:
+            if instruction.address != expected:
+                raise ValueError(
+                    f"incomplete startup symbol-extent decode at 0x{expected:x}; "
+                    f"next instruction starts at 0x{instruction.address:x}"
+                )
+            expected = instruction.address + instruction.size
+            opcode = f"{instruction.mnemonic} {instruction.op_str}".strip()
+            op: dict[str, Any] = {
+                "offset": instruction.address,
+                "opcode": opcode,
+                "type": instruction.mnemonic,
+            }
+
+            operands = instruction.operands
+            if (
+                instruction.mnemonic == "lea"
+                and len(operands) == 2
+                and operands[0].type == X86_OP_REG
+                and instruction.reg_name(operands[0].reg) in {"rax", "rdi"}
+                and operands[1].type == X86_OP_MEM
+                and operands[1].mem.base == X86_REG_RIP
+            ):
+                op["ptr"] = (
+                    instruction.address
+                    + instruction.size
+                    + operands[1].mem.disp
+                ) & ((1 << 64) - 1)
+
+            if (
+                instruction.mnemonic == "mov"
+                and len(operands) == 2
+                and operands[0].type == X86_OP_MEM
+                and operands[0].mem.base == X86_REG_RSP
+                and operands[0].mem.index == 0
+                and operands[0].mem.disp == 0
+                and operands[1].type == X86_OP_REG
+                and operands[1].reg == X86_REG_RAX
+            ):
+                op["stores_rax_to_rsp"] = True
+
+            if (
+                instruction.mnemonic in {"call", "jmp"}
+                and len(operands) == 1
+                and operands[0].type == X86_OP_IMM
+            ):
+                op["jump"] = int(operands[0].imm) & ((1 << 64) - 1)
+
+            ops.append(op)
+
+        if expected != end:
+            raise ValueError(
+                f"incomplete startup symbol-extent decode for 0x{address:x}: "
+                f"expected end 0x{end:x}, got 0x{expected:x}"
+            )
+        return ops
 
     def _call_target_invokes_rdi(self, op: dict[str, Any]) -> bool:
         target = self._direct_code_target(op)
@@ -318,6 +439,8 @@ class BinaryExtractor:
 
     @staticmethod
     def _stores_rax_as_lang_start_arg(op: dict[str, Any]) -> bool:
+        if op.get("stores_rax_to_rsp") is True:
+            return True
         opcode = str(op.get("opcode") or "")
         return opcode in {
             "mov qword [rsp], rax",
@@ -979,8 +1102,6 @@ def extract_artifacts(args: argparse.Namespace) -> ExtractionArtifacts:
             raise ValueError(
                 "fixture projection requires a candidate selection JSON; pass --users"
             )
-        root = extractor.resolve_root(args.root)
-        user_addrs = set(selection.addresses)
         if not getattr(args, "boundaries", None):
             raise ValueError(
                 "raw extraction requires a scope-independent function boundary "
@@ -994,6 +1115,18 @@ def extract_artifacts(args: argparse.Namespace) -> ExtractionArtifacts:
         )
         function_bounds = boundary_input.bounds
         boundary_input_sha256 = boundary_input.sha256
+        provenance = getattr(args, "provenance", None)
+        if provenance is None:
+            raise ValueError("verified build provenance is required for fixture extraction")
+        if selection.provenance != provenance:
+            raise ValueError("candidate selection/fixture build provenance mismatch")
+        if boundary_input.provenance != provenance:
+            raise ValueError("function boundaries/fixture build provenance mismatch")
+        root = extractor.resolve_root(
+            args.root,
+            function_bounds=function_bounds,
+        )
+        user_addrs = set(selection.addresses)
         boundary_mismatches = extractor.boundary_mismatches(function_bounds)
         added_symbol_starts = extractor.add_symbol_bound_functions(function_bounds)
         for addr in added_symbol_starts:
@@ -1005,14 +1138,6 @@ def extract_artifacts(args: argparse.Namespace) -> ExtractionArtifacts:
                     "radare2_size": 0,
                 }
             )
-        provenance = getattr(args, "provenance", None)
-        if provenance is None:
-            raise ValueError("verified build provenance is required for fixture extraction")
-        if selection.provenance != provenance:
-            raise ValueError("candidate selection/fixture build provenance mismatch")
-        if boundary_input.provenance != provenance:
-            raise ValueError("function boundaries/fixture build provenance mismatch")
-
         missing_starts = user_addrs - set(extractor.by_addr)
         if missing_starts:
             missing = ", ".join(f"0x{addr:x}" for addr in sorted(missing_starts))

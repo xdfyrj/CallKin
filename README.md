@@ -198,7 +198,7 @@ family_graph_03 / O3KS
 - resolved/unresolved transfer evidence를 분리한 raw extraction graph
 - projection과 독립된 raw graph 및 별도 candidate selection
 - target을 알지만 제외한 import의 `filtered`, 함수에 매핑되지 않은 direct target의 `unmapped` evidence
-- 모든 Rust symbol extent를 담는 scope-independent boundary artifact
+- 모든 Rust symbol extent와 startup C `main` extent를 담는 scope-independent boundary artifact
 - 기본 `rust-nonstd` candidate scope와 호환용 `subject` scope
 - candidate selection SHA-256을 포함한 projection provenance
 - `direct`: user 함수가 직접 호출하는 library/runtime anchor

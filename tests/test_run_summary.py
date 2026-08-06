@@ -160,7 +160,13 @@ def main() -> int:
         id_bias=0,
     )
 
-    if summary["extraction"]["indirect_call_summary"]["resolved_by_angr"] != 2:
+    indirect_summary = summary["extraction"]["indirect_call_summary"]
+    if (
+        indirect_summary["all_sources"]["resolved_internal"] != 2
+        or indirect_summary["all_sources"]["total"] != 3
+        or indirect_summary["candidate_sources"]["resolved_internal"] != 1
+        or indirect_summary["candidate_sources"]["total"] != 2
+    ):
         print("FAIL run summary indirect count")
         return 1
     impact = summary["candidate_impact"]

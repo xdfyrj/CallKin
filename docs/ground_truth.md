@@ -71,7 +71,7 @@ origins=2
 wrote users/plain/family_graph_01.O3S.users.json
 users=6
 wrote boundaries/plain/family_graph_01.O3S.boundaries.json
-function boundaries=<all Rust text symbols>
+function boundaries=<all Rust text symbols + C main startup wrapper>
 ```
 
 ## 3. 전체 함수 호출 순서
@@ -483,7 +483,8 @@ SHA-256을 fixture `analysis.candidate_selection_sha256`에 기록한다.
 ### 11.3 Scope-independent function boundaries
 
 `boundaries/<profile>/*.boundaries.json`은 candidate를 고르지 않는다. Demangle 가능한
-모든 Rust text symbol의 `(address, size)`만 담고 별도 SHA-256으로 검증된다.
+모든 Rust text symbol과 startup root 탐지용 C `main`의 `(address, size)`만 담고
+별도 SHA-256으로 검증된다.
 
 ```text
 같은 boundaries + stripped binary -> extraction backend별 raw graph 하나
@@ -539,7 +540,7 @@ python3 gt_extractor.py family_graph_01 \
 | `--namespace` | manifest namespace override, 여러 번 지정 가능 | `--namespace billing_client` |
 | `--fixture` | scored universe 검사용 fixture | `fixtures/custom.fixture.json` |
 | `--users` | users JSON 출력 경로 | `users/custom.users.json` |
-| `--boundaries` | 공용 Rust symbol boundary 출력 | `boundaries/custom.json` |
+| `--boundaries` | 공용 Rust/startup symbol boundary 출력 | `boundaries/custom.json` |
 | `--manifest` | build manifest override | `build_info/min/custom.json` |
 | `--id-bias` | FUN ID address bias | `--id-bias 0` |
 | `--nm-tool` | nm-compatible executable | `nm`, `/usr/bin/nm` |

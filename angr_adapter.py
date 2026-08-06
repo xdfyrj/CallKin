@@ -19,11 +19,19 @@ from graph_evidence import (
 
 
 @dataclass(frozen=True)
+class AngrTargetMetadata:
+    address: int
+    category: str
+    name: str | None = None
+
+
+@dataclass(frozen=True)
 class AngrCallResolution:
     source: int
     callsite: int
     targets: tuple[int, ...]
     ambiguous_source: bool = False
+    target_metadata: tuple[AngrTargetMetadata, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -124,11 +132,14 @@ def analyze_indirect_calls_detailed(
             unresolved_sites.append((source, callsite))
 
         targets_by_site: dict[tuple[int, int], set[int]] = defaultdict(set)
+        metadata_by_site: dict[
+            tuple[int, int], dict[int, AngrTargetMetadata]
+        ] = defaultdict(dict)
         ambiguous_callsites: set[int] = set()
 
-    # A resolver-success call may disappear from cfg.indirect_jumps and remain
-    # only as a normal Ijk_Call edge in the recovered CFG. Join those edges by
-    # the original machine-instruction address recorded in the raw graph.
+        # A resolver-success call may disappear from cfg.indirect_jumps and remain
+        # only as a normal Ijk_Call edge in the recovered CFG. Join those edges by
+        # the original machine-instruction address recorded in the raw graph.
         for _source_node, target_node, edge in cfg.graph.edges(data=True):
             if edge.get("jumpkind") != "Ijk_Call":
                 continue
@@ -144,7 +155,15 @@ def analyze_indirect_calls_detailed(
                 ambiguous_callsites.add(callsite)
                 continue
             source = next(iter(sources))
-            targets_by_site[(source, callsite)].add(target_addr - load_bias)
+            target = target_addr - load_bias
+            targets_by_site[(source, callsite)].add(target)
+            metadata_by_site[(source, callsite)][target] = _target_metadata(
+                project,
+                cfg,
+                mapped_address=target_addr,
+                linked_address=target,
+                known_functions=known_functions,
+            )
 
         for jump in cfg.indirect_jumps.values():
             if jump.jumpkind != "Ijk_Call" or not isinstance(jump.ins_addr, int):
@@ -158,15 +177,21 @@ def analyze_indirect_calls_detailed(
                 continue
             source = next(iter(sources))
 
-        # Preserve the complete angr target set here. Filtering to known
-        # function starts before checking cardinality would turn
-        # {known_target, unknown_target} into a false singleton.
-            targets = {
-                target - load_bias
-                for target in (jump.resolved_targets or ())
-                if isinstance(target, int)
-            }
-            targets_by_site[(source, callsite)].update(targets)
+            # Preserve the complete angr target set here. Filtering to known
+            # function starts before checking cardinality would turn
+            # {known_target, unknown_target} into a false singleton.
+            for mapped_target in jump.resolved_targets or ():
+                if not isinstance(mapped_target, int):
+                    continue
+                target = mapped_target - load_bias
+                targets_by_site[(source, callsite)].add(target)
+                metadata_by_site[(source, callsite)][target] = _target_metadata(
+                    project,
+                    cfg,
+                    mapped_address=mapped_target,
+                    linked_address=target,
+                    known_functions=known_functions,
+                )
 
         resolutions = tuple(
             AngrCallResolution(
@@ -174,6 +199,15 @@ def analyze_indirect_calls_detailed(
                 callsite=callsite,
                 targets=tuple(sorted(targets_by_site.get((source, callsite), set()))),
                 ambiguous_source=callsite in ambiguous_callsites,
+                target_metadata=tuple(
+                    metadata_by_site.get((source, callsite), {}).get(
+                        target,
+                        AngrTargetMetadata(target, "unknown"),
+                    )
+                    for target in sorted(
+                        targets_by_site.get((source, callsite), set())
+                    )
+                ),
             )
             for source, callsite in sorted(unresolved_sites)
         )
@@ -204,8 +238,8 @@ def merge_angr_resolutions(
 ) -> dict[str, Any]:
     """Replace only unresolved callsites with singleton angr targets."""
     validate_raw_graph(raw)
-    if raw["schema_version"] < 4:
-        raise ValueError("angr diagnostics require raw graph schema v4")
+    if raw["schema_version"] < 5:
+        raise ValueError("angr diagnostics require raw graph schema v5")
     merged = copy.deepcopy(raw)
     known_functions = {
         _address(function["address"])
@@ -217,12 +251,21 @@ def merge_angr_resolutions(
     }
 
     targets_by_site: dict[tuple[int, int], set[int]] = defaultdict(set)
+    metadata_by_site: dict[
+        tuple[int, int], dict[int, AngrTargetMetadata]
+    ] = defaultdict(dict)
     ambiguous_sites: set[tuple[int, int]] = set()
     for resolution in resolutions:
         key = (resolution.source, resolution.callsite)
         targets_by_site[key].update(
             resolution.targets
         )
+        for metadata in resolution.target_metadata:
+            if metadata.address not in resolution.targets:
+                raise ValueError(
+                    "angr target metadata address is absent from target set"
+                )
+            metadata_by_site[key][metadata.address] = metadata
         if resolution.ambiguous_source:
             ambiguous_sites.add(key)
 
@@ -232,9 +275,15 @@ def merge_angr_resolutions(
             continue
         targets = targets_by_site.get(key, set())
         transfer["angr_targets"] = [f"0x{target:x}" for target in sorted(targets)]
+        transfer["angr_target_names"] = {
+            f"0x{target:x}": metadata.name
+            for target, metadata in sorted(metadata_by_site.get(key, {}).items())
+            if metadata.name
+        }
         if key in ambiguous_sites:
             transfer["angr_status"] = "ambiguous_source"
             transfer["angr_targets"] = []
+            transfer["angr_target_names"] = {}
             continue
         if not targets:
             transfer["angr_status"] = "no_angr_result"
@@ -243,15 +292,30 @@ def merge_angr_resolutions(
             transfer["angr_status"] = "multiple_targets"
             continue
         target = next(iter(targets))
-        if target not in known_functions:
-            transfer["angr_status"] = "unknown_target"
+        metadata = metadata_by_site.get(key, {}).get(
+            target,
+            AngrTargetMetadata(target, "unknown"),
+        )
+        if target in known_functions:
+            transfer["angr_status"] = "resolved_internal"
+            transfer["status"] = "resolved"
+            transfer["target"] = f"0x{target:x}"
+            transfer["resolver"] = ANGR_RESOLVER
+            transfer["confidence"] = "inferred"
+            transfer["filter_reason"] = None
             continue
-        transfer["angr_status"] = "accepted"
-        transfer["status"] = "resolved"
-        transfer["target"] = f"0x{target:x}"
-        transfer["resolver"] = ANGR_RESOLVER
-        transfer["confidence"] = "inferred"
-        transfer["filter_reason"] = None
+        if metadata.category == "import" and metadata.name:
+            transfer["angr_status"] = "resolved_import"
+            transfer["status"] = "filtered"
+            transfer["target"] = f"0x{target:x}"
+            transfer["resolver"] = ANGR_RESOLVER
+            transfer["confidence"] = "inferred"
+            transfer["filter_reason"] = "import"
+            continue
+        if metadata.category == "unresolvable":
+            transfer["angr_status"] = "unresolvable_target"
+            continue
+        transfer["angr_status"] = "unknown_target"
 
     merged["analysis"]["backend"] = ANGR_RAW_GRAPH_BACKEND
     merged["analysis"]["extractor_version"] = (
@@ -263,6 +327,53 @@ def merge_angr_resolutions(
     )
     validate_raw_graph(merged)
     return merged
+
+
+def _target_metadata(
+    project: Any,
+    cfg: Any,
+    *,
+    mapped_address: int,
+    linked_address: int,
+    known_functions: set[int],
+) -> AngrTargetMetadata:
+    if linked_address in known_functions:
+        return AngrTargetMetadata(linked_address, "internal")
+
+    names = []
+    is_hooked = bool(project.is_hooked(mapped_address))
+    if is_hooked:
+        procedure = project.hooked_by(mapped_address)
+        names.extend((
+            getattr(procedure, "display_name", None),
+            procedure.__class__.__name__,
+        ))
+
+    function = cfg.kb.functions.get(mapped_address)
+    if function is not None:
+        names.append(getattr(function, "name", None))
+
+    symbol = project.loader.find_symbol(mapped_address)
+    if symbol is not None:
+        names.append(getattr(symbol, "name", None))
+
+    name = next(
+        (
+            str(candidate)
+            for candidate in names
+            if candidate and str(candidate) not in {"SimProcedure", "None"}
+        ),
+        None,
+    )
+    if name and "UnresolvableCallTarget" in name:
+        return AngrTargetMetadata(linked_address, "unresolvable", name)
+
+    main_object = project.loader.main_object
+    outside_main_object = not main_object.contains_addr(mapped_address)
+    if name and (is_hooked or outside_main_object):
+        return AngrTargetMetadata(linked_address, "import", name)
+
+    return AngrTargetMetadata(linked_address, "unknown", name)
 
 
 class _WarningHandler(logging.Handler):

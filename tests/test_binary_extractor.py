@@ -1,4 +1,5 @@
 import os
+import struct
 import sys
 from collections import Counter
 
@@ -155,6 +156,91 @@ def check_rust_startup_lto_trampoline_detection() -> int:
         print("FAIL: LTO inlined startup trampoline did not reveal Rust main")
         return 1
 
+    return 0
+
+
+def check_rust_startup_lto_full_extent_detection() -> int:
+    wrapper_addr = 0x37C40
+    rust_main_addr = 0x35440
+    trampoline_addr = 0x1D8E0
+    lea_offset = 0x450
+    symbol_size = 0x54A
+    code = bytearray(b"\x90" * symbol_size)
+
+    lea_addr = wrapper_addr + lea_offset
+    lea = b"\x48\x8d\x3d" + struct.pack(
+        "<i", rust_main_addr - (lea_addr + 7)
+    )
+    code[lea_offset:lea_offset + len(lea)] = lea
+
+    call_offset = lea_offset + len(lea)
+    call_addr = wrapper_addr + call_offset
+    call = b"\xe8" + struct.pack(
+        "<i", trampoline_addr - (call_addr + 5)
+    )
+    code[call_offset:call_offset + len(call)] = call
+
+    extractor = BinaryExtractor.__new__(BinaryExtractor)
+    extractor.r2 = FakeR2(
+        {
+            # This models the truncated pdfj output that misses main+0x450.
+            f"pdfj @ {wrapper_addr}": {
+                "ops": [{"opcode": "push rbp", "type": "push"}],
+            },
+            f"p8j {symbol_size} @ {wrapper_addr}": list(code),
+            f"pdj 8 @ {trampoline_addr}": [
+                {"opcode": "push rax", "type": "push"},
+                {"opcode": "call rdi", "type": "rcall"},
+                {"opcode": "ret", "type": "ret"},
+            ],
+        }
+    )
+
+    detected = extractor._rust_main_from_start_wrapper(
+        wrapper_addr,
+        symbol_size=symbol_size,
+    )
+    if detected != rust_main_addr:
+        print(
+            "FAIL: full C main symbol extent did not reveal the LTO Rust main "
+            f"pointer: {detected!r}"
+        )
+        return 1
+    return 0
+
+
+def check_rust_startup_plain_actual_bytes_detection() -> int:
+    wrapper_addr = 0x3CB60
+    rust_main_addr = 0x38800
+    # Exact 0x27-byte C main extent from plain billing-client.O3S.
+    code = bytes.fromhex(
+        "50 "
+        "48 89 f1 "
+        "48 63 d7 "
+        "48 8d 05 92 bc ff ff "
+        "48 89 04 24 "
+        "48 8d 35 0f ed 06 00 "
+        "48 89 e7 "
+        "45 31 c0 "
+        "ff 15 db 1d 07 00 "
+        "59 "
+        "c3"
+    )
+    extractor = BinaryExtractor.__new__(BinaryExtractor)
+    extractor.r2 = FakeR2({
+        f"p8j {len(code)} @ {wrapper_addr}": list(code),
+    })
+
+    detected = extractor._rust_main_from_start_wrapper(
+        wrapper_addr,
+        symbol_size=len(code),
+    )
+    if detected != rust_main_addr:
+        print(
+            "FAIL: exact plain C main bytes did not reveal reconcile::main: "
+            f"{detected!r}"
+        )
+        return 1
     return 0
 
 
@@ -429,6 +515,10 @@ def main() -> int:
     if check_rust_startup_rdi_tail_detection() != 0:
         return 1
     if check_rust_startup_lto_trampoline_detection() != 0:
+        return 1
+    if check_rust_startup_lto_full_extent_detection() != 0:
+        return 1
+    if check_rust_startup_plain_actual_bytes_detection() != 0:
         return 1
 
     if check_user_address_mode() != 0:

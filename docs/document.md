@@ -162,7 +162,8 @@ library classifier가 아니다.
 
 함수 경계는 candidate selection에서 분리되어
 `boundaries/<profile>/*.boundaries.json`에 저장된다. 이 파일은 scope와 무관하게
-demangle 가능한 모든 Rust text symbol extent를 담는다. 따라서 같은 raw graph를
+demangle 가능한 모든 Rust text symbol extent와 startup root 탐지용 C `main` extent를
+담는다. 따라서 같은 raw graph를
 `subject`와 `rust-nonstd` selection에 각각 투영할 수 있다.
 
 ## 4. Artifact의 의미
@@ -177,7 +178,7 @@ demangle 가능한 모든 Rust text symbol extent를 담는다. 따라서 같은
 | Build manifest | `build_info/plain/family_graph_01.O3S.json` | source/tool/binary hash 결속 |
 | Ground truth | `ground_truth/rust-nonstd/plain/*.gt.json`, `ground_truth/plain/*.gt.json` | scope별 origin partition과 symbol |
 | Candidate selection | `users/rust-nonstd/plain/*.users.json`, `users/plain/*.users.json` | scope별 candidate raw address 집합 |
-| Function boundaries | `boundaries/plain/*.boundaries.json` | scope-independent Rust symbol extents |
+| Function boundaries | `boundaries/plain/*.boundaries.json` | scope-independent Rust/startup symbol extents |
 | Raw graph | `extractions/plain/*.raw.json`, `extractions/angr/plain/*.raw.json` | candidate/projection 독립 transfer evidence; angr backend만 별도 |
 | Fixture | `fixtures/rust-nonstd/plain/*.fixture.json`, `fixtures/direct-in/rust-nonstd/plain/*.fixture.json`, `fixtures/angr/rust-nonstd/plain/*.fixture.json`, role은 track 아래 `role/`, 호환용 `fixtures/plain/*.fixture.json` | scope, track, anchor 정책으로 투영한 node와 weighted edge |
 | Score result | `results/plain/v0_baseline.json` | cluster, origin별 결과, metric |
@@ -194,7 +195,7 @@ demangle 가능한 모든 Rust text symbol extent를 담는다. 따라서 같은
 
 ### `gt_extractor.py`
 
-Non-stripped binary에서 `nm -n -S -C` 결과를 읽고 같은 normalized symbol path를 같은 origin으로 묶는다. 동시에 scope별 candidate selection과 모든 Rust symbol의 공용 boundary artifact를 만든다. 이름이나 origin partition은 binary extractor에 전달하지 않는다.
+Non-stripped binary에서 `nm -n -S -C` 결과를 읽고 같은 normalized symbol path를 같은 origin으로 묶는다. 동시에 scope별 candidate selection과 모든 Rust symbol 및 C `main`의 공용 boundary artifact를 만든다. 이름이나 origin partition은 binary extractor에 전달하지 않는다.
 
 상세: [Ground truth 추출](ground_truth.md)
 
@@ -208,8 +209,8 @@ resolved/filtered/unmapped/unresolved로 구분해 남긴다.
 ### `candidate_selection.py`, `graph_evidence.py`, `graph_projector.py`
 
 `candidate_selection.py`는 users JSON을 검증하고 candidate 집합과 SHA-256을 만든다.
-`function_boundaries.py`는 scope-independent Rust function extent를 검증한다.
-`graph_evidence.py`는 candidate와 projection track을 포함하지 않는 raw graph schema v4와 hash
+`function_boundaries.py`는 scope-independent Rust/startup function extent를 검증한다.
+`graph_evidence.py`는 candidate와 projection track을 포함하지 않는 raw graph schema v5와 hash
 검증을 담당한다. `graph_projector.py`는 raw evidence, candidate selection, track
 정책을 결합해 CG-WL fixture로 바꾼다.
 `direct-in`에서는 candidate의 direct callee와 direct external caller까지만

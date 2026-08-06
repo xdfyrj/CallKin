@@ -550,11 +550,26 @@ python3 run_case.py billing-client --track angr --all-modes \
     },
     "extraction": {
       "indirect_call_summary": {
-        "total": 4153,
-        "resolved_by_angr": 3047,
-        "unresolved": 1106,
-        "by_operand": {},
-        "rejected": {}
+        "all_sources": {
+          "total": 2117,
+          "resolved_internal": 151,
+          "resolved_import": 1521,
+          "unresolved": 445,
+          "target_resolution_rate": 0.7898,
+          "internal_resolution_rate": 0.2534,
+          "by_operand": {},
+          "rejected": {}
+        },
+        "candidate_sources": {
+          "total": 1005,
+          "resolved_internal": 147,
+          "resolved_import": 620,
+          "unresolved": 238,
+          "target_resolution_rate": 0.7632,
+          "internal_resolution_rate": 0.3818,
+          "by_operand": {},
+          "rejected": {}
+        }
       }
     },
     "candidate_impact": {},
@@ -572,7 +587,11 @@ python3 run_case.py billing-client --track angr --all-modes \
 }
 ```
 
-`candidate_impact`는 accepted angr callsite 중 candidate의 OUT/IN에 실제로 추가된
+`all_sources`는 전체 raw graph의 간접 callsite를, `candidate_sources`는 candidate가
+source인 callsite만 센다. `resolved_import`는 angr가 이름 있는 외부 함수를 찾았지만
+CallKin graph 정책상 filtered 처리한 성공이다. `internal_resolution_rate`는
+`resolved_internal / (total - resolved_import)`이므로 import를 실패 분모에서 제외한다.
+`candidate_impact`는 `resolved_internal` callsite 중 candidate의 OUT/IN에 실제로 추가된
 수를 센다. `candidate_observability`는 projected fixture 기준 root 도달성,
 zero-OUT, zero-IN, 완전 고립, unresolved indirect call 보유 candidate를 센다.
 `ground_truth.same_family_pair_count`는 모든 mode에서 `TP + FN`과 같아야 하며,

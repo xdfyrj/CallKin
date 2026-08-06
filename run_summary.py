@@ -10,7 +10,12 @@ from statistics import median
 from typing import Any, Iterable
 
 from candidate_selection import CandidateSelection
-from graph_evidence import ANGR_RESOLVER, indirect_call_summary, validate_raw_graph
+from graph_evidence import (
+    ANGR_RESOLVER,
+    indirect_call_summary,
+    make_indirect_call_summary,
+    validate_raw_graph,
+)
 
 try:
     import resource
@@ -39,11 +44,19 @@ def build_run_summary(
                 f"{gt_summary['same_family_pair_count']} != "
                 f"{report.pairwise.tp + report.pairwise.fn}"
             )
+    all_indirect = indirect_call_summary(raw)
 
     return {
         "ground_truth": gt_summary,
         "extraction": {
-            "indirect_call_summary": indirect_call_summary(raw),
+            "indirect_call_summary": {
+                "all_sources": all_indirect,
+                "candidate_sources": make_indirect_call_summary(
+                    raw["transfers"],
+                    analysis_status=all_indirect["analysis_status"],
+                    source_addresses=set(selection.addresses),
+                ),
+            },
         },
         "candidate_impact": candidate_impact(raw, selection),
         "candidate_observability": candidate_observability(
@@ -71,7 +84,7 @@ def candidate_impact(
     accepted = [
         transfer
         for transfer in raw["transfers"]
-        if transfer.get("angr_status") == "accepted"
+        if transfer.get("angr_status") in {"accepted", "resolved_internal"}
         and transfer.get("resolver") == ANGR_RESOLVER
     ]
     accepted_edges = {
@@ -98,9 +111,8 @@ def candidate_impact(
         for transfer in accepted
     )
     return {
-        "accepted_angr_callsites_total": len(accepted),
-        "accepted_angr_edges_total": len(accepted),
-        "accepted_angr_unique_edges_total": len(accepted_edges),
+        "resolved_internal_callsites_total": len(accepted),
+        "resolved_internal_unique_edges_total": len(accepted_edges),
         "candidate_outgoing_edges_added": outgoing_callsites,
         "candidate_incoming_edges_added": incoming_callsites,
         "candidate_outgoing_unique_edges_added": len(outgoing_edges),
