@@ -100,16 +100,18 @@ stripped binary만으로 library 소유권을 분류하는 기능은 아니다.
 `subject/direct` 조합이며, 새 기본값인 `rust-nonstd/direct`는 별도
 경로와 schema v5로 생성된다. `direct-in`은
 candidate가 직접 호출하는 외부 함수뿐 아니라 candidate를 직접 호출하는 외부
-함수도 one-hop anchor로 포함한다. 두 track은 서로 다른 fixture 경로에 저장되어 기존
+함수도 traversal seed로 포함한다. 두 track은 서로 다른 fixture 경로에 저장되어 기존
 fixture를 덮어쓰지 않는다. `direct`와 `direct-in`은
 `extractions/<profile>/`의 같은 raw graph를 공유하고, projector가 별도 candidate
 selection과 track 정책을 결합한다. `angr`는 기존 direct edge에 더해 angr CFG가 하나의 기존
-함수 시작점으로 확정한 indirect call을 사용하고, `direct-in`과 같은 one-hop
-incoming/outgoing anchor 문맥을 투영한다. Angr evidence는 extraction 자체가 다르므로
+함수 시작점으로 확정한 indirect call을 사용하고, `direct-in`과 같은 incoming-caller
+seed를 사용한다. 모든 track은 seed에서 시작한 resolved outgoing closure를 투영하며,
+anchor도 선택된 다른 anchor로 향하는 edge를 유지한다. Angr evidence는 extraction 자체가 다르므로
 `extractions/angr/<profile>/`에 별도로 저장된다.
 
 Anchor policy 기본값은 `address`다. `--anchor-policy role`은 anchor 주소 대신
-`root/incoming/outgoing/both` 역할을 color class로 사용한다. Role fixture는
+`root/incoming/outgoing/both/context` 역할을 color class로 사용한다. `context`는
+candidate와 직접 맞닿지 않은 outgoing closure 내부 anchor다. Role fixture는
 `fixtures/<track>/role/...`에 저장되어 address 결과를 덮어쓰지 않는다.
 
 `run_case.py --json-output`은 mode별 점수 외에 `run_summary`를 한 번 저장한다.
@@ -207,9 +209,9 @@ family_graph_03 / O3KS
 - 모든 Rust symbol extent와 startup C `main` extent를 담는 scope-independent boundary artifact
 - 기본 `rust-nonstd` candidate scope와 호환용 `subject` scope
 - candidate selection SHA-256을 포함한 projection provenance
-- `direct`: user 함수가 직접 호출하는 library/runtime anchor
-- `direct-in`: user 함수의 direct callee와 direct external caller anchor
-- `angr`: direct edge와 singleton angr-resolved indirect edge, 양방향 one-hop anchor
+- `direct`: root와 candidate에서 시작하는 direct-edge outgoing closure
+- `direct-in`: direct external caller를 seed에 추가한 outgoing closure
+- `angr`: direct-in closure에 singleton angr-resolved indirect edge 추가
 - `address`와 `role` anchor color policy
 - directed weighted call graph 기반 CG-WL
 - `full`, `out`, `in`, `out-in` relation mode

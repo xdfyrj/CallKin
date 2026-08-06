@@ -178,8 +178,9 @@ def candidate_observability(
                 "edge_policy",
                 ["direct-immediate", "direct-tail"],
             )),
-            "stop_namespaces": list(excluded),
-            "anchor_traversal": "projected anchors are terminal except root/incoming edges",
+            "stop_namespaces": [],
+            "candidate_excluded_namespaces": list(excluded),
+            "anchor_traversal": "complete resolved outgoing closure",
         },
     }
 

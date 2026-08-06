@@ -266,10 +266,11 @@ def check_incoming_projection() -> int:
         "FUN_00003000",
         "FUN_00004000",
         "FUN_00005000",
+        "FUN_00006000",
         "FUN_00007000",
     }
-    if set(nodes) != expected or "FUN_00006000" in nodes:
-        print(f"FAIL projected one-hop node set: {sorted(nodes)}")
+    if set(nodes) != expected:
+        print(f"FAIL projected outgoing-closure node set: {sorted(nodes)}")
         return 1
 
     expected_kinds = {
@@ -277,6 +278,7 @@ def check_incoming_projection() -> int:
         "FUN_00003000": "outgoing",
         "FUN_00004000": "incoming",
         "FUN_00005000": "both",
+        "FUN_00006000": "context",
         "FUN_00007000": "incoming",
     }
     actual_kinds = {
@@ -291,6 +293,7 @@ def check_incoming_projection() -> int:
     if nodes["FUN_00004000"]["calls"] != [
         {"target": "FUN_00002000", "count": 1},
         {"target": "FUN_00002100", "count": 1},
+        {"target": "FUN_00006000", "count": 1},
     ]:
         print("FAIL shared incoming anchor did not retain both candidate edges")
         return 1
@@ -299,8 +302,10 @@ def check_incoming_projection() -> int:
     ]:
         print("FAIL second incoming anchor lost its candidate edge")
         return 1
-    if nodes["FUN_00003000"]["calls"]:
-        print("FAIL outgoing anchor leaked its library-internal edge")
+    if nodes["FUN_00003000"]["calls"] != [
+        {"target": "FUN_00006000", "count": 1}
+    ]:
+        print("FAIL outgoing anchor lost its library-internal edge")
         return 1
     if nodes["FUN_00005000"]["calls"] != [
         {"target": "FUN_00002100", "count": 1}
@@ -350,8 +355,10 @@ def check_incoming_projection() -> int:
     if "FUN_00003000" in direct_nodes:
         print("FAIL direct projection gained a symbol-only external anchor")
         return 1
-    if direct_nodes["FUN_00005000"]["calls"]:
-        print("FAIL direct outgoing anchor retained its incoming edge")
+    if direct_nodes["FUN_00005000"]["calls"] != [
+        {"target": "FUN_00002100", "count": 1}
+    ]:
+        print("FAIL direct anchor lost its outgoing edge")
         return 1
 
     broad_direct = project_fixture(
@@ -376,6 +383,11 @@ def check_incoming_projection() -> int:
     if "FUN_00004000" in broad_direct_nodes:
         print("FAIL broad direct projection included an incoming-only caller")
         return 1
+    if broad_direct_nodes["FUN_00003000"]["calls"] != [
+        {"target": "FUN_00006000", "count": 1}
+    ]:
+        print("FAIL broad direct projection stopped at an anchor")
+        return 1
 
     role_fixture = project_fixture(
         raw,
@@ -395,6 +407,7 @@ def check_incoming_projection() -> int:
         "FUN_00003000": "ROLE:outgoing",
         "FUN_00004000": "ROLE:incoming",
         "FUN_00005000": "ROLE:both",
+        "FUN_00006000": "ROLE:context",
         "FUN_00007000": "ROLE:incoming",
     }
     actual_role_colors = {

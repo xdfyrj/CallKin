@@ -105,7 +105,8 @@ def run_cg_wl(
     full mode:
       - Axis 1 only.
       - Directed weighted call graph.
-      - Individualized fixed anchors.
+      - Anchors use their configured initial color class and are refined.
+      - Anchors participate in propagation but remain unscored.
       - Seed(user) = (self_call_count, distinct_out_callee_count).
       - Refinement signature = previous color + OUT multiset + IN multiset.
       - OUT/IN multisets aggregate call counts by previous neighbor color.
@@ -233,9 +234,6 @@ def refine_cg_wl_once(
     signatures: dict[NodeId, RelationSignature] = {}
 
     for node in case.nodes:
-        if node.type == "anchor":
-            continue
-
         out_multiset = _neighbor_color_multiset(
             view.outgoing[node.id],
             prev_colors,
@@ -258,10 +256,7 @@ def refine_cg_wl_once(
     new_colors: dict[NodeId, Color] = {}
 
     for node in case.nodes:
-        if node.type == "anchor":
-            new_colors[node.id] = _anchor_color(node.color_class or node.id)
-        else:
-            new_colors[node.id] = signature_to_color[signatures[node.id]]
+        new_colors[node.id] = signature_to_color[signatures[node.id]]
 
     return new_colors
 

@@ -264,10 +264,10 @@ def check_user_address_mode() -> int:
         allowed_addrs=set(functions),
         score_root=False,
     )
-    if selected != {0x1000, 0x2000, 0x3000}:
+    if selected != {0x1000, 0x2000, 0x3000, 0x4000}:
         print(
-            "FAIL user context should include root, users, and direct "
-            f"user callees only, got {sorted(selected)}"
+            "FAIL user context should include the complete outgoing closure, "
+            f"got {sorted(selected)}"
         )
         return 1
 
@@ -306,6 +306,7 @@ def check_user_address_mode() -> int:
         "FUN_00101000": ("anchor", False),
         "FUN_00102000": ("user", True),
         "FUN_00103000": ("anchor", False),
+        "FUN_00104000": ("anchor", False),
     }
     actual_types = {
         node_id: (node["type"], node["scored"])
@@ -322,16 +323,23 @@ def check_user_address_mode() -> int:
             f"anchors, got {nodes['FUN_00102000']['calls']}"
         )
         return 1
-    expected_root_calls = [{"target": "FUN_00102000", "count": 1}]
+    expected_root_calls = [
+        {"target": "FUN_00102000", "count": 1},
+        {"target": "FUN_00103000", "count": 1},
+    ]
     if nodes["FUN_00101000"]["calls"] != expected_root_calls:
         print(
-            "FAIL root anchor should retain only edges to listed users, "
+            "FAIL root anchor should retain every selected outgoing edge, "
             f"got {nodes['FUN_00101000']['calls']}"
         )
         return 1
-    if nodes["FUN_00103000"]["calls"] != []:
+    expected_anchor_calls = [
+        {"target": "FUN_00103000", "count": 7},
+        {"target": "FUN_00104000", "count": 1},
+    ]
+    if nodes["FUN_00103000"]["calls"] != expected_anchor_calls:
         print(
-            "FAIL one-hop library anchor should not retain self or transitive "
+            "FAIL library anchor should retain self and transitive "
             f"library internals, got {nodes['FUN_00103000']['calls']}"
         )
         return 1

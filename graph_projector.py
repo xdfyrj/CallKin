@@ -4,7 +4,7 @@ import argparse
 import hashlib
 import json
 import sys
-from collections import Counter
+from collections import Counter, deque
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -44,6 +44,7 @@ class ProjectionConfig:
     include_incoming_anchors: bool
     anchor_policy: str
     edge_policy: tuple[str, ...]
+    anchor_traversal: str = "outgoing-closure"
     oracle_level: str = "candidate-and-boundary"
 
     def to_dict(self) -> dict[str, object]:
@@ -52,6 +53,7 @@ class ProjectionConfig:
             "include_incoming_anchors": self.include_incoming_anchors,
             "anchor_policy": self.anchor_policy,
             "edge_policy": list(self.edge_policy),
+            "anchor_traversal": self.anchor_traversal,
             "oracle_level": self.oracle_level,
         }
 
@@ -159,12 +161,7 @@ def project_context_fixture(
             and any(target in candidates for target in targets)
         }
 
-    selected = (
-        scored_users
-        | outgoing_anchors
-        | incoming_anchors
-        | {root}
-    )
+    selected = _outgoing_closure(graph, scored_users | {root} | incoming_anchors)
     raw_digest = raw_graph_sha256(raw)
     analysis = AnalysisProvenance(
         track=config.track,
@@ -201,7 +198,6 @@ def project_context_fixture(
         if is_user:
             anchor_kind = None
             color_class = None
-            allowed_targets = selected
         else:
             anchor_kind = _anchor_kind(
                 address,
@@ -214,10 +210,6 @@ def project_context_fixture(
                 anchor_kind,
                 config.anchor_policy,
             )
-            if is_root or anchor_kind in {"incoming", "both"}:
-                allowed_targets = candidates
-            else:
-                allowed_targets = set()
 
         calls = [
             {
@@ -225,7 +217,7 @@ def project_context_fixture(
                 "count": count,
             }
             for target, count in sorted(graph[address].items())
-            if target in allowed_targets and count > 0
+            if target in selected and count > 0
         ]
         nodes.append({
             "id": node_id,
@@ -243,9 +235,9 @@ def project_context_fixture(
         })
 
     provenance = parse_provenance(raw["provenance"], where="raw graph.provenance")
-    context_description = "candidates plus their resolved callees"
+    context_description = "the complete resolved outgoing closure of candidates and root"
     if config.include_incoming_anchors:
-        context_description += " and resolved external callers"
+        context_description += " plus direct external callers and their outgoing closure"
     return {
         "case": raw["case"],
         "build": raw["build"],
@@ -258,9 +250,9 @@ def project_context_fixture(
             f"projected by graph_projector.py from {raw['binary']['path']}; "
             f"track={config.track}; candidate_scope={selection.scope}; "
             f"root={function_id(root, id_bias=id_bias)}; "
-            f"users={users_path or 'none'}; {context_description} are emitted; "
-            "anchors expose only edges "
-            "into candidates; unresolved transfers remain analysis evidence and "
+            f"users={users_path or 'none'}; {context_description} is emitted; "
+            "anchors preserve every resolved edge whose target is selected; "
+            "unresolved transfers remain analysis evidence and "
             "are not projected as call edges"
         ),
         "nodes": nodes,
@@ -306,13 +298,7 @@ def project_direct_fixture(
         for source, targets in graph.items()
     }
 
-    selected = {root} | candidates
-    context_sources = set(candidates)
-    if score_root:
-        context_sources.add(root)
-    for source in context_sources:
-        selected.update(graph[source])
-    selected &= set(graph)
+    selected = _outgoing_closure(graph, {root} | candidates)
 
     nodes = []
     for address in sorted(selected):
@@ -322,19 +308,13 @@ def project_direct_fixture(
             if address in candidates or (score_root and is_root)
             else "anchor"
         )
-        if node_type == "user":
-            allowed_targets = selected
-        elif is_root:
-            allowed_targets = candidates
-        else:
-            allowed_targets = set()
         calls = [
             {
                 "target": function_id(target, id_bias=id_bias),
                 "count": count,
             }
             for target, count in sorted(graph[address].items())
-            if target in allowed_targets and count > 0
+            if target in selected and count > 0
         ]
         nodes.append({
             "id": function_id(address, id_bias=id_bias),
@@ -353,10 +333,9 @@ def project_direct_fixture(
         f"root={root_id}/{names[root]}; "
         f"users={users_path or 'none'}; "
         "listed user nodes are user/scored=true; "
-        "user mode emits root plus listed users plus direct callees "
-        "of listed users only; "
-        "root anchor retains edges to listed users; "
-        "non-root anchors are terminal/scored=false; "
+        "user mode emits the complete resolved outgoing closure of root and "
+        "listed users; all selected anchors retain resolved outgoing edges; "
+        "anchors remain scored=false; "
         "std/runtime classification is out of this extractor's research scope; "
         "edges to non-emitted targets are omitted"
     )
@@ -472,7 +451,25 @@ def _anchor_kind(
         return "incoming"
     if outgoing:
         return "outgoing"
-    raise ValueError(f"selected anchor 0x{address:x} has no role")
+    return "context"
+
+
+def _outgoing_closure(
+    graph: dict[int, Counter[int]],
+    seeds: set[int],
+) -> set[int]:
+    selected = set(seeds) & set(graph)
+    queue = deque(sorted(selected))
+
+    while queue:
+        source = queue.popleft()
+        for target in graph[source]:
+            if target not in graph or target in selected:
+                continue
+            selected.add(target)
+            queue.append(target)
+
+    return selected
 
 
 def _anchor_color_class(node_id: str, anchor_kind: str, policy: str) -> str:

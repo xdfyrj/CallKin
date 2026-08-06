@@ -274,8 +274,8 @@ fixture의 `extraction.boundary_mismatches`에 차이를 기록하고 1465 bytes
 디코딩한다.
 
 Boundary artifact에 없는 C/import 함수는 기존처럼 radare2
-`pdfj @ <function address>`를 사용한다. Projected anchor는 terminal이므로 그 내부
-edge는 fixture에 기록하지 않는다.
+`pdfj @ <function address>`를 사용한다. 해당 함수가 projection의 outgoing closure에
+포함되면 그 내부의 복구된 edge도 fixture에 기록한다.
 
 Radare2 함수는 entry 주소부터 연속된 byte range 하나가 아닐 수 있다. 실제
 billing-client의 한 함수는 nominal entry가 `0x411b0`이지만 앞쪽의 `0x3105c`
@@ -517,12 +517,11 @@ Boundary 파일이 없을 때 users의 candidate extent로 대신 raw를 만드�
 정상 users mode의 emitted node 집합은 다음과 같다.
 
 ```text
-root anchor
-+ users JSON에 적힌 모든 user 함수
-+ 각 user 함수가 직접 호출하는 함수
+closure_out(root + users JSON에 적힌 모든 user 함수)
 ```
 
-중요하게도 user가 직접 호출한 library/runtime 함수에서 더 깊이 내려가지 않는다.
+User가 호출한 library/runtime 함수도 wall로 사용하지 않고 resolved outgoing edge를
+계속 따라간다.
 
 구체적인 예를 가정한다.
 
@@ -535,13 +534,7 @@ library L1 -> library L2
 Emitted node:
 
 ```text
-R, U, L1
-```
-
-Emitted되지 않는 node:
-
-```text
-L2
+R, U, L1, L2
 ```
 
 Fixture edge는 다음처럼 제한된다.
@@ -549,7 +542,7 @@ Fixture edge는 다음처럼 제한된다.
 ```text
 R  -> U   유지
 U  -> L1  유지
-L1 -> L2  제거
+L1 -> L2  유지
 ```
 
 Node type과 scoring은 다음과 같다.
@@ -557,15 +550,15 @@ Node type과 scoring은 다음과 같다.
 | Node | type | scored | outgoing edge 처리 |
 |---|---|---:|---|
 | users JSON의 함수 | `user` | `true` | selected node로 향하는 edge 유지 |
-| root | `anchor` | `false` | listed user로 향하는 edge만 유지 |
-| user의 직접 library callee | `anchor` | `false` | terminal, outgoing edge 없음 |
+| root | `anchor` | `false` | selected node로 향하는 edge 유지 |
+| closure의 non-candidate 함수 | `anchor` | `false` | selected node로 향하는 edge 유지 |
 
 따라서 anchor는 user의 call-graph 문맥을 보존하지만 점수 계산 대상은 아니다.
 
 정상 users mode에서는 users JSON의 주소 집합을 authoritative candidate set으로 사용한다. Root reachability를 candidate 필터로 다시 적용하지 않는다. 이는 radare2가 큰 함수의 경계를 일찍 끊더라도 symbol에서 확인된 user 함수를 누락시키지 않기 위해서다.
 
-Frozen `subject/direct`의 `project_direct_fixture()`는 root, 모든 listed user, 각 listed user가 직접
-호출하는 함수만 선택한다. 따라서 library anchor의 callee로 더 내려가지 않는다.
+`subject/direct`의 `project_direct_fixture()`도 root와 모든 listed user의 outgoing
+closure를 선택한다.
 공용 boundary가 새로 복구한 non-candidate 함수 때문에 동결 결과가 바뀌지 않도록,
 이 호환 projection의 외부 anchor는 radare2도 발견한 함수로 제한한다.
 
@@ -575,19 +568,19 @@ Frozen `subject/direct`의 `project_direct_fixture()`는 root, 모든 listed use
 
 ```text
 U = candidate 함수
-O = U가 직접 호출하는 외부 함수
 I = U를 직접 호출하는 외부 함수
-S = U + O + I + root
+S = closure_out(U + I + root)
 ```
 
 Anchor 역할은 다음과 같다.
 
 | `anchor_kind` | 의미 | 보존하는 edge |
 |---|---|---|
-| `root` | Rust user main | candidate 방향 |
-| `incoming` | 외부 함수가 candidate 호출 | candidate 방향 |
-| `outgoing` | candidate가 외부 함수 호출 | 없음 |
-| `both` | 두 관계가 모두 존재 | candidate 방향 |
+| `root` | Rust user main | selected 방향 |
+| `incoming` | 외부 함수가 candidate 호출 | selected 방향 |
+| `outgoing` | candidate가 외부 함수 호출 | selected 방향 |
+| `both` | 두 관계가 모두 존재 | selected 방향 |
+| `context` | candidate와 직접 맞닿지 않은 closure 내부 함수 | selected 방향 |
 
 예를 들어 `X -> A`, `X -> B`이면 X를 두 번 복제하지 않는다.
 
@@ -597,8 +590,8 @@ X(anchor)-+
           +-> B
 ```
 
-`X -> library Y`는 제거하며 Y 내부로 더 내려가지 않는다. 따라서 incoming 문맥을
-복구해도 library 전체 call graph는 fixture에 들어오지 않는다.
+`X -> library Y`도 Y가 resolved graph에 있으면 유지하며, Y의 outgoing relation도
+고정점까지 따라간다. Incoming caller의 caller를 역방향으로 재귀 탐색하지는 않는다.
 
 ### 10.3 `angr`
 
@@ -612,7 +605,8 @@ direct-immediate
 
 Candidate가 angr로 복구된 간접 call을 통해 외부 함수를 호출하면 그 함수는
 outgoing anchor가 되고, 외부 함수가 candidate를 간접 호출한 것이 단일 target으로
-복구되면 incoming anchor가 된다. 어느 경우에도 anchor 내부에서 더 깊게 탐색하지 않는다.
+복구되면 incoming anchor가 된다. 두 경우 모두 해당 anchor의 resolved outgoing
+closure를 계속 투영한다.
 
 Direct raw graph는 `extractions/<profile>/`에, angr 보강 raw graph는
 `extractions/angr/<profile>/`에 저장한다. 이 둘은 projection만 다른 것이 아니라
@@ -634,6 +628,7 @@ ROLE:root
 ROLE:incoming
 ROLE:outgoing
 ROLE:both
+ROLE:context
 ```
 
 예를 들어 서로 다른 외부 함수 X와 Y가 각각 candidate A와 B를 호출하면 address
@@ -757,7 +752,7 @@ config SHA-256, candidate selection SHA-256을 기록한다.
 ## 13. 한계의 정확한 의미
 
 - Rust 함수 경계는 non-stripped symbol extent를 oracle로 사용한다.
-- One-hop library anchor의 시작점과 범위 복구는 radare2 분석에 의존한다.
+- Symbol boundary가 없는 closure anchor의 시작점과 범위 복구는 radare2 분석에 의존한다.
 - Direct track에서 immediate target이 없는 call은 unresolved로 남는다.
 - `angr`는 single-target으로 복구되고 기존 함수 시작점과 일치한 indirect call만 edge로 사용한다.
 - Angr multi-target과 미해결 call은 unresolved이며 가짜 edge를 만들지 않는다.
@@ -772,9 +767,9 @@ config SHA-256, candidate selection SHA-256을 기록한다.
 - Users JSON은 compiler symbol owner에서 얻은 candidate oracle이다. 기본은
   `core/alloc/std/__rustc`를 제외한 Rust 함수, 호환 mode는 subject namespace 함수다.
 - 제외된 `core/alloc/std/__rustc` 함수는 삭제되는 것이 아니다. Candidate와 직접
-  연결되면 one-hop `anchor/scored=false` node로 투영된다.
+  또는 간접적으로 연결된 outgoing closure에 있으면 `anchor/scored=false` node로 투영된다.
 - 이 범위 판정은 stripped-only library classifier가 아니다.
-- Anchor 내부를 계속 탐색하지 않으므로 library subgraph topology는 feature에 들어가지 않는다.
+- Anchor는 traversal wall이 아니므로 복구된 library subgraph topology도 feature에 들어간다.
 - Fixture의 call count는 dynamic execution frequency가 아니다.
 
 ## 14. 코드 읽기 순서

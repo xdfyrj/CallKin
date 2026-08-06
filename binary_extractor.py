@@ -974,25 +974,21 @@ def select_user_context(
     """
     Select the fixture subgraph for user-address mode.
 
-    The normal workflow does not chase library/runtime internals.
-    It emits:
-      - the root anchor,
-      - all listed user functions,
-      - direct callees of listed user functions as one-hop anchors.
+    Emit the complete resolved outgoing closure of root and listed users.
 
-    If --score-root is used, root is treated as a user context source too.
+    Listed users remain authoritative even when root reachability is incomplete.
+    Non-user functions in the closure are emitted as unscored anchors.
     """
-    selected = {root_addr} | set(user_addrs)
-    context_sources = set(user_addrs)
-    if score_root:
-        context_sources.add(root_addr)
-
-    for src in context_sources:
-        for target in graph.get(src, {}):
-            if target in allowed_addrs:
-                selected.add(target)
-
-    return selected & allowed_addrs
+    selected = ({root_addr} | set(user_addrs)) & allowed_addrs
+    queue = deque(sorted(selected))
+    while queue:
+        source = queue.popleft()
+        for target in graph.get(source, {}):
+            if target not in allowed_addrs or target in selected:
+                continue
+            selected.add(target)
+            queue.append(target)
+    return selected
 
 
 def make_fixture_json(
@@ -1020,20 +1016,13 @@ def make_fixture_json(
         is_root = addr == root.addr
         if user_addrs is None:
             node_type = "user" if score_root or not is_root else "anchor"
-            allowed_targets = selected
         else:
             node_type = "user" if addr in user_addrs or (score_root and is_root) else "anchor"
-            if node_type == "user":
-                allowed_targets = selected
-            elif is_root:
-                allowed_targets = user_addrs
-            else:
-                allowed_targets = set()
 
         calls = [
             {"target": function_id(target, id_bias=id_bias), "count": count}
             for target, count in sorted(graph.get(addr, {}).items())
-            if target in allowed_targets and count > 0
+            if target in selected and count > 0
         ]
         scored = node_type == "user"
 
@@ -1051,10 +1040,9 @@ def make_fixture_json(
         f"root={function_id(root.addr, id_bias=id_bias)}/{root.name}; "
         f"users={users_path or 'none'}; "
         "listed user nodes are user/scored=true; "
-        "user mode emits root plus listed users plus direct callees "
-        "of listed users only; "
-        "root anchor retains edges to listed users; "
-        "non-root anchors are terminal/scored=false; "
+        "user mode emits the complete resolved outgoing closure of root and "
+        "listed users; all selected anchors retain resolved outgoing edges; "
+        "anchors remain scored=false; "
         "std/runtime classification is out of this extractor's research scope; "
         "edges to non-emitted targets are omitted"
     )

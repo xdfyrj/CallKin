@@ -24,7 +24,7 @@ REQUIRED_CALL_KEYS = {"target", "count"}
 ALLOWED_CALL_KEYS = REQUIRED_CALL_KEYS
 
 ALLOWED_NODE_TYPES = {"user", "anchor"}
-ALLOWED_ANCHOR_KINDS = {"root", "incoming", "outgoing", "both"}
+ALLOWED_ANCHOR_KINDS = {"root", "incoming", "outgoing", "both", "context"}
 OBSERVABILITY_KEYS = {
     "resolved_out_calls",
     "unresolved_indirect_out_callsites",

@@ -150,16 +150,16 @@ distinct_out_callee_count[A] = 2
 
 `5 + 2 = 7`이 아니다. 서로 다른 non-self callee가 B와 C 두 개이기 때문이다.
 
-## 6. Anchor color
+## 6. Anchor initial color
 
-Schema v4에서는 각 anchor가 자기 ID가 들어간 고정 color를 받는다.
+Schema v4에서는 각 anchor가 자기 ID가 들어간 초기 color를 받는다.
 
 ```text
 FUN_00113e00 -> ANCHOR:FUN_00113e00
 FUN_00152600 -> ANCHOR:FUN_00152600
 ```
 
-Schema v5에서는 fixture의 `color_class`가 고정 color의 기준이다.
+Schema v5에서는 fixture의 `color_class`가 초기 color의 기준이다.
 
 ```text
 color_class=ADDR:FUN_001487a0
@@ -168,13 +168,15 @@ color_class=ADDR:FUN_001487a0
 
 기본 `anchor_policy=address`는 anchor마다 서로 다른 class를 주므로 schema v4와
 같은 individualized 의미를 유지한다. 공식 `anchor_policy=role`은 주소를 버리고
-`ROLE:root`, `ROLE:incoming`, `ROLE:outgoing`, `ROLE:both` 중 하나를 사용한다.
+`ROLE:root`, `ROLE:incoming`, `ROLE:outgoing`, `ROLE:both`, `ROLE:context` 중 하나를 사용한다.
 따라서 서로 다른 주소의 anchor도 같은 방향 역할이면 동일한 `color_class`를 공유한다.
-Refinement 중 anchor color는 어느 경우에도 바뀌지 않는다.
+Refinement에서는 anchor도 user와 같은 방식으로 OUT/IN relation signature를 계산한다.
+따라서 같은 초기 role을 가진 anchor도 뒤쪽 call graph가 다르면 갈라지고, 그 차이가
+다음 round에서 candidate로 전파된다.
 
 따라서 두 user 함수가 서로 다른 library anchor를 호출하면 그 차이가 relation signature에 남는다.
 
-Anchor는 final cluster에서 제외되지만 user color를 정련하는 기준점으로 참여한다.
+Anchor는 final cluster와 채점에서 제외되지만 color refinement에는 끝까지 참여한다.
 
 ## 7. 초기 seed color
 

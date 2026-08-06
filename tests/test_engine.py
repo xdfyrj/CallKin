@@ -81,7 +81,47 @@ def check_anchor_color_classes() -> int:
         ],
     )
     if run_cg_wl(case, mode="full").clusters != [["leaf_a", "leaf_b"]]:
-        print("FAIL anchors with one color_class must share one fixed color")
+        print("FAIL structurally equal anchors with one color_class must stay equal")
+        return 1
+
+    propagation_case = Case(
+        case="anchor-propagation-test",
+        build="unit",
+        schema_version=5,
+        nodes=[
+            Node(
+                "caller_a",
+                "anchor",
+                False,
+                [Call("leaf_a", 1), Call("context_a", 1)],
+                anchor_kind="incoming",
+                color_class="ROLE:incoming",
+            ),
+            Node(
+                "caller_b",
+                "anchor",
+                False,
+                [Call("leaf_b", 1)],
+                anchor_kind="incoming",
+                color_class="ROLE:incoming",
+            ),
+            Node(
+                "context_a",
+                "anchor",
+                False,
+                [],
+                anchor_kind="context",
+                color_class="ROLE:context",
+            ),
+            Node("leaf_a", "user", True, []),
+            Node("leaf_b", "user", True, []),
+        ],
+    )
+    if run_cg_wl(propagation_case, mode="full").clusters != [
+        ["leaf_a"],
+        ["leaf_b"],
+    ]:
+        print("FAIL relation differences beyond anchors did not propagate")
         return 1
     return 0
 
