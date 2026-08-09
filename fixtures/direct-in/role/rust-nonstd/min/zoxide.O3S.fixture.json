@@ -14,7 +14,7 @@
     "candidate_scope": "rust-nonstd",
     "backend": "radare2-capstone",
     "extractor_version": "call-evidence-v5",
-    "raw_graph_sha256": "dd05a720af070c2fd5fb74d602f23b1ef73c0bc635ceb24cadacdd91180c2079",
+    "raw_graph_sha256": "ef1ba5ceb213b3f02249a7d815b561fadebb595e41f67ab02a846ccfcc836ede",
     "candidate_selection_sha256": "893b7d30e89a8ef2081fe10e4daf89f6019b40e3bc971d4e0c273a37a02d86d4",
     "projection_config_sha256": "baf8951a5cb2d27618e1097cef3eceb620851383172696e5513f57b7830fa657",
     "anchor_policy": "role",

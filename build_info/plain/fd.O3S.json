@@ -2,16 +2,16 @@
   "artifacts": {
     "non_stripped": {
       "path": "gt_bin/plain/fd.O3S.gt.bin",
-      "sha256": "f89ff0108cfcdd2c003d662a5edffc93be4a2e1808532bd45475a4030e536c7e"
+      "sha256": "61d845af2b2f394c7439603f198e8439efdfdfcb80b189a40c55b754e3ee8fa9"
     },
     "stripped": {
       "path": "bin/plain/fd.O3S.fixture.bin",
-      "sha256": "2c32bd65cbfaaf283500851f546fcfcf987d3b08319c9119c1fe13c03afb5d05",
-      "stripped_from_sha256": "f89ff0108cfcdd2c003d662a5edffc93be4a2e1808532bd45475a4030e536c7e"
+      "sha256": "0800f1254855a2254f9663fdff458cb0adf90019186a5e6bf85e922cd6d93076",
+      "stripped_from_sha256": "61d845af2b2f394c7439603f198e8439efdfdfcb80b189a40c55b754e3ee8fa9"
     }
   },
   "build": "O3S",
-  "build_id": "132c9a1b0564428d85a792d16b46e0c3",
+  "build_id": "3b412a1cc5b44ddf8f0c7f73d7ef0893",
   "cargo": {
     "binary": "fd",
     "candidate_namespaces": [
@@ -31,10 +31,10 @@
       "--target",
       "x86_64-unknown-linux-gnu",
       "--target-dir",
-      "/tmp/fd.plain.O3S.g8y0swoi/cargo-target",
+      "/tmp/fd.plain.O3S.chhade8k/cargo-target",
       "--message-format=json-render-diagnostics",
       "--config",
-      "/tmp/fd.plain.O3S.g8y0swoi/callkin-cargo-config.toml"
+      "/tmp/fd.plain.O3S.chhade8k/callkin-cargo-config.toml"
     ],
     "environment": {
       "RUSTC": "rustc",
@@ -71,10 +71,10 @@
       "--target",
       "x86_64-unknown-linux-gnu",
       "--target-dir",
-      "/tmp/fd.plain.O3S.g8y0swoi/cargo-target",
+      "/tmp/fd.plain.O3S.chhade8k/cargo-target",
       "--message-format=json-render-diagnostics",
       "--config",
-      "/tmp/fd.plain.O3S.g8y0swoi/callkin-cargo-config.toml"
+      "/tmp/fd.plain.O3S.chhade8k/callkin-cargo-config.toml"
     ],
     "compiler_binary_path": "/home/xdfyrj/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc",
     "flags": [
@@ -111,7 +111,7 @@
     "command": [
       "strip",
       "--strip-all",
-      "/tmp/fd.plain.O3S.g8y0swoi/.stripped.bin.h84jy75q.tmp"
+      "/tmp/fd.plain.O3S.chhade8k/.stripped.bin.vmviofqy.tmp"
     ],
     "flags": [
       "--strip-all"

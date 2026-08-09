@@ -2,16 +2,16 @@
   "artifacts": {
     "non_stripped": {
       "path": "gt_bin/min/fd.O3S.gt.bin",
-      "sha256": "04c5c11149caaf47a26e0e4bc0beec550e6fad5614857278ba944d931a0f531a"
+      "sha256": "f1cc3d2f9acfb1701402206b95755170fbba4172802fb36b676f9dec4e0d526a"
     },
     "stripped": {
       "path": "bin/min/fd.O3S.fixture.bin",
-      "sha256": "ea8787bcf41652724ae16f8899f3840affe48b27068e9ca5071aa012cbc20648",
-      "stripped_from_sha256": "04c5c11149caaf47a26e0e4bc0beec550e6fad5614857278ba944d931a0f531a"
+      "sha256": "1e6aa60a5dd3a769b8642f4d574c5476470d2cdd78aeefbd9001273383687d4a",
+      "stripped_from_sha256": "f1cc3d2f9acfb1701402206b95755170fbba4172802fb36b676f9dec4e0d526a"
     }
   },
   "build": "O3S",
-  "build_id": "ed602b13a8f6409cab2e69f2bfd9ddfc",
+  "build_id": "0f886ad2345243c88ecacdcf753e7b7d",
   "cargo": {
     "binary": "fd",
     "candidate_namespaces": [
@@ -31,10 +31,10 @@
       "--target",
       "x86_64-unknown-linux-gnu",
       "--target-dir",
-      "/tmp/fd.min.O3S.9cq69y1m/cargo-target",
+      "/tmp/fd.min.O3S.dvyyfjyc/cargo-target",
       "--message-format=json-render-diagnostics",
       "--config",
-      "/tmp/fd.min.O3S.9cq69y1m/callkin-cargo-config.toml"
+      "/tmp/fd.min.O3S.dvyyfjyc/callkin-cargo-config.toml"
     ],
     "environment": {
       "RUSTC": "rustc",
@@ -71,10 +71,10 @@
       "--target",
       "x86_64-unknown-linux-gnu",
       "--target-dir",
-      "/tmp/fd.min.O3S.9cq69y1m/cargo-target",
+      "/tmp/fd.min.O3S.dvyyfjyc/cargo-target",
       "--message-format=json-render-diagnostics",
       "--config",
-      "/tmp/fd.min.O3S.9cq69y1m/callkin-cargo-config.toml"
+      "/tmp/fd.min.O3S.dvyyfjyc/callkin-cargo-config.toml"
     ],
     "compiler_binary_path": "/home/xdfyrj/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc",
     "flags": [
@@ -111,7 +111,7 @@
     "command": [
       "strip",
       "--strip-all",
-      "/tmp/fd.min.O3S.9cq69y1m/.stripped.bin.4otp_8mk.tmp"
+      "/tmp/fd.min.O3S.dvyyfjyc/.stripped.bin.v52ytban.tmp"
     ],
     "flags": [
       "--strip-all"
