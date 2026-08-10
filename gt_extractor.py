@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import subprocess
@@ -28,11 +29,12 @@ from paths import (
     split_case_build,
     users_json_for,
 )
-from provenance import BuildProvenance
+from provenance import BuildProvenance, parse_provenance
 
 
 GT_SCHEMA_VERSION = 5
 USERS_SCHEMA_VERSION = 5
+ALL_RUST_CATALOG_SCHEMA_VERSION = 1
 DEFAULT_ID_BIAS = 0x100000
 ANCHOR_RUST_NAMESPACES = ("core", "alloc", "std", "__rustc")
 _RUST_PATH_RE = re.compile(r"(?<![A-Za-z0-9_:])([A-Za-z_][A-Za-z0-9_]*)::")
@@ -129,6 +131,18 @@ def is_rust_nonstd_candidate(
     return owner is not None and owner not in ANCHOR_RUST_NAMESPACES
 
 
+def is_all_rust_catalog_member(
+    demangled_name: str,
+    *,
+    root_namespace: str,
+) -> bool:
+    """Keep every observable Rust function except the source-level root main."""
+    return (
+        demangled_name != f"{root_namespace}::main"
+        and rust_symbol_owner(demangled_name) is not None
+    )
+
+
 def _outer_impl_header(name: str) -> str | None:
     depth = 0
     for index, char in enumerate(name):
@@ -163,14 +177,92 @@ def origin_from_symbol(
         if origin is None:
             return None
 
-    origin = re.sub(r"::h[0-9a-fA-F]{16}$", "", origin)
-    origin = preserve_derived_impl_identity(origin)
-    origin = strip_rust_generic_args(origin)
+    return normalize_rust_origin(origin) or None
 
-    if not origin:
+
+def all_rust_origin_from_symbol(
+    demangled_name: str,
+    *,
+    root_namespace: str,
+) -> str | None:
+    """Return an evaluation-only origin for any symbol-owned Rust function."""
+    if not is_all_rust_catalog_member(
+        demangled_name,
+        root_namespace=root_namespace,
+    ):
         return None
+    return normalize_all_rust_origin(demangled_name) or None
 
-    return origin
+
+def normalize_rust_origin(name: str) -> str:
+    """Normalize a demangled Rust name into the source-origin convention."""
+    name = re.sub(r"::h[0-9a-fA-F]{16}$", "", name)
+    name = preserve_derived_impl_identity(name)
+    return strip_rust_generic_args(name)
+
+
+def normalize_all_rust_origin(name: str) -> str:
+    """Normalize all-Rust labels, including `drop_in_place<T>` spellings.
+
+    Existing v0 ground truth keeps its legacy normalizer for frozen regression
+    artifacts. The all-Rust catalog needs the broader rule because Oxidizer and
+    `nm -C` commonly render `drop_in_place<T>` without the `::<T>` separator.
+    """
+    name = re.sub(r"::h[0-9a-fA-F]{16}$", "", name)
+    name = preserve_derived_impl_identity(name)
+    return _strip_displayed_generic_args(name)
+
+
+def _strip_displayed_generic_args(name: str) -> str:
+    out: list[str] = []
+    index = 0
+    while index < len(name):
+        if name.startswith("::<", index):
+            end = _matching_angle(name, index + 2)
+            if end is None:
+                out.append(name[index])
+                index += 1
+            else:
+                index = end + 1
+            continue
+        if name[index] == "<":
+            end = _matching_angle(name, index)
+            if end is None:
+                out.append(name[index])
+                index += 1
+                continue
+            content = name[index + 1:end]
+            if index == 0 or _has_top_level_as(content):
+                out.extend(("<", _strip_displayed_generic_args(content), ">"))
+            index = end + 1
+            continue
+        out.append(name[index])
+        index += 1
+    return "".join(out)
+
+
+def _matching_angle(value: str, start: int) -> int | None:
+    depth = 0
+    for index in range(start, len(value)):
+        if value[index] == "<":
+            depth += 1
+        elif value[index] == ">":
+            depth -= 1
+            if depth == 0:
+                return index
+    return None
+
+
+def _has_top_level_as(value: str) -> bool:
+    depth = 0
+    for index, char in enumerate(value):
+        if char == "<":
+            depth += 1
+        elif char == ">":
+            depth -= 1
+        elif depth == 0 and value.startswith(" as ", index):
+            return True
+    return False
 
 
 def _subject_origin(
@@ -383,6 +475,228 @@ def make_ground_truth(
         ]
 
     return gt
+
+
+def make_all_rust_catalog(
+    *,
+    symbols: list[Symbol],
+    case: str,
+    build: str,
+    profile: str,
+    root_namespace: str,
+    id_bias: int,
+    binary_path: str,
+    provenance: BuildProvenance,
+) -> dict[str, Any]:
+    """Build a scoring-only catalog of all observable Rust symbol origins.
+
+    This deliberately does not create a CandidateSelection. It is used only to
+    audit direct-FLIRT labels and future known-to-unknown transfer experiments.
+    Cross-origin address aliases are kept as explicit singleton records rather
+    than silently choosing one source origin.
+    """
+    members_by_origin: dict[str, dict[str, int]] = defaultdict(dict)
+    member_addr: dict[str, int] = {}
+    symbols_by_member: dict[str, list[str]] = {}
+    origin_by_member: dict[str, str] = {}
+    owner_by_member: dict[str, str] = {}
+    shared_origins_by_member: dict[str, set[str]] = {}
+    alias_notes: list[str] = []
+
+    for symbol in symbols:
+        origin = all_rust_origin_from_symbol(
+            symbol.name,
+            root_namespace=root_namespace,
+        )
+        if origin is None:
+            continue
+
+        member_id = function_id(symbol.addr, id_bias=id_bias)
+        previous_origin = origin_by_member.get(member_id)
+        if previous_origin is not None:
+            if previous_origin == origin:
+                if symbol.name not in symbols_by_member[member_id]:
+                    symbols_by_member[member_id].append(symbol.name)
+                alias_notes.append(
+                    f"{member_id}: duplicate symbol for origin {origin!r} "
+                    f"kept once ({symbol.name})"
+                )
+                continue
+
+            shared_origins = shared_origins_by_member.setdefault(
+                member_id,
+                {previous_origin},
+            )
+            shared_origins.add(origin)
+            shared_origin = f"shared-address@{member_id}"
+            if previous_origin != shared_origin:
+                members_by_origin[previous_origin].pop(member_id, None)
+                members_by_origin[shared_origin][member_id] = symbol.addr
+                origin_by_member[member_id] = shared_origin
+                owner_by_member[member_id] = "shared-address"
+            if symbol.name not in symbols_by_member[member_id]:
+                symbols_by_member[member_id].append(symbol.name)
+            continue
+
+        origin_by_member[member_id] = origin
+        owner_by_member[member_id] = rust_symbol_owner(symbol.name) or "unknown"
+        member_addr[member_id] = symbol.addr
+        symbols_by_member[member_id] = [symbol.name]
+        members_by_origin[origin][member_id] = symbol.addr
+
+    if not members_by_origin:
+        raise ValueError("no observable Rust symbols were found for all-Rust catalog")
+
+    origins = []
+    for origin, members in sorted(
+        (item for item in members_by_origin.items() if item[1]),
+        key=lambda item: min(item[1].values()),
+    ):
+        origins.append({
+            "origin": origin,
+            "members": [
+                member_id
+                for member_id, _address in sorted(
+                    members.items(), key=lambda item: item[1]
+                )
+            ],
+        })
+
+    catalog: dict[str, Any] = {
+        "schema_version": ALL_RUST_CATALOG_SCHEMA_VERSION,
+        "case": case,
+        "build": build,
+        "profile": profile,
+        "scope": "all-rust",
+        "root_namespace": root_namespace,
+        "id_bias": id_bias,
+        "provenance": provenance.to_dict(),
+        "source": binary_path,
+        "origins": origins,
+        "symbols": {
+            member_id: symbols_by_member[member_id]
+            for member_id, _address in sorted(
+                member_addr.items(), key=lambda item: item[1]
+            )
+        },
+        "owners": {
+            member_id: owner_by_member[member_id]
+            for member_id, _address in sorted(
+                member_addr.items(), key=lambda item: item[1]
+            )
+        },
+        "cross_origin_aliases": [
+            {"member": member_id, "origins": sorted(origins)}
+            for member_id, origins in sorted(shared_origins_by_member.items())
+        ],
+    }
+    if alias_notes:
+        catalog["note"] = "address aliases/duplicates: " + "; ".join(alias_notes)
+    validate_all_rust_catalog(catalog)
+    return catalog
+
+
+def validate_all_rust_catalog(data: Any) -> dict[str, Any]:
+    if not isinstance(data, dict):
+        raise ValueError("all-Rust catalog must be a JSON object")
+    required = {
+        "schema_version", "case", "build", "profile", "scope", "id_bias",
+        "root_namespace", "provenance", "source", "origins", "symbols",
+        "owners", "cross_origin_aliases",
+    }
+    optional = {"note"}
+    if set(data) - optional != required:
+        raise ValueError("all-Rust catalog has an invalid field set")
+    if data["schema_version"] != ALL_RUST_CATALOG_SCHEMA_VERSION:
+        raise ValueError("unsupported all-Rust catalog schema")
+    for key in ("case", "build", "profile", "scope", "root_namespace", "source"):
+        if not isinstance(data[key], str) or not data[key]:
+            raise ValueError(f"all-Rust catalog {key} must be a non-empty string")
+    if data["scope"] != "all-rust":
+        raise ValueError("all-Rust catalog scope must be 'all-rust'")
+    if (
+        not isinstance(data["id_bias"], int)
+        or isinstance(data["id_bias"], bool)
+        or data["id_bias"] < 0
+    ):
+        raise ValueError("all-Rust catalog id_bias must be a non-negative integer")
+    parse_provenance(data["provenance"], where="all-Rust catalog.provenance")
+    if not isinstance(data["origins"], list) or not data["origins"]:
+        raise ValueError("all-Rust catalog origins must be a non-empty list")
+    members: set[str] = set()
+    origin_names: set[str] = set()
+    for index, group in enumerate(data["origins"]):
+        where = f"all-Rust catalog.origins[{index}]"
+        if not isinstance(group, dict) or set(group) != {"origin", "members"}:
+            raise ValueError(f"{where} must contain exactly origin/members")
+        origin = group["origin"]
+        group_members = group["members"]
+        if not isinstance(origin, str) or not origin or origin in origin_names:
+            raise ValueError(f"{where}.origin must be unique and non-empty")
+        if (
+            not isinstance(group_members, list)
+            or not group_members
+            or any(not isinstance(member, str) or not member for member in group_members)
+        ):
+            raise ValueError(f"{where}.members must be a non-empty string list")
+        if members.intersection(group_members):
+            raise ValueError(f"{where}.members overlap another origin")
+        members.update(group_members)
+        origin_names.add(origin)
+    for mapping_name in ("symbols", "owners"):
+        mapping = data[mapping_name]
+        if not isinstance(mapping, dict) or set(mapping) != members:
+            raise ValueError(
+                f"all-Rust catalog {mapping_name} keys must match origin members"
+            )
+    for member, names in data["symbols"].items():
+        if (
+            not isinstance(names, list)
+            or not names
+            or any(not isinstance(name, str) or not name for name in names)
+        ):
+            raise ValueError(f"all-Rust catalog symbols[{member!r}] is invalid")
+    if any(
+        not isinstance(owner, str) or not owner
+        for owner in data["owners"].values()
+    ):
+        raise ValueError("all-Rust catalog owners must be non-empty strings")
+    aliases = data["cross_origin_aliases"]
+    if not isinstance(aliases, list):
+        raise ValueError("all-Rust catalog cross_origin_aliases must be a list")
+    for index, alias in enumerate(aliases):
+        if not isinstance(alias, dict) or set(alias) != {"member", "origins"}:
+            raise ValueError(
+                f"all-Rust catalog cross_origin_aliases[{index}] is invalid"
+            )
+        if alias["member"] not in members:
+            raise ValueError("all-Rust alias member is absent from catalog")
+        if (
+            not isinstance(alias["origins"], list)
+            or len(alias["origins"]) < 2
+            or any(not isinstance(origin, str) or not origin for origin in alias["origins"])
+        ):
+            raise ValueError("all-Rust alias origins must contain at least two names")
+    return data
+
+
+def load_all_rust_catalog(path: str | Path) -> dict[str, Any]:
+    try:
+        data = json.loads(Path(path).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ValueError(f"cannot read all-Rust catalog {path}: {exc}") from exc
+    return validate_all_rust_catalog(data)
+
+
+def all_rust_catalog_sha256(data: dict[str, Any]) -> str:
+    validate_all_rust_catalog(data)
+    encoded = json.dumps(
+        data,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=False,
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
 
 
 def user_addresses(

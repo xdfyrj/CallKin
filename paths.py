@@ -218,6 +218,43 @@ def users_json_for(
     )
 
 
+def oxidizer_labels_for(
+    case: str,
+    build: str,
+    profile: str = DEFAULT_PROFILE,
+) -> str:
+    """Return the stripped-binary FLIRT label artifact for one build."""
+    return (
+        f"labels/oxidizer/{normalize_profile(profile)}/"
+        f"{output_stem(case, build)}.labels.json"
+    )
+
+
+def all_rust_catalog_for(
+    case: str,
+    build: str,
+    profile: str = DEFAULT_PROFILE,
+) -> str:
+    """Return the non-stripped, evaluation-only all-Rust catalog path."""
+    return (
+        f"ground_truth/all-rust/{normalize_profile(profile)}/"
+        f"{output_stem(case, build)}.catalog.json"
+    )
+
+
+def flirt_audit_for(
+    case: str,
+    build: str,
+    profile: str = DEFAULT_PROFILE,
+) -> str:
+    """Return the evaluation-only direct-FLIRT audit result path."""
+    return result_json_for(
+        case,
+        f"{output_stem(case, build)}.flirt_audit",
+        profile,
+    )
+
+
 def boundaries_json_for(
     case: str,
     build: str,

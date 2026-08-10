@@ -612,7 +612,58 @@ Direct raw graph는 `extractions/<profile>/`에, angr 보강 raw graph는
 `extractions/angr/<profile>/`에 저장한다. 이 둘은 projection만 다른 것이 아니라
 추출 evidence가 실제로 다르기 때문에 별도 파일이다.
 
-### 10.4 Anchor policy: `address`와 `role`
+### 10.4 Oxidizer direct-FLIRT audit
+
+Oxidizer는 현재 CallKin graph extractor나 CG-WL engine 안에 import하지 않는다.
+CallKin의 `angr==9.2.165`와 Oxidizer checkout의 angr fork는 dependency pin이 다르기
+때문이다. `oxidizer_adapter.py`가 Oxidizer checkout에서 별도 subprocess를 한 번
+실행하고 JSON만 받는다.
+
+```bash
+python3 all_rust_catalog.py billing-client --profile plain --build O3S
+python3 oxidizer_adapter.py billing-client --profile plain --build O3S
+python3 flirt_audit.py billing-client --profile plain --build O3S
+```
+
+기본 Oxidizer checkout은 `/mnt/c/users/sumyr/playground/oxidizer`이다. 다른 위치에서는
+`oxidizer_adapter.py --oxidizer-dir <path>`를 사용한다.
+`oxidizer_adapter.py`는 address join을 위해 canonical direct raw graph도 읽으므로, 먼저
+같은 build에 대해 `run_case.py` 또는 `binary_extractor.py --track direct`를 실행해야 한다.
+
+첫 명령은 non-stripped binary를 **채점 전용**으로 읽어
+`ground_truth/all-rust/<profile>/<case>.<build>.catalog.json`을 만든다. 이 catalog는
+candidate selection이나 fixture를 바꾸지 않는다. Source root `main`을 제외한 모든
+observable Rust symbol을 origin별로 정리하므로 `drop_in_place<T>` 같은 standard-library
+family도 audit할 수 있다.
+
+둘째 명령은 stripped binary만 Oxidizer에 전달한다. Probe는 direct FLIRT, wrapper
+propagation, cleanup heuristic을 순서대로 실행하지만 세 결과를 섞지 않는다. 최종
+`labels/oxidizer/<profile>/...labels.json`의 `matches`에는 direct-FLIRT match만 들어간다.
+`propagated_wrappers`와 `cleanup_heuristics`는 보존만 하며 현재 seed, candidate, anchor에
+사용하지 않는다. 같은 stripped binary의 기존 label JSON이 provenance와 일치하면 adapter는
+그 evidence를 재사용한다. Oxidizer를 의도적으로 다시 실행하려면 `--force`를 준다.
+
+Oxidizer address는 ELF linked virtual address로 정규화한 뒤 raw graph의 known function
+start와 join한다. 이 join에는 현재 symbol-boundary oracle가 쓰인다. 따라서 이 단계는
+"stripped-only library label + oracle function boundary" 조건이다. Join하지 못한 label은
+버리지 않고 `unmatched_addresses`에 남긴다. Label JSON의 `tool`에는 Oxidizer commit,
+`uv.lock` hash, angr/cle/pyvex/archinfo version, applied signature DB hash와 probe config
+hash를 기록한다. `execution`에는 timeout과 cache 사용 여부를 기록한다. 현재 memory
+limit은 적용하지 않으므로 `memory_limit_mb=null`로 명시한다.
+
+셋째 명령은 평가 측에서만 catalog와 labels를 대조한다. 결과는 두 질문을 분리한다.
+`std_classification`은 예측과 실제 owner가 모두 `core`/`alloc`/`std`인지를 P/R로 보고,
+`exact_identity`는 그 owner와 canonical origin까지 모두 맞는 direct-FLIRT label 비율을
+따로 기록한다. 따라서 `std::A`를 `std::B`로 부른 결과는 전자에서는 표준 라이브러리
+분류 성공이지만 후자에서는 identity 오류다.
+
+known/unknown mixed family와 cross-boundary pair는 향후 seed 정책과 동일하게
+`direct-flirt`이면서 예측 owner가 `core`/`alloc`/`std`인 instance만 known으로 센다.
+`__rustc`와 wrapper/cleanup label은 이 audit의 seed가 아니다. 아직 Context/Transfer
+CG-WL view나 `flirt` candidate scope를 만들지 않는다. 이 audit는 direct-FLIRT label의
+양과 address join 품질을 확인하는 gate다.
+
+### 10.5 Anchor policy: `address`와 `role`
 
 `address`는 기본값이며 anchor마다 주소 기반 고유 color class를 준다.
 

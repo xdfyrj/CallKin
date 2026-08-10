@@ -39,6 +39,25 @@ shared_recursive
 
 이 파일은 stripped binary extractor가 candidate 함수를 선택할 때 사용한다. Origin이나 group 관계는 담지 않는다.
 
+### All-Rust audit catalog
+
+`all_rust_catalog.py`는 기존 GT/users JSON을 대체하지 않는 평가 전용 artifact를 만든다.
+
+```bash
+python3 all_rust_catalog.py billing-client --profile plain --build O3S
+```
+
+출력은 다음 경로다.
+
+```text
+ground_truth/all-rust/plain/billing-client.O3S.catalog.json
+```
+
+이 catalog에는 source root `main`을 제외한 모든 observable Rust symbol이 들어간다.
+따라서 기존 `rust-nonstd` scope에서 제외되는 `core::ptr::drop_in_place<T>`도 origin family로
+기록된다. 단, 이 파일은 Oxidizer direct-FLIRT audit과 미래 transfer 평가에서만 사용한다.
+현재 `users` selection, fixture, CG-WL 입력, 기본 PR/RE/F1/ARI 점수에는 들어가지 않는다.
+
 ## 2. 가장 단순한 실행
 
 ```bash

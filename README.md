@@ -222,7 +222,8 @@ family_graph_03 / O3KS
 - generic function 자동 탐지
 - 함수 경계 복원 연구
 - multi-target 또는 미해결 indirect call의 exact edge 투영
-- stripped-only std/library classifier. 현재 scope는 non-stripped symbol owner oracle이다.
+- stripped-only std/library classifier를 candidate selection에 적용하는 기능. Direct-FLIRT
+  label은 현재 audit-only이며 scope를 바꾸지 않는다.
 - source-level mono-item census와 inlined/eliminated 원인 판정
 - type recovery 또는 body/CFG similarity
 
