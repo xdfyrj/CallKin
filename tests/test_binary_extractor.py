@@ -1,7 +1,9 @@
 import os
+import shutil
 import struct
 import sys
 from collections import Counter
+from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -12,6 +14,8 @@ from binary_extractor import (
     make_fixture_json,
     select_user_context,
 )
+from graph_evidence import ELF_RELOCATION_RESOLVER
+from function_boundaries import load_function_boundaries
 from provenance import BuildProvenance
 
 
@@ -514,6 +518,156 @@ def check_unmapped_immediate_evidence() -> int:
     return 0
 
 
+def check_indirect_tail_transfer_recovery() -> int:
+    caller = R2Function(addr=0x1000, name="caller", size=0x20, kind="fcn")
+    target = R2Function(addr=0x2000, name="target", size=0x20, kind="fcn")
+    slot = 0x3000
+    displacement = slot - (caller.addr + 6)
+
+    extractor = BinaryExtractor.__new__(BinaryExtractor)
+    extractor.include_imports = False
+    extractor.relocation_targets = {slot: target.addr}
+    extractor.functions = [caller, target]
+    extractor.by_addr = {caller.addr: caller, target.addr: target}
+    extractor.all_functions = extractor.functions
+    extractor.all_by_addr = extractor.by_addr
+    extractor.r2 = FakeR2({
+        f"p8j 6 @ {caller.addr}": list(
+            b"\xff\x25" + struct.pack("<i", displacement)
+        ),
+    })
+
+    relocation = extractor._symbol_extent_transfer_evidence(caller, 6)
+    if (
+        len(relocation) != 1
+        or relocation[0].kind != "tail-call"
+        or relocation[0].operand_kind != "memory"
+        or relocation[0].status != "resolved"
+        or relocation[0].target != target.addr
+        or relocation[0].resolver != ELF_RELOCATION_RESOLVER
+    ):
+        print(f"FAIL RIP-relative relocation tail-call: {relocation}")
+        return 1
+
+    extractor.relocation_targets = {slot: target.addr + 1}
+    interior = extractor._symbol_extent_transfer_evidence(caller, 6)
+    if (
+        len(interior) != 1
+        or interior[0].status != "unmapped"
+        or interior[0].target != target.addr + 1
+        or interior[0].resolver != ELF_RELOCATION_RESOLVER
+    ):
+        print(f"FAIL relocation target inside function became exact: {interior}")
+        return 1
+
+    extractor.r2 = FakeR2({
+        f"pdfj @ {caller.addr}": {
+            "ops": [{
+                "offset": caller.addr,
+                "type": "call",
+                "opcode": "call qword [rip + 0x10]",
+                "ptr": slot,
+            }],
+        },
+    })
+    r2_interior = extractor._r2_transfer_evidence(caller)
+    if (
+        len(r2_interior) != 1
+        or r2_interior[0].status != "unmapped"
+        or r2_interior[0].target != target.addr + 1
+        or r2_interior[0].resolver != ELF_RELOCATION_RESOLVER
+    ):
+        print(f"FAIL r2 relocation target inside function became exact: {r2_interior}")
+        return 1
+
+    extractor.r2 = FakeR2({
+        f"p8j 2 @ {caller.addr}": list(b"\xff\xe0"),
+    })
+    unresolved = extractor._symbol_extent_transfer_evidence(caller, 2)
+    if (
+        len(unresolved) != 1
+        or unresolved[0].kind != "tail-call"
+        or unresolved[0].operand_kind != "register"
+        or unresolved[0].status != "unresolved"
+    ):
+        print(f"FAIL unresolved indirect tail-call evidence: {unresolved}")
+        return 1
+
+    extractor.r2 = FakeR2({
+        f"pdfj @ {caller.addr}": {
+            "ops": [{
+                "offset": caller.addr,
+                "type": "irjmp",
+                "opcode": "jmp rax",
+            }],
+        },
+    })
+    r2_unresolved = extractor._r2_transfer_evidence(caller)
+    if len(r2_unresolved) != 1 or r2_unresolved[0].kind != "tail-call":
+        print(f"FAIL radare2 indirect tail-call evidence: {r2_unresolved}")
+        return 1
+
+    extractor.r2 = FakeR2({
+        f"pdfj @ {caller.addr}": {
+            "ops": [{
+                "offset": caller.addr,
+                "type": "mov",
+                "opcode": "mov rax, qword [rip + 0x10]",
+                "ptr": slot,
+            }],
+        },
+    })
+    ordinary_load = extractor._r2_transfer_evidence(caller)
+    if ordinary_load:
+        print(f"FAIL ordinary relocation-backed load became transfer: {ordinary_load}")
+        return 1
+    return 0
+
+
+def check_billing_expected_relocation() -> int:
+    if shutil.which(binary_extractor_module.R2_EXECUTABLE) is None:
+        print("billing-client relocation regression SKIP (radare2 not found)")
+        return 0
+
+    root = Path(__file__).resolve().parent.parent
+    binary = root / "bin/plain/billing-client.O3S.fixture.bin"
+    boundaries_path = (
+        root / "boundaries/plain/billing-client.O3S.boundaries.json"
+    )
+    if not binary.exists() or not boundaries_path.exists():
+        print("FAIL canonical billing-client relocation artifacts are missing")
+        return 1
+
+    boundaries = load_function_boundaries(
+        str(boundaries_path),
+        expected_case="billing-client",
+        expected_build="O3S",
+        expected_profile="plain",
+    )
+    extractor = BinaryExtractor(str(binary))
+    try:
+        extractor.analyze()
+        extractor.add_symbol_bound_functions(boundaries.bounds)
+        transfer = extractor.transfer_evidence(
+            extractor.by_addr[0x406B0],
+            symbol_size=boundaries.bounds[0x406B0],
+        )
+    finally:
+        extractor.close()
+
+    if (
+        len(transfer) != 1
+        or transfer[0].kind != "tail-call"
+        or transfer[0].status != "resolved"
+        or transfer[0].target != 0x56410
+        or transfer[0].resolver != ELF_RELOCATION_RESOLVER
+        or transfer[0].confidence != "exact"
+    ):
+        print(f"FAIL billing-client 0x406b0 relocation tail-call: {transfer}")
+        return 1
+    return 0
+
+
 def main() -> int:
     if check_missing_radare2_error() != 0:
         return 1
@@ -540,6 +694,10 @@ def main() -> int:
     if check_filtered_import_evidence() != 0:
         return 1
     if check_unmapped_immediate_evidence() != 0:
+        return 1
+    if check_indirect_tail_transfer_recovery() != 0:
+        return 1
+    if check_billing_expected_relocation() != 0:
         return 1
 
     extractor = BinaryExtractor.__new__(BinaryExtractor)

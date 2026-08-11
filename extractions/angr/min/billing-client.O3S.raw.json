@@ -11,7 +11,7 @@
   },
   "analysis": {
     "backend": "radare2-capstone+angr",
-    "extractor_version": "call-evidence-v5+angr-9.2.165",
+    "extractor_version": "call-evidence-v6+angr-9.2.165",
     "oracle_level": "symbol-boundary",
     "boundary_input_sha256": "9959130848f92040ab552c52135670d656730d8f858f97efb4db20e2c165f395"
   },
@@ -2703,30 +2703,30 @@
   },
   "indirect_call_summary": {
     "analysis_status": "completed",
-    "total": 2117,
-    "resolved_internal": 151,
-    "resolved_import": 1521,
-    "unresolved": 445,
-    "target_resolution_rate": 0.7897968823807274,
-    "internal_resolution_rate": 0.2533557046979866,
+    "total": 2162,
+    "resolved_internal": 153,
+    "resolved_import": 1534,
+    "unresolved": 475,
+    "target_resolution_rate": 0.7802960222016652,
+    "internal_resolution_rate": 0.24363057324840764,
     "by_operand": {
       "memory": {
-        "total": 1511,
+        "total": 1523,
         "resolved_internal": 0,
-        "resolved_import": 1327,
-        "unresolved": 184
+        "resolved_import": 1340,
+        "unresolved": 183
       },
       "register": {
-        "total": 606,
-        "resolved_internal": 151,
+        "total": 639,
+        "resolved_internal": 153,
         "resolved_import": 194,
-        "unresolved": 261
+        "unresolved": 292
       }
     },
     "rejected": {
-      "unresolvable_target": 402,
+      "unresolvable_target": 433,
       "multiple_targets": 17,
-      "unknown_target": 1,
+      "unknown_target": 0,
       "ambiguous_source": 24,
       "no_angr_result": 1
     }
@@ -9262,6 +9262,120 @@
       "angr_target_names": {}
     },
     {
+      "source": "0x1d910",
+      "callsite": "0x1d91e",
+      "instruction": "jmp rcx",
+      "kind": "tail-call",
+      "operand_kind": "register",
+      "status": "unresolved",
+      "target": null,
+      "resolver": null,
+      "confidence": "unknown",
+      "filter_reason": null,
+      "angr_status": "unresolvable_target",
+      "angr_targets": [
+        "0x201050"
+      ],
+      "angr_target_names": {
+        "0x201050": "UnresolvableJumpTarget"
+      }
+    },
+    {
+      "source": "0x1d920",
+      "callsite": "0x1d937",
+      "instruction": "jmp rax",
+      "kind": "tail-call",
+      "operand_kind": "register",
+      "status": "unresolved",
+      "target": null,
+      "resolver": null,
+      "confidence": "unknown",
+      "filter_reason": null,
+      "angr_status": "unresolvable_target",
+      "angr_targets": [
+        "0x201050"
+      ],
+      "angr_target_names": {
+        "0x201050": "UnresolvableJumpTarget"
+      }
+    },
+    {
+      "source": "0x1d940",
+      "callsite": "0x1d957",
+      "instruction": "jmp rax",
+      "kind": "tail-call",
+      "operand_kind": "register",
+      "status": "unresolved",
+      "target": null,
+      "resolver": null,
+      "confidence": "unknown",
+      "filter_reason": null,
+      "angr_status": "unresolvable_target",
+      "angr_targets": [
+        "0x201050"
+      ],
+      "angr_target_names": {
+        "0x201050": "UnresolvableJumpTarget"
+      }
+    },
+    {
+      "source": "0x1d960",
+      "callsite": "0x1d977",
+      "instruction": "jmp rax",
+      "kind": "tail-call",
+      "operand_kind": "register",
+      "status": "unresolved",
+      "target": null,
+      "resolver": null,
+      "confidence": "unknown",
+      "filter_reason": null,
+      "angr_status": "unresolvable_target",
+      "angr_targets": [
+        "0x201050"
+      ],
+      "angr_target_names": {
+        "0x201050": "UnresolvableJumpTarget"
+      }
+    },
+    {
+      "source": "0x1d980",
+      "callsite": "0x1d997",
+      "instruction": "jmp rax",
+      "kind": "tail-call",
+      "operand_kind": "register",
+      "status": "unresolved",
+      "target": null,
+      "resolver": null,
+      "confidence": "unknown",
+      "filter_reason": null,
+      "angr_status": "unresolvable_target",
+      "angr_targets": [
+        "0x201050"
+      ],
+      "angr_target_names": {
+        "0x201050": "UnresolvableJumpTarget"
+      }
+    },
+    {
+      "source": "0x1d9a0",
+      "callsite": "0x1d9b7",
+      "instruction": "jmp rax",
+      "kind": "tail-call",
+      "operand_kind": "register",
+      "status": "unresolved",
+      "target": null,
+      "resolver": null,
+      "confidence": "unknown",
+      "filter_reason": null,
+      "angr_status": "unresolvable_target",
+      "angr_targets": [
+        "0x201050"
+      ],
+      "angr_target_names": {
+        "0x201050": "UnresolvableJumpTarget"
+      }
+    },
+    {
       "source": "0x1d9c0",
       "callsite": "0x1d9cd",
       "instruction": "jmp 0x466f0",
@@ -10000,6 +10114,25 @@
       }
     },
     {
+      "source": "0x1e620",
+      "callsite": "0x1e69c",
+      "instruction": "jmp qword ptr [rip + 0x705ae]",
+      "kind": "tail-call",
+      "operand_kind": "memory",
+      "status": "filtered",
+      "target": "0x100028",
+      "resolver": "angr-cfg",
+      "confidence": "inferred",
+      "filter_reason": "import",
+      "angr_status": "resolved_import",
+      "angr_targets": [
+        "0x100028"
+      ],
+      "angr_target_names": {
+        "0x100028": "free"
+      }
+    },
+    {
       "source": "0x1e6b0",
       "callsite": "0x1e6c7",
       "instruction": "call qword ptr [rip + 0x70583]",
@@ -10566,6 +10699,25 @@
       "angr_status": "not_applicable",
       "angr_targets": [],
       "angr_target_names": {}
+    },
+    {
+      "source": "0x1f0a0",
+      "callsite": "0x1f0b7",
+      "instruction": "jmp rax",
+      "kind": "tail-call",
+      "operand_kind": "register",
+      "status": "unresolved",
+      "target": null,
+      "resolver": null,
+      "confidence": "unknown",
+      "filter_reason": null,
+      "angr_status": "unresolvable_target",
+      "angr_targets": [
+        "0x201050"
+      ],
+      "angr_target_names": {
+        "0x201050": "UnresolvableJumpTarget"
+      }
     },
     {
       "source": "0x1f0c0",
@@ -34080,6 +34232,25 @@
       "angr_target_names": {}
     },
     {
+      "source": "0x388e0",
+      "callsite": "0x388f7",
+      "instruction": "jmp rax",
+      "kind": "tail-call",
+      "operand_kind": "register",
+      "status": "unresolved",
+      "target": null,
+      "resolver": null,
+      "confidence": "unknown",
+      "filter_reason": null,
+      "angr_status": "unresolvable_target",
+      "angr_targets": [
+        "0x201050"
+      ],
+      "angr_target_names": {
+        "0x201050": "UnresolvableJumpTarget"
+      }
+    },
+    {
       "source": "0x38920",
       "callsite": "0x3894a",
       "instruction": "call qword ptr [rip + 0x562e8]",
@@ -35065,18 +35236,14 @@
       "instruction": "call qword ptr [rip + 0x554ec]",
       "kind": "call",
       "operand_kind": "memory",
-      "status": "unresolved",
-      "target": null,
-      "resolver": null,
-      "confidence": "unknown",
+      "status": "unmapped",
+      "target": "0x8b5d0",
+      "resolver": "elf-relocation",
+      "confidence": "exact",
       "filter_reason": null,
-      "angr_status": "unknown_target",
-      "angr_targets": [
-        "0x8b5d0"
-      ],
-      "angr_target_names": {
-        "0x8b5d0": "sub_48b5d0"
-      }
+      "angr_status": "not_applicable",
+      "angr_targets": [],
+      "angr_target_names": {}
     },
     {
       "source": "0x397e0",
@@ -38212,6 +38379,25 @@
       }
     },
     {
+      "source": "0x3d370",
+      "callsite": "0x3d3ec",
+      "instruction": "jmp qword ptr [rip + 0x5185e]",
+      "kind": "tail-call",
+      "operand_kind": "memory",
+      "status": "filtered",
+      "target": "0x100028",
+      "resolver": "angr-cfg",
+      "confidence": "inferred",
+      "filter_reason": "import",
+      "angr_status": "resolved_import",
+      "angr_targets": [
+        "0x100028"
+      ],
+      "angr_target_names": {
+        "0x100028": "free"
+      }
+    },
+    {
       "source": "0x3d400",
       "callsite": "0x3d427",
       "instruction": "call qword ptr [rip + 0x51823]",
@@ -39548,6 +39734,25 @@
       "angr_target_names": {}
     },
     {
+      "source": "0x3eb10",
+      "callsite": "0x3eb27",
+      "instruction": "jmp rax",
+      "kind": "tail-call",
+      "operand_kind": "register",
+      "status": "unresolved",
+      "target": null,
+      "resolver": null,
+      "confidence": "unknown",
+      "filter_reason": null,
+      "angr_status": "unresolvable_target",
+      "angr_targets": [
+        "0x201050"
+      ],
+      "angr_target_names": {
+        "0x201050": "UnresolvableJumpTarget"
+      }
+    },
+    {
       "source": "0x3eb30",
       "callsite": "0x3eb84",
       "instruction": "call 0x3dad0",
@@ -39561,6 +39766,25 @@
       "angr_status": "not_applicable",
       "angr_targets": [],
       "angr_target_names": {}
+    },
+    {
+      "source": "0x3eb90",
+      "callsite": "0x3eba7",
+      "instruction": "jmp rax",
+      "kind": "tail-call",
+      "operand_kind": "register",
+      "status": "unresolved",
+      "target": null,
+      "resolver": null,
+      "confidence": "unknown",
+      "filter_reason": null,
+      "angr_status": "unresolvable_target",
+      "angr_targets": [
+        "0x201050"
+      ],
+      "angr_target_names": {
+        "0x201050": "UnresolvableJumpTarget"
+      }
     },
     {
       "source": "0x3ebb0",
@@ -39715,6 +39939,25 @@
       "angr_status": "not_applicable",
       "angr_targets": [],
       "angr_target_names": {}
+    },
+    {
+      "source": "0x3ee80",
+      "callsite": "0x3ee97",
+      "instruction": "jmp rax",
+      "kind": "tail-call",
+      "operand_kind": "register",
+      "status": "unresolved",
+      "target": null,
+      "resolver": null,
+      "confidence": "unknown",
+      "filter_reason": null,
+      "angr_status": "unresolvable_target",
+      "angr_targets": [
+        "0x201050"
+      ],
+      "angr_target_names": {
+        "0x201050": "UnresolvableJumpTarget"
+      }
     },
     {
       "source": "0x3eea0",
@@ -39982,6 +40225,44 @@
       "angr_status": "not_applicable",
       "angr_targets": [],
       "angr_target_names": {}
+    },
+    {
+      "source": "0x3f2c0",
+      "callsite": "0x3f2d7",
+      "instruction": "jmp rax",
+      "kind": "tail-call",
+      "operand_kind": "register",
+      "status": "unresolved",
+      "target": null,
+      "resolver": null,
+      "confidence": "unknown",
+      "filter_reason": null,
+      "angr_status": "unresolvable_target",
+      "angr_targets": [
+        "0x201050"
+      ],
+      "angr_target_names": {
+        "0x201050": "UnresolvableJumpTarget"
+      }
+    },
+    {
+      "source": "0x3f2e0",
+      "callsite": "0x3f2f7",
+      "instruction": "jmp rax",
+      "kind": "tail-call",
+      "operand_kind": "register",
+      "status": "unresolved",
+      "target": null,
+      "resolver": null,
+      "confidence": "unknown",
+      "filter_reason": null,
+      "angr_status": "unresolvable_target",
+      "angr_targets": [
+        "0x201050"
+      ],
+      "angr_target_names": {
+        "0x201050": "UnresolvableJumpTarget"
+      }
     },
     {
       "source": "0x3f300",
@@ -41340,6 +41621,25 @@
       "angr_status": "not_applicable",
       "angr_targets": [],
       "angr_target_names": {}
+    },
+    {
+      "source": "0x40be0",
+      "callsite": "0x40bf7",
+      "instruction": "jmp rax",
+      "kind": "tail-call",
+      "operand_kind": "register",
+      "status": "unresolved",
+      "target": null,
+      "resolver": null,
+      "confidence": "unknown",
+      "filter_reason": null,
+      "angr_status": "unresolvable_target",
+      "angr_targets": [
+        "0x201050"
+      ],
+      "angr_target_names": {
+        "0x201050": "UnresolvableJumpTarget"
+      }
     },
     {
       "source": "0x40c00",
@@ -43370,6 +43670,44 @@
       "angr_target_names": {}
     },
     {
+      "source": "0x428b0",
+      "callsite": "0x428c7",
+      "instruction": "jmp rax",
+      "kind": "tail-call",
+      "operand_kind": "register",
+      "status": "unresolved",
+      "target": null,
+      "resolver": null,
+      "confidence": "unknown",
+      "filter_reason": null,
+      "angr_status": "unresolvable_target",
+      "angr_targets": [
+        "0x201050"
+      ],
+      "angr_target_names": {
+        "0x201050": "UnresolvableJumpTarget"
+      }
+    },
+    {
+      "source": "0x428d0",
+      "callsite": "0x428e7",
+      "instruction": "jmp rax",
+      "kind": "tail-call",
+      "operand_kind": "register",
+      "status": "unresolved",
+      "target": null,
+      "resolver": null,
+      "confidence": "unknown",
+      "filter_reason": null,
+      "angr_status": "unresolvable_target",
+      "angr_targets": [
+        "0x201050"
+      ],
+      "angr_target_names": {
+        "0x201050": "UnresolvableJumpTarget"
+      }
+    },
+    {
       "source": "0x428f0",
       "callsite": "0x4298d",
       "instruction": "call 0x3eb30",
@@ -43383,6 +43721,44 @@
       "angr_status": "not_applicable",
       "angr_targets": [],
       "angr_target_names": {}
+    },
+    {
+      "source": "0x429a0",
+      "callsite": "0x429b7",
+      "instruction": "jmp rax",
+      "kind": "tail-call",
+      "operand_kind": "register",
+      "status": "unresolved",
+      "target": null,
+      "resolver": null,
+      "confidence": "unknown",
+      "filter_reason": null,
+      "angr_status": "unresolvable_target",
+      "angr_targets": [
+        "0x201050"
+      ],
+      "angr_target_names": {
+        "0x201050": "UnresolvableJumpTarget"
+      }
+    },
+    {
+      "source": "0x429c0",
+      "callsite": "0x429d7",
+      "instruction": "jmp rax",
+      "kind": "tail-call",
+      "operand_kind": "register",
+      "status": "unresolved",
+      "target": null,
+      "resolver": null,
+      "confidence": "unknown",
+      "filter_reason": null,
+      "angr_status": "unresolvable_target",
+      "angr_targets": [
+        "0x201050"
+      ],
+      "angr_target_names": {
+        "0x201050": "UnresolvableJumpTarget"
+      }
     },
     {
       "source": "0x429e0",
@@ -43508,6 +43884,25 @@
       "angr_status": "not_applicable",
       "angr_targets": [],
       "angr_target_names": {}
+    },
+    {
+      "source": "0x42a80",
+      "callsite": "0x42a97",
+      "instruction": "jmp rax",
+      "kind": "tail-call",
+      "operand_kind": "register",
+      "status": "unresolved",
+      "target": null,
+      "resolver": null,
+      "confidence": "unknown",
+      "filter_reason": null,
+      "angr_status": "unresolvable_target",
+      "angr_targets": [
+        "0x201050"
+      ],
+      "angr_target_names": {
+        "0x201050": "UnresolvableJumpTarget"
+      }
     },
     {
       "source": "0x42aa0",
@@ -47257,6 +47652,25 @@
       "angr_target_names": {}
     },
     {
+      "source": "0x48980",
+      "callsite": "0x4898e",
+      "instruction": "jmp rcx",
+      "kind": "tail-call",
+      "operand_kind": "register",
+      "status": "unresolved",
+      "target": null,
+      "resolver": null,
+      "confidence": "unknown",
+      "filter_reason": null,
+      "angr_status": "unresolvable_target",
+      "angr_targets": [
+        "0x201050"
+      ],
+      "angr_target_names": {
+        "0x201050": "UnresolvableJumpTarget"
+      }
+    },
+    {
       "source": "0x48990",
       "callsite": "0x48b12",
       "instruction": "call 0x47a83",
@@ -47521,6 +47935,25 @@
       ],
       "angr_target_names": {
         "0x201058": "UnresolvableCallTarget"
+      }
+    },
+    {
+      "source": "0x49570",
+      "callsite": "0x495cd",
+      "instruction": "jmp rax",
+      "kind": "tail-call",
+      "operand_kind": "register",
+      "status": "unresolved",
+      "target": null,
+      "resolver": null,
+      "confidence": "unknown",
+      "filter_reason": null,
+      "angr_status": "unresolvable_target",
+      "angr_targets": [
+        "0x201050"
+      ],
+      "angr_target_names": {
+        "0x201050": "UnresolvableJumpTarget"
       }
     },
     {
@@ -49313,6 +49746,23 @@
       "angr_target_names": {}
     },
     {
+      "source": "0x4c6e0",
+      "callsite": "0x4c74d",
+      "instruction": "jmp rax",
+      "kind": "tail-call",
+      "operand_kind": "register",
+      "status": "resolved",
+      "target": "0x4c750",
+      "resolver": "angr-cfg",
+      "confidence": "inferred",
+      "filter_reason": null,
+      "angr_status": "resolved_internal",
+      "angr_targets": [
+        "0x4c750"
+      ],
+      "angr_target_names": {}
+    },
+    {
       "source": "0x4c750",
       "callsite": "0x4c783",
       "instruction": "call 0x4c950",
@@ -49355,6 +49805,23 @@
       "filter_reason": null,
       "angr_status": "not_applicable",
       "angr_targets": [],
+      "angr_target_names": {}
+    },
+    {
+      "source": "0x4cbb0",
+      "callsite": "0x4cc1d",
+      "instruction": "jmp rax",
+      "kind": "tail-call",
+      "operand_kind": "register",
+      "status": "resolved",
+      "target": "0x4cc20",
+      "resolver": "angr-cfg",
+      "confidence": "inferred",
+      "filter_reason": null,
+      "angr_status": "resolved_internal",
+      "angr_targets": [
+        "0x4cc20"
+      ],
       "angr_target_names": {}
     },
     {
@@ -50787,6 +51254,25 @@
       "angr_status": "not_applicable",
       "angr_targets": [],
       "angr_target_names": {}
+    },
+    {
+      "source": "0x51662",
+      "callsite": "0x51679",
+      "instruction": "jmp rax",
+      "kind": "tail-call",
+      "operand_kind": "register",
+      "status": "unresolved",
+      "target": null,
+      "resolver": null,
+      "confidence": "unknown",
+      "filter_reason": null,
+      "angr_status": "unresolvable_target",
+      "angr_targets": [
+        "0x201050"
+      ],
+      "angr_target_names": {
+        "0x201050": "UnresolvableJumpTarget"
+      }
     },
     {
       "source": "0x5167b",
@@ -52636,6 +53122,25 @@
       }
     },
     {
+      "source": "0x5311b",
+      "callsite": "0x532c8",
+      "instruction": "jmp rax",
+      "kind": "tail-call",
+      "operand_kind": "register",
+      "status": "unresolved",
+      "target": null,
+      "resolver": null,
+      "confidence": "unknown",
+      "filter_reason": null,
+      "angr_status": "unresolvable_target",
+      "angr_targets": [
+        "0x201050"
+      ],
+      "angr_target_names": {
+        "0x201050": "UnresolvableJumpTarget"
+      }
+    },
+    {
       "source": "0x532ca",
       "callsite": "0x532f2",
       "instruction": "call 0x52f4a",
@@ -54386,6 +54891,25 @@
       "angr_target_names": {}
     },
     {
+      "source": "0x54e4b",
+      "callsite": "0x54e78",
+      "instruction": "jmp rcx",
+      "kind": "tail-call",
+      "operand_kind": "register",
+      "status": "unresolved",
+      "target": null,
+      "resolver": null,
+      "confidence": "unknown",
+      "filter_reason": null,
+      "angr_status": "unresolvable_target",
+      "angr_targets": [
+        "0x201050"
+      ],
+      "angr_target_names": {
+        "0x201050": "UnresolvableJumpTarget"
+      }
+    },
+    {
       "source": "0x54e7a",
       "callsite": "0x551c9",
       "instruction": "call qword ptr [rax + 0x18]",
@@ -54824,6 +55348,25 @@
       }
     },
     {
+      "source": "0x55b22",
+      "callsite": "0x55b4c",
+      "instruction": "jmp rax",
+      "kind": "tail-call",
+      "operand_kind": "register",
+      "status": "unresolved",
+      "target": null,
+      "resolver": null,
+      "confidence": "unknown",
+      "filter_reason": null,
+      "angr_status": "unresolvable_target",
+      "angr_targets": [
+        "0x201050"
+      ],
+      "angr_target_names": {
+        "0x201050": "UnresolvableJumpTarget"
+      }
+    },
+    {
       "source": "0x55b4e",
       "callsite": "0x55b5b",
       "instruction": "jmp 0x466f0",
@@ -54837,6 +55380,44 @@
       "angr_status": "not_applicable",
       "angr_targets": [],
       "angr_target_names": {}
+    },
+    {
+      "source": "0x55b60",
+      "callsite": "0x55b77",
+      "instruction": "jmp rax",
+      "kind": "tail-call",
+      "operand_kind": "register",
+      "status": "unresolved",
+      "target": null,
+      "resolver": null,
+      "confidence": "unknown",
+      "filter_reason": null,
+      "angr_status": "unresolvable_target",
+      "angr_targets": [
+        "0x201050"
+      ],
+      "angr_target_names": {
+        "0x201050": "UnresolvableJumpTarget"
+      }
+    },
+    {
+      "source": "0x55b80",
+      "callsite": "0x55b95",
+      "instruction": "jmp rcx",
+      "kind": "tail-call",
+      "operand_kind": "register",
+      "status": "unresolved",
+      "target": null,
+      "resolver": null,
+      "confidence": "unknown",
+      "filter_reason": null,
+      "angr_status": "unresolvable_target",
+      "angr_targets": [
+        "0x201050"
+      ],
+      "angr_target_names": {
+        "0x201050": "UnresolvableJumpTarget"
+      }
     },
     {
       "source": "0x55ba0",
@@ -55469,6 +56050,25 @@
       "angr_status": "not_applicable",
       "angr_targets": [],
       "angr_target_names": {}
+    },
+    {
+      "source": "0x56ad0",
+      "callsite": "0x56d41",
+      "instruction": "jmp rax",
+      "kind": "tail-call",
+      "operand_kind": "register",
+      "status": "unresolved",
+      "target": null,
+      "resolver": null,
+      "confidence": "unknown",
+      "filter_reason": null,
+      "angr_status": "unresolvable_target",
+      "angr_targets": [
+        "0x201050"
+      ],
+      "angr_target_names": {
+        "0x201050": "UnresolvableJumpTarget"
+      }
     },
     {
       "source": "0x56d50",
@@ -61273,6 +61873,82 @@
       "angr_status": "not_applicable",
       "angr_targets": [],
       "angr_target_names": {}
+    },
+    {
+      "source": "0x5c430",
+      "callsite": "0x5c436",
+      "instruction": "jmp qword ptr [rip + 0x3292c]",
+      "kind": "tail-call",
+      "operand_kind": "memory",
+      "status": "filtered",
+      "target": "0x100138",
+      "resolver": "angr-cfg",
+      "confidence": "inferred",
+      "filter_reason": "import",
+      "angr_status": "resolved_import",
+      "angr_targets": [
+        "0x100138"
+      ],
+      "angr_target_names": {
+        "0x100138": "_Unwind_GetTextRelBase"
+      }
+    },
+    {
+      "source": "0x5c440",
+      "callsite": "0x5c446",
+      "instruction": "jmp qword ptr [rip + 0x3291c]",
+      "kind": "tail-call",
+      "operand_kind": "memory",
+      "status": "filtered",
+      "target": "0x100138",
+      "resolver": "angr-cfg",
+      "confidence": "inferred",
+      "filter_reason": "import",
+      "angr_status": "resolved_import",
+      "angr_targets": [
+        "0x100138"
+      ],
+      "angr_target_names": {
+        "0x100138": "_Unwind_GetTextRelBase"
+      }
+    },
+    {
+      "source": "0x5c450",
+      "callsite": "0x5c456",
+      "instruction": "jmp qword ptr [rip + 0x32914]",
+      "kind": "tail-call",
+      "operand_kind": "memory",
+      "status": "filtered",
+      "target": "0x100140",
+      "resolver": "angr-cfg",
+      "confidence": "inferred",
+      "filter_reason": "import",
+      "angr_status": "resolved_import",
+      "angr_targets": [
+        "0x100140"
+      ],
+      "angr_target_names": {
+        "0x100140": "_Unwind_GetDataRelBase"
+      }
+    },
+    {
+      "source": "0x5c460",
+      "callsite": "0x5c466",
+      "instruction": "jmp qword ptr [rip + 0x32904]",
+      "kind": "tail-call",
+      "operand_kind": "memory",
+      "status": "filtered",
+      "target": "0x100140",
+      "resolver": "angr-cfg",
+      "confidence": "inferred",
+      "filter_reason": "import",
+      "angr_status": "resolved_import",
+      "angr_targets": [
+        "0x100140"
+      ],
+      "angr_target_names": {
+        "0x100140": "_Unwind_GetDataRelBase"
+      }
     },
     {
       "source": "0x5c46c",
@@ -76508,6 +77184,25 @@
       }
     },
     {
+      "source": "0x70300",
+      "callsite": "0x703b8",
+      "instruction": "jmp qword ptr [rip + 0x1e892]",
+      "kind": "tail-call",
+      "operand_kind": "memory",
+      "status": "filtered",
+      "target": "0x100028",
+      "resolver": "angr-cfg",
+      "confidence": "inferred",
+      "filter_reason": "import",
+      "angr_status": "resolved_import",
+      "angr_targets": [
+        "0x100028"
+      ],
+      "angr_target_names": {
+        "0x100028": "free"
+      }
+    },
+    {
       "source": "0x703c0",
       "callsite": "0x70405",
       "instruction": "call r13",
@@ -76551,6 +77246,25 @@
       "instruction": "call r12",
       "kind": "call",
       "operand_kind": "register",
+      "status": "filtered",
+      "target": "0x100028",
+      "resolver": "angr-cfg",
+      "confidence": "inferred",
+      "filter_reason": "import",
+      "angr_status": "resolved_import",
+      "angr_targets": [
+        "0x100028"
+      ],
+      "angr_target_names": {
+        "0x100028": "free"
+      }
+    },
+    {
+      "source": "0x703c0",
+      "callsite": "0x70468",
+      "instruction": "jmp qword ptr [rip + 0x1e7e2]",
+      "kind": "tail-call",
+      "operand_kind": "memory",
       "status": "filtered",
       "target": "0x100028",
       "resolver": "angr-cfg",
@@ -79981,6 +80695,25 @@
       "angr_status": "ambiguous_source",
       "angr_targets": [],
       "angr_target_names": {}
+    },
+    {
+      "source": "0x7a84d",
+      "callsite": "0x7a89b",
+      "instruction": "jmp qword [rip + 0x143af]",
+      "kind": "tail-call",
+      "operand_kind": "memory",
+      "status": "filtered",
+      "target": "0x100028",
+      "resolver": "angr-cfg",
+      "confidence": "inferred",
+      "filter_reason": "import",
+      "angr_status": "resolved_import",
+      "angr_targets": [
+        "0x100028"
+      ],
+      "angr_target_names": {
+        "0x100028": "free"
+      }
     },
     {
       "source": "0x7a8e0",
@@ -84717,6 +85450,25 @@
       }
     },
     {
+      "source": "0x82e00",
+      "callsite": "0x82e25",
+      "instruction": "jmp qword ptr [rip + 0xbe25]",
+      "kind": "tail-call",
+      "operand_kind": "memory",
+      "status": "filtered",
+      "target": "0x100028",
+      "resolver": "angr-cfg",
+      "confidence": "inferred",
+      "filter_reason": "import",
+      "angr_status": "resolved_import",
+      "angr_targets": [
+        "0x100028"
+      ],
+      "angr_target_names": {
+        "0x100028": "free"
+      }
+    },
+    {
       "source": "0x82e90",
       "callsite": "0x82f48",
       "instruction": "call 0x466f0",
@@ -86826,6 +87578,25 @@
       "angr_target_names": {}
     },
     {
+      "source": "0x84840",
+      "callsite": "0x84855",
+      "instruction": "jmp rcx",
+      "kind": "tail-call",
+      "operand_kind": "register",
+      "status": "unresolved",
+      "target": null,
+      "resolver": null,
+      "confidence": "unknown",
+      "filter_reason": null,
+      "angr_status": "unresolvable_target",
+      "angr_targets": [
+        "0x201050"
+      ],
+      "angr_target_names": {
+        "0x201050": "UnresolvableJumpTarget"
+      }
+    },
+    {
       "source": "0x84860",
       "callsite": "0x84873",
       "instruction": "call qword ptr [rip + 0xa3b7]",
@@ -86860,6 +87631,25 @@
       "angr_target_names": {}
     },
     {
+      "source": "0x848c0",
+      "callsite": "0x848d0",
+      "instruction": "jmp qword ptr [rip + 0xa37a]",
+      "kind": "tail-call",
+      "operand_kind": "memory",
+      "status": "filtered",
+      "target": "0x100028",
+      "resolver": "angr-cfg",
+      "confidence": "inferred",
+      "filter_reason": "import",
+      "angr_status": "resolved_import",
+      "angr_targets": [
+        "0x100028"
+      ],
+      "angr_target_names": {
+        "0x100028": "free"
+      }
+    },
+    {
       "source": "0x848e0",
       "callsite": "0x848fc",
       "instruction": "jmp 0x466f0",
@@ -86873,6 +87663,25 @@
       "angr_status": "not_applicable",
       "angr_targets": [],
       "angr_target_names": {}
+    },
+    {
+      "source": "0x848e0",
+      "callsite": "0x84917",
+      "instruction": "jmp rcx",
+      "kind": "tail-call",
+      "operand_kind": "register",
+      "status": "unresolved",
+      "target": null,
+      "resolver": null,
+      "confidence": "unknown",
+      "filter_reason": null,
+      "angr_status": "unresolvable_target",
+      "angr_targets": [
+        "0x201050"
+      ],
+      "angr_target_names": {
+        "0x201050": "UnresolvableJumpTarget"
+      }
     },
     {
       "source": "0x84920",
@@ -87341,6 +88150,25 @@
       "angr_target_names": {}
     },
     {
+      "source": "0x84e30",
+      "callsite": "0x84e5a",
+      "instruction": "jmp r8",
+      "kind": "tail-call",
+      "operand_kind": "register",
+      "status": "unresolved",
+      "target": null,
+      "resolver": null,
+      "confidence": "unknown",
+      "filter_reason": null,
+      "angr_status": "unresolvable_target",
+      "angr_targets": [
+        "0x201050"
+      ],
+      "angr_target_names": {
+        "0x201050": "UnresolvableJumpTarget"
+      }
+    },
+    {
       "source": "0x84e60",
       "callsite": "0x84e8f",
       "instruction": "call 0x48e60",
@@ -87469,6 +88297,25 @@
       "angr_status": "not_applicable",
       "angr_targets": [],
       "angr_target_names": {}
+    },
+    {
+      "source": "0x85090",
+      "callsite": "0x850bf",
+      "instruction": "jmp qword ptr [rip + 0x9cbb]",
+      "kind": "tail-call",
+      "operand_kind": "memory",
+      "status": "filtered",
+      "target": "0x100148",
+      "resolver": "angr-cfg",
+      "confidence": "inferred",
+      "filter_reason": "import",
+      "angr_status": "resolved_import",
+      "angr_targets": [
+        "0x100148"
+      ],
+      "angr_target_names": {
+        "0x100148": "syscall"
+      }
     },
     {
       "source": "0x850d0",
@@ -91716,6 +92563,25 @@
       "angr_status": "not_applicable",
       "angr_targets": [],
       "angr_target_names": {}
+    },
+    {
+      "source": "0x881e0",
+      "callsite": "0x88219",
+      "instruction": "jmp qword ptr [rip + 0x6b61]",
+      "kind": "tail-call",
+      "operand_kind": "memory",
+      "status": "filtered",
+      "target": "0x100148",
+      "resolver": "angr-cfg",
+      "confidence": "inferred",
+      "filter_reason": "import",
+      "angr_status": "resolved_import",
+      "angr_targets": [
+        "0x100148"
+      ],
+      "angr_target_names": {
+        "0x100148": "syscall"
+      }
     },
     {
       "source": "0x88220",

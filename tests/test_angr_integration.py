@@ -11,6 +11,7 @@ from pathlib import Path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from angr_adapter import analyze_indirect_calls
+from binary_extractor import load_elf_relocation_targets
 from graph_evidence import TransferEvidence, make_raw_graph
 from provenance import BuildProvenance
 
@@ -27,8 +28,11 @@ target:
 
 .section .data.rel.ro
 .align 8
+.globl target_slot
+.type target_slot, @object
 target_slot:
     .quad target
+.size target_slot, .-target_slot
 
 .text
 .globl caller
@@ -38,11 +42,18 @@ caller:
     ret
 .size caller, .-caller
 
+.globl tail_caller
+.type tail_caller, @function
+tail_caller:
+    jmp *target_slot(%rip)
+.size tail_caller, .-tail_caller
+
 .globl main
 .type main, @function
 main:
     xor %edi, %edi
     call caller
+    call tail_caller
     ret
 .size main, .-main
 """
@@ -59,16 +70,18 @@ def _symbol_address(project, name: str) -> tuple[int, int]:
     return symbol.rebased_addr - load_bias, symbol.size
 
 
-def _indirect_callsite(project, caller: int) -> int:
+def _indirect_transfer_site(project, caller: int, mnemonic: str) -> int:
     load_bias = (
         project.loader.main_object.mapped_base
         - project.loader.main_object.linked_base
     )
     block = project.factory.block(caller + load_bias)
     for instruction in block.capstone.insns:
-        if instruction.mnemonic == "call" and "rip" in instruction.op_str:
+        if instruction.mnemonic == mnemonic and "rip" in instruction.op_str:
             return instruction.address - load_bias
-    raise RuntimeError("test binary does not contain the expected indirect call")
+    raise RuntimeError(
+        f"test binary does not contain the expected indirect {mnemonic}"
+    )
 
 
 def main() -> int:
@@ -94,7 +107,7 @@ def main() -> int:
             [
                 compiler,
                 "-nostdlib",
-                "-no-pie",
+                "-pie",
                 "-Wl,-e,main",
                 str(source),
                 "-o",
@@ -111,9 +124,20 @@ def main() -> int:
 
         project = angr.Project(str(binary), auto_load_libs=False)
         target, target_size = _symbol_address(project, "target")
+        target_slot, _target_slot_size = _symbol_address(project, "target_slot")
         caller, caller_size = _symbol_address(project, "caller")
+        tail_caller, tail_caller_size = _symbol_address(project, "tail_caller")
         root, root_size = _symbol_address(project, "main")
-        callsite = _indirect_callsite(project, caller)
+        callsite = _indirect_transfer_site(project, caller, "call")
+        tail_callsite = _indirect_transfer_site(project, tail_caller, "jmp")
+        relocation_targets = load_elf_relocation_targets(str(binary))
+        if relocation_targets.get(target_slot) != target:
+            print(
+                "FAIL actual ELF relocation resolution: "
+                f"slot=0x{target_slot:x}, expected=0x{target:x}, "
+                f"got={relocation_targets.get(target_slot)!r}"
+            )
+            return 1
 
         provenance = BuildProvenance(
             build_id="actual-angr-test",
@@ -140,6 +164,7 @@ def main() -> int:
                 for name, address, size in (
                     ("target", target, target_size),
                     ("caller", caller, caller_size),
+                    ("tail_caller", tail_caller, tail_caller_size),
                     ("main", root, root_size),
                 )
             ],
@@ -154,7 +179,18 @@ def main() -> int:
                     target=None,
                     resolver=None,
                     confidence="unknown",
-                )
+                ),
+                TransferEvidence(
+                    source=tail_caller,
+                    callsite=tail_callsite,
+                    instruction="jmp qword ptr [rip + target_slot]",
+                    kind="tail-call",
+                    operand_kind="memory",
+                    status="unresolved",
+                    target=None,
+                    resolver=None,
+                    confidence="unknown",
+                ),
             ],
             boundary_mode="symbol-extent",
             boundary_mismatches=[],
@@ -162,14 +198,17 @@ def main() -> int:
 
         resolutions, version = analyze_indirect_calls(str(binary), raw)
         actual = {
-            resolution.targets
+            (resolution.source, resolution.callsite): resolution.targets
             for resolution in resolutions
-            if resolution.source == caller and resolution.callsite == callsite
         }
-        if actual != {(target,)}:
+        expected = {
+            (caller, callsite): (target,),
+            (tail_caller, tail_callsite): (target,),
+        }
+        if actual != expected:
             print(
-                "FAIL actual angr singleton resolution: "
-                f"expected {(target,)}, got {sorted(actual)}"
+                "FAIL actual angr singleton call/tail-call resolution: "
+                f"expected {expected}, got {actual}"
             )
             return 1
 

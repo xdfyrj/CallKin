@@ -12,7 +12,7 @@ from typing import Any, Iterable
 from graph_evidence import (
     ANGR_RAW_GRAPH_BACKEND,
     ANGR_RESOLVER,
-    RAW_GRAPH_EXTRACTOR_VERSION,
+    RAW_GRAPH_BACKEND,
     make_indirect_call_summary,
     validate_raw_graph,
 )
@@ -48,7 +48,7 @@ def augment_raw_graph_with_angr(
     binary_path: str,
     runtime: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Resolve singleton indirect calls with angr and return a new raw graph."""
+    """Resolve singleton indirect calls/tail-calls and return a new raw graph."""
     result = analyze_indirect_calls_detailed(binary_path, raw)
     if runtime is not None:
         runtime["duration_seconds"] = result.duration_seconds
@@ -118,17 +118,19 @@ def analyze_indirect_calls_detailed(
         )
 
         source_by_callsite: dict[int, set[int]] = defaultdict(set)
+        transfer_kind: dict[tuple[int, int], str] = {}
         unresolved_sites = []
         for transfer in raw["transfers"]:
             if not (
                 transfer["status"] == "unresolved"
-                and transfer["kind"] == "call"
+                and transfer["kind"] in {"call", "tail-call"}
                 and transfer["operand_kind"] in {"memory", "register"}
             ):
                 continue
             source = _address(transfer["source"])
             callsite = _address(transfer["callsite"])
             source_by_callsite[callsite].add(source)
+            transfer_kind[(source, callsite)] = transfer["kind"]
             unresolved_sites.append((source, callsite))
 
         targets_by_site: dict[tuple[int, int], set[int]] = defaultdict(set)
@@ -137,12 +139,9 @@ def analyze_indirect_calls_detailed(
         ] = defaultdict(dict)
         ambiguous_callsites: set[int] = set()
 
-        # A resolver-success call may disappear from cfg.indirect_jumps and remain
-        # only as a normal Ijk_Call edge in the recovered CFG. Join those edges by
-        # the original machine-instruction address recorded in the raw graph.
+        # A resolved transfer may disappear from cfg.indirect_jumps and remain
+        # only as a normal CFG edge. Join it by the original instruction address.
         for _source_node, target_node, edge in cfg.graph.edges(data=True):
-            if edge.get("jumpkind") != "Ijk_Call":
-                continue
             ins_addr = edge.get("ins_addr")
             target_addr = getattr(target_node, "addr", None)
             if not isinstance(ins_addr, int) or not isinstance(target_addr, int):
@@ -155,6 +154,13 @@ def analyze_indirect_calls_detailed(
                 ambiguous_callsites.add(callsite)
                 continue
             source = next(iter(sources))
+            expected_jumpkind = (
+                "Ijk_Call"
+                if transfer_kind[(source, callsite)] == "call"
+                else "Ijk_Boring"
+            )
+            if edge.get("jumpkind") != expected_jumpkind:
+                continue
             target = target_addr - load_bias
             targets_by_site[(source, callsite)].add(target)
             metadata_by_site[(source, callsite)][target] = _target_metadata(
@@ -166,7 +172,7 @@ def analyze_indirect_calls_detailed(
             )
 
         for jump in cfg.indirect_jumps.values():
-            if jump.jumpkind != "Ijk_Call" or not isinstance(jump.ins_addr, int):
+            if not isinstance(jump.ins_addr, int):
                 continue
             callsite = jump.ins_addr - load_bias
             sources = source_by_callsite.get(callsite, set())
@@ -176,6 +182,13 @@ def analyze_indirect_calls_detailed(
                 ambiguous_callsites.add(callsite)
                 continue
             source = next(iter(sources))
+            expected_jumpkind = (
+                "Ijk_Call"
+                if transfer_kind[(source, callsite)] == "call"
+                else "Ijk_Boring"
+            )
+            if jump.jumpkind != expected_jumpkind:
+                continue
 
             # Preserve the complete angr target set here. Filtering to known
             # function starts before checking cardinality would turn
@@ -236,10 +249,15 @@ def merge_angr_resolutions(
     *,
     angr_version: str,
 ) -> dict[str, Any]:
-    """Replace only unresolved callsites with singleton angr targets."""
+    """Replace only unresolved transfer sites with singleton angr targets."""
     validate_raw_graph(raw)
     if raw["schema_version"] < 5:
         raise ValueError("angr diagnostics require raw graph schema v5")
+    if raw["analysis"]["backend"] != RAW_GRAPH_BACKEND:
+        raise ValueError(
+            "angr augmentation requires a radare2-capstone base raw graph"
+        )
+    base_version = raw["analysis"]["extractor_version"]
     merged = copy.deepcopy(raw)
     known_functions = {
         _address(function["address"])
@@ -319,7 +337,7 @@ def merge_angr_resolutions(
 
     merged["analysis"]["backend"] = ANGR_RAW_GRAPH_BACKEND
     merged["analysis"]["extractor_version"] = (
-        f"{RAW_GRAPH_EXTRACTOR_VERSION}+angr-{angr_version}"
+        f"{base_version}+angr-{angr_version}"
     )
     merged["indirect_call_summary"] = make_indirect_call_summary(
         merged["transfers"],
@@ -365,7 +383,10 @@ def _target_metadata(
         ),
         None,
     )
-    if name and "UnresolvableCallTarget" in name:
+    if name and any(
+        marker in name
+        for marker in ("UnresolvableCallTarget", "UnresolvableJumpTarget")
+    ):
         return AngrTargetMetadata(linked_address, "unresolvable", name)
 
     main_object = project.loader.main_object

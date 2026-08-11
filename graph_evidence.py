@@ -15,12 +15,18 @@ RAW_GRAPH_SCHEMA_VERSION = 5
 SUPPORTED_RAW_GRAPH_SCHEMAS = {3, 5}
 RAW_GRAPH_BACKEND = "radare2-capstone"
 ANGR_RAW_GRAPH_BACKEND = "radare2-capstone+angr"
-RAW_GRAPH_EXTRACTOR_VERSION = "call-evidence-v5"
+RAW_GRAPH_EXTRACTOR_VERSION = "call-evidence-v6"
 ANGR_RESOLVER = "angr-cfg"
+ELF_RELOCATION_RESOLVER = "elf-relocation"
 
 TRANSFER_KINDS = {"call", "tail-call"}
 TRANSFER_STATUSES = {"resolved", "unresolved", "unmapped", "filtered"}
-TRANSFER_RESOLVERS = {"direct-immediate", "direct-tail", ANGR_RESOLVER}
+TRANSFER_RESOLVERS = {
+    "direct-immediate",
+    "direct-tail",
+    ELF_RELOCATION_RESOLVER,
+    ANGR_RESOLVER,
+}
 TRANSFER_FILTER_REASONS = {"import"}
 OPERAND_KINDS = {"immediate", "memory", "register", "unknown"}
 BOUNDARY_SOURCES = {"radare2", "symbol-oracle"}
@@ -68,7 +74,7 @@ class TransferEvidence:
             angr_status = (
                 "not_run"
                 if (
-                    self.kind == "call"
+                    self.kind in TRANSFER_KINDS
                     and self.status == "unresolved"
                     and self.operand_kind in {"memory", "register"}
                 )
@@ -402,7 +408,7 @@ def make_indirect_call_summary(
         transfer
         for transfer in transfers
         if (
-            transfer["kind"] == "call"
+            transfer["kind"] in TRANSFER_KINDS
             and transfer["operand_kind"] in {"memory", "register"}
             and transfer.get("angr_status") != "not_applicable"
             and (
@@ -543,7 +549,7 @@ def _validate_indirect_call_summary(
         transfer["angr_status"]
         for transfer in transfers
         if (
-            transfer["kind"] == "call"
+            transfer["kind"] in TRANSFER_KINDS
             and transfer["operand_kind"] in {"memory", "register"}
             and transfer["angr_status"] != "not_applicable"
         )

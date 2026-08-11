@@ -8,12 +8,14 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from angr_adapter import (
     AngrCallResolution,
     AngrTargetMetadata,
+    _target_metadata,
     merge_angr_resolutions,
 )
 from candidate_selection import parse_candidate_selection
 from graph_evidence import (
     ANGR_RAW_GRAPH_BACKEND,
     ANGR_RESOLVER,
+    ELF_RELOCATION_RESOLVER,
     TransferEvidence,
     make_raw_graph,
     validate_raw_graph,
@@ -37,6 +39,20 @@ def _unresolved(source: int, callsite: int) -> TransferEvidence:
         callsite=callsite,
         instruction="call rax",
         kind="call",
+        operand_kind="register",
+        status="unresolved",
+        target=None,
+        resolver=None,
+        confidence="unknown",
+    )
+
+
+def _unresolved_tail(source: int, callsite: int) -> TransferEvidence:
+    return TransferEvidence(
+        source=source,
+        callsite=callsite,
+        instruction="jmp rax",
+        kind="tail-call",
         operand_kind="register",
         status="unresolved",
         target=None,
@@ -90,6 +106,7 @@ def _raw_graph():
             _unresolved(0x2000, 0x2070),
             _unresolved(0x2000, 0x2080),
             _unresolved(0x2000, 0x2090),
+            _unresolved_tail(0x2000, 0x20A0),
         ],
         boundary_mode="symbol-extent",
         boundary_mismatches=[],
@@ -119,7 +136,61 @@ def _selection():
     )
 
 
+def _check_unresolvable_jump_classification() -> bool:
+    class Procedure:
+        display_name = "UnresolvableJumpTarget"
+
+    class Functions:
+        @staticmethod
+        def get(_address):
+            return None
+
+    class Loader:
+        class MainObject:
+            @staticmethod
+            def contains_addr(_address):
+                return False
+
+        main_object = MainObject()
+
+        @staticmethod
+        def find_symbol(_address):
+            return None
+
+    class Project:
+        loader = Loader()
+
+        @staticmethod
+        def is_hooked(_address):
+            return True
+
+        @staticmethod
+        def hooked_by(_address):
+            return Procedure()
+
+    class CFG:
+        class KB:
+            functions = Functions()
+
+        kb = KB()
+
+    metadata = _target_metadata(
+        Project(),
+        CFG(),
+        mapped_address=0x201050,
+        linked_address=0x201050,
+        known_functions=set(),
+    )
+    return (
+        metadata.category == "unresolvable"
+        and metadata.name == "UnresolvableJumpTarget"
+    )
+
+
 def main() -> int:
+    if not _check_unresolvable_jump_classification():
+        print("FAIL UnresolvableJumpTarget classification")
+        return 1
     raw = _raw_graph()
     augmented = merge_angr_resolutions(
         raw,
@@ -161,6 +232,8 @@ def main() -> int:
                     ),
                 ),
             ),
+            # An indirect terminal jump is analyzed and remains a tail-call.
+            AngrCallResolution(0x2000, 0x20A0, (0x4000,)),
         ),
         angr_version="test",
     )
@@ -194,6 +267,15 @@ def main() -> int:
     if by_callsite[0x2050]["status"] != "unresolved":
         print("FAIL mixed known/unknown target set became a singleton edge")
         return 1
+    promoted_tail = by_callsite[0x20A0]
+    if (
+        promoted_tail["kind"] != "tail-call"
+        or promoted_tail["status"] != "resolved"
+        or promoted_tail["target"] != "0x4000"
+        or promoted_tail["resolver"] != ANGR_RESOLVER
+    ):
+        print(f"FAIL singleton angr tail-call resolution: {promoted_tail}")
+        return 1
     expected_statuses = {
         0x2010: "resolved_internal",
         0x2020: "multiple_targets",
@@ -213,8 +295,8 @@ def main() -> int:
         return 1
     summary = augmented["indirect_call_summary"]
     if (
-        summary["total"] != 8
-        or summary["resolved_internal"] != 1
+        summary["total"] != 9
+        or summary["resolved_internal"] != 2
         or summary["resolved_import"] != 1
         or summary["unresolved"] != 6
         or summary["rejected"] != {
@@ -238,6 +320,26 @@ def main() -> int:
     if augmented["analysis"]["backend"] != ANGR_RAW_GRAPH_BACKEND:
         print("FAIL angr backend provenance")
         return 1
+    if augmented["analysis"]["extractor_version"] != "call-evidence-v6+angr-test":
+        print("FAIL angr extractor version provenance")
+        return 1
+
+    older = _raw_graph()
+    older["analysis"]["extractor_version"] = "call-evidence-v5"
+    inherited = merge_angr_resolutions(older, (), angr_version="test")
+    if inherited["analysis"]["extractor_version"] != "call-evidence-v5+angr-test":
+        print("FAIL angr discarded base extractor version")
+        return 1
+
+    invalid_backend = _raw_graph()
+    invalid_backend["analysis"]["backend"] = ANGR_RAW_GRAPH_BACKEND
+    try:
+        merge_angr_resolutions(invalid_backend, (), angr_version="test")
+    except ValueError:
+        pass
+    else:
+        print("FAIL angr accepted a non-base raw backend")
+        return 1
 
     fixture = project_fixture(
         augmented,
@@ -250,12 +352,15 @@ def main() -> int:
     calls = nodes["FUN_00002000"]["calls"]
     if calls != [
         {"target": "FUN_00003000", "count": 1},
-        {"target": "FUN_00004000", "count": 1},
+        {"target": "FUN_00004000", "count": 2},
     ]:
         print(f"FAIL angr edge was not projected: {calls}")
         return 1
     if fixture["analysis"]["edge_policy"] != [
-        "direct-immediate", "direct-tail", ANGR_RESOLVER
+        "direct-immediate",
+        "direct-tail",
+        ELF_RELOCATION_RESOLVER,
+        ANGR_RESOLVER,
     ]:
         print("FAIL angr edge policy provenance")
         return 1

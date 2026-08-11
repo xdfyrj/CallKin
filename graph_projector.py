@@ -14,6 +14,7 @@ from candidate_selection import CandidateSelection, load_candidate_selection
 from graph_evidence import (
     ANGR_RAW_GRAPH_BACKEND,
     ANGR_RESOLVER,
+    ELF_RELOCATION_RESOLVER,
     RAW_GRAPH_BACKEND,
     load_raw_graph,
     raw_graph_sha256,
@@ -35,7 +36,8 @@ from paths import (
 from provenance import parse_provenance
 
 
-FIXTURE_SCHEMA_V5 = 5
+FIXTURE_SCHEMA_V6 = 6
+ABSTAIN_REASON = "no_resolved_nonself_in_or_out_edge"
 
 
 @dataclass(frozen=True)
@@ -44,6 +46,7 @@ class ProjectionConfig:
     include_incoming_anchors: bool
     anchor_policy: str
     edge_policy: tuple[str, ...]
+    unmapped_relocation_policy: str = "opaque-anchor"
     anchor_traversal: str = "outgoing-closure"
     oracle_level: str = "candidate-and-boundary"
 
@@ -53,6 +56,7 @@ class ProjectionConfig:
             "include_incoming_anchors": self.include_incoming_anchors,
             "anchor_policy": self.anchor_policy,
             "edge_policy": list(self.edge_policy),
+            "unmapped_relocation_policy": self.unmapped_relocation_policy,
             "anchor_traversal": self.anchor_traversal,
             "oracle_level": self.oracle_level,
         }
@@ -64,26 +68,31 @@ def projection_config_for(
 ) -> ProjectionConfig:
     track = normalize_track(track)
     anchor_policy = normalize_anchor_policy(anchor_policy)
+    exact_edges = (
+        "direct-immediate",
+        "direct-tail",
+        ELF_RELOCATION_RESOLVER,
+    )
     if track == DIRECT_TRACK:
         return ProjectionConfig(
             track=track,
             include_incoming_anchors=False,
             anchor_policy=anchor_policy,
-            edge_policy=("direct-immediate", "direct-tail"),
+            edge_policy=exact_edges,
         )
     if track == DIRECT_IN_TRACK:
         return ProjectionConfig(
             track=track,
             include_incoming_anchors=True,
             anchor_policy=anchor_policy,
-            edge_policy=("direct-immediate", "direct-tail"),
+            edge_policy=exact_edges,
         )
     if track == ANGR_TRACK:
         return ProjectionConfig(
             track=track,
             include_incoming_anchors=True,
             anchor_policy=anchor_policy,
-            edge_policy=("direct-immediate", "direct-tail", ANGR_RESOLVER),
+            edge_policy=(*exact_edges, ANGR_RESOLVER),
         )
     raise ValueError(f"unsupported projection track: {track}")
 
@@ -109,11 +118,25 @@ def resolved_graph(
     graph = {address: Counter() for address in functions}
     allowed_resolvers = set(config.edge_policy)
     for transfer in raw["transfers"]:
-        if (
+        resolved = (
             transfer["status"] == "resolved"
             and transfer["resolver"] in allowed_resolvers
-        ):
-            graph[_address(transfer["source"])][_address(transfer["target"])] += 1
+        )
+        opaque_relocation = (
+            config.unmapped_relocation_policy == "opaque-anchor"
+            and ELF_RELOCATION_RESOLVER in allowed_resolvers
+            and transfer["status"] == "unmapped"
+            and transfer["resolver"] == ELF_RELOCATION_RESOLVER
+            and transfer["confidence"] == "exact"
+        )
+        if not resolved and not opaque_relocation:
+            continue
+
+        source = _address(transfer["source"])
+        target = _address(transfer["target"])
+        if opaque_relocation:
+            graph.setdefault(target, Counter())
+        graph[source][target] += 1
     return graph
 
 
@@ -129,19 +152,59 @@ def project_context_fixture(
     validate_raw_graph(raw)
     config = config or projection_config_for(DIRECT_IN_TRACK)
     if config.track not in {DIRECT_TRACK, DIRECT_IN_TRACK, ANGR_TRACK}:
-        raise ValueError(f"unsupported schema v5 projection track: {config.track}")
+        raise ValueError(f"unsupported schema v6 projection track: {config.track}")
     if config.anchor_policy not in ANCHOR_POLICIES:
         raise ValueError(f"unsupported anchor policy: {config.anchor_policy}")
     _validate_selection_join(raw, selection)
 
     graph = resolved_graph(raw, config)
+    known_functions = {
+        _address(function["address"])
+        for function in raw["functions"]
+    }
+    opaque_targets = set(graph) - known_functions
     root = _address(raw["root"])
     candidates = set(selection.addresses)
-    unknown_candidates = candidates - set(graph)
+    unknown_candidates = candidates - known_functions
     if unknown_candidates:
         rendered = ", ".join(f"0x{value:x}" for value in sorted(unknown_candidates))
         raise ValueError(f"candidate selection is absent from raw graph: {rendered}")
-    scored_users = set(candidates)
+    incoming_callers = {address: set() for address in graph}
+    for source, targets in graph.items():
+        for target in targets:
+            if source != target:
+                incoming_callers[target].add(source)
+
+    initial_incoming_anchors = set()
+    if config.include_incoming_anchors:
+        initial_incoming_anchors = {
+            source
+            for source, targets in graph.items()
+            if source != root
+            and any(target in candidates for target in targets)
+        }
+
+    # Determine activity from the graph that this track can actually emit.
+    # For direct, external callers are not selected, so their raw incoming
+    # edges must not keep an otherwise isolated candidate alive.
+    provisional_selected = _outgoing_closure(
+        graph,
+        {root} | candidates | initial_incoming_anchors,
+    )
+    active_candidates = {
+        address
+        for address in candidates
+        if any(
+            target != address and target in provisional_selected
+            for target in graph[address]
+        )
+        or any(
+            source != address and source in provisional_selected
+            for source in incoming_callers[address]
+        )
+    }
+    abstained_candidates = candidates - active_candidates
+    scored_users = set(active_candidates)
     if score_root:
         scored_users.add(root)
 
@@ -151,17 +214,18 @@ def project_context_fixture(
         for target in graph[source]
         if target not in scored_users
     }
-    incoming_anchors = set()
-    if config.include_incoming_anchors:
-        incoming_anchors = {
-            source
-            for source, targets in graph.items()
-            if source not in scored_users
-            and source != root
-            and any(target in candidates for target in targets)
-        }
+    incoming_anchors = {
+        source
+        for source, targets in graph.items()
+        if config.include_incoming_anchors
+        and source not in scored_users
+        and source != root
+        and any(target in scored_users for target in targets)
+    }
 
     selected = _outgoing_closure(graph, scored_users | {root} | incoming_anchors)
+    selected -= abstained_candidates
+    opaque_anchors = selected & opaque_targets
     raw_digest = raw_graph_sha256(raw)
     analysis = AnalysisProvenance(
         track=config.track,
@@ -183,11 +247,6 @@ def project_context_fixture(
             and transfer["operand_kind"] in {"memory", "register"}
         ):
             unresolved_by_source[_address(transfer["source"])] += 1
-
-    incoming_callers = {address: set() for address in graph}
-    for source, targets in graph.items():
-        for target in targets:
-            incoming_callers[target].add(source)
 
     nodes = []
     for address in sorted(selected):
@@ -242,7 +301,7 @@ def project_context_fixture(
         "case": raw["case"],
         "build": raw["build"],
         "profile": raw["profile"],
-        "schema_version": FIXTURE_SCHEMA_V5,
+        "schema_version": FIXTURE_SCHEMA_V6,
         "provenance": provenance.to_dict(),
         "analysis": analysis.to_dict(),
         "extraction": _projected_extraction(raw, selection),
@@ -251,11 +310,23 @@ def project_context_fixture(
             f"track={config.track}; candidate_scope={selection.scope}; "
             f"root={function_id(root, id_bias=id_bias)}; "
             f"users={users_path or 'none'}; {context_description} is emitted; "
+            f"{len(abstained_candidates)} target functions with no resolved "
+            "non-self relation are reported as abstentions and are not emitted; "
+            f"{len(opaque_anchors)} exact ELF relocation targets without known "
+            "function boundaries are emitted as opaque anchors; "
             "anchors preserve every resolved edge whose target is selected; "
             "unresolved transfers remain analysis evidence and "
             "are not projected as call edges"
         ),
         "nodes": nodes,
+        "abstentions": [
+            {
+                "id": function_id(address, id_bias=id_bias),
+                "status": "abstain",
+                "reason": ABSTAIN_REASON,
+            }
+            for address in sorted(abstained_candidates)
+        ],
     }
 
 
@@ -270,7 +341,13 @@ def project_direct_fixture(
     """Project the frozen schema-v4 direct compatibility fixture."""
     validate_raw_graph(raw)
     _validate_selection_join(raw, selection)
-    config = projection_config_for(DIRECT_TRACK)
+    config = ProjectionConfig(
+        track=DIRECT_TRACK,
+        include_incoming_anchors=False,
+        anchor_policy=DEFAULT_ANCHOR_POLICY,
+        edge_policy=("direct-immediate", "direct-tail"),
+        unmapped_relocation_policy="ignore",
+    )
     graph = resolved_graph(raw, config)
     root = _address(raw["root"])
     candidates = set(selection.addresses)

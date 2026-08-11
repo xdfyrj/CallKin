@@ -18,7 +18,7 @@ from paths import (
     gt_json_for,
     SUBJECT_CANDIDATE_SCOPE,
 )
-from scores import reports_to_dict, score_case, score_v0_baseline
+from scores import _pairwise_score, reports_to_dict, score_case, score_v0_baseline
 
 
 CASES = (
@@ -101,6 +101,25 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     profiles = tuple(args.profiles or BUILD_PROFILES)
     all_ok = True
+
+    missed_only = _pairwise_score(0, 0, 3, 7)
+    f1_missed_pair_ok = (
+        missed_only.precision is None
+        and missed_only.recall == 0.0
+        and missed_only.f1 == 0.0
+    )
+    all_ok = all_ok and f1_missed_pair_ok
+    print(
+        "undefined precision with missed true pairs: "
+        f"{'PASS' if f1_missed_pair_ok else 'FAIL'}"
+    )
+    mixed_errors = _pairwise_score(0, 2, 3, 5)
+    mixed_error_f1_ok = mixed_errors.f1 == 0.0
+    all_ok = all_ok and mixed_error_f1_ok
+    print(
+        "zero precision and recall with mixed errors: "
+        f"{'PASS' if mixed_error_f1_ok else 'FAIL'}"
+    )
 
     for expected in CASES:
         profile = expected["profile"]

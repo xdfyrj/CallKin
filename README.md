@@ -50,7 +50,8 @@ python3 run_baseline.py
 각 profile의 `baseline.json`과 `all_modes.json`도
 `results/micro-corpus/<profile>/`에 함께 갱신된다.
 
-이 명령에는 `rustc`, GNU `strip`, GNU `nm`, `radare2`, Python `r2pipe`와 `capstone`이 필요하다. 현재 canonical target은 `x86_64-unknown-linux-gnu`이다.
+이 명령에는 `rustc`, GNU `strip`, GNU `nm`, `radare2`, Python `r2pipe`, `capstone`,
+`pyelftools`가 필요하다. 현재 canonical target은 `x86_64-unknown-linux-gnu`이다.
 
 전체 테스트를 실행한다.
 
@@ -96,15 +97,21 @@ text symbol 중 함수 소유 namespace가 `core`, `alloc`, `std`, `__rustc`인 
 명시한다. 두 scope 모두 candidate 주소를 compiler symbol에서 받는 oracle 조건이며,
 stripped binary만으로 library 소유권을 분류하는 기능은 아니다.
 
-기본 projection track은 `direct`다. 기존 동결 baseline은 정확히
-`subject/direct` 조합이며, 새 기본값인 `rust-nonstd/direct`는 별도
-경로와 schema v5로 생성된다. `direct-in`은
+기본 projection track은 `direct`다. `subject + direct + address`는 동결 baseline을
+재생성하는 schema v4 compatibility 경로를 유지하며 `direct-immediate`와
+`direct-tail`만 사용한다. Raw graph에 새 `elf-relocation` evidence가 있어도 이 경로는
+무시한다. 그 외 새 projection은 schema v6으로 생성된다.
+`direct-in`은
 candidate가 직접 호출하는 외부 함수뿐 아니라 candidate를 직접 호출하는 외부
 함수도 traversal seed로 포함한다. 두 track은 서로 다른 fixture 경로에 저장되어 기존
 fixture를 덮어쓰지 않는다. `direct`와 `direct-in`은
 `extractions/<profile>/`의 같은 raw graph를 공유하고, projector가 별도 candidate
-selection과 track 정책을 결합한다. `angr`는 기존 direct edge에 더해 angr CFG가 하나의 기존
-함수 시작점으로 확정한 indirect call을 사용하고, `direct-in`과 같은 incoming-caller
+selection과 track 정책을 결합한다. Base extractor는 ELF relocation으로 증명한
+indirect call/tail-call도 exact edge로 만든다. Target 주소가 함수 경계 목록에 없으면
+schema v6 projector가 이름과 body가 없는 opaque anchor로 연결하며, raw evidence는
+`unmapped` 상태를 유지한다. `angr`는 여기에
+angr CFG가 하나의 기존 함수 시작점으로 확정한 unresolved indirect call/tail-call을
+추가하고, `direct-in`과 같은 incoming-caller
 seed를 사용한다. 모든 track은 seed에서 시작한 resolved outgoing closure를 투영하며,
 anchor도 선택된 다른 anchor로 향하는 edge를 유지한다. Angr evidence는 extraction 자체가 다르므로
 `extractions/angr/<profile>/`에 별도로 저장된다.
@@ -115,9 +122,12 @@ candidate와 직접 맞닿지 않은 outgoing closure 내부 anchor다. Role fix
 `fixtures/<track>/role/...`에 저장되어 address 결과를 덮어쓰지 않는다.
 
 `run_case.py --json-output`은 mode별 점수 외에 `run_summary`를 한 번 저장한다.
-여기에는 angr 간접호출 성공/거절 이유, candidate에 추가된 edge, root 도달성·고립
+여기에는 exact-static 간접 transfer 복구 수, angr 성공/거절 이유, candidate에 추가된
+edge, root 도달성·고립
 통계, GT family 난이도, 단계별 시간·경고·peak RSS, binary/boundary/tool 통계가
-포함된다. Plain/min의 서로 다른 candidate universe는 별도로 비교한다.
+포함된다. Schema v6 결과에서는 `target`, `grouped`, `abstain` 수와 family별
+target coverage, pair coverage, effective family-pair recall도 함께 저장한다.
+Plain/min의 서로 다른 target universe는 별도로 비교한다.
 
 ```bash
 python3 compare_profiles.py billing-client --build O3S
@@ -203,15 +213,17 @@ family_graph_03 / O3KS
 현재 포함하는 것:
 
 - direct call과 다른 함수 시작점으로 향하는 tail-call-like jump
+- x86-64 ELF relocation으로 증명한 exact indirect call/tail-call
 - resolved/unresolved transfer evidence를 분리한 raw extraction graph
 - projection과 독립된 raw graph 및 별도 candidate selection
-- target을 알지만 제외한 import의 `filtered`, 함수에 매핑되지 않은 direct target의 `unmapped` evidence
+- target을 알지만 제외한 import의 `filtered`, 함수에 매핑되지 않은 target의 `unmapped` evidence
+- exact ELF relocation의 unmapped target을 보존하는 schema v6 opaque anchor
 - 모든 Rust symbol extent와 startup C `main` extent를 담는 scope-independent boundary artifact
 - 기본 `rust-nonstd` candidate scope와 호환용 `subject` scope
 - candidate selection SHA-256을 포함한 projection provenance
 - `direct`: root와 candidate에서 시작하는 direct-edge outgoing closure
 - `direct-in`: direct external caller를 seed에 추가한 outgoing closure
-- `angr`: direct-in closure에 singleton angr-resolved indirect edge 추가
+- `angr`: direct-in closure에 singleton angr-resolved indirect call/tail-call 추가
 - `address`와 `role` anchor color policy
 - directed weighted call graph 기반 CG-WL
 - `full`, `out`, `in`, `out-in` relation mode
@@ -221,7 +233,7 @@ family_graph_03 / O3KS
 
 - generic function 자동 탐지
 - 함수 경계 복원 연구
-- multi-target 또는 미해결 indirect call의 exact edge 투영
+- multi-target 또는 미해결 indirect transfer의 exact edge 투영
 - stripped-only std/library classifier를 candidate selection에 적용하는 기능. Direct-FLIRT
   label은 현재 audit-only이며 scope를 바꾸지 않는다.
 - source-level mono-item census와 inlined/eliminated 원인 판정

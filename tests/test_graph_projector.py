@@ -1,12 +1,19 @@
 from __future__ import annotations
 
+import json
 import os
 import sys
+import tempfile
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from candidate_selection import parse_candidate_selection
-from graph_evidence import TransferEvidence, make_raw_graph, raw_graph_sha256
+from graph_evidence import (
+    ELF_RELOCATION_RESOLVER,
+    TransferEvidence,
+    make_raw_graph,
+    raw_graph_sha256,
+)
 from graph_projector import (
     project_direct_fixture,
     project_context_fixture,
@@ -25,6 +32,7 @@ from paths import (
     raw_graph_for,
 )
 from provenance import BuildProvenance
+from scores import reports_to_dict, score_case, score_report_to_dict
 
 
 PROVENANCE = BuildProvenance(
@@ -45,6 +53,20 @@ def resolved(source: int, callsite: int, target: int) -> TransferEvidence:
         status="resolved",
         target=target,
         resolver="direct-immediate",
+        confidence="exact",
+    )
+
+
+def relocated(source: int, callsite: int, target: int) -> TransferEvidence:
+    return TransferEvidence(
+        source=source,
+        callsite=callsite,
+        instruction="call qword ptr [rip + slot]",
+        kind="call",
+        operand_kind="memory",
+        status="resolved",
+        target=target,
+        resolver=ELF_RELOCATION_RESOLVER,
         confidence="exact",
     )
 
@@ -92,9 +114,32 @@ def unmapped(source: int, callsite: int, target: int) -> TransferEvidence:
     )
 
 
-def selection(addresses: set[int], bounds: dict[int, int]):
+def unmapped_relocation(
+    source: int,
+    callsite: int,
+    target: int,
+) -> TransferEvidence:
+    return TransferEvidence(
+        source=source,
+        callsite=callsite,
+        instruction="call qword ptr [rip + slot]",
+        kind="call",
+        operand_kind="memory",
+        status="unmapped",
+        target=target,
+        resolver=ELF_RELOCATION_RESOLVER,
+        confidence="exact",
+    )
+
+
+def selection(
+    addresses: set[int],
+    bounds: dict[int, int],
+    *,
+    case: str = "projector-test",
+):
     data = {
-        "case": "projector-test",
+        "case": case,
         "build": "O3S",
         "profile": "plain",
         "schema_version": 5,
@@ -109,20 +154,25 @@ def selection(addresses: set[int], bounds: dict[int, int]):
     }
     return parse_candidate_selection(
         data,
-        expected_case="projector-test",
+        expected_case=case,
         expected_build="O3S",
         expected_profile="plain",
     )
 
 
-def broad_selection(addresses: set[int], bounds: dict[int, int]):
+def broad_selection(
+    addresses: set[int],
+    bounds: dict[int, int],
+    *,
+    case: str = "projector-test",
+):
     data = {
-        "case": "projector-test",
+        "case": case,
         "build": "O3S",
         "profile": "plain",
         "schema_version": 6,
         "provenance": PROVENANCE.to_dict(),
-        "source": "gt_bin/plain/projector-test.O3S.gt.bin",
+        "source": f"gt_bin/plain/{case}.O3S.gt.bin",
         "scope": "rust-nonstd",
         "root_namespace": "projector_test",
         "namespaces": [],
@@ -135,7 +185,7 @@ def broad_selection(addresses: set[int], bounds: dict[int, int]):
     }
     return parse_candidate_selection(
         data,
-        expected_case="projector-test",
+        expected_case=case,
         expected_build="O3S",
         expected_profile="plain",
     )
@@ -231,6 +281,7 @@ def check_incoming_projection() -> int:
             resolved(0x1000, 0x1004, 0x2000),
             resolved(0x2000, 0x2004, 0x3000),
             resolved(0x2000, 0x2008, 0x5000),
+            relocated(0x2100, 0x2104, 0x3000),
             unresolved(0x2000, 0x200C),
             filtered_import(0x2000, 0x2010, 0xDEAD),
             unmapped(0x2000, 0x2014, 0xBEEF),
@@ -360,6 +411,9 @@ def check_incoming_projection() -> int:
     ]:
         print("FAIL direct anchor lost its outgoing edge")
         return 1
+    if direct_nodes["FUN_00002100"]["calls"]:
+        print("FAIL frozen direct projection gained an ELF relocation edge")
+        return 1
 
     broad_direct = project_fixture(
         raw,
@@ -373,7 +427,7 @@ def check_incoming_projection() -> int:
     )
     validate_raw_fixture(broad_direct)
     if (
-        broad_direct["schema_version"] != 5
+        broad_direct["schema_version"] != 6
         or broad_direct["analysis"]["candidate_scope"] != "rust-nonstd"
         or not broad_direct["analysis"]["candidate_selection_sha256"]
     ):
@@ -387,6 +441,11 @@ def check_incoming_projection() -> int:
         {"target": "FUN_00006000", "count": 1}
     ]:
         print("FAIL broad direct projection stopped at an anchor")
+        return 1
+    if broad_direct_nodes["FUN_00002100"]["calls"] != [
+        {"target": "FUN_00003000", "count": 1}
+    ]:
+        print("FAIL schema-v6 direct projection lost an ELF relocation edge")
         return 1
 
     role_fixture = project_fixture(
@@ -423,6 +482,338 @@ def check_incoming_projection() -> int:
         return 1
     if role_fixture["analysis"]["anchor_policy"] != ROLE_ANCHOR_POLICY:
         print("FAIL role policy missing from analysis provenance")
+        return 1
+    return 0
+
+
+def check_abstention_projection_and_scoring() -> int:
+    # root -> active; self_only -> self_only. The latter has no relational
+    # evidence with another function and must not receive a CG-WL color.
+    raw = make_raw_graph(
+        case="abstention-test",
+        build="O3S",
+        profile="plain",
+        binary_path="bin/plain/abstention-test.O3S.fixture.bin",
+        provenance=PROVENANCE,
+        boundary_input_sha256="4" * 64,
+        root_address=0x1000,
+        functions=[
+            {
+                "address": f"0x{address:x}",
+                "name": f"function_{address:x}",
+                "size": 0x20,
+                "boundary_source": "symbol-oracle",
+                "discovered_by_radare2": True,
+            }
+            for address in (0x1000, 0x2000, 0x2100, 0x2200, 0x8000)
+        ],
+        transfers=[
+            resolved(0x1000, 0x1004, 0x2000),
+            resolved(0x2100, 0x2104, 0x2100),
+            resolved(0x8000, 0x8004, 0x2200),
+        ],
+        boundary_mode="symbol-extent",
+        boundary_mismatches=[],
+    )
+    fixture = project_fixture(
+        raw,
+        selection=broad_selection(
+            {0x2000, 0x2100, 0x2200},
+            {0x2000: 0x20, 0x2100: 0x20, 0x2200: 0x20},
+            case="abstention-test",
+        ),
+        track=DIRECT_TRACK,
+        users_path=None,
+        id_bias=0,
+    )
+    validate_raw_fixture(fixture)
+    node_ids = {node["id"] for node in fixture["nodes"]}
+    expected_abstention = [
+        {
+            "id": "FUN_00002100",
+            "status": "abstain",
+            "reason": "no_resolved_nonself_in_or_out_edge",
+        },
+        {
+            "id": "FUN_00002200",
+            "status": "abstain",
+            "reason": "no_resolved_nonself_in_or_out_edge",
+        },
+    ]
+    if (
+        "FUN_00002100" in node_ids
+        or "FUN_00002200" in node_ids
+        or "FUN_00008000" in node_ids
+        or fixture["abstentions"] != expected_abstention
+    ):
+        print(f"FAIL abstention projection: {fixture['abstentions']}")
+        return 1
+
+    direct_in = project_fixture(
+        raw,
+        selection=broad_selection(
+            {0x2000, 0x2100, 0x2200},
+            {0x2000: 0x20, 0x2100: 0x20, 0x2200: 0x20},
+            case="abstention-test",
+        ),
+        track=DIRECT_IN_TRACK,
+        users_path=None,
+        id_bias=0,
+    )
+    direct_in_nodes = {node["id"]: node for node in direct_in["nodes"]}
+    if (
+        "FUN_00002200" not in direct_in_nodes
+        or direct_in_nodes["FUN_00008000"]["anchor_kind"] != "incoming"
+        or direct_in_nodes["FUN_00008000"]["calls"] != [
+            {"target": "FUN_00002200", "count": 1}
+        ]
+        or [item["id"] for item in direct_in["abstentions"]]
+        != ["FUN_00002100"]
+    ):
+        print("FAIL direct/direct-in incoming-only candidate distinction")
+        return 1
+
+    ground_truth = {
+        "case": "abstention-test",
+        "build": "O3S",
+        "profile": "plain",
+        "schema_version": 5,
+        "provenance": PROVENANCE.to_dict(),
+        "origins": [{
+            "origin": "shared",
+            "members": ["FUN_00002000", "FUN_00002100"],
+        }, {
+            "origin": "external_only",
+            "members": ["FUN_00002200"],
+        }],
+        "symbols": {
+            "FUN_00002000": ["abstention_test::shared::<i32>"],
+            "FUN_00002100": ["abstention_test::shared::<u64>"],
+            "FUN_00002200": ["abstention_test::external_only"],
+        },
+    }
+    with tempfile.TemporaryDirectory() as directory:
+        fixture_path = os.path.join(directory, "fixture.json")
+        gt_path = os.path.join(directory, "ground_truth.json")
+        with open(fixture_path, "w", encoding="utf-8") as handle:
+            json.dump(fixture, handle)
+        with open(gt_path, "w", encoding="utf-8") as handle:
+            json.dump(ground_truth, handle)
+        report = score_case(fixture_path, gt_path)
+
+        all_abstain_fixture = project_fixture(
+            raw,
+            selection=broad_selection(
+                {0x2100, 0x2200},
+                {0x2100: 0x20, 0x2200: 0x20},
+                case="abstention-test",
+            ),
+            track=DIRECT_TRACK,
+            users_path=None,
+            id_bias=0,
+        )
+        all_abstain_gt = {
+            "case": "abstention-test",
+            "build": "O3S",
+            "profile": "plain",
+            "schema_version": 5,
+            "provenance": PROVENANCE.to_dict(),
+            "origins": [{
+                "origin": "shared",
+                "members": ["FUN_00002100", "FUN_00002200"],
+            }],
+            "symbols": {
+                "FUN_00002100": ["abstention_test::shared::<i32>"],
+                "FUN_00002200": ["abstention_test::shared::<u64>"],
+            },
+        }
+        all_abstain_fixture_path = os.path.join(
+            directory, "all-abstain-fixture.json"
+        )
+        all_abstain_gt_path = os.path.join(
+            directory, "all-abstain-ground-truth.json"
+        )
+        with open(all_abstain_fixture_path, "w", encoding="utf-8") as handle:
+            json.dump(all_abstain_fixture, handle)
+        with open(all_abstain_gt_path, "w", encoding="utf-8") as handle:
+            json.dump(all_abstain_gt, handle)
+        all_abstain_report = score_case(
+            all_abstain_fixture_path,
+            all_abstain_gt_path,
+        )
+
+        no_abstain_fixture = project_fixture(
+            raw,
+            selection=broad_selection(
+                {0x2000},
+                {0x2000: 0x20},
+                case="abstention-test",
+            ),
+            track=DIRECT_TRACK,
+            users_path=None,
+            id_bias=0,
+        )
+        no_abstain_gt = {
+            "case": "abstention-test",
+            "build": "O3S",
+            "profile": "plain",
+            "schema_version": 5,
+            "provenance": PROVENANCE.to_dict(),
+            "origins": [{
+                "origin": "active",
+                "members": ["FUN_00002000"],
+            }],
+            "symbols": {
+                "FUN_00002000": ["abstention_test::active"],
+            },
+        }
+        no_abstain_fixture_path = os.path.join(
+            directory, "no-abstain-fixture.json"
+        )
+        no_abstain_gt_path = os.path.join(
+            directory, "no-abstain-ground-truth.json"
+        )
+        with open(no_abstain_fixture_path, "w", encoding="utf-8") as handle:
+            json.dump(no_abstain_fixture, handle)
+        with open(no_abstain_gt_path, "w", encoding="utf-8") as handle:
+            json.dump(no_abstain_gt, handle)
+        no_abstain_report = score_case(
+            no_abstain_fixture_path,
+            no_abstain_gt_path,
+        )
+
+    if (
+        report.target_count != 3
+        or report.candidate_count != 1
+        or report.pair_count != 0
+        or report.scored_same_family_pair_count != 0
+        or report.pairwise.f1 is not None
+        or report.pairwise.ari is not None
+        or len(report.abstentions) != 2
+        or report.abstentions[0].origin != "shared"
+        or report.origins[0].scored_instance_count != 1
+        or report.origins[0].abstained_instance_count != 1
+    ):
+        print(f"FAIL abstention scoring: {report}")
+        return 1
+    if (
+        all_abstain_report.grouped_candidate_count != 0
+        or all_abstain_report.target_count != 2
+        or all_abstain_report.pairwise.f1 is not None
+        or all_abstain_report.pairwise.ari is not None
+        or all_abstain_report.effective_family_pair_recall != 0.0
+    ):
+        print(f"FAIL all-abstain scoring: {all_abstain_report}")
+        return 1
+    no_abstain_rendered = score_report_to_dict(no_abstain_report)
+    no_abstain_document = reports_to_dict((no_abstain_report,))
+    if (
+        no_abstain_document.get("schema_version") != 6
+        or no_abstain_rendered.get("schema_version") != 6
+        or no_abstain_rendered.get("target_count") != 1
+        or no_abstain_rendered.get("grouped_candidate_count") != 1
+        or no_abstain_rendered.get("abstained_candidate_count") != 0
+        or no_abstain_rendered.get("abstentions") != []
+        or no_abstain_rendered.get("coverage", {}).get("target_coverage") != 1.0
+    ):
+        print(f"FAIL schema-v6 zero-abstention output: {no_abstain_rendered}")
+        return 1
+    rendered = score_report_to_dict(report)
+    if rendered.get("coverage", {}).get("effective_family_pair_recall") != 0.0:
+        print(f"FAIL effective recall: {rendered.get('coverage')}")
+        return 1
+    if [item["id"] for item in rendered.get("abstentions", [])] != [
+        "FUN_00002100",
+        "FUN_00002200",
+    ]:
+        print(f"FAIL abstention result JSON: {rendered.get('abstentions')}")
+        return 1
+    return 0
+
+
+def check_opaque_relocation_anchor() -> int:
+    raw = make_raw_graph(
+        case="opaque-anchor-test",
+        build="O3S",
+        profile="plain",
+        binary_path="bin/plain/opaque-anchor-test.O3S.fixture.bin",
+        provenance=PROVENANCE,
+        boundary_input_sha256="4" * 64,
+        root_address=0x1000,
+        functions=[
+            {
+                "address": f"0x{address:x}",
+                "name": f"function_{address:x}",
+                "size": 0x20,
+                "boundary_source": "symbol-oracle",
+                "discovered_by_radare2": True,
+            }
+            for address in (0x1000, 0x2000)
+        ],
+        transfers=[
+            resolved(0x1000, 0x1004, 0x2000),
+            unmapped_relocation(0x2000, 0x2004, 0x9000),
+            unmapped_relocation(0x2000, 0x2008, 0x9000),
+            unmapped(0x2000, 0x200C, 0xA000),
+        ],
+        boundary_mode="symbol-extent",
+        boundary_mismatches=[],
+    )
+    candidate_selection = broad_selection(
+        {0x2000},
+        {0x2000: 0x20},
+        case="opaque-anchor-test",
+    )
+    fixture = project_fixture(
+        raw,
+        selection=candidate_selection,
+        track=DIRECT_TRACK,
+        anchor_policy=ROLE_ANCHOR_POLICY,
+        users_path=None,
+        id_bias=0,
+    )
+    validate_raw_fixture(fixture)
+    nodes = {node["id"]: node for node in fixture["nodes"]}
+    if set(nodes) != {
+        "FUN_00001000", "FUN_00002000", "FUN_00009000"
+    }:
+        print(f"FAIL opaque relocation node set: {sorted(nodes)}")
+        return 1
+    if nodes["FUN_00002000"]["calls"] != [
+        {"target": "FUN_00009000", "count": 2}
+    ]:
+        print("FAIL exact relocation calls were not projected to opaque anchor")
+        return 1
+    opaque = nodes["FUN_00009000"]
+    if (
+        opaque["type"] != "anchor"
+        or opaque["scored"]
+        or opaque["anchor_kind"] != "outgoing"
+        or opaque["color_class"] != "ROLE:outgoing"
+        or opaque["calls"]
+    ):
+        print(f"FAIL opaque relocation anchor metadata: {opaque}")
+        return 1
+    if "FUN_0000a000" in nodes:
+        print("FAIL ordinary unmapped direct target became an opaque anchor")
+        return 1
+    if fixture["abstentions"]:
+        print("FAIL exact opaque relation did not keep candidate active")
+        return 1
+
+    frozen = project_direct_fixture(
+        raw,
+        selection=selection(
+            {0x2000},
+            {0x2000: 0x20},
+            case="opaque-anchor-test",
+        ),
+        users_path=None,
+        id_bias=0,
+    )
+    frozen_nodes = {node["id"]: node for node in frozen["nodes"]}
+    if "FUN_00009000" in frozen_nodes or frozen_nodes["FUN_00002000"]["calls"]:
+        print("FAIL frozen schema-v4 fixture gained an opaque relocation anchor")
         return 1
     return 0
 
@@ -494,6 +885,10 @@ def main() -> int:
     if check_incoming_projection() != 0:
         return 1
     if check_noncontiguous_radare2_function() != 0:
+        return 1
+    if check_abstention_projection_and_scoring() != 0:
+        return 1
+    if check_opaque_relocation_anchor() != 0:
         return 1
     print("raw graph and direct incoming projection PASS")
     return 0

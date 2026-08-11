@@ -12,6 +12,7 @@ from typing import Any, Iterable
 from candidate_selection import CandidateSelection
 from graph_evidence import (
     ANGR_RESOLVER,
+    ELF_RELOCATION_RESOLVER,
     indirect_call_summary,
     make_indirect_call_summary,
     validate_raw_graph,
@@ -37,18 +38,41 @@ def build_run_summary(
     validate_raw_graph(raw)
     reports = tuple(reports)
     gt_summary = ground_truth_summary(ground_truth)
+    scored_same_family_pairs = _scored_same_family_pair_count(
+        ground_truth,
+        fixture,
+    )
     for report in reports:
-        if report.pairwise.tp + report.pairwise.fn != gt_summary["same_family_pair_count"]:
+        if report.pairwise.tp + report.pairwise.fn != scored_same_family_pairs:
             raise ValueError(
                 "ground-truth pair count does not match score TP+FN: "
-                f"{gt_summary['same_family_pair_count']} != "
+                f"{scored_same_family_pairs} != "
                 f"{report.pairwise.tp + report.pairwise.fn}"
             )
     all_indirect = indirect_call_summary(raw)
+    exact_static_all = exact_static_indirect_summary(raw)
+    abstained_count = len(fixture.get("abstentions", []))
+    target_count = gt_summary["target_count"]
+    gt_summary.update({
+        "grouped_candidate_count": target_count - abstained_count,
+        "abstained_candidate_count": abstained_count,
+        "scored_same_family_pair_count": scored_same_family_pairs,
+        "same_family_pair_coverage": (
+            scored_same_family_pairs / gt_summary["same_family_pair_count"]
+            if gt_summary["same_family_pair_count"] else None
+        ),
+    })
 
     return {
         "ground_truth": gt_summary,
         "extraction": {
+            "exact_static_indirect_summary": {
+                "all_sources": exact_static_all,
+                "candidate_sources": exact_static_indirect_summary(
+                    raw,
+                    source_addresses=set(selection.addresses),
+                ),
+            },
             "indirect_call_summary": {
                 "all_sources": all_indirect,
                 "candidate_sources": make_indirect_call_summary(
@@ -73,6 +97,43 @@ def build_run_summary(
             binary_path=binary_path,
         ),
         "tool_versions": tool_versions(),
+    }
+
+
+def exact_static_indirect_summary(
+    raw: dict[str, Any],
+    *,
+    source_addresses: set[int] | None = None,
+) -> dict[str, Any]:
+    """Summarize indirect transfers proven without angr inference."""
+    resolvers = (ELF_RELOCATION_RESOLVER,)
+    selected = [
+        transfer
+        for transfer in raw["transfers"]
+        if transfer.get("resolver") in resolvers
+        and transfer.get("operand_kind") in {"memory", "register"}
+        and (
+            source_addresses is None
+            or _address(transfer["source"]) in source_addresses
+        )
+    ]
+    return {
+        "total": len(selected),
+        "resolved_internal": sum(
+            transfer["status"] == "resolved" for transfer in selected
+        ),
+        "filtered_import": sum(
+            transfer["status"] == "filtered" for transfer in selected
+        ),
+        "unmapped": sum(
+            transfer["status"] == "unmapped" for transfer in selected
+        ),
+        "by_resolver": {
+            resolver: sum(
+                transfer["resolver"] == resolver for transfer in selected
+            )
+            for resolver in resolvers
+        },
     }
 
 
@@ -135,7 +196,11 @@ def candidate_observability(
         _function_id(address, id_bias)
         for address in selection.addresses
     }
-    missing = candidate_ids - set(nodes)
+    abstained_ids = {
+        item["id"]
+        for item in fixture.get("abstentions", [])
+    }
+    missing = candidate_ids - set(nodes) - abstained_ids
     if missing:
         raise ValueError(f"candidate(s) absent from fixture: {sorted(missing)}")
 
@@ -150,21 +215,25 @@ def candidate_observability(
         _address(transfer["source"])
         for transfer in raw["transfers"]
         if transfer["status"] == "unresolved"
-        and transfer["kind"] == "call"
+        and transfer["kind"] in {"call", "tail-call"}
         and transfer["operand_kind"] in {"memory", "register"}
     }
     zero_outgoing = {
         node_id for node_id in candidate_ids
-        if not nodes[node_id]["calls"]
+        if node_id in abstained_ids
+        or not nodes[node_id]["calls"]
     }
     zero_incoming = {
         node_id for node_id in candidate_ids
-        if not incoming[node_id]
+        if node_id in abstained_ids
+        or not incoming[node_id]
     }
     excluded = selection.data.get("excluded_namespaces", [])
     analysis = fixture.get("analysis") or {}
     return {
-        "candidate_count": len(candidate_ids),
+        "target_count": len(candidate_ids),
+        "grouped_candidate_count": len(candidate_ids - abstained_ids),
+        "abstained_candidate_count": len(abstained_ids),
         "reachable_from_root": len(candidate_ids & reachable),
         "unreachable_from_root": len(candidate_ids - reachable),
         "zero_outgoing": len(zero_outgoing),
@@ -185,13 +254,28 @@ def candidate_observability(
     }
 
 
+def _scored_same_family_pair_count(
+    ground_truth: dict[str, Any],
+    fixture: dict[str, Any],
+) -> int:
+    abstained = {item["id"] for item in fixture.get("abstentions", [])}
+    pair_count = 0
+    for origin in ground_truth["origins"]:
+        scored_count = sum(
+            member not in abstained
+            for member in origin["members"]
+        )
+        pair_count += scored_count * (scored_count - 1) // 2
+    return pair_count
+
+
 def ground_truth_summary(ground_truth: dict[str, Any]) -> dict[str, Any]:
     sizes = [len(origin["members"]) for origin in ground_truth["origins"]]
     family_sizes = [size for size in sizes if size >= 2]
     candidate_count = sum(sizes)
     true_pairs = sum(size * (size - 1) // 2 for size in sizes)
     return {
-        "candidate_count": candidate_count,
+        "target_count": candidate_count,
         "origin_count": len(sizes),
         "generic_family_count": len(family_sizes),
         "singleton_origin_count": sum(size == 1 for size in sizes),
@@ -251,6 +335,7 @@ def artifact_summary(
         "known_function_count": len(raw["functions"]),
         "candidate_function_count": len(selection.addresses),
         "fixture_node_count": len(fixture["nodes"]),
+        "abstention_count": len(fixture.get("abstentions", [])),
         "boundary_oracle": {
             "supplied_function_count": len(supplied),
             "radare2_discovered_count": len(supplied_discovered),
@@ -300,6 +385,7 @@ def tool_versions() -> dict[str, str | None]:
         "radare2": _command_version(("radare2", "-v")),
         "r2pipe": _package_version("r2pipe"),
         "capstone": _package_version("capstone"),
+        "pyelftools": _package_version("pyelftools"),
         "angr": _package_version("angr"),
         "cle": _package_version("cle"),
         "pyvex": _package_version("pyvex"),

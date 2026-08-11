@@ -1,19 +1,25 @@
 import json
 from analysis_provenance import parse_analysis_provenance
-from model import Call, Case, Node, Observability
+from model import Abstention, Call, Case, Node, Observability
 from paths import normalize_profile
 from provenance import parse_provenance
 
 
 FIXTURE_SCHEMA_V4 = 4
 FIXTURE_SCHEMA_V5 = 5
-FIXTURE_SCHEMA_VERSION = FIXTURE_SCHEMA_V5
-SUPPORTED_FIXTURE_SCHEMAS = {FIXTURE_SCHEMA_V4, FIXTURE_SCHEMA_V5}
+FIXTURE_SCHEMA_V6 = 6
+FIXTURE_SCHEMA_VERSION = FIXTURE_SCHEMA_V6
+SUPPORTED_FIXTURE_SCHEMAS = {
+    FIXTURE_SCHEMA_V4,
+    FIXTURE_SCHEMA_V5,
+    FIXTURE_SCHEMA_V6,
+}
 
 V4_REQUIRED_TOP_LEVEL_KEYS = {
     "case", "build", "profile", "schema_version", "provenance", "extraction", "nodes"
 }
 V5_REQUIRED_TOP_LEVEL_KEYS = V4_REQUIRED_TOP_LEVEL_KEYS | {"analysis"}
+V6_REQUIRED_TOP_LEVEL_KEYS = V5_REQUIRED_TOP_LEVEL_KEYS | {"abstentions"}
 
 V4_REQUIRED_NODE_KEYS = {"id", "type", "scored", "calls"}
 V5_REQUIRED_NODE_KEYS = V4_REQUIRED_NODE_KEYS | {
@@ -48,8 +54,12 @@ def load_case(file_name: str) -> Case:
         provenance=parse_provenance(data["provenance"], where="fixture.provenance"),
         analysis=(
             parse_analysis_provenance(data["analysis"], where="fixture.analysis")
-            if data["schema_version"] == FIXTURE_SCHEMA_V5
+            if data["schema_version"] >= FIXTURE_SCHEMA_V5
             else None
+        ),
+        abstentions=tuple(
+            Abstention(id=item["id"], reason=item["reason"])
+            for item in data.get("abstentions", [])
         ),
     )
 
@@ -82,7 +92,9 @@ def validate_raw_fixture(data) -> None:
         raise ValueError("fixture root must be a JSON object")
 
     schema_version = _validate_top_level(data)
-    _validate_nodes(data["nodes"], schema_version=schema_version)
+    node_ids = _validate_nodes(data["nodes"], schema_version=schema_version)
+    if schema_version == FIXTURE_SCHEMA_V6:
+        _validate_abstentions(data["abstentions"], node_ids)
 
 
 def _validate_top_level(data: dict) -> int:
@@ -91,7 +103,9 @@ def _validate_top_level(data: dict) -> int:
     if schema_version not in SUPPORTED_FIXTURE_SCHEMAS:
         raise ValueError(f"unsupported schema_version: {schema_version}")
     required = (
-        V5_REQUIRED_TOP_LEVEL_KEYS
+        V6_REQUIRED_TOP_LEVEL_KEYS
+        if schema_version == FIXTURE_SCHEMA_V6
+        else V5_REQUIRED_TOP_LEVEL_KEYS
         if schema_version == FIXTURE_SCHEMA_V5
         else V4_REQUIRED_TOP_LEVEL_KEYS
     )
@@ -107,7 +121,7 @@ def _validate_top_level(data: dict) -> int:
     _require_nonempty_str(data["profile"], "profile")
     normalize_profile(data["profile"])
     parse_provenance(data["provenance"], where="fixture.provenance")
-    if schema_version == FIXTURE_SCHEMA_V5:
+    if schema_version >= FIXTURE_SCHEMA_V5:
         parse_analysis_provenance(data["analysis"], where="fixture.analysis")
 
     if "note" in data and not isinstance(data["note"], str):
@@ -153,11 +167,11 @@ def _validate_extraction(extraction) -> None:
                 raise ValueError(f"boundary_mismatches[{index}].{key} must be non-negative")
 
 
-def _validate_nodes(nodes: list, *, schema_version: int) -> None:
+def _validate_nodes(nodes: list, *, schema_version: int) -> set[str]:
     ids = []
     required_keys = (
         V5_REQUIRED_NODE_KEYS
-        if schema_version == FIXTURE_SCHEMA_V5
+        if schema_version >= FIXTURE_SCHEMA_V5
         else V4_REQUIRED_NODE_KEYS
     )
 
@@ -189,7 +203,7 @@ def _validate_nodes(nodes: list, *, schema_version: int) -> None:
         if node["scored"] and node["type"] != "user":
             raise ValueError(f"scored node must have type='user': {node_id}")
 
-        if schema_version == FIXTURE_SCHEMA_V5:
+        if schema_version >= FIXTURE_SCHEMA_V5:
             _validate_v5_node_metadata(node)
 
         if not isinstance(node["calls"], list):
@@ -206,8 +220,31 @@ def _validate_nodes(nodes: list, *, schema_version: int) -> None:
     for node in nodes:
         _validate_calls(node, id_set)
 
-    if not any(node["scored"] for node in nodes):
+    if schema_version < FIXTURE_SCHEMA_V6 and not any(node["scored"] for node in nodes):
         raise ValueError("at least one node must have scored=true")
+    return id_set
+
+
+def _validate_abstentions(abstentions: object, node_ids: set[str]) -> None:
+    if not isinstance(abstentions, list):
+        raise ValueError("abstentions must be a list")
+    abstained_ids = []
+    for index, item in enumerate(abstentions):
+        where = f"abstentions[{index}]"
+        if not isinstance(item, dict) or set(item) != {"id", "status", "reason"}:
+            raise ValueError(f"{where} must contain exactly id/status/reason")
+        _require_nonempty_str(item["id"], f"{where}.id")
+        if item["status"] != "abstain":
+            raise ValueError(f"{where}.status must be 'abstain'")
+        if item["reason"] != "no_resolved_nonself_in_or_out_edge":
+            raise ValueError(f"invalid abstention reason for {item['id']}")
+        abstained_ids.append(item["id"])
+    duplicated = _find_duplicates(abstained_ids)
+    if duplicated:
+        raise ValueError(f"duplicate abstention id(s): {duplicated}")
+    overlap = set(abstained_ids) & node_ids
+    if overlap:
+        raise ValueError(f"abstention(s) also emitted as nodes: {sorted(overlap)}")
 
 
 def _validate_v5_node_metadata(node: dict) -> None:

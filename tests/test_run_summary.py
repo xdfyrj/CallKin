@@ -7,8 +7,13 @@ from types import SimpleNamespace
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from angr_adapter import AngrCallResolution, merge_angr_resolutions
+from analysis.summary import family_counts
 from candidate_selection import parse_candidate_selection
-from graph_evidence import TransferEvidence, make_raw_graph
+from graph_evidence import (
+    ELF_RELOCATION_RESOLVER,
+    TransferEvidence,
+    make_raw_graph,
+)
 from graph_projector import project_fixture
 from paths import ANGR_TRACK
 from provenance import BuildProvenance
@@ -55,6 +60,20 @@ def indirect(source: int, callsite: int) -> TransferEvidence:
     )
 
 
+def exact_indirect(source: int, callsite: int, target: int) -> TransferEvidence:
+    return TransferEvidence(
+        source=source,
+        callsite=callsite,
+        instruction="call qword ptr [rip + slot]",
+        kind="call",
+        operand_kind="memory",
+        status="resolved",
+        target=target,
+        resolver=ELF_RELOCATION_RESOLVER,
+        confidence="exact",
+    )
+
+
 def main() -> int:
     raw = make_raw_graph(
         case="summary-test",
@@ -77,6 +96,7 @@ def main() -> int:
         transfers=[
             direct(0x1000, 0x1010, 0x2000),
             indirect(0x2000, 0x2010),
+            exact_indirect(0x2000, 0x2020, 0x4000),
             indirect(0x3000, 0x3010),
             indirect(0x4000, 0x4010),
         ],
@@ -169,6 +189,16 @@ def main() -> int:
     ):
         print("FAIL run summary indirect count")
         return 1
+    exact_summary = summary["extraction"]["exact_static_indirect_summary"]
+    if (
+        exact_summary["all_sources"]["resolved_internal"] != 1
+        or exact_summary["candidate_sources"]["resolved_internal"] != 1
+        or exact_summary["candidate_sources"]["by_resolver"] != {
+            "elf-relocation": 1,
+        }
+    ):
+        print(f"FAIL exact static indirect summary: {exact_summary}")
+        return 1
     impact = summary["candidate_impact"]
     if (
         impact["candidate_outgoing_edges_added"] != 1
@@ -210,9 +240,38 @@ def main() -> int:
     if summary["execution"]["status"] != "completed_with_warnings":
         print("FAIL execution warning status")
         return 1
+    if "pyelftools" not in summary["tool_versions"]:
+        print("FAIL pyelftools version is absent from tool provenance")
+        return 1
     boundary = summary["artifact_summary"]["boundary_oracle"]
     if boundary["radare2_missing_count"] != 1 or boundary["size_mismatch_count"] != 1:
         print(f"FAIL boundary summary: {boundary}")
+        return 1
+
+    family_status = family_counts({
+        "origins": [{
+            "origin": "partially_observed",
+            "total_target_pairs": 3,
+            "total_pairs": 1,
+            "abstained_instance_count": 1,
+            "recovered_pairs": 1,
+            "colliding_origins": [],
+        }, {
+            "origin": "insufficient",
+            "total_target_pairs": 1,
+            "total_pairs": 0,
+            "abstained_instance_count": 1,
+            "recovered_pairs": 0,
+            "colliding_origins": [],
+        }],
+    })
+    if (
+        family_status["evidence_partial"] != 1
+        or family_status["evidence_insufficient"] != 1
+        or family_status["recovery_complete"] != 1
+        or family_status["recovery_na"] != 1
+    ):
+        print(f"FAIL family abstention summary: {family_status}")
         return 1
 
     print("run summary diagnostics PASS")

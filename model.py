@@ -20,6 +20,12 @@ class Observability:
 
 
 @dataclass(frozen=True)
+class Abstention:
+    id: str
+    reason: str
+
+
+@dataclass(frozen=True)
 class Node:
     id: str
     type: str      # "user" or "anchor"
@@ -38,3 +44,4 @@ class Case:
     profile: str = "plain"
     provenance: BuildProvenance | None = None
     analysis: AnalysisProvenance | None = None
+    abstentions: tuple[Abstention, ...] = ()

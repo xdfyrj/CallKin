@@ -206,10 +206,10 @@ class PairwiseScore:
     fp: int
     fn: int
     tn: int
-    precision: float
-    recall: float
-    f1: float
-    ari: float
+    precision: float | None
+    recall: float | None
+    f1: float | None
+    ari: float | None
 
 
 @dataclass(frozen=True)
@@ -231,12 +231,25 @@ class PredictedCluster:
 
 
 @dataclass(frozen=True)
+class ScoredAbstention:
+    id: str
+    symbols: tuple[str, ...]
+    origin: str
+    reason: str
+
+
+@dataclass(frozen=True)
 class OriginScore:
     origin: str
     k_obs: int
+    scored_instance_count: int
+    abstained_instance_count: int
     predicted_cluster_count: int
     recovered_pairs: int
     total_pairs: int
+    total_target_pairs: int
+    scored_pair_coverage: float | None
+    effective_recall: float | None
     colliding_origins: tuple[str, ...]
 
 
@@ -245,9 +258,19 @@ class ScoreReport:
     case: str
     build: str
     profile: str
+    fixture_schema_version: int
     mode: CGWLMode
-    candidate_count: int
+    target_count: int
+    grouped_candidate_count: int
+    abstentions: tuple[ScoredAbstention, ...]
     pair_count: int
+    target_pair_count: int
+    total_same_family_pair_count: int
+    scored_same_family_pair_count: int
+    target_coverage: float | None
+    pair_decision_coverage: float | None
+    same_family_pair_coverage: float | None
+    effective_family_pair_recall: float | None
     rounds: int
     clusters: tuple[PredictedCluster, ...]
     origins: tuple[OriginScore, ...]
@@ -255,6 +278,11 @@ class ScoreReport:
     provenance: BuildProvenance
     analysis: AnalysisProvenance | None = None
     trace: tuple[CGWLRoundTrace, ...] = ()
+
+    @property
+    def candidate_count(self) -> int:
+        """Compatibility alias for the grouped candidate count."""
+        return self.grouped_candidate_count
 
 
 # ---------------------------------------------------------- scoring
@@ -293,15 +321,50 @@ def score_case(
 
     pairwise = _pairwise_score(tp, fp, fn, tn)
     clusters = _make_predicted_clusters(result.clusters, gt, origin_of)
-    origins = _make_origin_scores(gt, cluster_of, clusters)
+    abstentions = _make_scored_abstentions(case, gt, origin_of)
+    abstained_ids = {item.id for item in abstentions}
+    origins = _make_origin_scores(
+        gt,
+        cluster_of,
+        clusters,
+        abstained_ids,
+    )
+    target_count = len(scored_ids) + len(abstentions)
+    target_pair_count = target_count * (target_count - 1) // 2
+    total_same_family_pair_count = sum(
+        len(group.members) * (len(group.members) - 1) // 2
+        for group in gt.origins
+    )
+    scored_same_family_pair_count = tp + fn
 
     return ScoreReport(
         case=case.case,
         build=case.build,
         profile=case.profile,
+        fixture_schema_version=case.schema_version,
         mode=result.mode,
-        candidate_count=len(scored_ids),
+        target_count=target_count,
+        grouped_candidate_count=len(scored_ids),
+        abstentions=abstentions,
         pair_count=len(scored_ids) * (len(scored_ids) - 1) // 2,
+        target_pair_count=target_pair_count,
+        total_same_family_pair_count=total_same_family_pair_count,
+        scored_same_family_pair_count=scored_same_family_pair_count,
+        target_coverage=(
+            len(scored_ids) / target_count if target_count else None
+        ),
+        pair_decision_coverage=(
+            len(scored_ids) * (len(scored_ids) - 1) / 2 / target_pair_count
+            if target_pair_count else None
+        ),
+        same_family_pair_coverage=(
+            scored_same_family_pair_count / total_same_family_pair_count
+            if total_same_family_pair_count else None
+        ),
+        effective_family_pair_recall=(
+            tp / total_same_family_pair_count
+            if total_same_family_pair_count else None
+        ),
         rounds=result.rounds,
         clusters=clusters,
         origins=origins,
@@ -349,15 +412,31 @@ def score_v0_baseline(
 
 
 def _pairwise_score(tp: int, fp: int, fn: int, tn: int) -> PairwiseScore:
-    precision = tp / (tp + fp) if (tp + fp) else 1.0
-    recall = tp / (tp + fn) if (tp + fn) else 1.0
-    f1 = (2 * precision * recall / (precision + recall)
-          if (precision + recall) else 0.0)
+    pair_count = tp + fp + fn + tn
+    precision = tp / (tp + fp) if (tp + fp) else None
+    recall = tp / (tp + fn) if (tp + fn) else None
+    f1_denominator = 2 * tp + fp + fn
+    if not pair_count:
+        f1 = None
+    elif (
+        precision is not None
+        and recall is not None
+        and precision + recall
+    ):
+        # Preserve the frozen baseline representation when both terms exist.
+        f1 = 2 * precision * recall / (precision + recall)
+    else:
+        f1 = 2 * tp / f1_denominator if f1_denominator else 0.0
     return PairwiseScore(tp, fp, fn, tn, precision, recall, f1,
                          _adjusted_rand_index(tp, fp, fn, tn))
 
 
-def _adjusted_rand_index(tp: int, fp: int, fn: int, tn: int) -> float:
+def _adjusted_rand_index(
+    tp: int,
+    fp: int,
+    fn: int,
+    tn: int,
+) -> float | None:
     # ARI from pairwise counts.
     #   index            = sum_ij C(n_ij, 2) = TP
     #   same_cluster     = sum_i  C(a_i,  2) = TP + FP
@@ -368,7 +447,7 @@ def _adjusted_rand_index(tp: int, fp: int, fn: int, tn: int) -> float:
     same_origin = tp + fn
     total = tp + fp + fn + tn
     if total == 0:
-        return 1.0
+        return None
     expected = same_cluster * same_origin / total
     maximum = 0.5 * (same_cluster + same_origin)
     if maximum == expected:
@@ -390,12 +469,14 @@ def _check_join(case: Case, gt: GroundTruth) -> None:
     if case.provenance != gt.provenance:
         raise ValueError("fixture/ground-truth build provenance mismatch")
     scored_ids = {n.id for n in case.nodes if n.scored}
+    abstained_ids = {item.id for item in case.abstentions}
     gt_ids = {m for g in gt.origins for m in g.members}
-    if scored_ids != gt_ids:
+    if scored_ids | abstained_ids != gt_ids:
         raise ValueError(
-            "scored universe mismatch. "
-            f"missing in ground truth: {sorted(scored_ids - gt_ids)}; "
-            f"present in ground truth but not scored: {sorted(gt_ids - scored_ids)}"
+            "target universe mismatch. "
+            f"missing in ground truth: {sorted((scored_ids | abstained_ids) - gt_ids)}; "
+            f"present in ground truth but neither grouped nor abstained: "
+            f"{sorted(gt_ids - scored_ids - abstained_ids)}"
         )
 
 
@@ -425,10 +506,30 @@ def _make_predicted_clusters(
     return tuple(clusters)
 
 
+def _make_scored_abstentions(
+    case: Case,
+    gt: GroundTruth,
+    origin_of: dict[str, str],
+) -> tuple[ScoredAbstention, ...]:
+    return tuple(
+        ScoredAbstention(
+            id=item.id,
+            symbols=tuple(
+                _display_symbol(symbol, gt.case)
+                for symbol in gt.symbols[item.id]
+            ),
+            origin=origin_of[item.id],
+            reason=item.reason,
+        )
+        for item in sorted(case.abstentions, key=lambda item: item.id)
+    )
+
+
 def _make_origin_scores(
     gt: GroundTruth,
     cluster_of: dict[str, int],
     clusters: tuple[PredictedCluster, ...],
+    abstained_ids: set[str],
 ) -> tuple[OriginScore, ...]:
     origins_by_cluster = {
         index: set(cluster.origins)
@@ -437,10 +538,14 @@ def _make_origin_scores(
     rows = []
 
     for group in gt.origins:
-        cluster_ids = {cluster_of[member] for member in group.members}
+        scored_members = [
+            member for member in group.members
+            if member not in abstained_ids
+        ]
+        cluster_ids = {cluster_of[member] for member in scored_members}
         recovered_pairs = sum(
             1
-            for a, b in combinations(group.members, 2)
+            for a, b in combinations(scored_members, 2)
             if cluster_of[a] == cluster_of[b]
         )
         colliding_origins = sorted({
@@ -453,9 +558,21 @@ def _make_origin_scores(
         rows.append(OriginScore(
             origin=group.origin,
             k_obs=k_obs,
+            scored_instance_count=len(scored_members),
+            abstained_instance_count=len(group.members) - len(scored_members),
             predicted_cluster_count=len(cluster_ids),
             recovered_pairs=recovered_pairs,
-            total_pairs=k_obs * (k_obs - 1) // 2,
+            total_pairs=len(scored_members) * (len(scored_members) - 1) // 2,
+            total_target_pairs=len(group.members) * (len(group.members) - 1) // 2,
+            scored_pair_coverage=(
+                len(scored_members) * (len(scored_members) - 1)
+                / (len(group.members) * (len(group.members) - 1))
+                if len(group.members) > 1 else None
+            ),
+            effective_recall=(
+                recovered_pairs / (len(group.members) * (len(group.members) - 1) // 2)
+                if len(group.members) > 1 else None
+            ),
             colliding_origins=tuple(colliding_origins),
         ))
 
@@ -482,7 +599,11 @@ def format_report(r: ScoreReport) -> str:
             else []
         ),
         f"mode: {r.mode}",
-        f"candidates: {r.candidate_count}",
+        *(
+            [f"targets: {r.target_count}"]
+            if r.fixture_schema_version >= 6 else []
+        ),
+        f"grouped candidates: {r.grouped_candidate_count}",
         f"candidate pairs: {r.pair_count}",
         f"rounds: {r.rounds}",
         "predicted clusters:",
@@ -493,22 +614,48 @@ def format_report(r: ScoreReport) -> str:
             f"    {member.id} | {' | '.join(member.symbols)} | origin={member.origin}"
             for member in cluster.members
         )
+    if r.abstentions:
+        lines.append("abstentions:")
+        lines.extend(
+            f"  {item.id} | {' | '.join(item.symbols)} | "
+            f"origin={item.origin} | reason={item.reason}"
+            for item in r.abstentions
+        )
     lines.append("origins:")
     for origin in r.origins:
         collisions = ", ".join(origin.colliding_origins) or "-"
+        coverage = (
+            f"scored={origin.scored_instance_count} "
+            f"abstained={origin.abstained_instance_count} "
+            if r.fixture_schema_version >= 6
+            else ""
+        )
         lines.append(
             f"  {origin.origin}: k_obs={origin.k_obs} "
+            f"{coverage}"
             f"clusters={origin.predicted_cluster_count} "
             f"pairs={origin.recovered_pairs}/{origin.total_pairs} "
             f"collisions={collisions}"
         )
     lines.extend([
         f"TP={p.tp} FP={p.fp} FN={p.fn} TN={p.tn}",
-        f"PR={p.precision:.2f} RE={p.recall:.2f} F1={p.f1:.2f} ARI={p.ari:.2f}",
+        f"PR={_format_metric(p.precision)} RE={_format_metric(p.recall)} "
+        f"F1={_format_metric(p.f1)} ARI={_format_metric(p.ari)}",
     ])
+    if r.fixture_schema_version >= 6:
+        lines.extend([
+            f"target coverage={_format_metric(r.target_coverage)} "
+            f"pair decision coverage={_format_metric(r.pair_decision_coverage)}",
+            f"same-family pair coverage={_format_metric(r.same_family_pair_coverage)} "
+            f"effective family-pair recall={_format_metric(r.effective_family_pair_recall)}",
+        ])
     if r.trace:
         lines.extend(["", format_cg_wl_trace(r.trace)])
     return "\n".join(lines)
+
+
+def _format_metric(value: float | None) -> str:
+    return "N/A" if value is None else f"{value:.2f}"
 
 
 def score_report_to_dict(report: ScoreReport) -> dict:
@@ -559,6 +706,40 @@ def score_report_to_dict(report: ScoreReport) -> dict:
             for origin in report.origins
         ],
     }
+    if report.fixture_schema_version >= 6:
+        data.update({
+            "schema_version": 6,
+            "grouped_candidate_count": report.grouped_candidate_count,
+            "abstained_candidate_count": len(report.abstentions),
+            "target_count": report.target_count,
+            "coverage": {
+                "target_pair_count": report.target_pair_count,
+                "decision_pair_count": report.pair_count,
+                "total_same_family_pair_count": report.total_same_family_pair_count,
+                "scored_same_family_pair_count": report.scored_same_family_pair_count,
+                "target_coverage": report.target_coverage,
+                "pair_decision_coverage": report.pair_decision_coverage,
+                "same_family_pair_coverage": report.same_family_pair_coverage,
+                "effective_family_pair_recall": report.effective_family_pair_recall,
+            },
+            "abstentions": [
+                {
+                    "id": item.id,
+                    "status": "abstain",
+                    "reason": item.reason,
+                    "symbols": list(item.symbols),
+                    "origin": item.origin,
+                }
+                for item in report.abstentions
+            ],
+        })
+        data.pop("candidate_count", None)
+        for row, origin in zip(data["origins"], report.origins):
+            row["scored_instance_count"] = origin.scored_instance_count
+            row["abstained_instance_count"] = origin.abstained_instance_count
+            row["total_target_pairs"] = origin.total_target_pairs
+            row["scored_pair_coverage"] = origin.scored_pair_coverage
+            row["effective_recall"] = origin.effective_recall
     if report.trace:
         data["trace"] = [
             {
@@ -584,7 +765,9 @@ def reports_to_dict(
 ) -> dict:
     data = {
         "schema_version": (
-            5
+            6
+            if any(report.fixture_schema_version >= 6 for report in reports)
+            else 5
             if run_summary is not None
             else 4 if any(report.analysis for report in reports) else 3
         ),

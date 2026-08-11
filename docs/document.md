@@ -201,10 +201,10 @@ Non-stripped binary에서 `nm -n -S -C` 결과를 읽고 같은 normalized symbo
 
 ### `binary_extractor.py`
 
-Radare2와 Capstone으로 stripped function과 transfer evidence를 추출한다. 확정된
-direct edge, 정책상 제외한 import, 함수에 매핑되지 않은 direct target, target을 정하지
-못한 indirect callsite를 raw graph에 각각
-resolved/filtered/unmapped/unresolved로 구분해 남긴다.
+Radare2와 Capstone으로 stripped function과 transfer evidence를 추출한다. Direct edge,
+x86-64 ELF relocation으로 증명한 indirect call/tail-call,
+정책상 제외한 import, 함수에 매핑되지 않은 target, target을 정하지 못한 indirect
+call/tail-call을 raw graph에 각각 resolved/filtered/unmapped/unresolved로 구분해 남긴다.
 
 ### `candidate_selection.py`, `graph_evidence.py`, `graph_projector.py`
 
@@ -216,12 +216,15 @@ resolved/filtered/unmapped/unresolved로 구분해 남긴다.
 `direct`는 root와 candidate에서 시작한 resolved outgoing closure를 투영한다.
 `direct-in`은 candidate의 direct external caller를 seed에 추가한 뒤 동일한 outgoing
 closure를 계산한다. `angr`는 여기에 singleton으로 확정한 indirect edge를 추가한다.
+Exact ELF relocation target이 함수 경계 목록에 없으면 raw의 `unmapped` 판정은 유지한
+채, schema v6 fixture에 이름과 body가 없는 opaque anchor로 주소와 edge만 보존한다.
 Anchor는 채점 대상이 아닐 뿐 traversal wall이 아니며, 선택된 anchor 사이의 edge도
 fixture에 보존된다.
-`angr_adapter.py`는 CFGFast 결과를 raw callsite와 join하고, 기존 함수 시작점 하나로
-확정된 unresolved call만 `resolver=angr-cfg`, `confidence=inferred`로 승격한다.
+`angr_adapter.py`는 CFGFast 결과를 raw transfer site와 join하고, 기존 함수 시작점 하나로
+확정된 unresolved call 또는 terminal tail-call만 `resolver=angr-cfg`,
+`confidence=inferred`로 승격한다.
 Singleton 판정은 unknown target을 제거하기 전에 수행한다. Raw에서는 direct exact와
-angr inferred evidence를 구분하고, 거절된 callsite도 이유와 target 후보를 보존하지만
+angr inferred evidence를 구분하고, 거절된 transfer도 이유와 target 후보를 보존하지만
 현재 fixture는 동일 source-target call count로 합산한다.
 Projector의 공식 anchor policy는 주소별 초기 color인 `address`와 방향 역할별 초기
 color인 `role`이다. Role은 `root/incoming/outgoing/both/context`를 구분한다.

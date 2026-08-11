@@ -66,6 +66,16 @@ Node(
 
 `type="user"` node는 grouping 대상이다. `type="anchor"` node는 주변 context를 제공하지만 최종 scored cluster에는 포함되지 않는다.
 
+함수 경계 목록에 없더라도 exact ELF relocation이 call target 주소를 증명하면 Schema v6
+fixture는 그 주소를 opaque anchor로 포함할 수 있다. 이 node에는 복구된 이름이나 body가
+없으며 채점되지 않는다. Raw evidence는 계속 `unmapped`로 남아 경계를 복구한 것처럼
+표현하지 않는다.
+
+Schema v6 fixture는 `Case.abstentions`도 가질 수 있다. 이는 candidate selection에는
+포함됐지만 resolved non-self IN/OUT relation이 모두 0인 target이다. Abstention은
+`Case.nodes`에 넣지 않으므로 `engine.py`는 color나 cluster를 만들지 않는다. 채점기는
+이를 별도 판단 보류 결과로 기록하고 pairwise metric에서는 제외한다.
+
 ## 4. `run_cg_wl()` 전체 흐름
 
 ```text

@@ -2,7 +2,7 @@
   "case": "billing-client",
   "build": "O3S",
   "profile": "plain",
-  "schema_version": 5,
+  "schema_version": 6,
   "provenance": {
     "build_id": "58d8c8e65c2c4134b6e1de68b45de4a6",
     "source_sha256": "6d8d930c87f876d1f86f371fa25003e102d280fca6b714b796713f5fa5028faa",
@@ -13,14 +13,15 @@
     "track": "angr",
     "candidate_scope": "rust-nonstd",
     "backend": "radare2-capstone+angr",
-    "extractor_version": "call-evidence-v5+angr-9.2.165",
-    "raw_graph_sha256": "e8beef4b7b414d2e7480dda3f7bb5065daa539e4228881e77b1f4348037e4f01",
+    "extractor_version": "call-evidence-v6+angr-9.2.165",
+    "raw_graph_sha256": "634b72d98dc6becdf6e63873bf8ea4d5efe120a20210f9b311482ec776f9cf9a",
     "candidate_selection_sha256": "25bb7ebafe83de428d2d6b9f1596f0c1297e9e719f59a1b3f8b566331a8218e2",
-    "projection_config_sha256": "026703bddcd97f53c4d45fe8224a045ffbd388d2015f942c6ba4e40a846f986f",
+    "projection_config_sha256": "fdfc4732f58ccda0c1fad87c1dbd967458ad151907bbcfc7b6055851024ee5da",
     "anchor_policy": "role",
     "edge_policy": [
       "direct-immediate",
       "direct-tail",
+      "elf-relocation",
       "angr-cfg"
     ],
     "oracle_level": "candidate-and-boundary"
@@ -1290,7 +1291,7 @@
       }
     ]
   },
-  "note": "projected by graph_projector.py from bin/plain/billing-client.O3S.fixture.bin; track=angr; candidate_scope=rust-nonstd; root=FUN_00138800; users=users/rust-nonstd/plain/billing-client.O3S.users.json; the complete resolved outgoing closure of candidates and root plus direct external callers and their outgoing closure is emitted; anchors preserve every resolved edge whose target is selected; unresolved transfers remain analysis evidence and are not projected as call edges",
+  "note": "projected by graph_projector.py from bin/plain/billing-client.O3S.fixture.bin; track=angr; candidate_scope=rust-nonstd; root=FUN_00138800; users=users/rust-nonstd/plain/billing-client.O3S.users.json; the complete resolved outgoing closure of candidates and root plus direct external callers and their outgoing closure is emitted; 6 target functions with no resolved non-self relation are reported as abstentions and are not emitted; 1 exact ELF relocation targets without known function boundaries are emitted as opaque anchors; anchors preserve every resolved edge whose target is selected; unresolved transfers remain analysis evidence and are not projected as call edges",
   "nodes": [
     {
       "id": "FUN_00129940",
@@ -1299,7 +1300,7 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 2
@@ -1315,7 +1316,7 @@
         },
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -1326,7 +1327,7 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 1,
+        "resolved_out_calls": 2,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -1334,7 +1335,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -1679,7 +1680,7 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 25
@@ -1687,6 +1688,10 @@
       "calls": [
         {
           "target": "FUN_0012e390",
+          "count": 1
+        },
+        {
+          "target": "FUN_0015c8f0",
           "count": 1
         },
         {
@@ -1791,7 +1796,7 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 2,
+        "resolved_out_calls": 3,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -1800,6 +1805,10 @@
         {
           "target": "FUN_0012de20",
           "count": 2
+        },
+        {
+          "target": "FUN_00146790",
+          "count": 1
         }
       ]
     },
@@ -1853,7 +1862,7 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 13
@@ -1861,6 +1870,10 @@
       "calls": [
         {
           "target": "FUN_0012e390",
+          "count": 1
+        },
+        {
+          "target": "FUN_0015c8f0",
           "count": 1
         },
         {
@@ -1918,7 +1931,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -1934,35 +1947,12 @@
         },
         {
           "target": "FUN_001449a0",
-          "count": 1
-        }
-      ]
-    },
-    {
-      "id": "FUN_0012e060",
-      "type": "anchor",
-      "scored": false,
-      "anchor_kind": "outgoing",
-      "color_class": "ROLE:outgoing",
-      "observability": {
-        "resolved_out_calls": 3,
-        "unresolved_indirect_out_callsites": 0,
-        "address_taken_references": null,
-        "resolved_in_callers": 1
-      },
-      "calls": [
-        {
-          "target": "FUN_0012e390",
-          "count": 1
-        },
-        {
-          "target": "FUN_001449a0",
           "count": 2
         }
       ]
     },
     {
-      "id": "FUN_0012e100",
+      "id": "FUN_0012e060",
       "type": "anchor",
       "scored": false,
       "anchor_kind": "outgoing",
@@ -1979,12 +1969,35 @@
           "count": 1
         },
         {
+          "target": "FUN_001449a0",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "id": "FUN_0012e100",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "outgoing",
+      "color_class": "ROLE:outgoing",
+      "observability": {
+        "resolved_out_calls": 6,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
+        "resolved_in_callers": 1
+      },
+      "calls": [
+        {
+          "target": "FUN_0012e390",
+          "count": 1
+        },
+        {
           "target": "FUN_00143110",
           "count": 2
         },
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         },
         {
           "target": "FUN_001a8d8b",
@@ -1994,6 +2007,29 @@
     },
     {
       "id": "FUN_0012e1f0",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "outgoing",
+      "color_class": "ROLE:outgoing",
+      "observability": {
+        "resolved_out_calls": 5,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
+        "resolved_in_callers": 1
+      },
+      "calls": [
+        {
+          "target": "FUN_0012e390",
+          "count": 1
+        },
+        {
+          "target": "FUN_001449a0",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "id": "FUN_0012e2d0",
       "type": "anchor",
       "scored": false,
       "anchor_kind": "outgoing",
@@ -2010,35 +2046,12 @@
           "count": 1
         },
         {
-          "target": "FUN_001449a0",
-          "count": 3
-        }
-      ]
-    },
-    {
-      "id": "FUN_0012e2d0",
-      "type": "anchor",
-      "scored": false,
-      "anchor_kind": "outgoing",
-      "color_class": "ROLE:outgoing",
-      "observability": {
-        "resolved_out_calls": 3,
-        "unresolved_indirect_out_callsites": 0,
-        "address_taken_references": null,
-        "resolved_in_callers": 1
-      },
-      "calls": [
-        {
-          "target": "FUN_0012e390",
-          "count": 1
-        },
-        {
           "target": "FUN_0012e6b0",
           "count": 1
         },
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -2049,7 +2062,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -2065,7 +2078,7 @@
         },
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -2076,7 +2089,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 1,
         "address_taken_references": null,
         "resolved_in_callers": 14
@@ -2084,7 +2097,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 3
+          "count": 4
         }
       ]
     },
@@ -2118,7 +2131,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 4,
+        "resolved_out_calls": 5,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -2130,7 +2143,7 @@
         },
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         },
         {
           "target": "FUN_001a8d8b",
@@ -2145,7 +2158,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 2,
+        "resolved_out_calls": 3,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -2153,7 +2166,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 2
+          "count": 3
         }
       ]
     },
@@ -2164,7 +2177,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 6,
+        "resolved_out_calls": 7,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 3
@@ -2176,7 +2189,7 @@
         },
         {
           "target": "FUN_001449a0",
-          "count": 3
+          "count": 4
         },
         {
           "target": "FUN_001a8d8b",
@@ -3023,7 +3036,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 1,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -3031,7 +3044,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 3
+          "count": 4
         }
       ]
     },
@@ -3042,7 +3055,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 1,
+        "resolved_out_calls": 2,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -3050,7 +3063,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -3080,7 +3093,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 2,
+        "resolved_out_calls": 3,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -3088,7 +3101,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 2
+          "count": 3
         }
       ]
     },
@@ -3333,7 +3346,7 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 5,
+        "resolved_out_calls": 6,
         "unresolved_indirect_out_callsites": 1,
         "address_taken_references": null,
         "resolved_in_callers": 2
@@ -3341,7 +3354,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 5
+          "count": 6
         }
       ]
     },
@@ -3352,7 +3365,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 5,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 2
@@ -3368,7 +3381,7 @@
         },
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 3
         }
       ]
     },
@@ -3379,10 +3392,10 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 7,
+        "resolved_out_calls": 8,
         "unresolved_indirect_out_callsites": 1,
         "address_taken_references": null,
-        "resolved_in_callers": 2
+        "resolved_in_callers": 1
       },
       "calls": [
         {
@@ -3399,7 +3412,7 @@
         },
         {
           "target": "FUN_001449a0",
-          "count": 4
+          "count": 5
         }
       ]
     },
@@ -3410,7 +3423,7 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 6,
+        "resolved_out_calls": 7,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -3418,7 +3431,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 5
+          "count": 6
         },
         {
           "target": "FUN_001579d0",
@@ -3433,7 +3446,7 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 4,
+        "resolved_out_calls": 5,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 2
@@ -3441,7 +3454,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 4
+          "count": 5
         }
       ]
     },
@@ -3521,7 +3534,7 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 1,
+        "resolved_out_calls": 2,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -3529,7 +3542,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -3540,7 +3553,7 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 4,
+        "resolved_out_calls": 5,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -3548,7 +3561,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 3
+          "count": 4
         },
         {
           "target": "FUN_001579d0",
@@ -3586,7 +3599,7 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 2,
+        "resolved_out_calls": 3,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -3598,7 +3611,7 @@
         },
         {
           "target": "FUN_0018fca0",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -4047,7 +4060,7 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 1,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -4055,7 +4068,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 3
+          "count": 4
         }
       ]
     },
@@ -4116,7 +4129,7 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 1,
+        "resolved_out_calls": 2,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -4124,7 +4137,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -4135,7 +4148,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 4,
+        "resolved_out_calls": 5,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 4
@@ -4147,7 +4160,7 @@
         },
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         },
         {
           "target": "FUN_001a8d8b",
@@ -4474,10 +4487,10 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 8,
+        "resolved_out_calls": 9,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 3
+        "resolved_in_callers": 2
       },
       "calls": [
         {
@@ -4498,7 +4511,7 @@
         },
         {
           "target": "FUN_001449a0",
-          "count": 2
+          "count": 3
         },
         {
           "target": "FUN_001a8d8b",
@@ -4960,12 +4973,17 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 0
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_00156410",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_001406c0",
@@ -4974,12 +4992,17 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 0
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_00156030",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_001406d0",
@@ -4988,12 +5011,17 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 0
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_00155ff0",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_001406e0",
@@ -5181,7 +5209,7 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 5,
+        "resolved_out_calls": 6,
         "unresolved_indirect_out_callsites": 1,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -5189,7 +5217,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 5
+          "count": 6
         }
       ]
     },
@@ -5200,10 +5228,10 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 10,
+        "resolved_out_calls": 11,
         "unresolved_indirect_out_callsites": 1,
         "address_taken_references": null,
-        "resolved_in_callers": 2
+        "resolved_in_callers": 1
       },
       "calls": [
         {
@@ -5216,7 +5244,7 @@
         },
         {
           "target": "FUN_001449a0",
-          "count": 8
+          "count": 9
         }
       ]
     },
@@ -5227,7 +5255,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 2,
+        "resolved_out_calls": 3,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -5235,7 +5263,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 2
+          "count": 3
         }
       ]
     },
@@ -5454,7 +5482,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 5,
+        "resolved_out_calls": 6,
         "unresolved_indirect_out_callsites": 1,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -5462,7 +5490,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 5
+          "count": 6
         }
       ]
     },
@@ -5473,7 +5501,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -5481,7 +5509,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 3
+          "count": 4
         }
       ]
     },
@@ -5492,7 +5520,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 2
@@ -5500,7 +5528,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 3
+          "count": 4
         }
       ]
     },
@@ -5534,7 +5562,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 4,
+        "resolved_out_calls": 5,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -5542,7 +5570,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 3
+          "count": 4
         },
         {
           "target": "FUN_001579d0",
@@ -5557,7 +5585,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 4,
+        "resolved_out_calls": 5,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -5569,7 +5597,7 @@
         },
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         },
         {
           "target": "FUN_001a8d8b",
@@ -5611,7 +5639,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 2,
+        "resolved_out_calls": 3,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -5619,7 +5647,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 2
+          "count": 3
         }
       ]
     },
@@ -5659,13 +5687,32 @@
       ]
     },
     {
+      "id": "FUN_00142880",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "incoming",
+      "color_class": "ROLE:incoming",
+      "observability": {
+        "resolved_out_calls": 1,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
+        "resolved_in_callers": 0
+      },
+      "calls": [
+        {
+          "target": "FUN_00162710",
+          "count": 1
+        }
+      ]
+    },
+    {
       "id": "FUN_001428a0",
       "type": "anchor",
       "scored": false,
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -5681,7 +5728,7 @@
         },
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -5692,7 +5739,7 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 1,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -5700,7 +5747,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 3
+          "count": 4
         }
       ]
     },
@@ -5882,7 +5929,7 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -5898,7 +5945,7 @@
         },
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -5935,7 +5982,7 @@
         "resolved_out_calls": 6,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 7
+        "resolved_in_callers": 6
       },
       "calls": [
         {
@@ -6197,12 +6244,17 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 0
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_00162800",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_001440d0",
@@ -6211,12 +6263,17 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 0
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_001a2880",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_001440f0",
@@ -6225,12 +6282,17 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 0
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_00162860",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_00144100",
@@ -6239,12 +6301,17 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 0
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_00162820",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_00144110",
@@ -6253,12 +6320,17 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 0
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_00162840",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_00144120",
@@ -6267,12 +6339,17 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 0
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_001627e0",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_00144130",
@@ -6281,12 +6358,17 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 0
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_00162880",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_00144140",
@@ -6295,12 +6377,17 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 0
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_001a2880",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_00144160",
@@ -6309,12 +6396,17 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 0
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_001a2880",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_00144180",
@@ -6323,7 +6415,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 2
@@ -6331,7 +6423,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 3
+          "count": 4
         }
       ]
     },
@@ -6365,7 +6457,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 1,
+        "resolved_out_calls": 2,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -6373,12 +6465,35 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         }
       ]
     },
     {
       "id": "FUN_00144360",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "outgoing",
+      "color_class": "ROLE:outgoing",
+      "observability": {
+        "resolved_out_calls": 3,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
+        "resolved_in_callers": 1
+      },
+      "calls": [
+        {
+          "target": "FUN_0013fc60",
+          "count": 1
+        },
+        {
+          "target": "FUN_001449a0",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "id": "FUN_001443d0",
       "type": "anchor",
       "scored": false,
       "anchor_kind": "outgoing",
@@ -6391,31 +6506,8 @@
       },
       "calls": [
         {
-          "target": "FUN_0013fc60",
-          "count": 1
-        },
-        {
           "target": "FUN_001449a0",
-          "count": 1
-        }
-      ]
-    },
-    {
-      "id": "FUN_001443d0",
-      "type": "anchor",
-      "scored": false,
-      "anchor_kind": "outgoing",
-      "color_class": "ROLE:outgoing",
-      "observability": {
-        "resolved_out_calls": 1,
-        "unresolved_indirect_out_callsites": 0,
-        "address_taken_references": null,
-        "resolved_in_callers": 1
-      },
-      "calls": [
-        {
-          "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -6426,7 +6518,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 4,
+        "resolved_out_calls": 5,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 2
@@ -6438,7 +6530,7 @@
         },
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         },
         {
           "target": "FUN_001a8d8b",
@@ -6453,7 +6545,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 2,
+        "resolved_out_calls": 3,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -6461,7 +6553,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 2
+          "count": 3
         }
       ]
     },
@@ -6526,7 +6618,7 @@
         "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 89
+        "resolved_in_callers": 95
       },
       "calls": [
         {
@@ -6545,7 +6637,7 @@
         "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 276
+        "resolved_in_callers": 297
       },
       "calls": [
         {
@@ -6564,7 +6656,7 @@
         "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 13
+        "resolved_in_callers": 17
       },
       "calls": [
         {
@@ -6602,7 +6694,7 @@
         "resolved_out_calls": 0,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 92
+        "resolved_in_callers": 97
       },
       "calls": []
     },
@@ -6926,7 +7018,7 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 32
@@ -6934,6 +7026,10 @@
       "calls": [
         {
           "target": "FUN_00146de0",
+          "count": 1
+        },
+        {
+          "target": "FUN_0015c8f0",
           "count": 1
         },
         {
@@ -6953,7 +7049,7 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 2
@@ -6965,6 +7061,10 @@
         },
         {
           "target": "FUN_00145f60",
+          "count": 1
+        },
+        {
+          "target": "FUN_00146630",
           "count": 1
         },
         {
@@ -7038,12 +7138,16 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 2,
+        "resolved_out_calls": 3,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 4
       },
       "calls": [
+        {
+          "target": "FUN_00146790",
+          "count": 1
+        },
         {
           "target": "FUN_00146840",
           "count": 2
@@ -7130,7 +7234,7 @@
         "resolved_out_calls": 2,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 1
+        "resolved_in_callers": 2
       },
       "calls": [
         {
@@ -7153,7 +7257,7 @@
         "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 0
+        "resolved_in_callers": 2
       },
       "calls": [
         {
@@ -7169,7 +7273,7 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 16
@@ -7177,6 +7281,10 @@
       "calls": [
         {
           "target": "FUN_00146de0",
+          "count": 1
+        },
+        {
+          "target": "FUN_0015c8f0",
           "count": 1
         },
         {
@@ -7234,7 +7342,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -7242,7 +7350,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         },
         {
           "target": "FUN_00146de0",
@@ -7261,7 +7369,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -7269,7 +7377,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         },
         {
           "target": "FUN_00146de0",
@@ -7288,7 +7396,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -7296,7 +7404,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         },
         {
           "target": "FUN_00146de0",
@@ -7315,7 +7423,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -7323,7 +7431,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         },
         {
           "target": "FUN_00146de0",
@@ -7342,7 +7450,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 5,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -7350,7 +7458,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 2
+          "count": 4
         },
         {
           "target": "FUN_00146de0",
@@ -7365,7 +7473,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -7373,7 +7481,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         },
         {
           "target": "FUN_00146de0",
@@ -7392,7 +7500,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 4,
+        "resolved_out_calls": 5,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -7400,7 +7508,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 3
+          "count": 4
         },
         {
           "target": "FUN_00146de0",
@@ -7415,7 +7523,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -7423,7 +7531,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         },
         {
           "target": "FUN_00146de0",
@@ -7442,7 +7550,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 1,
         "address_taken_references": null,
         "resolved_in_callers": 18
@@ -7450,7 +7558,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 3
+          "count": 4
         }
       ]
     },
@@ -7461,7 +7569,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 4,
+        "resolved_out_calls": 5,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 5
@@ -7469,7 +7577,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 4
+          "count": 5
         }
       ]
     },
@@ -7549,7 +7657,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 2,
+        "resolved_out_calls": 3,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -7557,7 +7665,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 2
+          "count": 3
         }
       ]
     },
@@ -9227,12 +9335,17 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 0
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_001a2880",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_00155810",
@@ -9264,7 +9377,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 5,
+        "resolved_out_calls": 6,
         "unresolved_indirect_out_callsites": 1,
         "address_taken_references": null,
         "resolved_in_callers": 5
@@ -9272,7 +9385,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 5
+          "count": 6
         }
       ]
     },
@@ -9283,7 +9396,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 4
@@ -9291,7 +9404,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 3
+          "count": 4
         }
       ]
     },
@@ -9302,7 +9415,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 4,
+        "resolved_out_calls": 5,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 2
@@ -9310,7 +9423,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 4
+          "count": 5
         }
       ]
     },
@@ -9321,7 +9434,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 4,
+        "resolved_out_calls": 5,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -9329,7 +9442,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 3
+          "count": 4
         },
         {
           "target": "FUN_001579d0",
@@ -9344,7 +9457,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 1,
+        "resolved_out_calls": 2,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -9352,7 +9465,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -9363,7 +9476,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 2,
+        "resolved_out_calls": 3,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -9371,7 +9484,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 2
+          "count": 3
         }
       ]
     },
@@ -9474,12 +9587,17 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 0
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_001a2880",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_00155ff0",
@@ -9488,12 +9606,17 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 0
+        "resolved_in_callers": 1
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_001a2880",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_00156010",
@@ -9502,12 +9625,17 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 0
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_001a2880",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_00156030",
@@ -9516,12 +9644,17 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 0
+        "resolved_in_callers": 1
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_001a2880",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_00156050",
@@ -9572,12 +9705,17 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 0
+        "resolved_in_callers": 1
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_001a2880",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_00156430",
@@ -9605,12 +9743,17 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 0
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_001a2880",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_00156510",
@@ -9686,8 +9829,8 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 3,
-        "unresolved_indirect_out_callsites": 1,
+        "resolved_out_calls": 4,
+        "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 2
       },
@@ -9702,6 +9845,10 @@
         },
         {
           "target": "FUN_001a8f60",
+          "count": 1
+        },
+        {
+          "target": "FUN_001aa0e0",
           "count": 1
         }
       ]
@@ -9748,7 +9895,7 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 5,
+        "resolved_out_calls": 6,
         "unresolved_indirect_out_callsites": 1,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -9756,7 +9903,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 5
+          "count": 6
         }
       ]
     },
@@ -9767,15 +9914,15 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 10,
+        "resolved_out_calls": 11,
         "unresolved_indirect_out_callsites": 1,
         "address_taken_references": null,
-        "resolved_in_callers": 3
+        "resolved_in_callers": 2
       },
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 8
+          "count": 9
         },
         {
           "target": "FUN_00156dc0",
@@ -9794,7 +9941,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 2,
+        "resolved_out_calls": 3,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -9802,7 +9949,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 2
+          "count": 3
         }
       ]
     },
@@ -9953,18 +10100,42 @@
       ]
     },
     {
+      "id": "FUN_00157760",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "incoming",
+      "color_class": "ROLE:incoming",
+      "observability": {
+        "resolved_out_calls": 1,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
+        "resolved_in_callers": 0
+      },
+      "calls": [
+        {
+          "target": "FUN_0015cd80",
+          "count": 1
+        }
+      ]
+    },
+    {
       "id": "FUN_00157770",
       "type": "user",
       "scored": true,
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 0
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_00162860",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_00157780",
@@ -9973,12 +10144,17 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 0
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_001627e0",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_00157790",
@@ -9987,12 +10163,17 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 0
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_00162800",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_001577a0",
@@ -10001,12 +10182,17 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 0
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_00162840",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_001577b0",
@@ -10015,12 +10201,17 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 0
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_001a2880",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_001577d0",
@@ -10029,12 +10220,17 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 0
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_00162880",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_001577e0",
@@ -10043,34 +10239,20 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 0
       },
-      "calls": []
-    },
-    {
-      "id": "FUN_00157800",
-      "type": "anchor",
-      "scored": false,
-      "anchor_kind": "outgoing",
-      "color_class": "ROLE:outgoing",
-      "observability": {
-        "resolved_out_calls": 1,
-        "unresolved_indirect_out_callsites": 0,
-        "address_taken_references": null,
-        "resolved_in_callers": 1
-      },
       "calls": [
         {
-          "target": "FUN_001449a0",
+          "target": "FUN_001a2880",
           "count": 1
         }
       ]
     },
     {
-      "id": "FUN_00157840",
+      "id": "FUN_00157800",
       "type": "anchor",
       "scored": false,
       "anchor_kind": "outgoing",
@@ -10085,6 +10267,25 @@
         {
           "target": "FUN_001449a0",
           "count": 2
+        }
+      ]
+    },
+    {
+      "id": "FUN_00157840",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "outgoing",
+      "color_class": "ROLE:outgoing",
+      "observability": {
+        "resolved_out_calls": 3,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
+        "resolved_in_callers": 1
+      },
+      "calls": [
+        {
+          "target": "FUN_001449a0",
+          "count": 3
         }
       ]
     },
@@ -10124,18 +10325,42 @@
       ]
     },
     {
+      "id": "FUN_00157980",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "incoming",
+      "color_class": "ROLE:incoming",
+      "observability": {
+        "resolved_out_calls": 1,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
+        "resolved_in_callers": 0
+      },
+      "calls": [
+        {
+          "target": "FUN_00158200",
+          "count": 1
+        }
+      ]
+    },
+    {
       "id": "FUN_00157990",
       "type": "anchor",
       "scored": false,
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_001449a0",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_001579d0",
@@ -10144,12 +10369,16 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 1,
+        "resolved_out_calls": 2,
         "unresolved_indirect_out_callsites": 1,
         "address_taken_references": null,
         "resolved_in_callers": 5
       },
       "calls": [
+        {
+          "target": "FUN_001449a0",
+          "count": 1
+        },
         {
           "target": "FUN_00157990",
           "count": 1
@@ -10343,7 +10572,7 @@
         "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 2
+        "resolved_in_callers": 1
       },
       "calls": [
         {
@@ -10359,12 +10588,17 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 0
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_001a2880",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_00158090",
@@ -10386,18 +10620,61 @@
       ]
     },
     {
+      "id": "FUN_001581a0",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "incoming",
+      "color_class": "ROLE:incoming",
+      "observability": {
+        "resolved_out_calls": 1,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
+        "resolved_in_callers": 0
+      },
+      "calls": [
+        {
+          "target": "FUN_00158530",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "FUN_001581b0",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "incoming",
+      "color_class": "ROLE:incoming",
+      "observability": {
+        "resolved_out_calls": 1,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
+        "resolved_in_callers": 0
+      },
+      "calls": [
+        {
+          "target": "FUN_001583f0",
+          "count": 1
+        }
+      ]
+    },
+    {
       "id": "FUN_001581c0",
       "type": "user",
       "scored": true,
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 0
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_001a2880",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_00158200",
@@ -10409,7 +10686,7 @@
         "resolved_out_calls": 6,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 0
+        "resolved_in_callers": 1
       },
       "calls": [
         {
@@ -10428,7 +10705,7 @@
         "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 0
+        "resolved_in_callers": 1
       },
       "calls": [
         {
@@ -10447,7 +10724,7 @@
         "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 0
+        "resolved_in_callers": 1
       },
       "calls": [
         {
@@ -10530,26 +10807,26 @@
       ]
     },
     {
-      "id": "FUN_00158bd0",
+      "id": "FUN_00158bb0",
       "type": "anchor",
       "scored": false,
-      "anchor_kind": "outgoing",
-      "color_class": "ROLE:outgoing",
+      "anchor_kind": "incoming",
+      "color_class": "ROLE:incoming",
       "observability": {
         "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 1
+        "resolved_in_callers": 0
       },
       "calls": [
         {
-          "target": "FUN_001449a0",
+          "target": "FUN_00162710",
           "count": 1
         }
       ]
     },
     {
-      "id": "FUN_00158c10",
+      "id": "FUN_00158bd0",
       "type": "anchor",
       "scored": false,
       "anchor_kind": "outgoing",
@@ -10564,6 +10841,25 @@
         {
           "target": "FUN_001449a0",
           "count": 2
+        }
+      ]
+    },
+    {
+      "id": "FUN_00158c10",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "outgoing",
+      "color_class": "ROLE:outgoing",
+      "observability": {
+        "resolved_out_calls": 3,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
+        "resolved_in_callers": 1
+      },
+      "calls": [
+        {
+          "target": "FUN_001449a0",
+          "count": 3
         }
       ]
     },
@@ -10717,7 +11013,7 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 1,
+        "resolved_out_calls": 2,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -10725,7 +11021,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -10956,7 +11252,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 5,
+        "resolved_out_calls": 6,
         "unresolved_indirect_out_callsites": 1,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -10964,7 +11260,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 5
+          "count": 6
         }
       ]
     },
@@ -11104,7 +11400,7 @@
         "resolved_out_calls": 5,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 3
+        "resolved_in_callers": 9
       },
       "calls": [
         {
@@ -11139,7 +11435,7 @@
         "resolved_out_calls": 5,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 4
+        "resolved_in_callers": 9
       },
       "calls": [
         {
@@ -11171,7 +11467,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 1,
         "address_taken_references": null,
         "resolved_in_callers": 3
@@ -11179,7 +11475,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 3
+          "count": 4
         }
       ]
     },
@@ -11221,12 +11517,16 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 1,
+        "resolved_out_calls": 2,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 0
+        "resolved_in_callers": 1
       },
       "calls": [
+        {
+          "target": "FUN_0015cf50",
+          "count": 1
+        },
         {
           "target": "FUN_001a0f80",
           "count": 1
@@ -11313,12 +11613,21 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 25,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 1
+        "resolved_in_callers": 2
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_0018eb80",
+          "count": 1
+        },
+        {
+          "target": "FUN_001a2880",
+          "count": 24
+        }
+      ]
     },
     {
       "id": "FUN_0015d1b0",
@@ -11327,7 +11636,7 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 0
@@ -11343,6 +11652,10 @@
         },
         {
           "target": "FUN_001a0f80",
+          "count": 1
+        },
+        {
+          "target": "FUN_001a2880",
           "count": 1
         }
       ]
@@ -11486,12 +11799,16 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 2,
         "address_taken_references": null,
         "resolved_in_callers": 1
       },
       "calls": [
+        {
+          "target": "FUN_0015c8f0",
+          "count": 1
+        },
         {
           "target": "FUN_0015e230",
           "count": 1
@@ -11550,7 +11867,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 1,
         "address_taken_references": null,
         "resolved_in_callers": 5
@@ -11558,7 +11875,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 3
+          "count": 4
         }
       ]
     },
@@ -11692,7 +12009,7 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 13,
+        "resolved_out_calls": 14,
         "unresolved_indirect_out_callsites": 1,
         "address_taken_references": null,
         "resolved_in_callers": 2
@@ -11705,6 +12022,10 @@
         {
           "target": "FUN_0015b680",
           "count": 6
+        },
+        {
+          "target": "FUN_0015c860",
+          "count": 1
         },
         {
           "target": "FUN_0015f4d0",
@@ -11727,7 +12048,7 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 5,
+        "resolved_out_calls": 6,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 2
@@ -11736,6 +12057,10 @@
         {
           "target": "FUN_0015b680",
           "count": 3
+        },
+        {
+          "target": "FUN_0015c860",
+          "count": 1
         },
         {
           "target": "FUN_0015f950",
@@ -11750,7 +12075,7 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 4,
+        "resolved_out_calls": 5,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -11759,6 +12084,10 @@
         {
           "target": "FUN_0015b680",
           "count": 2
+        },
+        {
+          "target": "FUN_0015c860",
+          "count": 1
         },
         {
           "target": "FUN_0015f250",
@@ -11777,7 +12106,7 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 6,
+        "resolved_out_calls": 7,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -11786,6 +12115,10 @@
         {
           "target": "FUN_0015b680",
           "count": 4
+        },
+        {
+          "target": "FUN_0015c860",
+          "count": 1
         },
         {
           "target": "FUN_0015f390",
@@ -11842,15 +12175,19 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 13,
+        "resolved_out_calls": 14,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 3
+        "resolved_in_callers": 2
       },
       "calls": [
         {
           "target": "FUN_0015b680",
           "count": 7
+        },
+        {
+          "target": "FUN_0015c860",
+          "count": 1
         },
         {
           "target": "FUN_0015ec70",
@@ -11881,15 +12218,19 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 14,
+        "resolved_out_calls": 15,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 3
+        "resolved_in_callers": 2
       },
       "calls": [
         {
           "target": "FUN_0015b680",
           "count": 5
+        },
+        {
+          "target": "FUN_0015c860",
+          "count": 1
         },
         {
           "target": "FUN_0015efe0",
@@ -11983,13 +12324,32 @@
       ]
     },
     {
+      "id": "FUN_001601c0",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "incoming",
+      "color_class": "ROLE:incoming",
+      "observability": {
+        "resolved_out_calls": 1,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
+        "resolved_in_callers": 0
+      },
+      "calls": [
+        {
+          "target": "FUN_00162710",
+          "count": 1
+        }
+      ]
+    },
+    {
       "id": "FUN_001601e0",
       "type": "user",
       "scored": true,
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 8,
+        "resolved_out_calls": 9,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 2
@@ -12001,7 +12361,7 @@
         },
         {
           "target": "FUN_0015c860",
-          "count": 1
+          "count": 2
         },
         {
           "target": "FUN_00161b00",
@@ -12024,7 +12384,7 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 8,
+        "resolved_out_calls": 9,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 2
@@ -12036,7 +12396,7 @@
         },
         {
           "target": "FUN_0015c860",
-          "count": 1
+          "count": 2
         },
         {
           "target": "FUN_00161b00",
@@ -12126,7 +12486,7 @@
       "color_class": null,
       "observability": {
         "resolved_out_calls": 1,
-        "unresolved_indirect_out_callsites": 0,
+        "unresolved_indirect_out_callsites": 1,
         "address_taken_references": null,
         "resolved_in_callers": 0
       },
@@ -12157,20 +12517,6 @@
       ]
     },
     {
-      "id": "FUN_001609b0",
-      "type": "user",
-      "scored": true,
-      "anchor_kind": null,
-      "color_class": null,
-      "observability": {
-        "resolved_out_calls": 0,
-        "unresolved_indirect_out_callsites": 0,
-        "address_taken_references": null,
-        "resolved_in_callers": 0
-      },
-      "calls": []
-    },
-    {
       "id": "FUN_00160b50",
       "type": "user",
       "scored": true,
@@ -12178,7 +12524,7 @@
       "color_class": null,
       "observability": {
         "resolved_out_calls": 1,
-        "unresolved_indirect_out_callsites": 0,
+        "unresolved_indirect_out_callsites": 1,
         "address_taken_references": null,
         "resolved_in_callers": 0
       },
@@ -12209,20 +12555,6 @@
       ]
     },
     {
-      "id": "FUN_00160bf0",
-      "type": "user",
-      "scored": true,
-      "anchor_kind": null,
-      "color_class": null,
-      "observability": {
-        "resolved_out_calls": 0,
-        "unresolved_indirect_out_callsites": 0,
-        "address_taken_references": null,
-        "resolved_in_callers": 0
-      },
-      "calls": []
-    },
-    {
       "id": "FUN_00160de0",
       "type": "user",
       "scored": true,
@@ -12230,7 +12562,7 @@
       "color_class": null,
       "observability": {
         "resolved_out_calls": 1,
-        "unresolved_indirect_out_callsites": 0,
+        "unresolved_indirect_out_callsites": 1,
         "address_taken_references": null,
         "resolved_in_callers": 0
       },
@@ -12240,34 +12572,6 @@
           "count": 1
         }
       ]
-    },
-    {
-      "id": "FUN_00160e40",
-      "type": "user",
-      "scored": true,
-      "anchor_kind": null,
-      "color_class": null,
-      "observability": {
-        "resolved_out_calls": 0,
-        "unresolved_indirect_out_callsites": 0,
-        "address_taken_references": null,
-        "resolved_in_callers": 0
-      },
-      "calls": []
-    },
-    {
-      "id": "FUN_001616e0",
-      "type": "user",
-      "scored": true,
-      "anchor_kind": null,
-      "color_class": null,
-      "observability": {
-        "resolved_out_calls": 0,
-        "unresolved_indirect_out_callsites": 0,
-        "address_taken_references": null,
-        "resolved_in_callers": 0
-      },
-      "calls": []
     },
     {
       "id": "FUN_00161b00",
@@ -12328,12 +12632,17 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 0
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_001a8f90",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_00162240",
@@ -12342,12 +12651,16 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 1,
+        "resolved_out_calls": 2,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 0
       },
       "calls": [
+        {
+          "target": "FUN_001a2880",
+          "count": 1
+        },
         {
           "target": "FUN_001a86a0",
           "count": 1
@@ -12361,12 +12674,17 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 0
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_001a2880",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_001622f0",
@@ -12402,7 +12720,7 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 5,
+        "resolved_out_calls": 14,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -12411,6 +12729,10 @@
         {
           "target": "FUN_001a0f80",
           "count": 5
+        },
+        {
+          "target": "FUN_001a2880",
+          "count": 9
         }
       ]
     },
@@ -12422,9 +12744,9 @@
       "color_class": null,
       "observability": {
         "resolved_out_calls": 0,
-        "unresolved_indirect_out_callsites": 0,
+        "unresolved_indirect_out_callsites": 1,
         "address_taken_references": null,
-        "resolved_in_callers": 0
+        "resolved_in_callers": 3
       },
       "calls": []
     },
@@ -12458,12 +12780,17 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 0
+        "resolved_in_callers": 2
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_001a2880",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_00162800",
@@ -12472,12 +12799,17 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 0
+        "resolved_in_callers": 2
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_001a2880",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_00162820",
@@ -12486,12 +12818,17 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 0
+        "resolved_in_callers": 1
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_001a2880",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_00162840",
@@ -12500,12 +12837,17 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 0
+        "resolved_in_callers": 2
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_001a2880",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_00162860",
@@ -12514,12 +12856,17 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 0
+        "resolved_in_callers": 2
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_001a2880",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_00162880",
@@ -12528,12 +12875,17 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 0
+        "resolved_in_callers": 2
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_001a2880",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_00162900",
@@ -12817,7 +13169,7 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 19,
+        "resolved_out_calls": 20,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 2
@@ -12829,7 +13181,7 @@
         },
         {
           "target": "FUN_001449a0",
-          "count": 4
+          "count": 5
         },
         {
           "target": "FUN_001449e0",
@@ -12876,8 +13228,8 @@
       "anchor_kind": "incoming",
       "color_class": "ROLE:incoming",
       "observability": {
-        "resolved_out_calls": 40,
-        "unresolved_indirect_out_callsites": 2,
+        "resolved_out_calls": 42,
+        "unresolved_indirect_out_callsites": 1,
         "address_taken_references": null,
         "resolved_in_callers": 1
       },
@@ -12888,7 +13240,7 @@
         },
         {
           "target": "FUN_001449a0",
-          "count": 12
+          "count": 14
         },
         {
           "target": "FUN_001449e0",
@@ -12972,15 +13324,20 @@
       "id": "FUN_00165330",
       "type": "anchor",
       "scored": false,
-      "anchor_kind": "context",
-      "color_class": "ROLE:context",
+      "anchor_kind": "incoming",
+      "color_class": "ROLE:incoming",
       "observability": {
-        "resolved_out_calls": 0,
-        "unresolved_indirect_out_callsites": 1,
+        "resolved_out_calls": 1,
+        "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_00194510",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_001653f0",
@@ -12989,18 +13346,34 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 2,
-        "unresolved_indirect_out_callsites": 4,
+        "resolved_out_calls": 6,
+        "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 3
       },
       "calls": [
         {
+          "target": "FUN_00144990",
+          "count": 1
+        },
+        {
           "target": "FUN_001449a0",
           "count": 1
         },
         {
+          "target": "FUN_001449e0",
+          "count": 1
+        },
+        {
+          "target": "FUN_00183090",
+          "count": 1
+        },
+        {
           "target": "FUN_001866e0",
+          "count": 1
+        },
+        {
+          "target": "FUN_0019f17b",
           "count": 1
         }
       ]
@@ -13009,11 +13382,11 @@
       "id": "FUN_00165b40",
       "type": "anchor",
       "scored": false,
-      "anchor_kind": "context",
-      "color_class": "ROLE:context",
+      "anchor_kind": "incoming",
+      "color_class": "ROLE:incoming",
       "observability": {
-        "resolved_out_calls": 3,
-        "unresolved_indirect_out_callsites": 7,
+        "resolved_out_calls": 7,
+        "unresolved_indirect_out_callsites": 3,
         "address_taken_references": null,
         "resolved_in_callers": 2
       },
@@ -13025,6 +13398,18 @@
         {
           "target": "FUN_0016a160",
           "count": 2
+        },
+        {
+          "target": "FUN_00194510",
+          "count": 2
+        },
+        {
+          "target": "FUN_0019c22d",
+          "count": 1
+        },
+        {
+          "target": "FUN_001a7160",
+          "count": 1
         }
       ]
     },
@@ -13709,7 +14094,7 @@
         "resolved_out_calls": 12,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 2
+        "resolved_in_callers": 5
       },
       "calls": [
         {
@@ -13923,6 +14308,37 @@
         "resolved_in_callers": 2
       },
       "calls": []
+    },
+    {
+      "id": "FUN_0016f800",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "context",
+      "color_class": "ROLE:context",
+      "observability": {
+        "resolved_out_calls": 7,
+        "unresolved_indirect_out_callsites": 1,
+        "address_taken_references": null,
+        "resolved_in_callers": 2
+      },
+      "calls": [
+        {
+          "target": "FUN_001449a0",
+          "count": 4
+        },
+        {
+          "target": "FUN_00170850",
+          "count": 1
+        },
+        {
+          "target": "FUN_00172ef0",
+          "count": 1
+        },
+        {
+          "target": "FUN_0019fbf0",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_0016f9c0",
@@ -14215,12 +14631,56 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 0,
-        "unresolved_indirect_out_callsites": 1,
+        "resolved_out_calls": 1,
+        "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 3
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_0016dd70",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "FUN_00170850",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "context",
+      "color_class": "ROLE:context",
+      "observability": {
+        "resolved_out_calls": 9,
+        "unresolved_indirect_out_callsites": 3,
+        "address_taken_references": null,
+        "resolved_in_callers": 1
+      },
+      "calls": [
+        {
+          "target": "FUN_00144990",
+          "count": 1
+        },
+        {
+          "target": "FUN_001449a0",
+          "count": 3
+        },
+        {
+          "target": "FUN_001449b0",
+          "count": 1
+        },
+        {
+          "target": "FUN_001449e0",
+          "count": 1
+        },
+        {
+          "target": "FUN_001866e0",
+          "count": 1
+        },
+        {
+          "target": "FUN_0019f17b",
+          "count": 2
+        }
+      ]
     },
     {
       "id": "FUN_00170a10",
@@ -14270,12 +14730,32 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 1,
-        "unresolved_indirect_out_callsites": 9,
+        "resolved_out_calls": 7,
+        "unresolved_indirect_out_callsites": 3,
         "address_taken_references": null,
         "resolved_in_callers": 2
       },
       "calls": [
+        {
+          "target": "FUN_00144990",
+          "count": 1
+        },
+        {
+          "target": "FUN_001449e0",
+          "count": 1
+        },
+        {
+          "target": "FUN_00173b80",
+          "count": 1
+        },
+        {
+          "target": "FUN_00173d20",
+          "count": 2
+        },
+        {
+          "target": "FUN_0019f17b",
+          "count": 1
+        },
         {
           "target": "FUN_001a8d8b",
           "count": 1
@@ -14289,18 +14769,30 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 3,
-        "unresolved_indirect_out_callsites": 9,
+        "resolved_out_calls": 8,
+        "unresolved_indirect_out_callsites": 4,
         "address_taken_references": null,
         "resolved_in_callers": 2
       },
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 2
+          "count": 4
+        },
+        {
+          "target": "FUN_0016dd70",
+          "count": 1
         },
         {
           "target": "FUN_00172f80",
+          "count": 1
+        },
+        {
+          "target": "FUN_0019ebe0",
+          "count": 1
+        },
+        {
+          "target": "FUN_0019ecf0",
           "count": 1
         }
       ]
@@ -14330,6 +14822,79 @@
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
+      },
+      "calls": []
+    },
+    {
+      "id": "FUN_001712a0",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "context",
+      "color_class": "ROLE:context",
+      "observability": {
+        "resolved_out_calls": 39,
+        "unresolved_indirect_out_callsites": 19,
+        "address_taken_references": null,
+        "resolved_in_callers": 3
+      },
+      "calls": [
+        {
+          "target": "FUN_00144990",
+          "count": 6
+        },
+        {
+          "target": "FUN_001449a0",
+          "count": 8
+        },
+        {
+          "target": "FUN_001449e0",
+          "count": 6
+        },
+        {
+          "target": "FUN_00173a90",
+          "count": 1
+        },
+        {
+          "target": "FUN_00175b40",
+          "count": 2
+        },
+        {
+          "target": "FUN_001778f0",
+          "count": 2
+        },
+        {
+          "target": "FUN_0019ee90",
+          "count": 6
+        },
+        {
+          "target": "FUN_001a85a0",
+          "count": 3
+        },
+        {
+          "target": "FUN_001a88d0",
+          "count": 2
+        },
+        {
+          "target": "FUN_001a8f40",
+          "count": 2
+        },
+        {
+          "target": "FUN_001a8f60",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "FUN_00172ef0",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "context",
+      "color_class": "ROLE:context",
+      "observability": {
+        "resolved_out_calls": 0,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
+        "resolved_in_callers": 2
       },
       "calls": []
     },
@@ -14366,7 +14931,7 @@
         "resolved_out_calls": 2,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 2
+        "resolved_in_callers": 1
       },
       "calls": [
         {
@@ -14562,7 +15127,7 @@
         "resolved_out_calls": 0,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 5
+        "resolved_in_callers": 8
       },
       "calls": []
     },
@@ -14576,11 +15141,30 @@
         "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 1
+        "resolved_in_callers": 3
       },
       "calls": [
         {
           "target": "FUN_001a8f60",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "FUN_00173d20",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "context",
+      "color_class": "ROLE:context",
+      "observability": {
+        "resolved_out_calls": 1,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
+        "resolved_in_callers": 3
+      },
+      "calls": [
+        {
+          "target": "FUN_001a8f40",
           "count": 1
         }
       ]
@@ -15043,7 +15627,7 @@
         "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 10
+        "resolved_in_callers": 12
       },
       "calls": [
         {
@@ -15062,7 +15646,7 @@
         "resolved_out_calls": 0,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 5
+        "resolved_in_callers": 8
       },
       "calls": []
     },
@@ -15281,12 +15865,17 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_00185f00",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_00176e70",
@@ -15388,7 +15977,7 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 5,
+        "resolved_out_calls": 6,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 3
@@ -15396,7 +15985,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 2
+          "count": 3
         },
         {
           "target": "FUN_00176ee0",
@@ -15415,7 +16004,7 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 6,
+        "resolved_out_calls": 7,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 2
@@ -15423,7 +16012,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         },
         {
           "target": "FUN_00176fe0",
@@ -15500,7 +16089,7 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 1,
+        "resolved_out_calls": 2,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -15508,7 +16097,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -15519,7 +16108,7 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 4,
+        "resolved_out_calls": 5,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -15527,7 +16116,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         },
         {
           "target": "FUN_00176ee0",
@@ -15546,7 +16135,7 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 6,
+        "resolved_out_calls": 7,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -15554,7 +16143,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         },
         {
           "target": "FUN_00176fe0",
@@ -15581,7 +16170,7 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 1,
+        "resolved_out_calls": 2,
         "unresolved_indirect_out_callsites": 1,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -15589,7 +16178,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -15627,7 +16216,7 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 2,
+        "resolved_out_calls": 3,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -15635,7 +16224,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 2
+          "count": 3
         }
       ]
     },
@@ -15646,7 +16235,7 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 2,
+        "resolved_out_calls": 3,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -15654,7 +16243,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 2
+          "count": 3
         }
       ]
     },
@@ -15679,7 +16268,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 9
@@ -15687,7 +16276,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 3
+          "count": 4
         }
       ]
     },
@@ -15698,7 +16287,7 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 2
@@ -15706,7 +16295,26 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 3
+          "count": 4
+        }
+      ]
+    },
+    {
+      "id": "FUN_001778f0",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "context",
+      "color_class": "ROLE:context",
+      "observability": {
+        "resolved_out_calls": 1,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
+        "resolved_in_callers": 3
+      },
+      "calls": [
+        {
+          "target": "FUN_00175b40",
+          "count": 1
         }
       ]
     },
@@ -15717,7 +16325,7 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 7,
+        "resolved_out_calls": 8,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 2
@@ -15725,7 +16333,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         },
         {
           "target": "FUN_00177250",
@@ -15756,7 +16364,7 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -15764,7 +16372,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 3
+          "count": 4
         }
       ]
     },
@@ -15817,7 +16425,7 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 1,
         "address_taken_references": null,
         "resolved_in_callers": 21
@@ -15825,7 +16433,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 3
+          "count": 4
         }
       ]
     },
@@ -15855,7 +16463,7 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 1,
+        "resolved_out_calls": 2,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -15863,7 +16471,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -15947,6 +16555,25 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
+        "resolved_out_calls": 2,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
+        "resolved_in_callers": 1
+      },
+      "calls": [
+        {
+          "target": "FUN_001449a0",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "id": "FUN_001780a0",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "context",
+      "color_class": "ROLE:context",
+      "observability": {
         "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
@@ -15958,20 +16585,6 @@
           "count": 1
         }
       ]
-    },
-    {
-      "id": "FUN_001780a0",
-      "type": "anchor",
-      "scored": false,
-      "anchor_kind": "context",
-      "color_class": "ROLE:context",
-      "observability": {
-        "resolved_out_calls": 0,
-        "unresolved_indirect_out_callsites": 0,
-        "address_taken_references": null,
-        "resolved_in_callers": 1
-      },
-      "calls": []
     },
     {
       "id": "FUN_001780c0",
@@ -15999,7 +16612,7 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 1,
+        "resolved_out_calls": 2,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -16007,7 +16620,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -16018,7 +16631,7 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 2,
+        "resolved_out_calls": 3,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 3
@@ -16026,7 +16639,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 2
+          "count": 3
         }
       ]
     },
@@ -16037,7 +16650,7 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 1,
+        "resolved_out_calls": 2,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 2
@@ -16045,7 +16658,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -16056,7 +16669,7 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 1,
+        "resolved_out_calls": 2,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -16064,7 +16677,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -16128,7 +16741,7 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 3
@@ -16136,7 +16749,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 3
+          "count": 4
         }
       ]
     },
@@ -16147,12 +16760,17 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_00173d20",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_00178710",
@@ -16208,8 +16826,8 @@
       "anchor_kind": "both",
       "color_class": "ROLE:both",
       "observability": {
-        "resolved_out_calls": 59,
-        "unresolved_indirect_out_callsites": 27,
+        "resolved_out_calls": 84,
+        "unresolved_indirect_out_callsites": 2,
         "address_taken_references": null,
         "resolved_in_callers": 3
       },
@@ -16220,11 +16838,11 @@
         },
         {
           "target": "FUN_001449a0",
-          "count": 7
+          "count": 21
         },
         {
           "target": "FUN_001449b0",
-          "count": 1
+          "count": 3
         },
         {
           "target": "FUN_001449e0",
@@ -16267,12 +16885,20 @@
           "count": 1
         },
         {
+          "target": "FUN_0017d630",
+          "count": 1
+        },
+        {
           "target": "FUN_00186010",
           "count": 1
         },
         {
-          "target": "FUN_001863c0",
+          "target": "FUN_00186270",
           "count": 1
+        },
+        {
+          "target": "FUN_001863c0",
+          "count": 4
         },
         {
           "target": "FUN_00190630",
@@ -16284,7 +16910,7 @@
         },
         {
           "target": "FUN_0019f17b",
-          "count": 4
+          "count": 7
         },
         {
           "target": "FUN_001a8d00",
@@ -16292,6 +16918,10 @@
         },
         {
           "target": "FUN_001a8d20",
+          "count": 1
+        },
+        {
+          "target": "FUN_001a8f60",
           "count": 1
         }
       ]
@@ -16303,8 +16933,8 @@
       "anchor_kind": "incoming",
       "color_class": "ROLE:incoming",
       "observability": {
-        "resolved_out_calls": 2,
-        "unresolved_indirect_out_callsites": 9,
+        "resolved_out_calls": 10,
+        "unresolved_indirect_out_callsites": 1,
         "address_taken_references": null,
         "resolved_in_callers": 2
       },
@@ -16314,8 +16944,215 @@
           "count": 1
         },
         {
+          "target": "FUN_0017d630",
+          "count": 1
+        },
+        {
+          "target": "FUN_001863c0",
+          "count": 2
+        },
+        {
           "target": "FUN_00191480",
           "count": 1
+        },
+        {
+          "target": "FUN_001a0f80",
+          "count": 4
+        },
+        {
+          "target": "FUN_001a2880",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "FUN_00179b0a",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "incoming",
+      "color_class": "ROLE:incoming",
+      "observability": {
+        "resolved_out_calls": 133,
+        "unresolved_indirect_out_callsites": 64,
+        "address_taken_references": null,
+        "resolved_in_callers": 0
+      },
+      "calls": [
+        {
+          "target": "FUN_00144990",
+          "count": 12
+        },
+        {
+          "target": "FUN_001449a0",
+          "count": 18
+        },
+        {
+          "target": "FUN_001449b0",
+          "count": 1
+        },
+        {
+          "target": "FUN_001449e0",
+          "count": 11
+        },
+        {
+          "target": "FUN_001635b0",
+          "count": 4
+        },
+        {
+          "target": "FUN_00163ed0",
+          "count": 1
+        },
+        {
+          "target": "FUN_0016a160",
+          "count": 2
+        },
+        {
+          "target": "FUN_0016db30",
+          "count": 3
+        },
+        {
+          "target": "FUN_0016dd70",
+          "count": 2
+        },
+        {
+          "target": "FUN_0016f800",
+          "count": 2
+        },
+        {
+          "target": "FUN_001712a0",
+          "count": 1
+        },
+        {
+          "target": "FUN_00173a90",
+          "count": 2
+        },
+        {
+          "target": "FUN_00173b80",
+          "count": 1
+        },
+        {
+          "target": "FUN_00173d20",
+          "count": 2
+        },
+        {
+          "target": "FUN_00175b30",
+          "count": 1
+        },
+        {
+          "target": "FUN_00175b40",
+          "count": 4
+        },
+        {
+          "target": "FUN_001768d0",
+          "count": 1
+        },
+        {
+          "target": "FUN_001769d0",
+          "count": 3
+        },
+        {
+          "target": "FUN_001778f0",
+          "count": 4
+        },
+        {
+          "target": "FUN_00177b90",
+          "count": 1
+        },
+        {
+          "target": "FUN_00178490",
+          "count": 2
+        },
+        {
+          "target": "FUN_00178710",
+          "count": 1
+        },
+        {
+          "target": "FUN_001787a0",
+          "count": 1
+        },
+        {
+          "target": "FUN_00183090",
+          "count": 1
+        },
+        {
+          "target": "FUN_001836ab",
+          "count": 3
+        },
+        {
+          "target": "FUN_001855c0",
+          "count": 2
+        },
+        {
+          "target": "FUN_00186270",
+          "count": 1
+        },
+        {
+          "target": "FUN_001862e0",
+          "count": 1
+        },
+        {
+          "target": "FUN_001866e0",
+          "count": 5
+        },
+        {
+          "target": "FUN_001907e0",
+          "count": 1
+        },
+        {
+          "target": "FUN_00194510",
+          "count": 3
+        },
+        {
+          "target": "FUN_0019c22d",
+          "count": 1
+        },
+        {
+          "target": "FUN_0019ebe0",
+          "count": 1
+        },
+        {
+          "target": "FUN_0019ecf0",
+          "count": 1
+        },
+        {
+          "target": "FUN_0019ee90",
+          "count": 6
+        },
+        {
+          "target": "FUN_0019f17b",
+          "count": 5
+        },
+        {
+          "target": "FUN_001a0f80",
+          "count": 2
+        },
+        {
+          "target": "FUN_001a7160",
+          "count": 1
+        },
+        {
+          "target": "FUN_001a85a0",
+          "count": 4
+        },
+        {
+          "target": "FUN_001a88d0",
+          "count": 3
+        },
+        {
+          "target": "FUN_001a8d8b",
+          "count": 1
+        },
+        {
+          "target": "FUN_001a8f03",
+          "count": 3
+        },
+        {
+          "target": "FUN_001a8f40",
+          "count": 3
+        },
+        {
+          "target": "FUN_001a8f60",
+          "count": 5
         }
       ]
     },
@@ -16326,12 +17163,16 @@
       "anchor_kind": "incoming",
       "color_class": "ROLE:incoming",
       "observability": {
-        "resolved_out_calls": 1,
-        "unresolved_indirect_out_callsites": 1,
+        "resolved_out_calls": 2,
+        "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 0
       },
       "calls": [
+        {
+          "target": "FUN_001449a0",
+          "count": 1
+        },
         {
           "target": "FUN_00191480",
           "count": 1
@@ -16345,12 +17186,17 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 0,
-        "unresolved_indirect_out_callsites": 7,
+        "resolved_out_calls": 6,
+        "unresolved_indirect_out_callsites": 1,
         "address_taken_references": null,
         "resolved_in_callers": 2
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_001449a0",
+          "count": 6
+        }
+      ]
     },
     {
       "id": "FUN_0017ac35",
@@ -16572,11 +17418,30 @@
         "resolved_out_calls": 3,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 2
+        "resolved_in_callers": 1
       },
       "calls": [
         {
           "target": "FUN_0017c5c0",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "id": "FUN_0017c680",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "context",
+      "color_class": "ROLE:context",
+      "observability": {
+        "resolved_out_calls": 3,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
+        "resolved_in_callers": 1
+      },
+      "calls": [
+        {
+          "target": "FUN_0017c680",
           "count": 3
         }
       ]
@@ -16591,7 +17456,7 @@
         "resolved_out_calls": 3,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 2
+        "resolved_in_callers": 1
       },
       "calls": [
         {
@@ -16610,11 +17475,30 @@
         "resolved_out_calls": 3,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 2
+        "resolved_in_callers": 1
       },
       "calls": [
         {
           "target": "FUN_0017c800",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "id": "FUN_0017c8b0",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "context",
+      "color_class": "ROLE:context",
+      "observability": {
+        "resolved_out_calls": 3,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
+        "resolved_in_callers": 1
+      },
+      "calls": [
+        {
+          "target": "FUN_0017c8b0",
           "count": 3
         }
       ]
@@ -16629,7 +17513,7 @@
         "resolved_out_calls": 3,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 3
+        "resolved_in_callers": 2
       },
       "calls": [
         {
@@ -16654,6 +17538,25 @@
     },
     {
       "id": "FUN_0017cbf0",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "context",
+      "color_class": "ROLE:context",
+      "observability": {
+        "resolved_out_calls": 1,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
+        "resolved_in_callers": 1
+      },
+      "calls": [
+        {
+          "target": "FUN_001a8550",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "FUN_0017cf70",
       "type": "anchor",
       "scored": false,
       "anchor_kind": "context",
@@ -16698,6 +17601,45 @@
         "resolved_in_callers": 2
       },
       "calls": []
+    },
+    {
+      "id": "FUN_0017d630",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "context",
+      "color_class": "ROLE:context",
+      "observability": {
+        "resolved_out_calls": 6,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
+        "resolved_in_callers": 2
+      },
+      "calls": [
+        {
+          "target": "FUN_00144990",
+          "count": 1
+        },
+        {
+          "target": "FUN_001449a0",
+          "count": 1
+        },
+        {
+          "target": "FUN_001449e0",
+          "count": 1
+        },
+        {
+          "target": "FUN_00178260",
+          "count": 1
+        },
+        {
+          "target": "FUN_0017f090",
+          "count": 1
+        },
+        {
+          "target": "FUN_0019f17b",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_0017d780",
@@ -16909,6 +17851,29 @@
       ]
     },
     {
+      "id": "FUN_0017f090",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "context",
+      "color_class": "ROLE:context",
+      "observability": {
+        "resolved_out_calls": 5,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
+        "resolved_in_callers": 2
+      },
+      "calls": [
+        {
+          "target": "FUN_00182640",
+          "count": 4
+        },
+        {
+          "target": "FUN_001a8570",
+          "count": 1
+        }
+      ]
+    },
+    {
       "id": "FUN_0017f710",
       "type": "anchor",
       "scored": false,
@@ -16941,7 +17906,7 @@
         "resolved_out_calls": 6,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 2
+        "resolved_in_callers": 1
       },
       "calls": [
         {
@@ -16980,7 +17945,7 @@
         "resolved_out_calls": 8,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 2
+        "resolved_in_callers": 1
       },
       "calls": [
         {
@@ -17023,7 +17988,7 @@
         "resolved_out_calls": 8,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 2
+        "resolved_in_callers": 1
       },
       "calls": [
         {
@@ -17066,7 +18031,7 @@
         "resolved_out_calls": 6,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 2
+        "resolved_in_callers": 1
       },
       "calls": [
         {
@@ -17096,7 +18061,46 @@
       ]
     },
     {
-      "id": "FUN_001836ab",
+      "id": "FUN_00182640",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "context",
+      "color_class": "ROLE:context",
+      "observability": {
+        "resolved_out_calls": 6,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
+        "resolved_in_callers": 1
+      },
+      "calls": [
+        {
+          "target": "FUN_0017c680",
+          "count": 1
+        },
+        {
+          "target": "FUN_0017f090",
+          "count": 1
+        },
+        {
+          "target": "FUN_00182640",
+          "count": 1
+        },
+        {
+          "target": "FUN_001a8550",
+          "count": 1
+        },
+        {
+          "target": "FUN_001a85a0",
+          "count": 1
+        },
+        {
+          "target": "FUN_001a8f60",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "FUN_00183090",
       "type": "anchor",
       "scored": false,
       "anchor_kind": "context",
@@ -17106,6 +18110,70 @@
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 2
+      },
+      "calls": [
+        {
+          "target": "FUN_00183290",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "FUN_00183190",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "context",
+      "color_class": "ROLE:context",
+      "observability": {
+        "resolved_out_calls": 0,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
+        "resolved_in_callers": 1
+      },
+      "calls": []
+    },
+    {
+      "id": "FUN_00183290",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "context",
+      "color_class": "ROLE:context",
+      "observability": {
+        "resolved_out_calls": 4,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
+        "resolved_in_callers": 1
+      },
+      "calls": [
+        {
+          "target": "FUN_0017c8b0",
+          "count": 1
+        },
+        {
+          "target": "FUN_0017cf70",
+          "count": 1
+        },
+        {
+          "target": "FUN_00183190",
+          "count": 1
+        },
+        {
+          "target": "FUN_00183290",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "FUN_001836ab",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "context",
+      "color_class": "ROLE:context",
+      "observability": {
+        "resolved_out_calls": 1,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
+        "resolved_in_callers": 4
       },
       "calls": [
         {
@@ -17228,21 +18296,121 @@
       ]
     },
     {
+      "id": "FUN_00184a70",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "context",
+      "color_class": "ROLE:context",
+      "observability": {
+        "resolved_out_calls": 4,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
+        "resolved_in_callers": 1
+      },
+      "calls": [
+        {
+          "target": "FUN_001a8f40",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "id": "FUN_00184dc0",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "context",
+      "color_class": "ROLE:context",
+      "observability": {
+        "resolved_out_calls": 3,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
+        "resolved_in_callers": 1
+      },
+      "calls": [
+        {
+          "target": "FUN_001a8f40",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "id": "FUN_00185180",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "context",
+      "color_class": "ROLE:context",
+      "observability": {
+        "resolved_out_calls": 4,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
+        "resolved_in_callers": 1
+      },
+      "calls": [
+        {
+          "target": "FUN_001449a0",
+          "count": 1
+        },
+        {
+          "target": "FUN_001a8f40",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "id": "FUN_001855c0",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "context",
+      "color_class": "ROLE:context",
+      "observability": {
+        "resolved_out_calls": 10,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
+        "resolved_in_callers": 2
+      },
+      "calls": [
+        {
+          "target": "FUN_001449a0",
+          "count": 2
+        },
+        {
+          "target": "FUN_00184a70",
+          "count": 2
+        },
+        {
+          "target": "FUN_00184dc0",
+          "count": 2
+        },
+        {
+          "target": "FUN_00185180",
+          "count": 1
+        },
+        {
+          "target": "FUN_001a8f40",
+          "count": 2
+        },
+        {
+          "target": "FUN_001a8f60",
+          "count": 1
+        }
+      ]
+    },
+    {
       "id": "FUN_00185e10",
       "type": "anchor",
       "scored": false,
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 5,
+        "resolved_out_calls": 6,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 9
+        "resolved_in_callers": 8
       },
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         },
         {
           "target": "FUN_00177eb0",
@@ -17265,15 +18433,15 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 1,
+        "resolved_out_calls": 2,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 3
+        "resolved_in_callers": 5
       },
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -17284,7 +18452,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 2,
+        "resolved_out_calls": 3,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 11
@@ -17292,7 +18460,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         },
         {
           "target": "FUN_00177d60",
@@ -17475,6 +18643,29 @@
         "resolved_out_calls": 2,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
+        "resolved_in_callers": 4
+      },
+      "calls": [
+        {
+          "target": "FUN_001865b0",
+          "count": 1
+        },
+        {
+          "target": "FUN_0019f17b",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "FUN_001862e0",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "context",
+      "color_class": "ROLE:context",
+      "observability": {
+        "resolved_out_calls": 2,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
         "resolved_in_callers": 2
       },
       "calls": [
@@ -17521,7 +18712,7 @@
         "resolved_out_calls": 2,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 5
+        "resolved_in_callers": 7
       },
       "calls": [
         {
@@ -18107,6 +19298,45 @@
       "calls": []
     },
     {
+      "id": "FUN_0018eb80",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "outgoing",
+      "color_class": "ROLE:outgoing",
+      "observability": {
+        "resolved_out_calls": 8,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
+        "resolved_in_callers": 2
+      },
+      "calls": [
+        {
+          "target": "FUN_001449a0",
+          "count": 2
+        },
+        {
+          "target": "FUN_0019ef40",
+          "count": 1
+        },
+        {
+          "target": "FUN_0019f4e0",
+          "count": 1
+        },
+        {
+          "target": "FUN_0019fab0",
+          "count": 1
+        },
+        {
+          "target": "FUN_001a0f80",
+          "count": 2
+        },
+        {
+          "target": "FUN_001a8f60",
+          "count": 1
+        }
+      ]
+    },
+    {
       "id": "FUN_0018ed80",
       "type": "anchor",
       "scored": false,
@@ -18326,6 +19556,37 @@
       "calls": [
         {
           "target": "FUN_0018ed80",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "FUN_0018fdb0",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "incoming",
+      "color_class": "ROLE:incoming",
+      "observability": {
+        "resolved_out_calls": 5,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
+        "resolved_in_callers": 0
+      },
+      "calls": [
+        {
+          "target": "FUN_0019a6ec",
+          "count": 1
+        },
+        {
+          "target": "FUN_0019fab0",
+          "count": 2
+        },
+        {
+          "target": "FUN_001a8080",
+          "count": 1
+        },
+        {
+          "target": "FUN_001a85a0",
           "count": 1
         }
       ]
@@ -18722,7 +19983,7 @@
         "resolved_out_calls": 24,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 2
+        "resolved_in_callers": 1
       },
       "calls": [
         {
@@ -18859,7 +20120,7 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 1,
+        "resolved_out_calls": 2,
         "unresolved_indirect_out_callsites": 1,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -18867,7 +20128,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -18878,7 +20139,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 1,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -18886,7 +20147,7 @@
       "calls": [
         {
           "target": "FUN_001449a0",
-          "count": 3
+          "count": 4
         }
       ]
     },
@@ -18900,37 +20161,28 @@
         "resolved_out_calls": 0,
         "unresolved_indirect_out_callsites": 1,
         "address_taken_references": null,
-        "resolved_in_callers": 2
+        "resolved_in_callers": 5
       },
       "calls": []
     },
     {
-      "id": "FUN_00194560",
-      "type": "user",
-      "scored": true,
-      "anchor_kind": null,
-      "color_class": null,
+      "id": "FUN_001948df",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "outgoing",
+      "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 0
+        "resolved_in_callers": 1
       },
-      "calls": []
-    },
-    {
-      "id": "FUN_00194730",
-      "type": "user",
-      "scored": true,
-      "anchor_kind": null,
-      "color_class": null,
-      "observability": {
-        "resolved_out_calls": 0,
-        "unresolved_indirect_out_callsites": 0,
-        "address_taken_references": null,
-        "resolved_in_callers": 0
-      },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_0019497a",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_00194943",
@@ -18939,7 +20191,7 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -18951,7 +20203,7 @@
         },
         {
           "target": "FUN_001960fb",
-          "count": 1
+          "count": 2
         },
         {
           "target": "FUN_001a8d8b",
@@ -19022,12 +20274,16 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 6,
+        "resolved_out_calls": 7,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
       },
       "calls": [
+        {
+          "target": "FUN_001948df",
+          "count": 1
+        },
         {
           "target": "FUN_00194943",
           "count": 1
@@ -19503,12 +20759,17 @@
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 11
+        "resolved_in_callers": 12
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_001449a0",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_00195bc5",
@@ -19720,12 +20981,17 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_00195b7f",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_0019610b",
@@ -19929,10 +21195,10 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 37,
+        "resolved_out_calls": 38,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 8
+        "resolved_in_callers": 7
       },
       "calls": [
         {
@@ -19973,7 +21239,7 @@
         },
         {
           "target": "FUN_0019fab0",
-          "count": 16
+          "count": 17
         },
         {
           "target": "FUN_0019fb10",
@@ -20000,10 +21266,10 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 31,
+        "resolved_out_calls": 32,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 7
+        "resolved_in_callers": 6
       },
       "calls": [
         {
@@ -20052,7 +21318,7 @@
         },
         {
           "target": "FUN_0019fab0",
-          "count": 16
+          "count": 17
         }
       ]
     },
@@ -20102,10 +21368,10 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 35,
+        "resolved_out_calls": 36,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 8
+        "resolved_in_callers": 7
       },
       "calls": [
         {
@@ -20154,7 +21420,7 @@
         },
         {
           "target": "FUN_0019fab0",
-          "count": 20
+          "count": 21
         }
       ]
     },
@@ -20165,7 +21431,7 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -20181,7 +21447,7 @@
         },
         {
           "target": "FUN_0019fab0",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -20192,7 +21458,7 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -20208,7 +21474,7 @@
         },
         {
           "target": "FUN_0019fab0",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -20219,7 +21485,7 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 3,
+        "resolved_out_calls": 4,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -20235,7 +21501,7 @@
         },
         {
           "target": "FUN_0019fab0",
-          "count": 1
+          "count": 2
         }
       ]
     },
@@ -20420,7 +21686,7 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 9,
+        "resolved_out_calls": 10,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -20440,7 +21706,7 @@
         },
         {
           "target": "FUN_0019fab0",
-          "count": 4
+          "count": 5
         },
         {
           "target": "FUN_001a0450",
@@ -20482,7 +21748,7 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 14,
+        "resolved_out_calls": 15,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -20502,7 +21768,7 @@
         },
         {
           "target": "FUN_0019fab0",
-          "count": 2
+          "count": 3
         },
         {
           "target": "FUN_001a88f0",
@@ -20529,7 +21795,7 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 5,
+        "resolved_out_calls": 6,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 4
@@ -20537,7 +21803,7 @@
       "calls": [
         {
           "target": "FUN_0019fab0",
-          "count": 3
+          "count": 4
         },
         {
           "target": "FUN_0019fb10",
@@ -20556,7 +21822,7 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 6,
+        "resolved_out_calls": 7,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -20576,7 +21842,7 @@
         },
         {
           "target": "FUN_001a8f90",
-          "count": 3
+          "count": 4
         }
       ]
     },
@@ -20590,7 +21856,7 @@
         "resolved_out_calls": 7,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 2
+        "resolved_in_callers": 1
       },
       "calls": [
         {
@@ -20622,7 +21888,7 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 8,
+        "resolved_out_calls": 9,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -20642,7 +21908,7 @@
         },
         {
           "target": "FUN_0019fab0",
-          "count": 4
+          "count": 5
         }
       ]
     },
@@ -20653,7 +21919,7 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 8,
+        "resolved_out_calls": 9,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
@@ -20673,7 +21939,7 @@
         },
         {
           "target": "FUN_0019fab0",
-          "count": 4
+          "count": 5
         }
       ]
     },
@@ -20684,10 +21950,10 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 10,
+        "resolved_out_calls": 11,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 2
+        "resolved_in_callers": 1
       },
       "calls": [
         {
@@ -20700,7 +21966,7 @@
         },
         {
           "target": "FUN_0019fab0",
-          "count": 6
+          "count": 7
         }
       ]
     },
@@ -20740,6 +22006,25 @@
         {
           "target": "FUN_001a8d9f",
           "count": 4
+        }
+      ]
+    },
+    {
+      "id": "FUN_0019a2f8",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "incoming",
+      "color_class": "ROLE:incoming",
+      "observability": {
+        "resolved_out_calls": 1,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
+        "resolved_in_callers": 0
+      },
+      "calls": [
+        {
+          "target": "FUN_0019ac43",
+          "count": 1
         }
       ]
     },
@@ -20832,7 +22117,7 @@
         "resolved_out_calls": 5,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 0
+        "resolved_in_callers": 1
       },
       "calls": [
         {
@@ -20856,7 +22141,7 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 6,
+        "resolved_out_calls": 7,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 3
@@ -20868,7 +22153,7 @@
         },
         {
           "target": "FUN_001a2880",
-          "count": 4
+          "count": 5
         },
         {
           "target": "FUN_001a8d9f",
@@ -20883,14 +22168,18 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 1,
+        "resolved_out_calls": 2,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 0
+        "resolved_in_callers": 1
       },
       "calls": [
         {
           "target": "FUN_001969ca",
+          "count": 1
+        },
+        {
+          "target": "FUN_0019ac9b",
           "count": 1
         }
       ]
@@ -20902,12 +22191,17 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 0
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_001a2880",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_0019ac9b",
@@ -20919,7 +22213,7 @@
         "resolved_out_calls": 19,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 0
+        "resolved_in_callers": 1
       },
       "calls": [
         {
@@ -20978,12 +22272,21 @@
       "anchor_kind": "context",
       "color_class": "ROLE:context",
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 2,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_001a7450",
+          "count": 1
+        },
+        {
+          "target": "FUN_001a7a40",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_0019bb6d",
@@ -20992,12 +22295,17 @@
       "anchor_kind": null,
       "color_class": null,
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
         "resolved_in_callers": 1
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_001a2880",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_0019bba0",
@@ -21042,7 +22350,7 @@
         "resolved_out_calls": 17,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 1
+        "resolved_in_callers": 3
       },
       "calls": [
         {
@@ -21204,6 +22512,25 @@
       "calls": []
     },
     {
+      "id": "FUN_0019ebe0",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "context",
+      "color_class": "ROLE:context",
+      "observability": {
+        "resolved_out_calls": 1,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
+        "resolved_in_callers": 2
+      },
+      "calls": [
+        {
+          "target": "FUN_0019ef40",
+          "count": 1
+        }
+      ]
+    },
+    {
       "id": "FUN_0019ec00",
       "type": "anchor",
       "scored": false,
@@ -21244,7 +22571,7 @@
         "resolved_out_calls": 6,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 13
+        "resolved_in_callers": 15
       },
       "calls": [
         {
@@ -21283,7 +22610,7 @@
         "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 26
+        "resolved_in_callers": 28
       },
       "calls": [
         {
@@ -21360,7 +22687,7 @@
         "resolved_out_calls": 2,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 94
+        "resolved_in_callers": 100
       },
       "calls": [
         {
@@ -21532,18 +22859,50 @@
       ]
     },
     {
+      "id": "FUN_0019f4e0",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "context",
+      "color_class": "ROLE:context",
+      "observability": {
+        "resolved_out_calls": 3,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
+        "resolved_in_callers": 2
+      },
+      "calls": [
+        {
+          "target": "FUN_00144990",
+          "count": 1
+        },
+        {
+          "target": "FUN_001449e0",
+          "count": 1
+        },
+        {
+          "target": "FUN_0019f17b",
+          "count": 1
+        }
+      ]
+    },
+    {
       "id": "FUN_0019fab0",
       "type": "anchor",
       "scored": false,
       "anchor_kind": "outgoing",
       "color_class": "ROLE:outgoing",
       "observability": {
-        "resolved_out_calls": 0,
+        "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 22
+        "resolved_in_callers": 38
       },
-      "calls": []
+      "calls": [
+        {
+          "target": "FUN_001a2440",
+          "count": 1
+        }
+      ]
     },
     {
       "id": "FUN_0019fb10",
@@ -21725,7 +23084,7 @@
         "resolved_out_calls": 0,
         "unresolved_indirect_out_callsites": 3,
         "address_taken_references": null,
-        "resolved_in_callers": 25
+        "resolved_in_callers": 41
       },
       "calls": []
     },
@@ -21776,7 +23135,7 @@
         "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 3,
         "address_taken_references": null,
-        "resolved_in_callers": 1
+        "resolved_in_callers": 8
       },
       "calls": [
         {
@@ -21793,9 +23152,9 @@
       "color_class": "ROLE:outgoing",
       "observability": {
         "resolved_out_calls": 0,
-        "unresolved_indirect_out_callsites": 0,
+        "unresolved_indirect_out_callsites": 1,
         "address_taken_references": null,
-        "resolved_in_callers": 9
+        "resolved_in_callers": 46
       },
       "calls": []
     },
@@ -21961,7 +23320,7 @@
         "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 10
+        "resolved_in_callers": 12
       },
       "calls": [
         {
@@ -22003,7 +23362,21 @@
         "resolved_out_calls": 0,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 2
+        "resolved_in_callers": 3
+      },
+      "calls": []
+    },
+    {
+      "id": "FUN_001a7a40",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "context",
+      "color_class": "ROLE:context",
+      "observability": {
+        "resolved_out_calls": 0,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
+        "resolved_in_callers": 1
       },
       "calls": []
     },
@@ -22125,7 +23498,7 @@
         "resolved_out_calls": 3,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 62
+        "resolved_in_callers": 65
       },
       "calls": [
         {
@@ -22261,7 +23634,7 @@
         "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 35
+        "resolved_in_callers": 38
       },
       "calls": [
         {
@@ -22412,7 +23785,7 @@
         "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 95
+        "resolved_in_callers": 97
       },
       "calls": [
         {
@@ -22492,7 +23865,7 @@
         "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 7
+        "resolved_in_callers": 9
       },
       "calls": [
         {
@@ -22530,7 +23903,7 @@
         "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 31
+        "resolved_in_callers": 34
       },
       "calls": [
         {
@@ -22549,7 +23922,7 @@
         "resolved_out_calls": 1,
         "unresolved_indirect_out_callsites": 0,
         "address_taken_references": null,
-        "resolved_in_callers": 50
+        "resolved_in_callers": 56
       },
       "calls": [
         {
@@ -22566,9 +23939,9 @@
       "color_class": "ROLE:outgoing",
       "observability": {
         "resolved_out_calls": 0,
-        "unresolved_indirect_out_callsites": 0,
+        "unresolved_indirect_out_callsites": 1,
         "address_taken_references": null,
-        "resolved_in_callers": 3
+        "resolved_in_callers": 4
       },
       "calls": []
     },
@@ -22585,6 +23958,52 @@
         "resolved_in_callers": 3
       },
       "calls": []
+    },
+    {
+      "id": "FUN_001aa0e0",
+      "type": "anchor",
+      "scored": false,
+      "anchor_kind": "outgoing",
+      "color_class": "ROLE:outgoing",
+      "observability": {
+        "resolved_out_calls": 0,
+        "unresolved_indirect_out_callsites": 0,
+        "address_taken_references": null,
+        "resolved_in_callers": 1
+      },
+      "calls": []
+    }
+  ],
+  "abstentions": [
+    {
+      "id": "FUN_001609b0",
+      "status": "abstain",
+      "reason": "no_resolved_nonself_in_or_out_edge"
+    },
+    {
+      "id": "FUN_00160bf0",
+      "status": "abstain",
+      "reason": "no_resolved_nonself_in_or_out_edge"
+    },
+    {
+      "id": "FUN_00160e40",
+      "status": "abstain",
+      "reason": "no_resolved_nonself_in_or_out_edge"
+    },
+    {
+      "id": "FUN_001616e0",
+      "status": "abstain",
+      "reason": "no_resolved_nonself_in_or_out_edge"
+    },
+    {
+      "id": "FUN_00194560",
+      "status": "abstain",
+      "reason": "no_resolved_nonself_in_or_out_edge"
+    },
+    {
+      "id": "FUN_00194730",
+      "status": "abstain",
+      "reason": "no_resolved_nonself_in_or_out_edge"
     }
   ]
 }

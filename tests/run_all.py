@@ -31,6 +31,7 @@ PYTHON_FILES = (
     "run_case.py",
     "run_summary.py",
     "compare_profiles.py",
+    "analysis/summary.py",
     "run_baseline.py",
     "tests/test_compile.py",
     "tests/test_engine.py",

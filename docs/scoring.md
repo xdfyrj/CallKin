@@ -87,7 +87,7 @@ Role policy fixture는 address fixture와 분리된다.
 fixtures/angr/role/rust-nonstd/plain/billing-client.O3S.fixture.json
 ```
 
-Schema v5 fixture를 채점하면 CLI와 결과 JSON에 track, candidate scope, raw/projection hash,
+Schema v5/v6 fixture를 채점하면 CLI와 결과 JSON에 track, candidate scope, raw/projection hash,
 candidate selection hash가 포함된다. Ground truth는 build에 속하고 track에는 속하지 않으므로 기존
 scope별 `ground_truth/<scope>/<profile>/...` 파일을 사용한다.
 
@@ -197,15 +197,22 @@ vs ground_truth=family_graph_03/O3S/min
 Case/build/profile이 같아도 `build_id` 또는 source/non-stripped/stripped SHA-256이
 다르면 서로 다른 build generation으로 보고 중단한다.
 
-### Member universe
+### Target universe
 
 ```text
 fixture의 scored=true node ID 집합
+union fixture.abstentions ID 집합
 ==
 GT의 모든 origin member ID 집합
 ```
 
-이 검사가 필요한 이유는 pair 수가 candidate 수에 따라 달라지기 때문이다.
+Schema v6에서 abstain target은 cluster나 pairwise metric에 넣지 않는다. 대신
+`scores.py`가 ID, symbol, origin, reason을 별도 출력한다. 따라서 이 결과는
+"관계 evidence가 있는 candidate에 대한 conditional grouping score"이고, target
+전체에 대한 강제 singleton 판정이 아니다.
+
+이 join 검사가 필요한 이유는 target 수가 candidate 수와 abstention 수의 합으로
+결정되기 때문이다.
 
 ```text
 13 candidates -> 13 * 12 / 2 = 78 pairs
@@ -370,6 +377,7 @@ RE = 4 / (4 + 6)
 
 ```text
 F1 = 2 * PR * RE / (PR + RE)
+   = 2TP / (2TP + FP + FN)
 ```
 
 Fg03 O3S:
@@ -380,6 +388,10 @@ F1 = 2 * 0.80 * 0.40 / (0.80 + 0.40)
    = 0.533...
    -> 출력 0.53
 ```
+
+비교할 grouped candidate pair가 하나도 없으면 F1은 `N/A`다. 비교 pair가 있고
+`TP=0, FP=0, FN>0`이면 Precision은 정의되지 않지만, 놓친 true pair가 있으므로 직접
+count 식으로 계산한 F1은 `0`이다.
 
 ## 9. ARI
 
@@ -425,13 +437,16 @@ ARI = (4 - 0.641025...) / (7.5 - 0.641025...)
 
 ## 10. 분모가 0인 경우
 
-Predicted same pair가 하나도 없으면 `TP + FP == 0`이다. 코드는 이 경우 PR을 `1.0`으로 둔다.
+현재 구현은 분모가 0인 지표를 억지로 `1.0`으로 두지 않는다.
 
-True same-origin pair가 하나도 없으면 `TP + FN == 0`이다. 코드는 이 경우 RE를 `1.0`으로 둔다.
+- `TP + FP == 0`이면 Precision(`PR`)은 `N/A`다.
+- `TP + FN == 0`이면 Recall(`RE`)은 `N/A`다.
+- grouped candidate pair 자체가 0개이면 F1과 ARI는 `N/A`다.
+- pair는 존재하지만 복원한 positive pair가 하나도 없으면 F1은 `0`이다.
 
-Node pair 자체가 없거나 partition denominator가 퇴화하면 ARI를 `1.0`으로 둔다.
-
-이는 계산 예외를 피하기 위한 명시적 convention이다. Singleton-only case를 실제 성능 1.0으로 해석해서는 안 되며 raw TP/FP/FN/TN과 candidate count를 함께 봐야 한다.
+따라서 `N/A`는 비교할 pair 자체가 없다는 뜻이고, F1 `0`은 비교할 pair는 있었지만
+positive pair를 복원하지 못했다는 뜻이다. raw `TP/FP/FN/TN`과 candidate 수를 함께
+확인해야 한다.
 
 ## 11. Predicted cluster report
 
@@ -517,10 +532,12 @@ Singleton이므로 within-origin pair는 없지만 `decoy_b`와 같은 predicted
 
 ```text
 case, build, profile, mode
-candidate_count, pair_count, rounds
+target_count, grouped_candidate_count, abstained_candidate_count
+pair_count, target_pair_count, rounds
 clusters
 origins
 pairwise score
+coverage and effective family-pair recall
 trace (`--trace`를 요청한 경우)
 ```
 
@@ -535,20 +552,37 @@ python3 run_case.py billing-client --track angr --all-modes \
   --json-output results/billing-client/plain/angr.address.all_modes.json
 ```
 
-이 경로의 top-level schema는 version 5다. `run_summary`는 mode와 무관하므로 한 번만
-저장하고, `results` 배열에 full/out/in/out-in 결과를 둔다.
+fixture schema가 v6인 경로의 top-level result schema도 version 6이다. 실제 abstention이
+0개여도 coverage 필드와 빈 `abstentions` 배열을 동일하게 저장한다. `run_summary`는
+mode와 무관하므로 한 번만 저장하고, `results` 배열에 full/out/in/out-in 결과를 둔다.
 
 ```json
 {
-  "schema_version": 5,
+  "schema_version": 6,
   "run_summary": {
     "ground_truth": {
-      "candidate_count": 320,
+      "target_count": 320,
+      "grouped_candidate_count": 241,
+      "abstained_candidate_count": 79,
       "origin_count": 219,
       "generic_family_count": 42,
-      "same_family_pair_count": 400
+      "same_family_pair_count": 400,
+      "scored_same_family_pair_count": 286,
+      "same_family_pair_coverage": 0.715
     },
     "extraction": {
+      "exact_static_indirect_summary": {
+        "all_sources": {
+          "total": 3456,
+          "resolved_internal": 3420,
+          "filtered_import": 0,
+          "unmapped": 36,
+          "by_resolver": {
+            "elf-relocation": 3456
+          }
+        },
+        "candidate_sources": {}
+      },
       "indirect_call_summary": {
         "all_sources": {
           "total": 2117,
@@ -573,7 +607,11 @@ python3 run_case.py billing-client --track angr --all-modes \
       }
     },
     "candidate_impact": {},
-    "candidate_observability": {},
+    "candidate_observability": {
+      "target_count": 320,
+      "grouped_candidate_count": 241,
+      "abstained_candidate_count": 79
+    },
     "execution": {},
     "artifact_summary": {},
     "tool_versions": {}
@@ -587,15 +625,26 @@ python3 run_case.py billing-client --track angr --all-modes \
 }
 ```
 
-`all_sources`는 전체 raw graph의 간접 callsite를, `candidate_sources`는 candidate가
-source인 callsite만 센다. `resolved_import`는 angr가 이름 있는 외부 함수를 찾았지만
+Family 상태는 `run_summary`에 중복 저장하지 않는다. `analysis/summary.py`가 각
+`results[].origins`의 target pair, scored pair, abstained instance, recovered pair,
+collision 값을 읽어 evidence(`full/partial/insufficient`)와
+recovery(`complete/partial/missed/N/A`)를 별도로 표시한다.
+
+`exact_static_indirect_summary`는 `elf-relocation`이 angr 없이 증명한 indirect
+call/tail-call을 센다. `resolved_internal`, 정책상 제외한
+`filtered_import`, 주소를 알지만 함수 시작점에 연결하지 못한 `unmapped`를 구분한다.
+
+`indirect_call_summary.all_sources`는 전체 raw graph에서 angr에 전달된 unresolved 간접 call/tail-call을,
+`candidate_sources`는 candidate가 source인 transfer만 센다. Exact static resolver가
+먼저 해결한 transfer는 이 angr 분모에 포함되지 않는다. `resolved_import`는 angr가 이름 있는 외부 함수를 찾았지만
 CallKin graph 정책상 filtered 처리한 성공이다. `internal_resolution_rate`는
 `resolved_internal / (total - resolved_import)`이므로 import를 실패 분모에서 제외한다.
-`candidate_impact`는 `resolved_internal` callsite 중 candidate의 OUT/IN에 실제로 추가된
+`candidate_impact`는 `resolved_internal` transfer 중 candidate의 OUT/IN에 실제로 추가된
 수를 센다. `candidate_observability`는 projected fixture 기준 root 도달성,
-zero-OUT, zero-IN, 완전 고립, unresolved indirect call 보유 candidate를 센다.
-`ground_truth.same_family_pair_count`는 모든 mode에서 `TP + FN`과 같아야 하며,
-다르면 JSON 생성을 중단한다. `execution.warnings`는 같은 component/message를 묶어
+zero-OUT, zero-IN, 완전 고립, unresolved indirect call/tail-call 보유 candidate를 센다.
+`ground_truth.same_family_pair_count`는 target 전체의 true pair 수다. Abstention이
+있으면 `scored_same_family_pair_count`만 `TP + FN`과 같고, effective family-pair
+recall은 target 전체 true pair를 분모로 삼는다. `execution.warnings`는 같은 component/message를 묶어
 count만 저장한다. 시간과 경고는 raw graph SHA에 넣지 않아 evidence hash를 안정적으로
 유지한다.
 

@@ -866,17 +866,19 @@ def validate_against_fixture(gt: dict[str, Any], fixture_path: str) -> None:
     if case.provenance is None or case.provenance.to_dict() != gt["provenance"]:
         raise ValueError("ground truth/fixture build provenance mismatch")
     scored_ids = {node.id for node in case.nodes if node.scored}
+    abstained_ids = {item.id for item in case.abstentions}
     gt_ids = {
         member
         for origin in gt["origins"]
         for member in origin["members"]
     }
 
-    if scored_ids != gt_ids:
+    if scored_ids | abstained_ids != gt_ids:
         raise ValueError(
-            "generated ground truth does not match fixture scored universe. "
-            f"missing in ground truth: {sorted(scored_ids - gt_ids)}; "
-            f"present in ground truth but not scored: {sorted(gt_ids - scored_ids)}"
+            "generated ground truth does not match fixture target universe. "
+            f"missing in ground truth: {sorted((scored_ids | abstained_ids) - gt_ids)}; "
+            f"present in ground truth but neither grouped nor abstained: "
+            f"{sorted(gt_ids - scored_ids - abstained_ids)}"
         )
 
 

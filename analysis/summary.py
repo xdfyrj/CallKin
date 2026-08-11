@@ -110,22 +110,40 @@ def first_by(records: list[dict[str, Any]], key_fn: Any) -> list[dict[str, Any]]
     return list(selected.values())
 
 
-def family_counts(result: dict[str, Any]) -> tuple[int, int, int, int]:
+def family_counts(result: dict[str, Any]) -> dict[str, int]:
     families = [
         origin for origin in result.get("origins", [])
-        if origin.get("total_pairs", 0) > 0
+        if origin.get("total_target_pairs", origin.get("total_pairs", 0)) > 0
     ]
-    complete = sum(
-        origin.get("recovered_pairs") == origin.get("total_pairs")
-        for origin in families
-    )
-    partial = sum(
-        0 < origin.get("recovered_pairs", 0) < origin.get("total_pairs", 0)
-        for origin in families
-    )
-    missed = sum(origin.get("recovered_pairs", 0) == 0 for origin in families)
-    collision = sum(bool(origin.get("colliding_origins")) for origin in families)
-    return complete, partial, missed, collision
+    counts = {
+        "evidence_full": 0,
+        "evidence_partial": 0,
+        "evidence_insufficient": 0,
+        "recovery_complete": 0,
+        "recovery_partial": 0,
+        "recovery_missed": 0,
+        "recovery_na": 0,
+        "collision": 0,
+    }
+    for origin in families:
+        scored_pairs = origin.get("total_pairs", 0)
+        abstained = origin.get("abstained_instance_count", 0)
+        recovered = origin.get("recovered_pairs", 0)
+
+        if scored_pairs == 0:
+            counts["evidence_insufficient"] += 1
+            counts["recovery_na"] += 1
+        else:
+            evidence = "partial" if abstained else "full"
+            counts[f"evidence_{evidence}"] += 1
+            if recovered == scored_pairs:
+                counts["recovery_complete"] += 1
+            elif recovered == 0:
+                counts["recovery_missed"] += 1
+            else:
+                counts["recovery_partial"] += 1
+        counts["collision"] += bool(origin.get("colliding_origins"))
+    return counts
 
 
 def print_case(case: str, records: list[dict[str, Any]]) -> None:
@@ -140,7 +158,7 @@ def print_case(case: str, records: list[dict[str, Any]]) -> None:
         size = gt.get("family_size", {})
         gt_rows.append([
             result.get("profile"),
-            gt.get("candidate_count"),
+            gt.get("target_count", gt.get("candidate_count")),
             gt.get("origin_count"),
             gt.get("generic_family_count"),
             gt.get("singleton_origin_count"),
@@ -150,21 +168,27 @@ def print_case(case: str, records: list[dict[str, Any]]) -> None:
         ])
     print_table(
         "Ground truth",
-        ["PROFILE", "CAND", "ORIGIN", "FAMILY", "SINGLE", "TRUE_PAIRS", "FAM_MED", "FAM_MAX"],
+        ["PROFILE", "TARGET", "ORIGIN", "FAMILY", "SINGLE", "TRUE_PAIRS", "FAM_MED", "FAM_MAX"],
         gt_rows,
     )
 
     score_rows = []
+    coverage_rows = []
+    family_rows = []
     for record in records:
         result = record["result"]
         analysis = result.get("analysis", {})
         pairwise = result.get("pairwise", {})
-        complete, partial, missed, collision = family_counts(result)
-        score_rows.append([
+        coverage = result.get("coverage", {})
+        families = family_counts(result)
+        identity = [
             result.get("profile"),
             analysis.get("track"),
             analysis.get("anchor_policy"),
             result.get("mode"),
+        ]
+        score_rows.append([
+            *identity,
             pairwise.get("TP"),
             pairwise.get("FP"),
             pairwise.get("FN"),
@@ -173,18 +197,55 @@ def print_case(case: str, records: list[dict[str, Any]]) -> None:
             pairwise.get("recall"),
             pairwise.get("F1"),
             pairwise.get("ARI"),
-            complete,
-            partial,
-            missed,
-            collision,
+        ])
+        target = result.get("target_count", result.get("candidate_count"))
+        grouped = result.get(
+            "grouped_candidate_count", result.get("candidate_count")
+        )
+        coverage_rows.append([
+            *identity,
+            target,
+            grouped,
+            result.get("abstained_candidate_count", 0),
+            coverage.get("target_coverage", 1.0 if target == grouped else None),
+            coverage.get("pair_decision_coverage"),
+            coverage.get("same_family_pair_coverage"),
+            coverage.get("effective_family_pair_recall"),
+        ])
+        family_rows.append([
+            *identity,
+            families["evidence_full"],
+            families["evidence_partial"],
+            families["evidence_insufficient"],
+            families["recovery_complete"],
+            families["recovery_partial"],
+            families["recovery_missed"],
+            families["recovery_na"],
+            families["collision"],
         ])
     print_table(
-        "Scores and family recovery",
+        "Scores",
         [
             "PROFILE", "TRACK", "ANCHOR", "MODE", "TP", "FP", "FN", "TN",
-            "PREC", "RECALL", "F1", "ARI", "COMP", "PART", "MISS", "COLL",
+            "PREC", "RECALL", "F1", "ARI",
         ],
         score_rows,
+    )
+    print_table(
+        "Coverage",
+        [
+            "PROFILE", "TRACK", "ANCHOR", "MODE", "TARGET", "GROUPED", "ABSTAIN",
+            "TARGET_COV", "PAIR_COV", "FAMILY_COV", "EFFECTIVE_RECALL",
+        ],
+        coverage_rows,
+    )
+    print_table(
+        "Family status",
+        [
+            "PROFILE", "TRACK", "ANCHOR", "MODE", "E_FULL", "E_PART", "E_INSUFF",
+            "R_COMPLETE", "R_PART", "R_MISSED", "R_N/A", "COLLISION",
+        ],
+        family_rows,
     )
 
     graph_records = first_by(
@@ -202,9 +263,16 @@ def print_case(case: str, records: list[dict[str, Any]]) -> None:
         observable = value(record, "summary", "candidate_observability", default={})
         execution = value(record, "summary", "execution", default={})
         duration = execution.get("duration_seconds", {})
+        legacy_candidate_count = observable.get("candidate_count")
         graph_rows.append([
             result.get("profile"),
             track,
+            observable.get("target_count", legacy_candidate_count),
+            observable.get("grouped_candidate_count", legacy_candidate_count),
+            observable.get(
+                "abstained_candidate_count",
+                0 if legacy_candidate_count is not None else None,
+            ),
             artifact.get("fixture_node_count"),
             observable.get("reachable_from_root"),
             observable.get("unreachable_from_root"),
@@ -215,14 +283,25 @@ def print_case(case: str, records: list[dict[str, Any]]) -> None:
         ])
     print_table(
         "Graph and execution",
-        ["PROFILE", "TRACK", "NODES", "REACH", "UNREACH", "ISOLATED", "SEC", "RSS_MB", "WARN"],
+        [
+            "PROFILE", "TRACK", "TARGET", "GROUPED", "ABSTAIN", "NODES",
+            "REACH", "UNREACH", "ISOLATED", "SEC", "RSS_MB", "WARN",
+        ],
         graph_rows,
     )
 
+    exact_rows = []
     indirect_rows = []
     for record in graph_records:
         result = record["result"]
         track = value(record, "result", "analysis", "track")
+        exact_summaries = value(
+            record,
+            "summary",
+            "extraction",
+            "exact_static_indirect_summary",
+            default={},
+        )
         summaries = value(
             record, "summary", "extraction", "indirect_call_summary", default={}
         )
@@ -230,6 +309,18 @@ def print_case(case: str, records: list[dict[str, Any]]) -> None:
             ("all_sources", "all"),
             ("candidate_sources", "candidate"),
         ):
+            exact = exact_summaries.get(source_name, {})
+            by_resolver = exact.get("by_resolver", {})
+            exact_rows.append([
+                result.get("profile"),
+                track,
+                source_label,
+                exact.get("total"),
+                exact.get("resolved_internal"),
+                exact.get("filtered_import"),
+                exact.get("unmapped"),
+                by_resolver.get("elf-relocation"),
+            ])
             indirect = summaries.get(source_name, {})
             indirect_rows.append([
                 result.get("profile"),
@@ -244,7 +335,15 @@ def print_case(case: str, records: list[dict[str, Any]]) -> None:
                 indirect.get("internal_resolution_rate"),
             ])
     print_table(
-        "Indirect calls",
+        "Exact static indirect transfers",
+        [
+            "PROFILE", "TRACK", "SOURCE", "TOTAL", "INTERNAL", "FILTERED",
+            "UNMAPPED", "ELF_RELOC",
+        ],
+        exact_rows,
+    )
+    print_table(
+        "Angr unresolved indirect transfers",
         [
             "PROFILE", "TRACK", "SOURCE", "STATUS", "TOTAL", "INTERNAL",
             "IMPORT", "UNRES", "TARGET_RATE", "INTERNAL_RATE",

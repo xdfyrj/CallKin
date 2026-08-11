@@ -13,6 +13,7 @@ from typing import Any
 from build_manifest import BUILD_TARGET, load_and_verify_manifest
 from candidate_selection import load_candidate_selection
 from graph_evidence import (
+    ELF_RELOCATION_RESOLVER,
     TransferEvidence,
     make_raw_graph,
     raw_graph_sha256,
@@ -51,6 +52,12 @@ SCHEMA_VERSION = 4
 DEFAULT_ID_BIAS = 0x100000
 DEFAULT_CASE = "unknown"
 R2_EXECUTABLE = "radare2"
+_X86_64_RELOCATION_TYPES = {
+    "absolute": 1,       # R_X86_64_64
+    "glob_dat": 6,       # R_X86_64_GLOB_DAT
+    "jump_slot": 7,      # R_X86_64_JUMP_SLOT
+    "relative": 8,       # R_X86_64_RELATIVE
+}
 
 
 @dataclass(frozen=True)
@@ -110,6 +117,56 @@ def is_probably_import(func: R2Function) -> bool:
     return func.name.startswith("sym.imp.") or func.kind == "sym"
 
 
+def load_elf_relocation_targets(binary_path: str) -> dict[int, int]:
+    """Return exact x86-64 relocation slot -> linked target mappings."""
+    try:
+        from elftools.elf.elffile import ELFFile
+        from elftools.elf.relocation import RelocationSection
+    except ImportError as exc:
+        raise RuntimeError(
+            "Python package pyelftools is required for ELF relocation analysis. "
+            "Install dependencies with `python3 -m pip install -r requirements.txt`."
+        ) from exc
+
+    targets: dict[int, int] = {}
+    with open(binary_path, "rb") as handle:
+        elf = ELFFile(handle)
+        if elf.header["e_machine"] != "EM_X86_64":
+            raise ValueError("ELF relocation analysis currently supports x86-64 only")
+
+        for section in elf.iter_sections():
+            if not isinstance(section, RelocationSection):
+                continue
+            symbol_table = elf.get_section(section["sh_link"])
+            for relocation in section.iter_relocations():
+                entry = relocation.entry
+                relocation_type = entry["r_info_type"]
+                addend = int(entry.get("r_addend", 0))
+                target = None
+                if relocation_type == _X86_64_RELOCATION_TYPES["relative"]:
+                    target = addend
+                elif relocation_type in {
+                    _X86_64_RELOCATION_TYPES["absolute"],
+                    _X86_64_RELOCATION_TYPES["glob_dat"],
+                    _X86_64_RELOCATION_TYPES["jump_slot"],
+                } and symbol_table is not None:
+                    symbol = symbol_table.get_symbol(entry["r_info_sym"])
+                    if symbol["st_shndx"] != "SHN_UNDEF":
+                        target = int(symbol["st_value"]) + addend
+                if target is None:
+                    continue
+                slot = int(entry["r_offset"])
+                target &= (1 << 64) - 1
+                previous = targets.get(slot)
+                if previous is not None and previous != target:
+                    raise ValueError(
+                        f"conflicting ELF relocations at 0x{slot:x}: "
+                        f"0x{previous:x} != 0x{target:x}"
+                    )
+                targets[slot] = target
+    return targets
+
+
 class BinaryExtractor:
     def __init__(
         self,
@@ -130,6 +187,7 @@ class BinaryExtractor:
         self._transfer_cache: dict[
             tuple[int, int | None], tuple[TransferEvidence, ...]
         ] = {}
+        self.relocation_targets = load_elf_relocation_targets(binary_path)
 
     def close(self) -> None:
         try:
@@ -554,11 +612,20 @@ class BinaryExtractor:
             instruction = str(op.get("opcode") or op.get("disasm") or op.get("type") or "unknown")
             is_call = self._is_call_op(op)
             is_tail_jump = self._is_tail_call_jump_op(op)
+            if not is_call and not is_tail_jump:
+                continue
             direct_target = self._direct_code_target(op)
             target_func = self._direct_call_target(
                 func,
                 op,
                 include_filtered=True,
+            )
+            operand_kind = self._r2_operand_kind(op)
+            relocation_target = self._r2_relocation_target(op)
+            relocation_func = (
+                getattr(self, "all_by_addr", self.by_addr).get(relocation_target)
+                if relocation_target is not None
+                else None
             )
 
             if (
@@ -591,9 +658,50 @@ class BinaryExtractor:
                     confidence="exact",
                 ))
             elif (
+                relocation_func is not None
+                and not self.include_imports
+                and is_probably_import(relocation_func)
+            ):
+                transfers.append(TransferEvidence(
+                    source=func.addr,
+                    callsite=callsite,
+                    instruction=instruction,
+                    kind="call" if is_call else "tail-call",
+                    operand_kind="memory",
+                    status="filtered",
+                    target=relocation_func.addr,
+                    resolver=ELF_RELOCATION_RESOLVER,
+                    confidence="exact",
+                    filter_reason="import",
+                ))
+            elif relocation_func is not None:
+                transfers.append(TransferEvidence(
+                    source=func.addr,
+                    callsite=callsite,
+                    instruction=instruction,
+                    kind="call" if is_call else "tail-call",
+                    operand_kind="memory",
+                    status="resolved",
+                    target=relocation_func.addr,
+                    resolver=ELF_RELOCATION_RESOLVER,
+                    confidence="exact",
+                ))
+            elif relocation_target is not None:
+                transfers.append(TransferEvidence(
+                    source=func.addr,
+                    callsite=callsite,
+                    instruction=instruction,
+                    kind="call" if is_call else "tail-call",
+                    operand_kind="memory",
+                    status="unmapped",
+                    target=relocation_target,
+                    resolver=ELF_RELOCATION_RESOLVER,
+                    confidence="exact",
+                ))
+            elif (
                 is_call
                 and direct_target is not None
-                and self._r2_operand_kind(op) == "immediate"
+                and operand_kind == "immediate"
             ):
                 transfers.append(TransferEvidence(
                     source=func.addr,
@@ -612,16 +720,28 @@ class BinaryExtractor:
                     callsite=callsite,
                     instruction=instruction,
                     kind="call",
-                    operand_kind=self._r2_operand_kind(op),
+                    operand_kind=operand_kind,
                     status="unresolved",
                     target=None,
                     resolver=None,
                     confidence="unknown",
                 ))
-            elif is_tail_jump:
-                # An unresolved jump may be an ordinary branch or switch. It is
-                # not call evidence until a later resolver identifies a target.
-                continue
+            elif (
+                is_tail_jump
+                and operand_kind in {"memory", "register"}
+                and self._is_terminal_r2_jump(ops, index)
+            ):
+                transfers.append(TransferEvidence(
+                    source=func.addr,
+                    callsite=callsite,
+                    instruction=instruction,
+                    kind="tail-call",
+                    operand_kind=operand_kind,
+                    status="unresolved",
+                    target=None,
+                    resolver=None,
+                    confidence="unknown",
+                ))
         return self._deduplicate_transfer_sites(transfers)
 
     def _symbol_extent_transfer_evidence(
@@ -631,7 +751,12 @@ class BinaryExtractor:
     ) -> list[TransferEvidence]:
         try:
             from capstone import CS_ARCH_X86, CS_GRP_CALL, CS_MODE_64, Cs
-            from capstone.x86_const import X86_OP_IMM, X86_OP_MEM, X86_OP_REG
+            from capstone.x86_const import (
+                X86_OP_IMM,
+                X86_OP_MEM,
+                X86_OP_REG,
+                X86_REG_RIP,
+            )
         except ImportError as exc:
             raise RuntimeError(
                 "Python package capstone is required for symbol-extent call "
@@ -674,17 +799,43 @@ class BinaryExtractor:
                 if len(instruction.operands) == 1
                 else None
             )
+            if operand is not None and operand.type == X86_OP_MEM:
+                operand_kind = "memory"
+            elif operand is not None and operand.type == X86_OP_REG:
+                operand_kind = "register"
+            elif operand is not None and operand.type == X86_OP_IMM:
+                operand_kind = "immediate"
+            else:
+                operand_kind = "unknown"
+
             target_func = None
             direct_target = None
+            resolver = None
             if operand is not None and operand.type == X86_OP_IMM:
                 direct_target = int(operand.imm) & ((1 << 64) - 1)
-                target_func = self._resolve_direct_target(
-                    func,
-                    direct_target,
-                    is_call=is_call,
-                    is_tail_jump=is_tail_jump,
-                    include_filtered=True,
-                )
+                resolver = "direct-immediate" if is_call else "direct-tail"
+            elif (
+                operand is not None
+                and operand.type == X86_OP_MEM
+                and operand.mem.base == X86_REG_RIP
+            ):
+                slot = instruction.address + instruction.size + operand.mem.disp
+                direct_target = getattr(self, "relocation_targets", {}).get(slot)
+                if direct_target is not None:
+                    resolver = ELF_RELOCATION_RESOLVER
+            if direct_target is not None:
+                if resolver == ELF_RELOCATION_RESOLVER:
+                    target_func = getattr(
+                        self, "all_by_addr", self.by_addr
+                    ).get(direct_target)
+                else:
+                    target_func = self._resolve_direct_target(
+                        func,
+                        direct_target,
+                        is_call=is_call,
+                        is_tail_jump=is_tail_jump,
+                        include_filtered=True,
+                    )
 
             if (
                 target_func is not None
@@ -696,10 +847,10 @@ class BinaryExtractor:
                     callsite=instruction.address,
                     instruction=instruction_text,
                     kind="call" if is_call else "tail-call",
-                    operand_kind="immediate",
+                    operand_kind=operand_kind,
                     status="filtered",
                     target=target_func.addr,
-                    resolver="direct-immediate" if is_call else "direct-tail",
+                    resolver=resolver,
                     confidence="exact",
                     filter_reason="import",
                 ))
@@ -709,38 +860,36 @@ class BinaryExtractor:
                     callsite=instruction.address,
                     instruction=instruction_text,
                     kind="call" if is_call else "tail-call",
-                    operand_kind="immediate",
+                    operand_kind=operand_kind,
                     status="resolved",
                     target=target_func.addr,
-                    resolver="direct-immediate" if is_call else "direct-tail",
+                    resolver=resolver,
                     confidence="exact",
                 ))
-            elif is_call and direct_target is not None:
+            elif direct_target is not None and (
+                is_call or resolver != "direct-tail"
+            ):
                 transfers.append(TransferEvidence(
                     source=func.addr,
                     callsite=instruction.address,
                     instruction=instruction_text,
-                    kind="call",
-                    operand_kind="immediate",
+                    kind="call" if is_call else "tail-call",
+                    operand_kind=operand_kind,
                     status="unmapped",
                     target=direct_target,
-                    resolver="direct-immediate",
+                    resolver=resolver,
                     confidence="exact",
                 ))
-            elif is_call:
-                if operand is not None and operand.type == X86_OP_MEM:
-                    operand_kind = "memory"
-                elif operand is not None and operand.type == X86_OP_REG:
-                    operand_kind = "register"
-                elif operand is not None and operand.type == X86_OP_IMM:
-                    operand_kind = "immediate"
-                else:
-                    operand_kind = "unknown"
+            elif is_call or (
+                is_tail_jump
+                and operand_kind in {"memory", "register"}
+                and instruction.address + instruction.size == end
+            ):
                 transfers.append(TransferEvidence(
                     source=func.addr,
                     callsite=instruction.address,
                     instruction=instruction_text,
-                    kind="call",
+                    kind="call" if is_call else "tail-call",
                     operand_kind=operand_kind,
                     status="unresolved",
                     target=None,
@@ -766,6 +915,24 @@ class BinaryExtractor:
         if isinstance(op.get("jump"), int):
             return "immediate"
         return "unknown"
+
+    def _r2_relocation_target(self, op: dict[str, Any]) -> int | None:
+        if self._r2_operand_kind(op) != "memory":
+            return None
+        slot = op.get("ptr")
+        if not isinstance(slot, int):
+            return None
+        return getattr(self, "relocation_targets", {}).get(slot)
+
+    @staticmethod
+    def _is_terminal_r2_jump(ops: list[dict[str, Any]], index: int) -> bool:
+        for later in ops[index + 1:]:
+            opcode = str(later.get("opcode") or "").strip()
+            op_type = str(later.get("type") or "")
+            if opcode.startswith(("nop", "int3")) or op_type in {"nop", "trap"}:
+                continue
+            return False
+        return True
 
     @staticmethod
     def _deduplicate_transfer_sites(
