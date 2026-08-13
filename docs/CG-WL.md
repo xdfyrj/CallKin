@@ -1,508 +1,498 @@
 # Call-Graph Weisfeiler-Lehman
 
-## 1. 목적
+이 문서는 [engine.py](../engine.py)가 fixture를 어떻게 partition으로 바꾸는지 정의한다. Extraction 정확도나 GT normalization은 다루지 않는다.
 
-CallKin의 `engine.py`는 fixture JSON의 call graph만 보고 scored user 함수를 cluster로 묶는다.
+## 실행
+
+Fixture path 직접 실행:
+
+```bash
+python3 engine.py \
+  fixtures/angr/role/rust-nonstd/plain/billing-client.O3S.fixture.json \
+  --mode out-in
+```
+
+Stem과 분석 좌표로 path 해석:
+
+```bash
+python3 engine.py billing-client \
+  --profile plain \
+  --build O3S \
+  --candidate-scope rust-nonstd \
+  --track angr \
+  --anchor-policy role \
+  --mode out-in
+```
+
+Round partition까지 출력:
+
+```bash
+python3 engine.py billing-client \
+  --profile plain \
+  --candidate-scope rust-nonstd \
+  --track angr \
+  --anchor-policy role \
+  --mode out-in \
+  --trace
+```
+
+## 입력 graph
+
+Fixture node는 두 종류다.
 
 ```text
-fixtures/plain/family_graph_01.O3S.fixture.json
--> loader.py
--> engine.py
--> predicted clusters
+user/candidate:
+  grouping과 채점 대상
+
+anchor:
+  call context 제공
+  refinement에는 참여
+  최종 predicted cluster에는 미포함
 ```
 
-Engine은 다음 파일을 읽지 않는다.
+Abstain target은 fixture `nodes`에 없으므로 engine이 보지 않는다. Engine은 abstain을 singleton으로 만들지도, color를 주지도 않는다.
 
-```text
-ground_truth/*.gt.json
-gt_bin/*.gt.bin
-users/*.users.json
-symbol 이름
-source code
-```
-
-따라서 `process`, `share`, concrete type 같은 정답 정보는 color refinement에 들어가지 않는다.
-
-## 2. Color의 의미
-
-여기서 color는 화면에 보이는 빨강이나 파랑이 아니다. **같은 관계 특징을 가진 node에 붙이는 class label**이다.
-
-예를 들어 초기 특징이 같은 세 함수는 같은 문자열 color를 받는다.
-
-```text
-FUN_00113e40 -> USER:self=1:distinct_out=0
-FUN_00113f20 -> USER:self=1:distinct_out=0
-FUN_00113fa0 -> USER:self=1:distinct_out=0
-```
-
-세 함수는 같은 color이므로 같은 class에 있다. 다음 refinement에서 이웃 color pattern이 달라지면 서로 다른 새 color를 받을 수 있다.
-
-## 3. 입력 data model
-
-Fixture는 `loader.py`를 거쳐 다음 구조가 된다.
-
-```python
-Case(
-    case="family_graph_01",
-    build="O3S",
-    profile="plain",
-    schema_version=4,
-    nodes=[...],
-)
-```
-
-한 node 예시:
-
-```python
-Node(
-    id="FUN_00114480",
-    type="user",
-    scored=True,
-    calls=[
-        Call(target="FUN_00113f20", count=5),
-    ],
-)
-```
-
-`type="user"` node는 grouping 대상이다. `type="anchor"` node는 주변 context를 제공하지만 최종 scored cluster에는 포함되지 않는다.
-
-함수 경계 목록에 없더라도 exact ELF relocation이 call target 주소를 증명하면 Schema v6
-fixture는 그 주소를 opaque anchor로 포함할 수 있다. 이 node에는 복구된 이름이나 body가
-없으며 채점되지 않는다. Raw evidence는 계속 `unmapped`로 남아 경계를 복구한 것처럼
-표현하지 않는다.
-
-Schema v6 fixture는 `Case.abstentions`도 가질 수 있다. 이는 candidate selection에는
-포함됐지만 resolved non-self IN/OUT relation이 모두 0인 target이다. Abstention은
-`Case.nodes`에 넣지 않으므로 `engine.py`는 color나 cluster를 만들지 않는다. 채점기는
-이를 별도 판단 보류 결과로 기록하고 pairwise metric에서는 제외한다.
-
-## 4. `run_cg_wl()` 전체 흐름
-
-```text
-run_cg_wl(case, mode)
-  -> validate_cg_wl_mode()
-  -> build_relation_graph_view()
-  -> make_initial_cg_wl_colors()
-  -> refine_cg_wl_once() 반복
-  -> same_partition()으로 fixpoint 확인
-  -> make_scored_clusters()
-  -> make_cluster_id_by_node()
-  -> CGWLResult
-```
-
-반복 최대 횟수는 전체 node 수다. 그 안에 fixpoint에 도달하지 않으면 오류로 중단한다.
-
-## 5. Relation graph 만들기
-
-`build_relation_graph_view()`는 fixture edge를 CG-WL 계산에 편한 다섯 정보로 나눈다.
-
-```text
-node_ids
-self_call_count
-outgoing non-self edges
-incoming non-self edges
-distinct_out_callee_count
-distinct_in_caller_count
-```
-
-### 5.1 Self edge 분리
-
-다음 fixture edge가 있다고 하자.
+Edge는 방향과 static callsite count를 가진다.
 
 ```json
 {
-  "id": "FUN_00113e40",
+  "id": "A",
   "calls": [
-    {"target": "FUN_00113e40", "count": 1}
+    {"target": "B", "count": 2},
+    {"target": "L", "count": 1}
   ]
 }
 ```
 
-Graph view에서는 다음이 된다.
+그래프 의미:
 
 ```text
-self_call_count[FUN_00113e40] = 1
-outgoing[FUN_00113e40]        = []
-incoming[FUN_00113e40]        = []
+A --2--> B
+A --1--> L
 ```
 
-Self edge는 별도 seed 특징으로 올리고 OUT/IN neighbor multiset에는 넣지 않는다.
+Dynamic runtime frequency가 아니다. Binary 안에 관찰된 static callsite 개수다.
 
-### 5.2 Non-self edge
+## 그래프 view 만들기
 
-다음 edge:
+`build_relation_graph_view()`는 fixture를 네 구조로 바꾼다.
+
+### Self-call
 
 ```text
-FUN_00114480 -> FUN_00113f20 x5
+A -> A count=3
 ```
 
-Graph view:
-
-```python
-outgoing["FUN_00114480"] = [("FUN_00113f20", 5)]
-incoming["FUN_00113f20"] = [("FUN_00114480", 5)]
-```
-
-### 5.3 Distinct count
-
-함수 A가 B를 5곳에서, C를 2곳에서 호출한다고 하자.
+별도 scalar로 들어간다.
 
 ```text
-A -> B x5
-A -> C x2
+self_call_count[A] = 3
 ```
 
-값은 다음과 같다.
+Self-edge는 OUT/IN neighbor multiset에서 제거한다. 그렇지 않으면 같은 self relation이 scalar와 neighbor relation에 중복 반영된다.
+
+### Non-self OUT
+
+```text
+outgoing[A] = [(B, 2), (L, 1)]
+```
+
+### Non-self IN
+
+위 edge를 뒤집어 만든다.
+
+```text
+incoming[B] = [(A, 2)]
+incoming[L] = [(A, 1)]
+```
+
+Fixture가 incoming list를 별도로 저장하지 않아도 된다.
+
+### Distinct degree
 
 ```text
 distinct_out_callee_count[A] = 2
+distinct_in_caller_count[B]  = 1
 ```
 
-`5 + 2 = 7`이 아니다. 서로 다른 non-self callee가 B와 C 두 개이기 때문이다.
-
-## 6. Anchor initial color
-
-Schema v4에서는 각 anchor가 자기 ID가 들어간 초기 color를 받는다.
+호출 횟수 합이 아니라 서로 다른 neighbor 수다.
 
 ```text
-FUN_00113e00 -> ANCHOR:FUN_00113e00
-FUN_00152600 -> ANCHOR:FUN_00152600
+A -> B count=5
+distinct_out[A] = 1
 ```
 
-Schema v5에서는 fixture의 `color_class`가 초기 color의 기준이다.
+## Seed color
+
+### Anchor
 
 ```text
-color_class=ADDR:FUN_001487a0
--> ANCHOR:ADDR:FUN_001487a0
+ANCHOR:<color_class>
 ```
 
-기본 `anchor_policy=address`는 anchor마다 서로 다른 class를 주므로 schema v4와
-같은 individualized 의미를 유지한다. 공식 `anchor_policy=role`은 주소를 버리고
-`ROLE:root`, `ROLE:incoming`, `ROLE:outgoing`, `ROLE:both`, `ROLE:context` 중 하나를 사용한다.
-따라서 서로 다른 주소의 anchor도 같은 방향 역할이면 동일한 `color_class`를 공유한다.
-Refinement에서는 anchor도 user와 같은 방식으로 OUT/IN relation signature를 계산한다.
-따라서 같은 초기 role을 가진 anchor도 뒤쪽 call graph가 다르면 갈라지고, 그 차이가
-다음 round에서 candidate로 전파된다.
-
-따라서 두 user 함수가 서로 다른 library anchor를 호출하면 그 차이가 relation signature에 남는다.
-
-Anchor는 final cluster와 채점에서 제외되지만 color refinement에는 끝까지 참여한다.
-
-## 7. 초기 seed color
-
-### `full`, `out`, `out-in`
-
-초기 user color는 다음 두 값이다.
+Address policy example:
 
 ```text
-(self_call_count, distinct_out_callee_count)
+ANCHOR:ADDR:FUN_00123450
 ```
 
-예시:
+Role policy example:
 
 ```text
-self call 1회, non-self callee 0개
--> USER:self=1:distinct_out=0
-
-self call 0회, non-self callee 1개
--> USER:self=0:distinct_out=1
+ANCHOR:ROLE:incoming
 ```
 
-### `in`
+Anchor도 이후 refinement를 수행한다. 다만 초기 anchor color와 user color가 다르고 이전 color가 매 signature에 포함되므로 anchor와 user partition이 나중에 합쳐지지 않는다.
 
-`in` mode만 다음 seed를 쓴다.
+### User in `full`, `out`, `out-in`
 
 ```text
-(self_call_count, distinct_in_caller_count)
+USER:self=<self_call_count>:distinct_out=<distinct callees>
 ```
 
-예시:
+예:
 
 ```text
-self call 0회, 서로 다른 caller 2개
--> USER:self=0:distinct_in=2
+A self-call 1회
+A가 B와 L을 호출
+-> USER:self=1:distinct_out=2
 ```
 
-Call count의 총합은 seed에 사용하지 않는다.
-
-## 8. Neighbor color multiset
-
-Refinement는 raw neighbor ID를 직접 비교하지 않는다. **이웃의 이전 round color별로 static callsite count를 합산**한다.
-
-다음 상황을 가정한다.
+### User in `in`
 
 ```text
-callee B의 이전 color = C:4
-callee C의 이전 color = C:4
-
-A -> B x2
-A -> C x3
+USER:self=<self_call_count>:distinct_in=<distinct callers>
 ```
 
-A의 OUT color multiset은 다음이다.
+`full` mode도 seed에서는 distinct OUT을 쓴다. IN은 첫 refinement부터 들어온다. 이 seed 정의를 바꾸면 모든 baseline partition과 round count를 다시 검토해야 한다.
+
+## Weighted neighbor-color multiset
+
+한 round 전 color가 다음과 같다고 하자.
+
+```text
+color(B) = C:7
+color(C) = C:7
+color(L) = ANCHOR:ROLE:outgoing
+```
+
+그리고 A의 edge가:
+
+```text
+A -> B count=2
+A -> C count=1
+A -> L count=4
+```
+
+OUT multiset:
+
+```text
+(
+  ("ANCHOR:ROLE:outgoing", 4),
+  ("C:7", 3)
+)
+```
+
+핵심은 neighbor ID가 아니라 **이전 color별 call count 합**이다.
 
 ```python
-(("C:4", 5),)
+count_by_color[prev_color[neighbor]] += edge_count
 ```
 
-계산:
+따라서 다음 두 구조는 이 multiset에서 같다.
 
 ```text
-color C:4로 향하는 count = 2 + 3 = 5
+color X neighbor 하나를 2회 호출
+color X neighbor 둘을 각각 1회 호출
 ```
 
-다음처럼 edge별 tuple을 그대로 두지 않는다.
-
-```python
-# 사용하지 않는 표현
-(("C:4", 2), ("C:4", 3))
-```
-
-다른 color가 섞이면 entry가 나뉜다.
+둘 다:
 
 ```text
-A -> B(color C:4) x2
-A -> D(color C:7) x3
+(X, 2)
 ```
 
-결과:
+이는 구현 실수가 아니라 현재 feature definition이다. Seed의 distinct degree는 round 0에서 neighbor cardinality 일부를 보존하지만 refinement multiset 자체는 color별 weight 합을 사용한다.
 
-```python
-(("C:4", 2), ("C:7", 3))
-```
+## 네 mode의 정확한 signature
 
-Tuple을 정렬하므로 dictionary나 edge 순서와 무관하게 같은 multiset은 같은 값이 된다.
+Notation:
 
-## 9. Refinement signature
-
-각 user의 새 color는 이전 color와 선택된 방향의 neighbor color multiset으로 결정된다.
+- `c_t(v)`: round t의 v color
+- `OUT_t(v)`: outgoing neighbor color/count multiset
+- `IN_t(v)`: incoming neighbor color/count multiset
 
 ### `full`
 
-```python
-(
-    previous_color,
-    out_multiset,
-    in_multiset,
+```text
+signature(v) = (
+  c_t(v),
+  OUT_t(v),
+  IN_t(v)
 )
 ```
 
-구체적인 예:
-
-```python
-(
-    "USER:self=0:distinct_out=1",
-    (("C:2", 5),),
-    (("ANCHOR:FUN_00113e00", 2),),
-)
-```
+Caller와 callee relation을 동등하게 사용한다.
 
 ### `out`
 
-```python
-(
-    previous_color,
-    out_multiset,
+```text
+signature(v) = (
+  c_t(v),
+  OUT_t(v)
 )
 ```
 
-Caller 차이는 무시한다.
+함수가 무엇을 호출하는지만 propagation에 쓴다.
 
 ### `in`
 
-```python
-(
-    previous_color,
-    in_multiset,
+```text
+signature(v) = (
+  c_t(v),
+  IN_t(v)
 )
 ```
 
-Callee 차이는 무시한다.
+함수를 누가 호출하는지만 쓴다. Seed도 distinct IN을 쓴다.
 
 ### `out-in`
 
-Non-leaf user는 OUT만 쓴다.
-
-```python
-(previous_color, out_multiset)
-```
-
-`distinct_out_callee_count == 0`인 leaf user만 IN도 함께 쓴다.
-
-```python
-(previous_color, out_multiset, in_multiset)
-```
-
-예시:
+OUT이 있는 함수:
 
 ```text
-process가 callee를 호출함
--> OUT만 사용
-
-leaf 함수가 non-self callee 없음
--> OUT이 비어 있으므로 IN도 사용
+signature(v) = (
+  c_t(v),
+  OUT_t(v)
+)
 ```
 
-## 10. Signature를 color로 바꾸기
-
-`_canonicalize_signatures()`는 현재 round의 unique signature를 정렬하고 번호를 붙인다.
+OUT이 0인 leaf:
 
 ```text
-첫 번째 unique signature -> C:0
-두 번째 unique signature -> C:1
-세 번째 unique signature -> C:2
+signature(v) = (
+  c_t(v),
+  OUT_t(v),
+  IN_t(v)
+)
 ```
 
-두 node의 signature가 완전히 같으면 같은 새 color를 받는다. 하나라도 다르면 다른 color를 받는다.
+즉 “OUT 우선, leaf에서만 IN 보조”다. 이름은 OUT 후 IN을 순차 적용한다는 뜻이 아니다.
 
-이전 color가 signature에 항상 포함되므로 이미 갈라진 class가 이후 round에 다시 합쳐지지 않는다.
+## 한 round 예제
 
-## 11. Fixpoint와 rounds
-
-한 번 정련한 뒤 `same_partition()`이 이전 color partition과 새 color partition을 비교한다.
-
-Color 문자열 자체가 바뀌어도 node 묶음이 같으면 같은 partition이다.
-
-예시:
+초기:
 
 ```text
-이전: {A, B}, {C}
-새 값: A=C:0, B=C:0, C=C:1
+A, A' : USER:self=0:distinct_out=1
+B, B' : USER:self=0:distinct_out=0
+L     : ANCHOR:ROLE:outgoing
 ```
 
-Label 문자열은 달라졌지만 묶음은 여전히 다음과 같다.
+Edges:
 
 ```text
-{A, B}, {C}
+A  -> B count=1
+A' -> B' count=1
+B  -> L count=1
+B' -> L count=2
 ```
 
-따라서 fixpoint다.
-
-`rounds`는 마지막으로 “변화가 없음”을 확인한 refinement도 포함한다.
-
-Fg01 결과:
+Round 1에서 B/B'의 OUT multiset이 다르다.
 
 ```text
-rounds = 1
+B : {(anchor-color, 1)}
+B': {(anchor-color, 2)}
 ```
 
-이는 seed partition에 한 번 refinement를 적용했고 partition 변화가 없음을 확인했다는 뜻이다.
+따라서 B와 B'가 갈라진다.
 
-### Round trace
+Round 2에서 A/A'는 각각 다른 이전 color의 B/B'를 보므로 갈라진다.
 
-기본 실행은 최종 partition과 `rounds`만 반환한다. `--trace`를 지정하면 `round 0` seed부터 마지막 fixpoint 확인까지 scored partition을 모두 기록하고 출력한다.
-
-```bash
-python3 engine.py family_graph_02 --build O3S --profile plain --trace --candidate-scope subject
+```text
+callee-side split
+-> caller-side propagation
 ```
 
-출력 형태:
+이것이 color refinement가 여러 hop relation 차이를 전파하는 방식이다.
+
+## Canonical color
+
+각 node의 tuple signature를 모은 뒤 unique signature를 정렬한다.
+
+```text
+sorted(set(signatures))
+```
+
+정렬 위치에 따라:
+
+```text
+C:0
+C:1
+C:2
+...
+```
+
+를 부여한다. Hash digest를 사용하지 않으므로 hash collision에 의존하지 않는다. Color 문자열 자체는 의미가 없다. 같은 round에서 같은 signature인가만 중요하다.
+
+## Fixpoint
+
+`run_cg_wl()`은 최대 node 수만큼 반복한다. 1-WL refinement는 partition을 더 세분화할 뿐 기존 class를 합치지 않으므로 finite graph에서 안정화된다.
+
+Convergence는 color 문자열 equality가 아니라 partition equality로 확인한다.
+
+```text
+round t colors:   A=X, B=X, C=Y
+round t+1 colors: A=P, B=P, C=Q
+
+문자열은 다르지만 partition {{A,B},{C}}는 같음
+-> fixpoint
+```
+
+`rounds`는 **변화 없음까지 확인한 round**를 포함한다.
+
+예:
+
+```text
+round 0 seed
+round 1 changed
+round 2 changed
+round 3 fixpoint confirmation
+
+result.rounds = 3
+```
+
+“유효하게 partition이 바뀐 횟수”는 이 예에서 2다. 보고서에서 round 정의를 섞지 않는다.
+
+## Trace
+
+`--trace`는 다음을 저장/출력한다.
+
+- round 0 seed partition
+- 각 refinement round의 scored partition
+- `changed` 또는 `fixpoint` 상태
+
+예:
 
 ```text
 trace:
   round 0 (seed):
-    C1 = ['FUN_...', 'FUN_...']
+    C1 = ['A', 'A_prime']
+    C2 = ['B', 'B_prime']
   round 1 (changed):
-    C1 = ['FUN_...']
-    C2 = ['FUN_...']
-  round 2 (fixpoint):
-    C1 = ['FUN_...']
-    C2 = ['FUN_...']
+    C1 = ['A', 'A_prime']
+    C2 = ['B']
+    C3 = ['B_prime']
+  round 2 (changed):
+    C1 = ['A']
+    C2 = ['A_prime']
+    C3 = ['B']
+    C4 = ['B_prime']
+  round 3 (fixpoint):
+    ...
 ```
 
-마지막 `fixpoint` partition은 직전 partition과 동일하다. 이 라운드는 새로운 분할이 아니라 변화가 없음을 확인한 refinement다. Trace의 cluster 이름은 각 라운드 안에서만 사용하는 표시이며, 라운드 사이의 `C1`이 같은 color라는 뜻은 아니다.
+Trace cluster 번호는 사람이 읽기 위한 round-local label이다. 서로 다른 round의 `C1`이 동일 semantic color라는 뜻이 아니다.
 
-## 12. Final cluster
+## 최종 predicted cluster
 
-Fixpoint color별로 `scored=true` node만 모은다.
-
-Fg01 `full` mode 결과:
-
-```python
-[
-    ["FUN_00113e40", "FUN_00113f20", "FUN_00113fa0"],
-    ["FUN_00114480", "FUN_00114660", "FUN_001148a0"],
-]
-```
-
-Root anchor `FUN_00113e00`은 refinement에는 참여했지만 final cluster에는 없다.
-
-Cluster와 member는 ID 기준으로 정렬해 출력 순서를 안정화한다.
-
-`CGWLResult`는 다음을 반환한다.
+Fixpoint color별로 **`scored=true` node만** 모은다.
 
 ```text
-mode
-cluster_id_by_node
-clusters
-rounds
-trace (`--trace`를 요청한 경우)
+anchors participate in refinement
+anchors excluded from output clusters
 ```
 
-예를 들어 첫 cluster의 member map은 다음과 같다.
+Cluster 내부 member는 ID 순서로 정렬하고 cluster list는 첫 member 기준으로 정렬한다. CLI의 `C1`, `C2` 번호가 deterministic하게 보이도록 하기 위함이다.
 
-```python
-{
-    "FUN_00113e40": 0,
-    "FUN_00113f20": 0,
-    "FUN_00113fa0": 0,
-}
-```
+## Engine이 사용하지 않는 정보
 
-## 13. Mode 비교
+Loader가 fixture에 허용하지 않거나 engine이 읽지 않는 것:
 
-| Mode | Seed | Refinement에서 사용 |
-|---|---|---|
-| `full` | self + distinct OUT | previous + OUT + IN |
-| `out` | self + distinct OUT | previous + OUT |
-| `in` | self + distinct IN | previous + IN |
-| `out-in` | self + distinct OUT | non-leaf는 OUT, leaf는 OUT + IN |
+- origin
+- full symbol
+- generic/concrete type
+- GT family members
+- source
+- Rust namespace
+- compiler profile flag 내용
+- angr confidence를 별도 relation type으로 구분한 값
 
-기본 mode는 `full`이다.
+Fixture에 이미 projection된 node, anchor color, weighted edge만 사용한다.
 
-```bash
-python3 engine.py family_graph_03 --candidate-scope subject
-python3 engine.py family_graph_03 --mode out --candidate-scope subject
-python3 engine.py family_graph_03 --mode in --candidate-scope subject
-python3 engine.py family_graph_03 --mode out-in --candidate-scope subject
-```
+Exact static edge와 angr inferred edge는 raw evidence에서는 구분되지만 fixture `calls`에서는 같은 count edge로 합쳐진다. 따라서 현재 CG-WL은 resolver confidence-aware가 아니다.
 
-출력 예시:
+## Loader의 방어 역할
 
-```text
-full
-2
-[['FUN_001146b0', 'FUN_00114a30'], ['FUN_00114d90'], ...]
-```
+[loader.py](../loader.py)는 fixture를 strict하게 검증한다.
 
-모든 mode를 GT와 함께 비교하려면 scorer를 사용한다.
+- schema v4/v5/v6만 허용
+- unknown top-level/node/call field 거부
+- node ID 중복 거부
+- call target이 fixture node인지 확인
+- call count가 양수 integer인지 확인
+- anchor는 `scored=false`
+- user는 anchor metadata를 가질 수 없음
+- anchor는 valid `anchor_kind/color_class` 필수
+- abstention은 node와 겹칠 수 없음
+- abstention reason 고정
+- build/analysis provenance strict parse
 
-```bash
-python3 scores.py family_graph_03 --all-modes --candidate-scope subject
-```
+Fixture에 `origin` field를 실수로 추가하면 engine이 무시하는 것이 아니라 loader가 거부한다.
 
-## 14. Engine이 하지 않는 일
+## Mode 해석
 
-- Symbol이나 origin을 읽지 않는다.
-- Generic 여부를 판정하지 않는다.
-- Type을 복원하지 않는다.
-- 함수 body byte, instruction, CFG를 비교하지 않는다.
-- Indirect call을 새로 복구하지 않는다.
-- 비슷한 signature를 soft matching하지 않는다.
-- GT를 보고 round나 mode를 선택하지 않는다.
+### 왜 OUT을 중심으로 보는가
 
-Engine의 결과는 fixture에 관찰된 exact relation equivalence partition이다.
+같은 generic source implementation은 concrete type이 달라도 비슷한 callee structure를 만들 가능성이 있다. Compiler inlining 때문에 달라질 수 있지만 OUT은 implementation sharing의 직접적인 흔적이다.
 
-## 15. 코드 읽기 순서
+### 왜 IN을 폐기하지 않는가
 
-1. `run_cg_wl()`
-2. `RelationGraphView`와 `CGWLResult`
-3. `build_relation_graph_view()`
-4. `make_initial_cg_wl_colors()`
-5. `refine_cg_wl_once()`
+Leaf function은 OUT이 없다. OUT-only이면 self count와 seed degree가 같은 leaf를 구분할 relation이 없다. 또한 실제 usage context가 family signal을 줄 수 있다.
+
+### 왜 full과 별도 mode를 모두 유지하는가
+
+IN은 caller usage를 반영하므로 같은 implementation family라도 호출 위치 차이로 분리할 수 있다. 반대로 collision을 줄일 수도 있다. 어느 방향이 유리한지는 결과를 보고 하나만 고르면 안 되므로 네 mode를 명시적 ablation으로 유지한다.
+
+## 구현 읽는 순서
+
+1. [model.py](../model.py)의 `Call`, `Node`, `Case`
+2. [loader.py](../loader.py)의 `load_case()`, schema validation
+3. [engine.py](../engine.py)의 `RelationGraphView`
+4. `build_relation_graph_view()`
+5. `make_initial_cg_wl_colors()`
 6. `_neighbor_color_multiset()`
 7. `make_relation_signature()`
-8. `_canonicalize_signatures()`
-9. `same_partition()`과 `canonical_partition()`
-10. `make_scored_clusters()`
-11. `make_cluster_id_by_node()`
+8. `refine_cg_wl_once()`
+9. `same_partition()`
+10. `run_cg_wl()`
+11. `make_scored_clusters()`, trace formatter
+
+## 변경 시 테스트해야 할 것
+
+[tests/test_engine.py](../tests/test_engine.py)에서 최소한 다음을 고정한다.
+
+- self edge 분리
+- distinct degree와 weighted count 차이
+- neighbor color별 count aggregation
+- full/out/in/out-in signature
+- out-in leaf fallback
+- incoming graph reversal
+- anchor initial color
+- anchor propagation과 unscored output
+- deterministic canonical partition
+- fixpoint round count
+- trace의 seed/changed/fixpoint
+- invalid mode rejection
+
+Engine signature를 바꾸면 [tests/test_scores.py](../tests/test_scores.py)의 exact cluster baseline도 함께 확인한다.
+
+## 현재 모델링 한계
+
+- Edge relation type은 하나다. Exact/inferred, call/tail-call을 WL에서 구분하지 않는다.
+- Multiple-target may-call은 표현하지 않는다.
+- Weight는 dynamic frequency가 아닌 static callsite count다.
+- Neighbor identity가 아니라 color별 weight 합을 쓰므로 같은-color neighbor cardinality 일부를 잃는다.
+- Node local body/CFG/constant/type feature는 없다.
+- Color refinement는 서로 다른 graph structure가 1-WL-equivalent이면 구분할 수 없다.
+- Abstain target은 engine 외부에서 판단 보류되므로 conditional cluster quality와 coverage를 함께 봐야 한다.

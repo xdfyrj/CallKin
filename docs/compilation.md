@@ -1,205 +1,110 @@
 # 컴파일 파이프라인
 
-## 1. 범위
+이 문서는 [compile.py](../compile.py)를 중심으로 source가 어떻게 **서로 짝이 맞는 non-stripped/stripped ELF와 검증 가능한 manifest**가 되는지 설명한다.
 
-CallKin의 Rust source compilation pipeline은 `compile.py`에 구현되어 있다.
+CallKin의 compilation 범위는 여기까지다.
 
 ```text
-case: src/<name>.rs -> rustc
-subject: subjects/<name>/Cargo.toml -> cargo build
--> non-stripped binary 생성
--> binary 복사
--> 복사본에 strip --strip-all 적용
--> source/tool/binary 정보를 manifest에 기록
--> 완성된 세 파일을 최종 경로에 배치
+source -> linked ELF -> stripped copy + manifest
 ```
 
-`run_baseline.py`는 두 profile의 네 case/build 조합에 대해 `compile.py`를 총 8번 호출하는 상위 runner다. 컴파일 방법, profile flag, staging, strip, manifest 생성은 모두 `compile.py`가 결정한다.
+GT 추출, call graph 추출, CG-WL, scoring은 compilation이 아니다.
 
-## 2. 가장 단순한 실행
+## 가장 짧은 실행
+
+단일 Rust 파일:
 
 ```bash
-python3 compile.py family_graph_03 case
+python3 compile.py family_graph_01 case --profile plain --build O3S
 ```
 
-`--build`를 생략했으므로 기본값은 `O3S`다. 실제로 해석되는 값은 다음과 같다.
-
-```text
-source         = src/family_graph_03.rs
-case           = family_graph_03
-build          = O3S
-profile        = plain
-gt_binary      = gt_bin/plain/family_graph_03.O3S.gt.bin
-fixture_binary = bin/plain/family_graph_03.O3S.fixture.bin
-manifest       = build_info/plain/family_graph_03.O3S.json
-rustc_tool     = rustc
-strip_tool     = strip
-```
-
-크기 지향 `min` profile을 만들려면 다음과 같이 실행한다.
-
-```bash
-python3 compile.py family_graph_03 case --profile min
-```
-
-이때 핵심 값은 다음처럼 달라진다.
-
-```text
-profile = min
-codegen-units = 1
-lto = true
-panic = abort
-```
-
-`--build O3KS`는 profile과 독립적이며 선택한 profile에 `--cfg keep`만 추가한다.
-
-## 3. `main()`에서 시작하는 호출 순서
-
-`compile.py`를 읽을 때는 파일 위에서 아래로 읽기보다 다음 호출 순서를 따라가는 편이 쉽다.
-
-```text
-main()
-  -> build_arg_parser()
-  -> parse_args()
-  -> apply_cli_defaults()
-  -> compile_case()
-       -> compile_flags()
-       -> _require_tool()
-       -> case: compile_gt_binary() -> rustc_command()
-       -> subject: inspect_cargo_subject() -> compile_cargo_binary()
-       -> derive_fixture_binary()
-            -> _run_tool()
-       -> make_build_manifest()
-       -> write_manifest()
-       -> _publish_file() x 3
-```
-
-### `main()`
-
-`main()`은 CLI 문자열을 해석하고 전체 작업의 성공/실패를 exit code로 바꾼다.
-
-성공 예시 출력:
-
-```text
-wrote gt_bin/plain/family_graph_03.O3S.gt.bin
-wrote bin/plain/family_graph_03.O3S.fixture.bin
-wrote build_info/plain/family_graph_03.O3S.json
-```
-
-실패하면 예외를 다음 형식으로 출력하고 `1`을 반환한다.
-
-```text
-error: strip executable was not found. Install it before running compile.py.
-```
-
-## 4. CLI argument
-
-| Argument | 의미 | `family_graph_03` 예시 |
-|---|---|---|
-| `source` | case 또는 subject 이름/경로 | `family_graph_03`, `billing-client` |
-| `input_kind` | 입력 종류를 명시하는 위치 인자 | `case`, `subject` |
-| `--case` | crate name과 manifest case를 명시적으로 덮어씀 | `--case family_graph_03` |
-| `--build` | evaluation build | `O3S`, `O3KS` |
-| `--profile` | compiler optimization profile | `plain`, `min` |
-| `--gt-binary` | non-stripped 출력 경로 override | `gt_bin/custom.gt.bin` |
-| `--fixture-binary` | stripped 출력 경로 override | `bin/custom.fixture.bin` |
-| `--manifest` | manifest 출력 경로 override | `build_info/custom.json` |
-| `--rustc-tool` | 실행할 rustc-compatible program | `rustc`, `/path/to/rustc` |
-| `--cargo-tool` | subject에 사용할 Cargo program | `cargo`, `/path/to/cargo` |
-| `--strip-tool` | 실행할 strip-compatible program | `strip`, `/usr/bin/strip` |
-
-`--rustc-tool 1.93.1`처럼 version 문자열을 넘기는 것이 아니다. 실제 실행 파일의 이름이나 경로를 넘긴다.
-
-모든 경로를 명시하는 예시는 다음과 같다.
-
-```bash
-python3 compile.py src/family_graph_03.rs case \
-  --case family_graph_03 \
-  --build O3KS \
-  --profile min \
-  --gt-binary gt_bin/min/family_graph_03.O3KS.gt.bin \
-  --fixture-binary bin/min/family_graph_03.O3KS.fixture.bin \
-  --manifest build_info/min/family_graph_03.O3KS.json \
-  --rustc-tool rustc \
-  --strip-tool strip
-```
-
-## 5. `apply_cli_defaults()`: 입력 종류를 실제 경로로 바꾸기
-
-입력이 실제 파일인지 먼저 확인한다.
-
-```bash
-python3 compile.py family_graph_03 case
-```
-
-두 번째 위치 인자가 `case`이므로 다음 source를 찾는다.
-
-```text
-src/family_graph_03.rs
-```
-
-`paths.py`의 canonical naming 함수가 나머지 경로를 만든다.
-
-```text
-gt_binary_for("family_graph_03", "O3S", "plain")
--> gt_bin/plain/family_graph_03.O3S.gt.bin
-
-fixture_binary_for("family_graph_03", "O3S", "plain")
--> bin/plain/family_graph_03.O3S.fixture.bin
-
-build_manifest_for("family_graph_03", "O3S", "plain")
--> build_info/plain/family_graph_03.O3S.json
-```
-
-다음처럼 실제 source 경로를 전달해도 된다.
-
-```bash
-python3 compile.py src/family_graph_03.rs case --build O3KS
-```
-
-`subject` 입력은 같은 방식으로 `subjects/<name>/Cargo.toml`을 찾는다.
+Cargo project:
 
 ```bash
 python3 compile.py billing-client subject --profile min --build O3S
 ```
 
-Cargo metadata에서 package, edition, 하나뿐인 binary target과 library/bin crate
-namespace를 가져온다. Binary target이 여러 개면 현재 구현은 임의 선택하지 않고
-중단한다.
+첫 positional argument는 이름 또는 path이고, 둘째 positional argument는 입력 종류다.
 
-## 6. Profile과 build
+```text
+family_graph_01 case
+billing-client subject
+```
 
-Profile은 최적화·크기 전략이고 build는 source의 `keep` control 여부다. 두 축은 독립적이다.
+`case`는 기본적으로 `src/<name>.rs`를 찾는다. `subject`는 `subjects/<name>/Cargo.toml`을 찾는다. 명시적인 file/directory path도 받을 수 있다.
 
-| Profile | 핵심 설정 |
-|---|---|
-| `plain` | O3, codegen units 16, `lto=false`, panic unwind |
-| `min` | O3, codegen unit 1, fat LTO, panic abort |
+## Compile의 입력과 출력
 
-`plain`은 Cargo 기본 release codegen 설정을 근사한 CallKin profile이다.
-`case`에서는 direct rustc flag로, `subject`에서는 임시 Cargo release-profile
-overlay로 같은 조건을 적용한다. 특히 `lto=false`는 LTO를
-완전히 끈다는 뜻이 아니며, rustc가 local crate의 codegen unit 사이에서 thin
-local LTO를 수행할 수 있다.
+예를 들어 다음 명령을 실행한다.
 
-`min`은 O3, fat LTO, CGU 1, panic abort를 결합해 binary 크기와 cross-unit
-optimization 압력을 높인 stress profile이다. 특정 악성코드 build를 대표한다고
-주장하지 않으며, 연구에서는 malware-motivated robustness condition으로만
-해석한다.
+```bash
+python3 compile.py billing-client subject --profile plain --build O3S
+```
 
-`plain`의 전체 flag는 다음과 같다.
+입력:
+
+```text
+subjects/billing-client/Cargo.toml
+subjects/billing-client/Cargo.lock
+subjects/billing-client/src/**
+subjects/billing-client/.cargo/**   if present
+subjects/billing-client/build.rs    if present
+selected rustc, cargo, strip
+plain/O3S build policy
+```
+
+출력:
+
+```text
+gt_bin/plain/billing-client.O3S.gt.bin
+bin/plain/billing-client.O3S.fixture.bin
+build_info/plain/billing-client.O3S.json
+```
+
+두 binary를 독립적으로 compile하지 않는다.
+
+```text
+Cargo가 만든 executable 한 개
+  +--> 그대로 보존                 non-stripped GT binary
+  +--> byte copy + strip --strip-all stripped fixture binary
+```
+
+그래서 두 binary는 같은 linked machine code layout에서 출발하며, strip 전후의 linked address를 직접 join할 수 있다.
+
+## Target와 build matrix
+
+### Target
+
+Target은 [build_profiles.py](../build_profiles.py)에 고정되어 있다.
+
+```text
+x86_64-unknown-linux-gnu
+```
+
+Rust compiler version은 고정하지 않는다. Compiler version 자체가 향후 실험 변수가 될 수 있기 때문이다. 대신 `rustc -vV`, compiler binary path, sysroot, flags와 command를 매 build manifest에 기록한다.
+
+Target을 고정하고 compiler version을 기록한다는 두 정책을 혼동하지 않는다.
+
+### Profile
+
+공통 flag:
 
 ```text
 -C opt-level=3
 -C debuginfo=0
 -C debug-assertions=off
 -C overflow-checks=off
+```
+
+`plain`:
+
+```text
 -C codegen-units=16
 -C lto=false
 -C panic=unwind
 ```
 
-`min`은 공통 O3 설정 뒤에 다음 값을 사용한다.
+`min`:
 
 ```text
 -C codegen-units=1
@@ -207,265 +112,428 @@ optimization 압력을 높인 stress profile이다. 특정 악성코드 build를
 -C panic=abort
 ```
 
-Build `O3S`는 추가 source cfg가 없고, `O3KS`는 어느 profile에서든 다음을 추가한다.
+정확한 해석:
+
+- `plain`은 Cargo default-release 설정을 근사한 controlled profile이다.
+- Cargo의 `lto=false`는 가능한 경우 thin local LTO가 발생할 수 있으므로 “LTO 완전 off”라고 쓰지 않는다.
+- `min`은 fat LTO, CGU 1, abort를 결합한 aggressive/minimized stress profile이다.
+- `min`은 malware-motivated condition으로 사용할 수 있지만 malware-representative build라고 일반화하지 않는다.
+
+### Build
+
+`O3S`:
+
+```text
+추가 cfg 없음
+```
+
+`O3KS`:
 
 ```text
 --cfg keep
 ```
 
-고정된 compile setting은 다음과 같다.
+Cargo subject에서는 `RUSTFLAGS=--cfg keep`으로 전달한다. `S`는 strip된 최종 fixture가 있다는 실험 이름이며 compiler option `strip`을 뜻하지 않는다.
+
+### Edition
+
+단일 file case는 edition 2024로 compile한다. Cargo subject는 `cargo metadata`가 반환한 package edition을 사용한다.
+
+## CLI argument가 실제로 하는 일
 
 ```text
-crate type = bin
-edition    = 2024
-target     = x86_64-unknown-linux-gnu
-emit       = link
-crate name = case
+python3 compile.py SOURCE {case,subject} [options]
 ```
 
-Crate name을 case와 같게 두는 이유는 non-stripped symbol prefix가 다음처럼 유지되어야 하기 때문이다.
+| 인자 | 의미 | 예 |
+|---|---|---|
+| `source` | name 또는 explicit path | `billing-client`, `subjects/billing-client` |
+| `input_kind` | direct rustc인지 Cargo인지 선택 | `case`, `subject` |
+| `--case` | output identity와 direct crate name override | 기본은 source 이름 |
+| `--build` | `O3S` 또는 `O3KS` | 기본 `O3S` |
+| `--profile` | `plain` 또는 `min` | 기본 `plain` |
+| `--gt-binary` | non-stripped output override | 일반 실행에서는 생략 |
+| `--fixture-binary` | stripped output override | 일반 실행에서는 생략 |
+| `--manifest` | manifest output override | 일반 실행에서는 생략 |
+| `--rustc-tool` | rustc-compatible executable | toolchain 비교용 |
+| `--cargo-tool` | Cargo executable | subject에만 사용 |
+| `--strip-tool` | GNU-compatible strip executable | 기본 `strip` |
+
+Canonical path와 다른 output override는 임시 실험에만 쓴다. Downstream `run_case.py`는 manifest가 기록한 경로와 실제 입력 경로가 다르면 중단한다.
+
+## `main()`부터 읽는 실행 흐름
+
+[compile.py](../compile.py)의 하단부터 위로 올라가면 가장 쉽게 이해된다.
 
 ```text
-family_graph_03::share
+main
+  -> build_arg_parser
+  -> parse_args
+  -> apply_cli_defaults
+  -> compile_case
+       -> tool preflight
+       -> source inspection/hash
+       -> staging build
+       -> strip copy
+       -> source recheck
+       -> binary hashes
+       -> manifest
+       -> publish binaries
+       -> publish manifest last
 ```
 
-## 7. 실제 rustc command 구성
+### `build_arg_parser()`
 
-다음 입력을 예로 든다.
+CLI가 받을 수 있는 입력을 선언한다. 이 함수는 compile하지 않는다.
+
+예를 들어:
 
 ```text
-source  = src/family_graph_03.rs
-case    = family_graph_03
-profile = plain
-build   = O3S
-output  = /tmp/.../non-stripped.bin
+입력 argv:
+["billing-client", "subject", "--profile", "min"]
+
+parse 직후:
+args.source = "billing-client"
+args.input_kind = "subject"
+args.profile = "min"
+args.build = None
 ```
 
-`rustc_command()`가 만드는 명령은 의미상 다음과 같다.
+### `apply_cli_defaults()`
 
-```bash
-rustc src/family_graph_03.rs \
-  -C opt-level=3 \
-  -C debuginfo=0 \
-  -C debug-assertions=off \
-  -C overflow-checks=off \
-  -C codegen-units=16 \
-  -C lto=false \
-  -C panic=unwind \
-  --crate-type bin \
-  --crate-name family_graph_03 \
-  --edition 2024 \
-  --target x86_64-unknown-linux-gnu \
-  --emit=link \
-  -o /tmp/.../non-stripped.bin
-```
+사용자가 짧게 쓴 name을 실제 path와 canonical output으로 확장한다.
 
-`_run_tool()`은 command를 shell string으로 실행하지 않고 argument list로 `subprocess.run()`에 전달한다. Return code가 0이 아니면 stderr를 포함한 `RuntimeError`를 발생시킨다.
-
-## 8. Non-stripped binary 생성
-
-`compile_gt_binary()`는 최종 `gt_bin/` 경로에 바로 쓰지 않는다.
-
-예를 들어 원하는 출력이 다음이라고 하자.
+예:
 
 ```text
-gt_bin/plain/family_graph_03.O3S.gt.bin
+입력:
+source="billing-client"
+input_kind="subject"
+profile="plain"
+build=None
+
+변환:
+source="subjects/billing-client"
+case="billing-client"
+build="O3S"
+gt_binary="gt_bin/plain/billing-client.O3S.gt.bin"
+fixture_binary="bin/plain/billing-client.O3S.fixture.bin"
+manifest="build_info/plain/billing-client.O3S.json"
 ```
 
-함수는 같은 staging directory 안에 임시 파일을 만들고 rustc의 `-o`에 넘긴다.
+이 함수가 수행하는 검증:
+
+- `case`: explicit file이 아니면 `src/<case>.rs`가 존재해야 한다.
+- `subject`: directory와 그 안의 `Cargo.toml`이 존재해야 한다.
+- profile/build를 canonical lowercase/uppercase로 정규화한다.
+
+### `compile_case()`
+
+실제 pipeline의 coordinator다. Compile 자체를 직접 구현하기보다 case/Cargo 분기와 안전한 publish 순서를 조립한다.
+
+핵심 순서:
 
 ```text
-/tmp/family_graph_03.plain.O3S.xxxxx/non-stripped.bin
+1. profile/build 유효성 확인
+2. rustc, strip, 필요하면 cargo가 PATH에 있는지 확인
+3. source hash 계산
+4. system temporary directory에 세 staging path 생성
+5. non-stripped ELF 생성
+6. 그 ELF를 복사하고 strip
+7. compile 중 source가 바뀌지 않았는지 hash 재확인
+8. 두 binary hash 계산
+9. staging manifest 작성
+10. non-stripped publish
+11. stripped publish
+12. manifest를 completion marker로 마지막 publish
 ```
 
-Rustc가 성공한 경우에만 임시 파일을 staging output으로 교체한다. 실패하면 임시 파일을 삭제한다.
+## 단일 file branch
 
-이 binary는 symbol을 유지하며 `gt_extractor.py`가 읽는 쪽이다.
+### `rustc_command()`
 
-## 9. Stripped fixture binary 파생
+명령을 list로 조립한다.
 
-`derive_fixture_binary()`는 non-stripped binary를 다시 컴파일하지 않는다.
+개념적인 예:
 
 ```text
-staged non-stripped binary
--> shutil.copyfile()
--> shutil.copymode()
--> strip --strip-all copied-file
--> staged stripped binary
+rustc src/family_graph_01.rs
+  -C opt-level=3
+  -C debuginfo=0
+  -C debug-assertions=off
+  -C overflow-checks=off
+  -C codegen-units=16
+  -C lto=false
+  -C panic=unwind
+  --crate-type bin
+  --crate-name family_graph_01
+  --edition 2024
+  --target x86_64-unknown-linux-gnu
+  --emit=link
+  -o <staging>/non-stripped.bin
 ```
 
-실제 command 예시는 다음과 같다.
+Shell string을 만들지 않고 argument list를 `subprocess.run()`에 전달한다. 공백이나 shell quoting에 의존하지 않는다.
 
-```bash
-strip --strip-all /tmp/.../stripped.bin
-```
+### `compile_gt_binary()`
 
-따라서 두 binary는 서로 독립적인 compile 결과가 아니다. Stripped binary는 그 실행에서 생성한 non-stripped binary의 복사본에서 파생된다.
+- output directory를 준비한다.
+- 같은 directory에 temporary file을 만든다.
+- rustc를 실행한다.
+- 성공하면 `os.replace()`로 요청 path에 교체한다.
+- 실패하면 temporary file을 지운다.
 
-## 10. `compile_case()`: staging transaction
+`compile_case()`가 system staging directory 안의 path를 넘기므로 여기서 만든 결과도 아직 canonical artifact가 아니다.
 
-`compile_case()`는 세 최종 파일을 곧바로 덮어쓰지 않는다. 먼저 하나의 temporary directory에서 전부 준비한다.
+## Cargo subject branch
+
+### `inspect_cargo_subject()`
+
+`cargo metadata --no-deps --locked`를 실행하고 다음을 찾는다.
+
+- 현재 directory의 정확한 package
+- package edition
+- binary target
+- library target namespace
+- `Cargo.lock`
+
+현재 계약은 binary target이 정확히 하나여야 한다. 둘 이상이면 임의 선택하지 않고 실패한다.
+
+Billing example:
 
 ```text
-/tmp/family_graph_03.plain.O3S.xxxxx/
+package             = billing-client
+library namespace   = billing_client
+binary target       = reconcile
+candidate namespaces= [billing_client, reconcile]
+root namespace      = reconcile
+edition             = 2021
+```
+
+Hyphenated package `billing-client`와 Rust namespace `billing_client`를 같은 문자열로 추측하지 않고 metadata를 사용하는 이유다.
+
+### Cargo input hash
+
+[build_manifest.py](../build_manifest.py)의 `sha256_cargo_inputs()`는 build 결과 directory 전체를 hash하지 않는다. Build를 결정하는 입력만 path와 bytes 순서로 hash한다.
+
+필수:
+
+```text
+Cargo.toml
+Cargo.lock
+```
+
+포함:
+
+```text
+src/** files
+.cargo/** files
+build.rs
+rust-toolchain
+rust-toolchain.toml
+```
+
+제외되는 대표 항목:
+
+```text
+target/**
+Git metadata
+editor temporary files
+unrelated subject files
+```
+
+### `cargo_profile_config()`
+
+Staging directory에 temporary Cargo config를 만든다.
+
+```toml
+[profile.release]
+opt-level = 3
+debug = 0
+debug-assertions = false
+overflow-checks = false
+codegen-units = 16
+lto = false
+panic = "unwind"
+incremental = false
+strip = "none"
+```
+
+`min`에서는 codegen-units, lto, panic만 해당 profile 값으로 달라진다.
+
+Cargo.toml에서 유지하는 것:
+
+- package/targets/edition
+- dependencies와 features
+- build script
+- Cargo.lock resolution
+
+CallKin이 release profile overlay로 강제하는 것:
+
+- optimization/debug/assertion/overflow
+- codegen units
+- LTO
+- panic strategy
+- incremental off
+- Cargo 자체 strip off
+
+Cargo 자체 strip을 끄는 이유는 non-stripped executable 하나를 먼저 얻은 뒤 CallKin이 동일 executable의 copy를 직접 strip해야 하기 때문이다.
+
+### `cargo_build_command()`
+
+개념적인 command:
+
+```text
+cargo build
+  --release
+  --locked
+  --manifest-path subjects/billing-client/Cargo.toml
+  --package billing-client
+  --bin reconcile
+  --target x86_64-unknown-linux-gnu
+  --target-dir <staging>/cargo-target
+  --message-format=json-render-diagnostics
+  --config <staging>/callkin-cargo-config.toml
+```
+
+Cargo stdout의 `compiler-artifact` JSON에서 selected binary target의 실제 `executable` path를 찾는다. 예상 directory를 문자열로 조립하지 않는다.
+
+### `compile_cargo_binary()`
+
+- temporary config와 target directory를 staging 아래에 둔다.
+- `RUSTC`를 선택한 compiler로 설정한다.
+- 기존 `CARGO_ENCODED_RUSTFLAGS`를 제거한다.
+- `O3KS`에서만 `RUSTFLAGS=--cfg keep`을 설정한다.
+- Cargo가 보고한 executable이 정확히 하나인지 확인한다.
+- executable을 staging non-stripped path로 복사한다.
+- command, environment, profile config를 manifest용으로 반환한다.
+
+## Stripped pair 생성
+
+`derive_fixture_binary()`는 다음만 한다.
+
+```text
+copy(non-stripped, temporary)
+copy file mode
+strip --strip-all temporary
+atomic replace into staging stripped path
+```
+
+Strip이 실패하면 non-stripped staging file은 있어도 canonical output은 아직 교체되지 않는다. 두 binary를 별도로 compile하는 방식과 달리 compiler nondeterminism이나 address 차이를 pair 안에 만들지 않는다.
+
+## Staging과 publish safety
+
+`compile_case()`는 `TemporaryDirectory` 안에서 binary pair와 manifest를 모두 완성한다.
+
+```text
+/tmp/<case>.<profile>.<build>.../
   non-stripped.bin
   stripped.bin
   build.json
+  cargo-target/             subject only
 ```
 
-순서는 다음과 같다.
+`_publish_file()`은 canonical destination과 같은 directory에 temporary copy를 만든 뒤 `os.replace()`한다. System `/tmp`에서 canonical path로 단순 rename하는 것이 아니다. Cross-filesystem rename 문제를 피하고 destination 단위 atomic replacement를 얻기 위한 두 단계다.
 
-1. `rustc`와 `strip`이 PATH에 있는지 검사한다.
-2. Compile 시작 전 source SHA-256을 계산한다.
-3. Staging directory에 non-stripped binary를 컴파일한다.
-4. 그 binary를 복사하고 strip한다.
-5. Source hash를 다시 계산해 compile 도중 source가 바뀌지 않았는지 검사한다.
-6. 두 staged binary의 SHA-256을 계산한다.
-7. Manifest를 staging에 작성한다.
-8. Non-stripped binary를 최종 경로에 배치한다.
-9. Stripped binary를 최종 경로에 배치한다.
-10. Manifest를 가장 마지막에 최종 경로에 배치한다.
-
-Manifest를 마지막에 쓰는 이유는 manifest를 **build completion marker**로 사용하기 위해서다.
+Publish 순서:
 
 ```text
-manifest가 새 build를 가리킨다
-=> source와 두 binary가 모두 완성되었다
+non-stripped
+stripped
+manifest last
 ```
 
-파일 교체에는 `os.replace()`를 사용한다. 각 파일은 완성된 임시 파일이 준비된 뒤 교체된다.
+세 파일 전체를 하나의 filesystem transaction으로 교체할 수는 없다. 대신 manifest를 completion marker로 마지막에 배치하고, downstream에서 세 hash를 다시 검증한다. 중간 실패로 old/new file이 섞여도 manifest 검증이 이를 거부한다.
 
-## 11. Build manifest
+Staging `TemporaryDirectory`는 context를 벗어나면 제거된다. Destination 옆 temporary file도 `finally`에서 제거한다.
 
-Manifest 생성은 `compile.py`의 책임이고, JSON 작성 및 이후 검증 helper는 `build_manifest.py`에 있다.
+## Manifest가 기록하는 재현 정보
 
-예시 핵심 구조:
+Build manifest에는 다음이 남는다.
 
-```json
-{
-  "case": "family_graph_01",
-  "build": "O3S",
-  "profile": "plain",
-  "target": "x86_64-unknown-linux-gnu",
-  "edition": "2024",
-  "source": {
-    "kind": "case",
-    "path": "src/family_graph_01.rs",
-    "sha256": "09fb...a6c"
-  },
-  "artifacts": {
-    "non_stripped": {
-      "path": "gt_bin/plain/family_graph_01.O3S.gt.bin",
-      "sha256": "2e71...a36"
-    },
-    "stripped": {
-      "path": "bin/plain/family_graph_01.O3S.fixture.bin",
-      "sha256": "a90a...248",
-      "stripped_from_sha256": "2e71...a36"
-    }
-  }
-}
-```
+- source kind/path/hash
+- case/build/profile/target/edition/crate name
+- random build ID
+- rustc invoked/resolved path
+- rustc sysroot와 compiler binary path
+- `rustc -vV` 전체
+- canonical flags와 실제 command
+- strip invoked/resolved path, version, flags, command
+- Cargo path/version/package/bin/namespaces
+- Cargo manifest와 lockfile hash
+- Cargo environment와 generated profile config
+- 두 binary path/hash
+- stripped copy의 source hash
 
-추가로 다음을 기록한다.
+Compiler version을 강제하지 않더라도 어느 compiler가 어떤 artifact를 만들었는지는 잃지 않는다.
 
-- `rustc -vV` 전체 출력
-- rustc invoked/resolved path와 sysroot
-- compiler binary path
-- 실제 compiler flags와 command
-- strip path, version, flags, command
-- 무작위 `build_id`
+## 실패는 어디에서 멈추는가
 
-Rustc version을 강제로 하나로 제한하지 않는다. 사용한 version을 manifest에 손실 없이 기록한다. 다른 compiler version의 결과를 동시에 보관하려면 canonical V0 경로와 분리된 출력 경로를 사용해야 한다.
+| 실패 | 결과 |
+|---|---|
+| rustc/cargo/strip 없음 | canonical file 교체 전 중단 |
+| Cargo.lock 없음 | metadata/build 전 중단 |
+| binary target 0개 또는 여러 개 | 임의 선택 없이 중단 |
+| rustc/Cargo failure | stderr를 포함해 중단 |
+| strip failure | publish 전 중단 |
+| compile 도중 source 변경 | hash mismatch로 publish 전 중단 |
+| Cargo executable 보고가 모호함 | 중단 |
+| manifest 생성 실패 | publish 전 중단 |
+| publish 중 일부 실패 | 다음 run의 manifest 검증이 혼합 상태 거부 |
 
-`load_and_verify_manifest()`는 hash와 identity뿐 아니라 `edition`, compiler flags,
-strip flags가 코드에 정의된 canonical profile과 정확히 같은지도 검사한다.
-검증된 `build_id`와 source/non-stripped/stripped SHA-256은 downstream JSON의
-`provenance`로 전달된다.
+## Downstream 검증
 
-### Canonical V0에서 기록된 환경
-
-현재 checked-in manifest가 기록한 compiler 환경은 다음과 같다.
+[run_case.py](../run_case.py)는 manifest를 먼저 읽고 다음을 검증한 뒤에만 nm/radare2를 실행한다.
 
 ```text
-rustc release : 1.93.1
-commit        : 01f6ddf7588f42ae2d7eb0a2f21d44e8e96674cf
-host          : x86_64-unknown-linux-gnu
-target        : x86_64-unknown-linux-gnu
-LLVM          : 21.1.8
-GNU strip     : 2.42
+expected case/build/profile/target
+current source hash
+current non-stripped hash
+current stripped hash
+stripped_from relation
+canonical compiler flags
+Cargo input records
 ```
 
-`case`는 direct `rustc`, `subject`는 `cargo build --locked`를 사용한다. Cargo
-subject manifest에는 package, selected binary, edition, Cargo.toml/Cargo.lock hash,
-owned namespaces, Cargo command와 profile overlay도 기록한다. Cargo source digest는
-`Cargo.toml`, `Cargo.lock`, `src/**`, 선택적 `build.rs`, `rust-toolchain*`,
-`.cargo/**`만 포함하며 `target/`과 Git metadata는 포함하지 않는다.
+따라서 compile 후 source comment 하나만 바뀌어도 source hash가 달라져 분석을 거부한다. Source를 정리하고 commit한 뒤 compile해야 하는 이유다.
 
-## 12. Manifest 검증
+## 핵심 함수만 읽는 순서
 
-`run_case.py`는 분석 전에 `build_manifest.load_and_verify_manifest()`를 호출한다.
+Compilation을 이해하는 데 필요한 최소 순서:
 
-다음 값이 맞아야 한다.
+1. [build_profiles.py](../build_profiles.py)의 `PROFILE_FLAGS`, `BUILD_FLAGS`, `compile_flags()`
+2. [compile.py](../compile.py)의 `apply_cli_defaults()`
+3. `compile_case()`
+4. direct branch면 `rustc_command()`, `compile_gt_binary()`
+5. Cargo branch면 `inspect_cargo_subject()`, `compile_cargo_binary()`
+6. `derive_fixture_binary()`
+7. `make_build_manifest()`, `_publish_file()`
+8. [build_manifest.py](../build_manifest.py)의 `load_and_verify_manifest()`
 
-```text
-manifest case   == 요청 case
-manifest build  == 요청 build
-manifest profile == 요청 profile
-manifest target == x86_64-unknown-linux-gnu
-```
+Subprocess error formatting이나 작은 type validator는 문제가 생겼을 때만 읽어도 된다.
 
-그리고 현재 파일을 다시 hash한다.
+## 개발 시 체크리스트
 
-```text
-SHA-256(current source)          == manifest source.sha256
-SHA-256(current non-stripped)    == manifest non_stripped.sha256
-SHA-256(current stripped)        == manifest stripped.sha256
-stripped.stripped_from_sha256    == non_stripped.sha256
-```
+Profile을 추가하거나 수정할 때:
 
-Source와 binary hash를 서로 비교하는 것이 아니다. 각 파일의 현재 hash를 그 파일에 대해 기록된 hash와 비교한다.
+1. [build_profiles.py](../build_profiles.py)의 direct flags와 Cargo config를 함께 수정한다.
+2. Manifest verifier의 canonical flag 검사도 확인한다.
+3. Profile path normalization을 [paths.py](../paths.py)에 반영한다.
+4. [test_compile.py](../tests/test_compile.py)에 exact command/config test를 추가한다.
+5. Binary부터 모든 downstream artifact를 다시 생성한다.
 
-## 13. 실패 시 동작
+Cargo subject 지원을 넓힐 때:
 
-### Tool이 없음
+1. Multi-binary selection 정책을 CLI에 명시한다.
+2. Workspace/package 선택을 metadata로 검증한다.
+3. Hash에 새 build input이 빠지지 않는지 확인한다.
+4. Namespace와 root namespace를 manifest에 보존한다.
+5. Direct case 회귀가 바뀌지 않는지 확인한다.
 
-Case의 `rustc`/`strip`, subject의 `cargo`/`rustc`/`strip` 중 필요한 tool이
-없으면 binary를 건드리기 전에 중단한다.
+## 현재 한계
 
-```text
-error: rustc executable was not found. Install it before running compile.py.
-```
-
-### Rustc 실패
-
-Staging compile이 실패하고 기존 canonical binary는 유지된다.
-
-### Strip 실패
-
-새 non-stripped/stripped/manifest는 아직 최종 경로에 공개되지 않았으므로 기존 세트가 유지된다.
-
-### Source가 compile 도중 변경됨
-
-Compile 전후 source hash가 다르면 새 build를 폐기한다.
-
-### 이후 파일 변조
-
-`run_case.py`의 manifest 검증이 hash mismatch를 발견하고 분석을 거부한다.
-
-## 14. 코드 읽기 순서
-
-`compile.py`만 다음 순서로 읽으면 실제 compilation pipeline을 이해할 수 있다.
-
-1. `main()`
-2. `build_arg_parser()`
-3. `apply_cli_defaults()`
-4. `compile_case()`
-5. `compile_flags()`와 `PROFILE_FLAGS`/`BUILD_FLAGS`
-6. Case: `compile_gt_binary()`와 `rustc_command()`
-7. Subject: `inspect_cargo_subject()`와 `compile_cargo_binary()`
-8. `derive_fixture_binary()`
-9. `make_build_manifest()`
-10. `_publish_file()`
-
-Manifest 검증까지 이해하려면 마지막에 `build_manifest.py`의 `load_and_verify_manifest()`를 읽는다.
+- Linux x86-64 ELF만 canonical target이다.
+- Cargo subject는 binary target 하나만 지원한다.
+- Features를 별도 CLI로 선택하지 않는다. Subject의 현재 Cargo invocation/default feature를 따른다.
+- Compiler matrix용 version별 output namespace는 아직 없다. 같은 case/profile/build를 다른 compiler로 compile하면 canonical path를 덮어쓴다.
+- Build manifest는 동일 input과 environment가 byte-identical output을 반드시 만든다고 증명하지 않는다. 실제 artifact identity와 실행 환경을 기록하고 검증한다.

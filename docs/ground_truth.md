@@ -1,618 +1,537 @@
-# Ground truth 추출 파이프라인
+# Ground truth와 candidate selection
 
-## 1. 목적
-
-CallKin의 `gt_extractor.py`는 non-stripped Rust binary의 symbol table에서 세 파일을 만든다.
+CallKin은 non-stripped binary를 한 번 읽어 서로 목적이 다른 세 artifact를 만든다.
 
 ```text
-gt_bin/plain/family_graph_01.O3S.gt.bin
--> ground_truth/plain/family_graph_01.O3S.gt.json
--> users/plain/family_graph_01.O3S.users.json
--> boundaries/plain/family_graph_01.O3S.boundaries.json
+non-stripped ELF
+       |
+       | nm -n -S -C
+       v
+demangled sized text symbols
+       |
+       +--> ground truth: origin partition + full symbols
+       +--> users: target addresses + target bounds
+       +--> boundaries: scope-independent Rust function bounds
 ```
 
-세 출력의 역할은 다르다.
+세 파일을 분리하는 이유는 정답 누수를 막기 위해서다. Engine 쪽으로 넘어가는 것은 주소와 함수 경계이지 origin 이름이나 concrete type이 아니다.
 
-### Ground truth JSON
+## 실행
 
-어떤 최종 함수 주소들이 같은 source origin에서 나왔는지 기록한다.
-
-```text
-shared_recursive
-  -> FUN_00113e40
-  -> FUN_00113f20
-  -> FUN_00113fa0
-```
-
-이 파일은 scoring에서만 사용한다.
-
-### Users JSON
-
-선택한 candidate scope에 속한 함수의 raw address만 기록한다.
-
-```text
-0x13e40
-0x13f20
-0x13fa0
-...
-```
-
-이 파일은 stripped binary extractor가 candidate 함수를 선택할 때 사용한다. Origin이나 group 관계는 담지 않는다.
-
-### All-Rust audit catalog
-
-`all_rust_catalog.py`는 기존 GT/users JSON을 대체하지 않는 평가 전용 artifact를 만든다.
+일반적으로 [run_case.py](../run_case.py)가 이 단계를 호출한다.
 
 ```bash
-python3 all_rust_catalog.py billing-client --profile plain --build O3S
+python3 run_case.py billing-client \
+  --profile plain \
+  --build O3S \
+  --candidate-scope rust-nonstd \
+  --track angr \
+  --anchor-policy role \
+  --mode out-in
 ```
 
-출력은 다음 경로다.
-
-```text
-ground_truth/all-rust/plain/billing-client.O3S.catalog.json
-```
-
-이 catalog에는 source root `main`을 제외한 모든 observable Rust symbol이 들어간다.
-따라서 기존 `rust-nonstd` scope에서 제외되는 `core::ptr::drop_in_place<T>`도 origin family로
-기록된다. 단, 이 파일은 Oxidizer direct-FLIRT audit과 미래 transfer 평가에서만 사용한다.
-현재 `users` selection, fixture, CG-WL 입력, 기본 PR/RE/F1/ARI 점수에는 들어가지 않는다.
-
-## 2. 가장 단순한 실행
+GT 단계만 실행하려면:
 
 ```bash
-# 기본: core/alloc/std/__rustc를 제외한 모든 관찰 가능한 Rust 함수
-python3 gt_extractor.py billing-client
-
-# frozen micro-corpus의 subject-owned 함수만 재현
-python3 gt_extractor.py family_graph_01 --candidate-scope subject
+python3 gt_extractor.py billing-client \
+  --profile plain \
+  --build O3S \
+  --candidate-scope rust-nonstd
 ```
 
-위 `family_graph_01 --candidate-scope subject` 명령은 다음처럼 해석된다.
-
-```text
-binary = gt_bin/plain/family_graph_01.O3S.gt.bin
-case   = family_graph_01
-build  = O3S
-profile = plain
-candidate scope = subject
-GT     = ground_truth/plain/family_graph_01.O3S.gt.json
-users  = users/plain/family_graph_01.O3S.users.json
-boundaries = boundaries/plain/family_graph_01.O3S.boundaries.json
-nm     = nm
-```
-
-출력 예시:
-
-```text
-wrote ground_truth/plain/family_graph_01.O3S.gt.json
-origins=2
-wrote users/plain/family_graph_01.O3S.users.json
-users=6
-wrote boundaries/plain/family_graph_01.O3S.boundaries.json
-function boundaries=<all Rust text symbols + C main startup wrapper>
-```
-
-## 3. 전체 함수 호출 순서
-
-```text
-main()
-  -> build_arg_parser()
-  -> apply_cli_defaults()
-  -> run_nm()
-  -> parse_nm_lines()
-  -> user_addresses()
-       -> origin_from_symbol()
-  -> rust_function_bounds()
-  -> make_ground_truth()
-       -> origin_from_symbol()
-       -> function_id()
-  -> optional validate_against_fixture()
-  -> write_json(GT)
-  -> make_users_json()
-  -> write_json(users)
-  -> make_function_boundaries_json()
-  -> write_json(boundaries)
-```
-
-## 4. Symbol 읽기
-
-`run_nm()`은 다음 command를 실행한다.
-
-```bash
-nm -n -S -C gt_bin/plain/family_graph_01.O3S.gt.bin
-```
-
-Option 의미:
-
-```text
--n : symbol을 address 순서로 정렬
--S : 함수 symbol size를 함께 출력
--C : Rust/C++ mangled symbol을 demangle
-```
-
-출력 한 줄의 예시는 다음과 같은 형태다.
-
-```text
-0000000000013e40 00000000000000d4 t family_graph_01::shared_recursive
-```
-
-`parse_nm_lines()`는 이를 다음 객체로 바꾼다.
-
-```python
-Symbol(
-    addr=0x13e40,
-    size=0xd4,
-    kind="t",
-    name="family_graph_01::shared_recursive",
-)
-```
-
-Text symbol kind `t`와 `T`만 사용한다. Data symbol, undefined symbol, 주소를 파싱할 수 없는 줄은 제외한다.
-
-## 5. Candidate scope
-
-### 5.1 기본 `rust-nonstd`
-
-기본 정책은 demangle 가능한 Rust text symbol의 **함수 소유 namespace**를 판정한다.
-소유자가 `core`, `alloc`, `std`, `__rustc`이면 제외하고, 그 밖의 subject/dependency crate 함수는
-candidate로 포함한다. Source `main`은 CG-WL root anchor이므로 scored candidate에서
-제외한다.
-
-```text
-serde_json::de::parse                       -> candidate
-billing_client::client::decode              -> candidate
-core::ptr::drop_in_place<billing_client::T> -> 제외(core 소유)
-std::rt::lang_start_internal                -> 제외(std 소유)
-__rustc::rust_begin_unwind                  -> 제외(__rustc 소유)
-reconcile::main                             -> 제외(root)
-```
-
-Trait impl은 맨 앞 문자열만 보지 않는다. 구현 header에서 non-standard crate를 찾아
-소유자를 정한다.
-
-```text
-<billing_client::Invoice as core::fmt::Display>::fmt
--> billing_client 소유 -> candidate
-
-<alloc::vec::Vec<T> as billing_client::LocalTrait>::method
--> billing_client 소유 trait impl -> candidate
-
-<&T as core::fmt::Debug>::fmt
--> core 소유 -> 제외
-```
-
-이 분류는 non-stripped symbol oracle이다. Stripped binary만 보고 standard library를
-식별한 결과가 아니다. `std_detect`처럼 owner가 정확히
-`core/alloc/std/__rustc`가 아닌 Rust namespace는 candidate가 될 수 있다.
-
-### 5.2 호환 `subject`
-
-단일-file case manifest에는 namespace 하나가 기록된다.
-
-```text
-family_graph_01::
-```
-
-다음 symbol은 포함된다.
-
-```text
-family_graph_01::shared_recursive
-family_graph_01::process
-```
-
-다음 symbol은 포함되지 않는다.
-
-```text
-core::panicking::panic_bounds_check
-std::rt::lang_start_internal
-miniz_oxide::inflate::core::transfer
-```
-
-Cargo subject manifest에는 선택한 package의 library와 binary target namespace가
-함께 기록된다.
-
-```text
-billing_client
-reconcile
-```
-
-일반 symbol은 `billing_client::` 또는 `reconcile::`로 시작하는지 검사한다.
-Trait impl symbol은 `<billing_client::` 또는 `<reconcile::`로 시작하는지도 검사한다.
-외부 `serde::`, `std::`, `sha2::` 함수는 candidate가 아니라 direct library anchor다.
-이 정책은 `--candidate-scope subject`로 선택하며 frozen family-graph baseline이
-사용한다.
-
-## 6. Symbol을 origin으로 정규화
-
-`origin_from_symbol()`은 다음 순서로 origin을 만든다.
-
-1. Symbol이 선택한 candidate scope에 속하는지 확인한다.
-2. `subject`의 단일 namespace case에서는 prefix를 제거한다. 여러 namespace 또는 `rust-nonstd`에서는 crate path를 보존한다.
-3. 끝의 Rust hash `::h<16 hex>`를 제거한다.
-4. `::<impl ...>`이면 구현 대상 type을 먼저 보존한다.
-5. 나머지 표시된 generic argument `::<...>`를 제거한다.
-6. `main`은 제외한다.
-
-### 예시 1: 일반 symbol
-
-```text
-input symbol = family_graph_01::process
-prefix       = family_graph_01::
-origin       = process
-```
-
-### 예시 2: hash가 있는 symbol
-
-```text
-input symbol = family_graph_01::process::h0123456789abcdef
-after prefix = process::h0123456789abcdef
-after hash   = process
-origin       = process
-```
-
-### 예시 3: v0 demangle이 type argument를 보여주는 경우
-
-```text
-input symbol = family_graph_03::share::<core::option::Option<i32>>
-after prefix = share::<core::option::Option<i32>>
-after generic argument removal = share
-origin = share
-```
-
-`strip_rust_generic_args()`는 `<...>`의 중첩 깊이를 세기 때문에 내부에 `Option<i32>` 같은 nested generic이 있어도 바깥 `::<...>` 전체를 제거한다.
-
-현재 canonical legacy-mangled binary에서는 여러 instance가 이미 같은 demangled path로 보일 수 있다.
-
-```text
-family_graph_03::share @ 0x14720
-family_graph_03::share @ 0x148e0
-family_graph_03::share @ 0x14a30
-```
-
-세 주소의 normalized origin은 모두 `share`다.
-
-## 7. Address를 member ID로 변환
-
-Ground truth member ID는 fixture와 같은 규칙을 써야 한다.
-
-기본 `id_bias`는 `0x100000`이다.
-
-```text
-raw symbol address = 0x13e40
-id bias            = 0x100000
-result             = 0x113e40
-member ID          = FUN_00113e40
-```
-
-이 변환 덕분에 다음 두 파일이 같은 ID로 join된다.
-
-```text
-GT member       = FUN_00113e40
-fixture user ID = FUN_00113e40
-```
-
-Bias는 주소의 의미를 바꾸지 않고 ID 문자열 표현만 바꾼다.
-
-## 8. Origin grouping
-
-`make_ground_truth()`는 normalized origin마다 member를 모은다.
-
-실제 fg01 입력을 단순화하면 다음과 같다.
-
-```text
-0x13e40 family_graph_01::shared_recursive
-0x13f20 family_graph_01::shared_recursive
-0x13fa0 family_graph_01::shared_recursive
-0x14480 family_graph_01::process
-0x14660 family_graph_01::process
-0x148a0 family_graph_01::process
-```
-
-결과 partition:
-
-```text
-shared_recursive = {
-  FUN_00113e40,
-  FUN_00113f20,
-  FUN_00113fa0
-}
-
-process = {
-  FUN_00114480,
-  FUN_00114660,
-  FUN_001148a0
-}
-```
-
-Origin은 첫 member address 순서로 정렬되고, 각 origin의 member도 address 순서로 정렬된다. 따라서 같은 binary에서 반복 생성하면 JSON 순서가 안정적이다.
-
-## 9. 동일 주소 symbol 처리
-
-한 주소에 symbol이 여러 개 있을 수 있다.
-
-### Same-origin alias
-
-다음 두 symbol이 같은 주소와 같은 normalized origin을 가진다고 하자.
-
-```text
-0x13e40 family_graph_01::shared_recursive
-0x13e40 family_graph_01::shared_recursive::h0123456789abcdef
-```
-
-Member는 한 번만 기록한다.
-
-```text
-FUN_00113e40
-```
-
-두 원래 symbol 문자열은 `symbols` 목록에 보존하고 GT `note`에 duplicate 처리를 기록한다.
-
-### Cross-origin shared address
-
-다음처럼 서로 다른 origin이 같은 주소를 소유하면:
-
-```text
-0x13e40 family_graph_01::alpha
-0x13e40 family_graph_01::beta
-```
-
-`subject` scope는 어느 origin을 임의로 선택하지 않고 실패한다.
-
-```text
-cross-origin address alias at FUN_00113e40
-```
-
-`rust-nonstd`처럼 큰 universe에서는 실제 binary에 이런 alias가 존재할 수 있다.
-기계 함수 하나를 두 GT group에 중복 배치할 수 없으므로 다음 singleton으로 둔다.
-
-```text
-shared-address@FUN_001557f0
-```
-
-GT schema v6의 `cross_origin_aliases`에는 해당 주소에서 관찰한 원래 origin을 모두
-보존한다. 이것은 ICF나 compiler merging 원인을 확정한다는 뜻이 아니라, partition이
-정의되지 않는 shared-address 관찰을 임의의 한 origin으로 귀속하지 않는 처리다.
-
-## 10. Ground truth JSON schema
-
-일반 GT schema version은 5다. Cross-origin shared address가 있으면 schema version
-6과 `cross_origin_aliases`를 사용한다.
-
-실제 fg01 구조:
-
-```json
-{
-  "case": "family_graph_01",
-  "build": "O3S",
-  "profile": "plain",
-  "schema_version": 5,
-  "provenance": {
-    "build_id": "...",
-    "source_sha256": "...",
-    "non_stripped_sha256": "...",
-    "stripped_sha256": "..."
-  },
-  "origins": [
-    {
-      "origin": "shared_recursive",
-      "members": [
-        "FUN_00113e40",
-        "FUN_00113f20",
-        "FUN_00113fa0"
-      ]
-    }
-  ],
-  "symbols": {
-    "FUN_00113e40": [
-      "family_graph_01::shared_recursive"
-    ]
-  }
-}
-```
-
-필드 의미:
-
-| Field | 의미 |
-|---|---|
-| `case`, `build`, `profile` | fixture와 join할 identity |
-| `schema_version` | GT schema version |
-| `provenance` | manifest build ID와 source/non-stripped/stripped SHA-256 |
-| `origins` | true partition |
-| `symbols` | member별 원래 demangled symbol 목록 |
-| optional `note` | same-origin duplicate/alias 기록 |
-| optional `cross_origin_aliases` | shared-address member와 관찰된 원래 origin 목록 |
-
-`symbols`의 key 집합은 모든 origin member 집합과 정확히 같아야 한다. 이 조건은 `scores.py` loader가 다시 검증한다.
-
-## 11. Candidate selection과 boundary schema
-
-### 11.1 `subject` users JSON
-
-Schema version은 5다. Version 4 users JSON도 읽을 수 있다.
-
-```json
-{
-  "case": "family_graph_01",
-  "build": "O3S",
-  "profile": "plain",
-  "schema_version": 5,
-  "provenance": {
-    "build_id": "...",
-    "source_sha256": "...",
-    "non_stripped_sha256": "...",
-    "stripped_sha256": "..."
-  },
-  "source": "gt_bin/plain/family_graph_01.O3S.gt.bin",
-  "namespaces": ["family_graph_01"],
-  "addresses": [
-    "0x13e40",
-    "0x13f20",
-    "0x13fa0",
-    "0x14480",
-    "0x14660",
-    "0x148a0"
-  ],
-  "function_bounds": [
-    {"address": "0x13e40", "size": 212},
-    {"address": "0x14040", "size": 1075}
-  ]
-}
-```
-
-`addresses`는 scored candidate 시작 주소이며 중복을 제거해 오름차순으로 기록한다.
-이 schema v5 예시에서 `function_bounds`는 같은 subject namespace에 속한 함수의
-`(시작 주소, byte size)`다.
-Candidate 외에 source `main`도 포함하며, stripped binary의 callsite를 radare2 함수
-경계와 독립적으로 디코딩할 때 사용한다.
-
-Users JSON에는 다음 정보가 없다.
-
-```text
-origin 이름
-어떤 주소끼리 같은 family인지
-generic type
-symbol 문자열
-origin label
-```
-
-따라서 binary extractor에 candidate 집합은 전달하지만 true partition은 전달하지 않는다.
-
-### 11.2 `rust-nonstd` users JSON
-
-Schema version 6은 선택 정책을 명시한다.
-
-```json
-{
-  "schema_version": 6,
-  "scope": "rust-nonstd",
-  "root_namespace": "reconcile",
-  "namespaces": [],
-  "excluded_namespaces": ["core", "alloc", "std", "__rustc"],
-  "addresses": ["0x2c840", "0x2ce00"],
-  "function_bounds": [
-    {"address": "0x2c840", "size": 64}
-  ]
-}
-```
-
-`candidate_selection.py`는 JSON 전체를 canonical form으로 hash하고, projector가 그
-SHA-256을 fixture `analysis.candidate_selection_sha256`에 기록한다.
-
-### 11.3 Scope-independent function boundaries
-
-`boundaries/<profile>/*.boundaries.json`은 candidate를 고르지 않는다. Demangle 가능한
-모든 Rust text symbol과 startup root 탐지용 C `main`의 `(address, size)`만 담고
-별도 SHA-256으로 검증된다.
-
-```text
-같은 boundaries + stripped binary -> extraction backend별 raw graph 하나
-raw + subject users              -> subject fixture
-raw + rust-nonstd users          -> rust-nonstd fixture
-```
-
-따라서 candidate scope를 바꿀 때 disassembly evidence를 중복 생성할 필요가 없다.
-
-## 12. Fixture universe 검증
-
-`validate_against_fixture()`는 다음 두 집합을 비교한다.
-
-```text
-GT의 모든 origin member ID
-==
-fixture의 scored=true node ID
-```
-
-Fg01의 경우 양쪽 모두 다음 여섯 ID여야 한다.
-
-```text
-FUN_00113e40
-FUN_00113f20
-FUN_00113fa0
-FUN_00114480
-FUN_00114660
-FUN_001148a0
-```
-
-하나라도 다르면 scoring universe가 달라지므로 중단한다.
-
-Standalone CLI에서는 `--fixture`를 줄 때 이 검사를 수행한다.
+Subject-only 예:
 
 ```bash
 python3 gt_extractor.py family_graph_01 \
-  --candidate-scope subject \
-  --fixture fixtures/plain/family_graph_01.O3S.fixture.json
+  --profile plain \
+  --candidate-scope subject
 ```
 
-`run_case.py`는 GT와 fixture를 모두 생성한 뒤 같은 검사를 항상 실행한다.
+Canonical path는 [Artifact와 provenance](artifacts.md)에 정의되어 있다.
 
-## 13. CLI argument
+## 이 GT가 정답으로 삼는 것
 
-| Argument | 기능 | 예시 |
-|---|---|---|
-| `binary` | non-stripped binary path 또는 stem | `family_graph_01` |
-| positional `output` | GT JSON 출력 경로 | `ground_truth/custom.gt.json` |
-| `--case` | JSON case override | `--case custom_case` |
-| `--build` | build label | `--build O3KS` |
-| `--profile` | compiler profile과 artifact directory | `--profile min` |
-| `--candidate-scope` | `rust-nonstd`(기본) 또는 `subject` | `--candidate-scope subject` |
-| `--namespace` | manifest namespace override, 여러 번 지정 가능 | `--namespace billing_client` |
-| `--fixture` | scored universe 검사용 fixture | `fixtures/custom.fixture.json` |
-| `--users` | users JSON 출력 경로 | `users/custom.users.json` |
-| `--boundaries` | 공용 Rust/startup symbol boundary 출력 | `boundaries/custom.json` |
-| `--manifest` | build manifest override | `build_info/min/custom.json` |
-| `--id-bias` | FUN ID address bias | `--id-bias 0` |
-| `--nm-tool` | nm-compatible executable | `nm`, `/usr/bin/nm` |
+현재 GT의 정확한 정의는 다음이다.
 
-명시적 실행 예시:
+> 최종 non-stripped ELF의 `t/T` text symbol로 관찰된 함수들을 normalized source-origin별로 나눈 partition.
 
-```bash
-python3 gt_extractor.py \
-  gt_bin/min/family_graph_03.O3KS.gt.bin \
-  ground_truth/min/family_graph_03.O3KS.gt.json \
-  --case family_graph_03 \
-  --build O3KS \
-  --profile min \
-  --candidate-scope subject \
-  --namespace family_graph_03 \
-  --users users/min/family_graph_03.O3KS.users.json \
-  --nm-tool nm
+예:
+
+```text
+billing_client::decode::<Invoice>  @ 0x40100
+billing_client::decode::<Customer> @ 0x40200
 ```
 
-## 14. Ground truth가 말하는 것과 말하지 않는 것
+Normalization 후:
 
-이 GT의 정확한 의미는 다음과 같다.
+```text
+origin: billing_client::decode
+members: [FUN_00140100, FUN_00140200]
+```
 
-> 최종 non-stripped binary에서 text symbol로 관찰된 함수들의 normalized source-origin partition
+주소는 예시다. 실제 ID는 linked address에 기본 `0x100000` bias를 더해 Ghidra-style `FUN_...` 문자열로 만든다.
 
-알 수 있는 것:
+## 이 GT가 정답으로 삼지 않는 것
 
-- 최종 binary에 symbol로 남은 함수 주소
-- 같은 normalized source path를 가진 주소 집합
-- 각 주소의 demangled symbol
+현재 GT는 source-level mono-item census가 아니다. 다음을 알지 못한다.
 
-알 수 없는 것:
+- source에서 예정된 전체 concrete type instance
+- compile 중 생성되었으나 완전히 inlined된 instance
+- dead-code elimination으로 사라진 instance
+- 어떤 pass에서 제거되었는지
+- 동일 주소가 compiler merging인지 linker ICF인지
+- source-level `k_ref`
 
-- Source에서 예정된 전체 mono-item 수
-- 완전히 inline되어 out-of-line symbol이 사라진 instance
-- eliminated instance와 제거 이유
-- emitted/inlined/folded lifecycle
-- concrete type별 완전한 instance census
-- cross-origin 동일 주소의 compiler/linker 원인
+따라서 origin member 수 `k_obs`는 “최종 symbol에서 보인 out-of-line instance 수”다.
 
-따라서 `k_obs`는 자동으로 알 수 있지만 source-level `k_ref`는 이 extractor만으로 만들 수 없다.
+```text
+source에서 5개 instantiate
+최종 symbol에서 3개 생존
+GT k_obs = 3
+```
 
-## 15. 코드 읽기 순서
+사라진 두 instance는 현재 GT universe에 들어오지 않는다. 이 때문에 CallKin의 기본 RE는 source-level survival recall이 아니라 observed-target conditional recall이다.
 
-1. `main()`
-2. `apply_cli_defaults()`
-3. `run_nm()`
-4. `parse_nm_lines()`
-5. `origin_from_symbol()`
-6. `strip_rust_generic_args()`
-7. `make_ground_truth()`
-8. `user_addresses()`
-9. `make_users_json()`
-10. `rust_function_bounds()`과 `make_function_boundaries_json()`
-11. `validate_against_fixture()`
-12. `write_json()`
+## Symbol 입력
+
+### `run_nm()`
+
+실제 command:
+
+```text
+nm -n -S -C <non-stripped-binary>
+```
+
+Flag 의미:
+
+- `-n`: address 순서
+- `-S`: symbol size 포함
+- `-C`: Rust symbol demangle
+
+### `parse_nm_lines()`
+
+다음 형태를 읽는다.
+
+```text
+0000000000040100 0000000000000080 t billing_client::decode::<Invoice>
+```
+
+결과:
+
+```text
+addr = 0x40100
+size = 0x80
+kind = t
+name = billing_client::decode::<Invoice>
+```
+
+`t`와 `T`만 text function으로 취급한다. Undefined/import/data symbols는 GT member가 아니다. Size가 필요한 boundary artifact에서는 `size > 0`을 강제한다.
+
+## Candidate scope
+
+Scope는 “어떤 origin을 정답 partition과 target selection에 넣는가”를 결정한다.
+
+### `subject`
+
+Manifest의 `candidate_namespaces`에 직접 소유된 함수만 선택한다.
+
+Cargo example:
+
+```text
+namespaces = [billing_client, reconcile]
+```
+
+포함:
+
+```text
+billing_client::client::decode
+reconcile::run
+<billing_client::Paginator<T> as Iterator>::next
+<reconcile::ProxyTransport as billing_client::Transport>::execute
+```
+
+제외:
+
+```text
+serde_json::from_slice
+core::ptr::drop_in_place<billing_client::Invoice>
+std::rt::lang_start_internal
+```
+
+판정은 문자열 안에 subject type이 등장하는지만 보는 것이 아니다. 이름이 `namespace::` 또는 `<namespace::`로 시작해야 한다.
+
+그 결과 다음처럼 외부 type에 subject trait을 구현한 특수 형태는 `subject` scope에서 누락될 수 있다.
+
+```text
+<alloc::vec::Vec<T> as billing_client::LocalTrait>::method
+```
+
+이 한계가 문제가 되는 corpus에서는 ownership parser를 확장해야 하며, type 문자열이 나타난다는 이유만으로 외부 generic specialization을 포함하면 안 된다.
+
+### `rust-nonstd`
+
+기본 scope다. Rust symbol owner를 추정해 다음 owner를 제외한다.
+
+```text
+core
+alloc
+std
+__rustc
+```
+
+Source root main도 제외한다.
+
+```text
+reconcile::main -> target 아님
+```
+
+그 외 관찰 가능한 Rust owner는 subject와 dependency를 구분하지 않고 target으로 둔다.
+
+```text
+billing_client::...
+reconcile::...
+serde::...
+serde_json::...
+third_party_crate::...
+```
+
+이 scope는 “main에서 reachable한 non-std 함수”가 아니다. Symbol로 관찰된 전체 rust-nonstd 함수 집합이다. Reachability는 결과 진단으로 계산할 수 있지만 target selection filter로 쓰지 않는다.
+
+### Trait impl owner
+
+일반 path는 첫 crate component를 owner로 본다.
+
+```text
+serde_json::de::from_slice -> serde_json
+```
+
+Trait impl은 outer `<... as ...>` header의 crate roots를 보고 `core/alloc/std/__rustc`가 아닌 첫 root를 우선한다.
+
+```text
+<alloc::vec::Vec<T> as billing_client::LocalTrait>::method
+                                     ^
+owner = billing_client
+```
+
+Owner를 관찰할 수 없는 C symbol, PLT/import stub, anonymous address는 target이 아니다. 필요하면 graph projection에서 anchor가 된다.
+
+## Root main은 왜 target에서 제외하는가
+
+Root main은 graph의 관측 시작 문맥이다. 일반 family target과 같은 방식으로 채점하면 main의 단일 특성이 score와 seed universe를 바꾼다.
+
+- GT origin에는 넣지 않는다.
+- users candidate address에는 넣지 않는다.
+- boundaries에는 root 탐지를 위해 포함할 수 있다.
+- fixture에서는 기본적으로 `anchor_kind=root`, `scored=false`다.
+
+Binary extractor의 `--score-root`는 디버깅용 override다.
+
+## Origin normalization
+
+[gt_extractor.py](../gt_extractor.py)의 핵심은 `origin_from_symbol()`과 `normalize_rust_origin()`이다.
+
+### 1. Rust hash suffix 제거
+
+```text
+billing_client::decode::h0123456789abcdef
+-> billing_client::decode
+```
+
+### 2. Derived impl identity 보존
+
+Rust demangler는 derive/impl path를 `::<impl ...>` 형태로 보여 줄 수 있다. 이를 일반 generic argument처럼 통째로 지우면 서로 다른 type의 generated impl이 같은 origin으로 합쳐진다.
+
+잘못된 결과:
+
+```text
+Invoice Deserialize impl
+Customer Deserialize impl
+-> 같은 "deserialize" origin
+```
+
+현재 `preserve_derived_impl_identity()`는 generic 제거 전에 impl target을 marker로 바꾼다.
+
+```text
+::<impl Trait for billing_client::Invoice>
+-> ::impl_for=billing_client::Invoice
+```
+
+Inherent impl은 `::impl=<type>`으로 보존한다. 그 뒤 generic instance argument를 제거해도 implementation target identity는 남는다.
+
+### 3. Displayed generic argument 제거
+
+V0 demangled instance:
+
+```text
+billing_client::decode::<Invoice>
+billing_client::decode::<Customer>
+```
+
+둘 다:
+
+```text
+billing_client::decode
+```
+
+`strip_rust_generic_args()`는 `::<...>`의 nested angle depth를 따라가며 제거한다. 정규식 한 번으로 처리하지 않는 이유는 nested generic type 때문이다.
+
+```text
+foo::<Vec<Result<A, B>>>
+```
+
+### 4. Namespace 표현
+
+Subject namespace가 하나뿐인 legacy case는 namespace를 제거한 relative origin을 유지할 수 있다.
+
+```text
+family_graph_01::process::<i32>
+-> process
+```
+
+Cargo처럼 namespace가 여러 개면 collision을 피하려 full path를 유지한다.
+
+```text
+billing_client::run
+reconcile::run
+```
+
+## Address alias와 folding
+
+하나의 address에 symbol이 여러 개 붙을 수 있다.
+
+### Same-origin duplicate
+
+```text
+same address
+same normalized origin
+different symbol spelling
+```
+
+Member는 한 번만 보존하고 symbol spelling은 list에 남긴다.
+
+### Cross-origin shared address
+
+`rust-nonstd` scope에서는 서로 다른 origin이 같은 address를 공유하면 조용히 하나를 선택하지 않는다.
+
+```text
+origin A           same FUN address
+origin B /
+```
+
+이 member의 GT origin을 다음처럼 명시적으로 바꾼다.
+
+```text
+shared-address@FUN_...
+```
+
+그리고 원래 origin 목록을 `cross_origin_aliases`에 보존한다. 이 상태는 grouping 전에 이미 binary에서 source identities가 address 하나로 합쳐진 관찰이다.
+
+Frozen `subject` compatibility path는 cross-origin alias가 나타나면 기존 정책대로 실패할 수 있다. Controlled baseline의 의미를 조용히 바꾸지 않기 위해서다.
+
+현재 artifact는 merging 원인을 compiler/linker로 확정하지 않는다. “shared address observed”만 기록한다.
+
+## 세 output의 차이
+
+### Ground truth JSON
+
+포함:
+
+- origin groups
+- member ID
+- full demangled symbol list
+- cross-origin aliases
+- build provenance
+
+사용처:
+
+- [scores.py](../scores.py)
+- 사람이 cluster를 해석하는 symbol display
+
+금지:
+
+- engine seed
+- graph projector candidate grouping
+- raw transfer resolution
+
+### Users JSON
+
+포함:
+
+- candidate raw address
+- candidate symbol extent
+- scope/namespace/excluded namespace
+- build provenance
+
+포함하지 않음:
+
+- origin
+- member group
+- symbol 이름
+- concrete type
+
+사용처:
+
+- candidate selection
+- candidate boundary oracle
+- projection candidate universe
+
+### Boundaries JSON
+
+포함:
+
+- 전체 observable Rust text function address/size
+- C `main` startup wrapper extent
+- build provenance
+
+Scope와 독립적이다. 사용처:
+
+- candidate가 아닌 context function의 boundary
+- full Capstone decoding
+- root detection
+- angr `function_starts`
+
+GT와 users를 scope별로 다시 만들어도 boundary 규칙이 같다면 이 파일은 재사용할 수 있다.
+
+## 엄격한 consistency checks
+
+### GT 내부
+
+- origin 이름은 중복될 수 없다.
+- member는 두 origin에 동시에 나타날 수 없다.
+- 모든 member에 symbol entry가 있어야 한다.
+- 빈 origin은 허용하지 않는다.
+- provenance hash 형식과 field set을 검사한다.
+
+### Users 내부
+
+[candidate_selection.py](../candidate_selection.py)가 검사한다.
+
+- schema에 맞는 정확한 field set
+- scope 값
+- `rust-nonstd`의 excluded namespace가 정확히 네 개인지
+- address 중복/형식
+- 모든 candidate address에 function bound가 있는지
+- case/build/profile/provenance
+
+### Fixture와 join
+
+`gt_extractor.py --fixture ...` 또는 scorer가 다음을 확인한다.
+
+Schema v6:
+
+```text
+GT members
+=
+fixture scored node IDs
+union
+fixture abstention IDs
+```
+
+이 식이 맞지 않으면 일부 target이 graph projection 중 사라졌거나 다른 scope artifact를 섞은 것이다.
+
+## All-Rust catalog와 Oxidizer audit
+
+이 절은 GT 측 경계만 요약한다. 별도 Python 환경, direct/propagated/cleanup evidence, 주소 정규화, cache, audit metric의 전체 계약은 [Oxidizer direct-FLIRT audit](flirt_audit.md)을 참고한다.
+
+`ground_truth/all-rust/...catalog.json`은 일반 grouping GT가 아니다. Direct-FLIRT label을 평가하기 위한 scoring-only catalog다.
+
+포함 범위:
+
+```text
+all observable Rust-owned text functions
+except source root main
+```
+
+즉 `core/alloc/std`도 포함한다. 목적은 다음을 측정하는 것이다.
+
+- Oxidizer direct FLIRT가 실제 std function을 얼마나 식별했는가
+- exact origin label이 얼마나 맞는가
+- known/unknown member가 섞인 family와 `K x U` pair가 얼마나 있는가
+
+[flirt_audit.py](../flirt_audit.py)는 다음 count를 분리한다.
+
+- raw graph에 join된 match
+- all-Rust catalog까지 join된 match
+- catalog unmatched match
+- standard-library classification
+- exact identity
+- mixed known/unknown family
+
+현재 이것은 **audit-only**다.
+
+```text
+FLIRT label -> audit result
+FLIRT label -X-> candidate/anchor 변경
+FLIRT label -X-> CG-WL seed
+```
+
+Context view와 known-to-unknown transfer view는 아직 구현되지 않았다.
+
+## CLI option
+
+```text
+python3 gt_extractor.py BINARY_OR_STEM [OUTPUT] [options]
+```
+
+| 옵션 | 의미 |
+|---|---|
+| `--case` | JSON identity override |
+| `--build` | build label |
+| `--profile` | canonical profile path |
+| `--candidate-scope` | `subject` 또는 `rust-nonstd` |
+| `--namespace` | subject namespace override, 반복 가능 |
+| `--users` | candidate selection output override |
+| `--boundaries` | boundary output override |
+| `--fixture` | 생성 GT를 fixture universe와 즉시 검증 |
+| `--manifest` | build manifest override/verification |
+| `--id-bias` | raw address에서 `FUN_` ID로 바꿀 때 더할 값 |
+| `--nm-tool` | nm-compatible executable |
+
+Namespace는 일반 실행에서 manifest의 Cargo metadata 값을 사용한다. 사람이 file name에서 crate namespace를 추측하지 않는다.
+
+## 구현을 읽는 순서
+
+1. `run_nm()`, `parse_nm_lines()`
+2. `rust_symbol_owner()`
+3. `origin_from_symbol()`
+4. `normalize_rust_origin()`
+5. `preserve_derived_impl_identity()`, `strip_rust_generic_args()`
+6. `make_ground_truth()`
+7. `user_addresses()`, `user_function_bounds()`
+8. `rust_function_bounds()`
+9. `make_users_json()`, `make_function_boundaries_json()`
+10. `validate_against_fixture()`
+11. `main()`의 manifest/default/output orchestration
+
+FLIRT를 조사할 때만 `make_all_rust_catalog()`과 [flirt_audit.py](../flirt_audit.py)를 추가로 읽는다.
+
+## 변경 시 주의할 점
+
+Origin normalizer를 바꾸면:
+
+- GT family denominator가 달라진다.
+- Candidate address 자체는 같아도 score와 origin summary가 바뀐다.
+- Existing baseline GT/result를 재생성해야 한다.
+- Derived impl과 nested generic 회귀를 추가해야 한다.
+
+Candidate scope를 바꾸면:
+
+- GT와 users를 함께 바꿔야 한다.
+- Fixture와 result를 다시 만들어야 한다.
+- Raw graph는 candidate-independent이므로 boundary/evidence 의미가 같으면 재사용 가능하다.
+- Target count와 abstention count가 달라지는 것이 정상이다.
+
+Boundary rule을 바꾸면:
+
+- direct raw와 angr raw를 다시 만들어야 한다.
+- Angr function start oracle도 바뀐다.
+- 모든 fixture/result가 stale이다.
+
+## 현재 한계
+
+- Symbol이 없는 완전 inline/eliminated instance를 보지 못한다.
+- Name normalization은 Rust demangler 출력 grammar에 의존한다.
+- Owner 추정은 crate metadata가 아니라 demangled path 기반이다.
+- Subject scope는 외부 type에 local trait을 구현한 일부 형태를 놓칠 수 있다.
+- Shared address의 원인을 compiler merging/ICF로 자동 확정하지 않는다.
+- Generic인지 concrete인지 별도 `kind` label을 만들지 않는다. 같은-origin partition과 member count가 필요한 정답이다.

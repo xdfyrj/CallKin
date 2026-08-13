@@ -1,813 +1,740 @@
-# 채점 파이프라인
+# 채점과 결과 해석
 
-## 1. 목적
+[scores.py](../scores.py)는 predicted CG-WL partition과 ground-truth origin partition을 결합한다. Engine은 GT를 모르며, symbol/origin annotation은 이 단계에서만 붙는다.
 
-CallKin의 `scores.py`는 CG-WL predicted partition과 compiler-symbol ground-truth partition을 비교한다.
+채점 결과는 두 층으로 읽어야 한다.
 
 ```text
-fixtures/plain/family_graph_03.O3S.fixture.json
--> engine.py
--> predicted clusters
+conditional grouping quality:
+  실제로 graph evidence가 있어 grouping한 candidate끼리 얼마나 맞았는가?
 
-ground_truth/plain/family_graph_03.O3S.gt.json
--> true origins
-
-predicted clusters + true origins
--> scores.py
--> TP / FP / FN / TN
--> PR / RE / F1 / ARI
+coverage/effective recovery:
+  전체 target 중 CallKin이 얼마나 판단했고, abstain을 포함하면 family pair를 얼마나 복원했는가?
 ```
 
-Ground truth는 이 단계에서 처음 grouping 결과와 만난다. `engine.py` 실행 중에는 전달되지 않는다.
+둘 중 하나만 보고 도구 성능을 해석하면 안 된다.
 
-## 2. 가장 단순한 실행
+## 실행
+
+한 fixture/GT를 stem으로 채점:
 
 ```bash
-python3 scores.py billing-client --track direct-in
-python3 scores.py billing-client --track angr
-python3 scores.py billing-client --track angr --anchor-policy role
-python3 scores.py family_graph_03 --candidate-scope subject
+python3 scores.py billing-client \
+  --profile plain \
+  --build O3S \
+  --candidate-scope rust-nonstd \
+  --track angr \
+  --anchor-policy role \
+  --mode out-in
 ```
 
-일반 CLI 기본값:
-
-```text
-case    = 사용자가 입력한 stem
-build   = O3S
-profile = plain
-candidate scope = rust-nonstd
-anchor policy = address
-mode    = full
-fixture = fixtures/rust-nonstd/plain/<case>.O3S.fixture.json
-GT      = ground_truth/rust-nonstd/plain/<case>.O3S.gt.json
-```
-
-아래 출력 예시는 `--candidate-scope subject`로 실행한 동결
-`family_graph_03` baseline이다.
-
-핵심 출력:
-
-```text
-case : family_graph_03 / O3S / plain
-mode: full
-candidates: 13
-candidate pairs: 78
-rounds: 2
-...
-share: k_obs=3 clusters=2 pairs=1/3 collisions=-
-TP=4 FP=1 FN=6 TN=67
-PR=0.80 RE=0.40 F1=0.53 ARI=0.49
-```
-
-라운드별 scored partition도 함께 보려면 `--trace`를 사용한다.
+네 mode:
 
 ```bash
-python3 scores.py family_graph_03 --trace --candidate-scope subject
+python3 scores.py billing-client \
+  --profile plain \
+  --candidate-scope rust-nonstd \
+  --track angr \
+  --anchor-policy role \
+  --all-modes \
+  --json-output results/billing-client/plain/angr.role.all-modes.json
 ```
 
-이 경우 `round 0(seed)`부터 마지막 `fixpoint` 확인 라운드까지 CLI에 추가로 출력된다.
+Fixture/GT path를 직접 줄 수도 있다.
 
-`direct`가 기본 track이고 `rust-nonstd`가 기본 candidate scope다. Frozen
-family-graph 결과는 `--candidate-scope subject`를 명시한다. Broad
-`direct-in` fixture는 다음 경로에서 읽는다.
+```bash
+python3 scores.py \
+  fixtures/angr/role/rust-nonstd/plain/billing-client.O3S.fixture.json \
+  ground_truth/rust-nonstd/plain/billing-client.O3S.gt.json \
+  --mode out-in
+```
+
+Micro-corpus frozen baseline:
+
+```bash
+python3 scores.py --baseline --profile plain
+python3 scores.py --baseline --profile plain --all-modes
+```
+
+Round partition 포함:
+
+```bash
+python3 scores.py billing-client \
+  --profile plain \
+  --candidate-scope rust-nonstd \
+  --track angr \
+  --anchor-policy role \
+  --mode out-in \
+  --trace
+```
+
+일반 pipeline에서는 [run_case.py](../run_case.py)가 extraction runtime까지 포함한 `run_summary`를 함께 넣는다.
+
+## 채점 전에 하는 strict join
+
+`score_case()`는 점수 계산 전에 fixture와 GT가 같은 실험인지 확인한다.
+
+### Identity
 
 ```text
-fixtures/direct-in/rust-nonstd/plain/billing-client.O3S.fixture.json
+case
+build
+profile
 ```
 
-`angr` fixture는 다음 경로에서 읽는다.
+### Build provenance
 
 ```text
-fixtures/angr/rust-nonstd/plain/billing-client.O3S.fixture.json
+build_id
+source_sha256
+non_stripped_sha256
+stripped_sha256
 ```
-
-Role policy fixture는 address fixture와 분리된다.
-
-```text
-fixtures/angr/role/rust-nonstd/plain/billing-client.O3S.fixture.json
-```
-
-Schema v5/v6 fixture를 채점하면 CLI와 결과 JSON에 track, candidate scope, raw/projection hash,
-candidate selection hash가 포함된다. Ground truth는 build에 속하고 track에는 속하지 않으므로 기존
-scope별 `ground_truth/<scope>/<profile>/...` 파일을 사용한다.
-
-## 3. 전체 함수 호출 순서
-
-```text
-main()
-  -> CLI path/mode 결정
-  -> score_case()
-       -> load_case(fixture)
-       -> load_ground_truth(GT)
-       -> _check_join()
-       -> run_cg_wl()
-       -> 모든 scored pair 분류
-       -> _pairwise_score()
-       -> _adjusted_rand_index()
-       -> _make_predicted_clusters()
-       -> _make_origin_scores()
-       -> ScoreReport
-  -> format_report()
-  -> optional write_reports_json()
-```
-
-`--all-modes`이면 같은 fixture/GT에 `score_case()`를 네 mode로 반복한다.
-
-## 4. Ground truth loading
-
-GT schema version은 5이며, cross-origin shared address를 보존하는 broad GT는 schema
-version 6을 사용한다.
-
-```json
-{
-  "case": "family_graph_03",
-  "build": "O3S",
-  "profile": "plain",
-  "schema_version": 5,
-  "provenance": {
-    "build_id": "...",
-    "source_sha256": "...",
-    "non_stripped_sha256": "...",
-    "stripped_sha256": "..."
-  },
-  "origins": [
-    {
-      "origin": "share",
-      "members": [
-        "FUN_001146b0",
-        "FUN_00114a30",
-        "FUN_00114d90"
-      ]
-    }
-  ],
-  "symbols": {
-    "FUN_001146b0": ["family_graph_03::share"]
-  }
-}
-```
-
-`load_ground_truth()`는 JSON을 다음 dataclass로 바꾼다.
-
-```text
-GroundTruth
-  -> OriginGroup(origin, members)
-  -> symbols[member_id]
-```
-
-Loader는 다음을 검사한다.
-
-- required/unknown field
-- schema version
-- manifest build provenance 형식
-- 중복 origin 이름
-- 빈 origin
-- 한 member가 둘 이상의 origin에 포함되는지
-- `symbols` key 집합과 member 전체 집합이 같은지
-- schema v6 shared-address member와 원래 origin 목록의 형식
-
-`GroundTruth.origin_of()`는 다음 lookup을 만든다.
-
-```python
-{
-    "FUN_001146b0": "share",
-    "FUN_00114a30": "share",
-    "FUN_00114d90": "share",
-}
-```
-
-## 5. Scored universe join
-
-`_check_join()`은 점수 계산 전에 두 조건을 확인한다.
-
-### Case/build/profile identity
-
-```text
-fixture.case  == GT.case
-fixture.build == GT.build
-fixture.profile == GT.profile
-```
-
-예를 들어 `plain` fixture와 `min` GT를 섞거나 O3S fixture와 O3KS GT를 섞으면 중단한다.
-
-```text
-case/build/profile mismatch: fixture=family_graph_03/O3S/plain
-vs ground_truth=family_graph_03/O3S/min
-```
-
-Case/build/profile이 같아도 `build_id` 또는 source/non-stripped/stripped SHA-256이
-다르면 서로 다른 build generation으로 보고 중단한다.
 
 ### Target universe
 
-```text
-fixture의 scored=true node ID 집합
-union fixture.abstentions ID 집합
-==
-GT의 모든 origin member ID 집합
-```
-
-Schema v6에서 abstain target은 cluster나 pairwise metric에 넣지 않는다. 대신
-`scores.py`가 ID, symbol, origin, reason을 별도 출력한다. 따라서 이 결과는
-"관계 evidence가 있는 candidate에 대한 conditional grouping score"이고, target
-전체에 대한 강제 singleton 판정이 아니다.
-
-이 join 검사가 필요한 이유는 target 수가 candidate 수와 abstention 수의 합으로
-결정되기 때문이다.
+Schema v6:
 
 ```text
-13 candidates -> 13 * 12 / 2 = 78 pairs
-12 candidates -> 12 * 11 / 2 = 66 pairs
+GT member IDs
+=
+fixture scored node IDs
+union
+fixture abstention IDs
 ```
 
-서로 다른 universe를 비교하면 같은 metric이라고 말할 수 없다.
-
-## 6. Pairwise 평가의 기본 생각
-
-함수 하나를 맞혔는지 세지 않는다. 서로 다른 함수 두 개를 하나의 pair로 보고 다음 두 질문을 한다.
+Legacy schema:
 
 ```text
-Prediction: 두 함수가 같은 predicted cluster인가?
-Truth     : 두 함수가 같은 origin인가?
+GT member IDs
+=
+fixture scored node IDs
 ```
 
-두 답의 조합은 네 가지다.
+이 식이 맞지 않으면 점수를 내지 않는다. 한 target이 projection에서 조용히 사라지거나 다른 candidate scope의 GT를 섞는 일을 막는다.
 
-| Prediction | Truth | Count |
-|---|---|---|
-| same cluster | same origin | TP |
-| same cluster | different origin | FP |
-| different cluster | same origin | FN |
-| different cluster | different origin | TN |
+## Predicted cluster에 symbol을 붙이는 과정
 
-### TP 예시
+Engine 결과:
 
 ```text
-A = share instance 1
-B = share instance 2
-prediction: 같은 C1
-truth: 둘 다 share
-=> TP
+C1 = [FUN_A, FUN_B]
 ```
 
-### FP 예시
+Scorer가 GT의 display-only symbol과 origin을 join한다.
 
 ```text
-A = decoy_a
-B = decoy_b
-prediction: 같은 C4
-truth: 서로 다른 origin
-=> FP
+C1:
+  FUN_A | decode::<Invoice>  | origin=billing_client::decode
+  FUN_B | decode::<Customer> | origin=billing_client::decode
 ```
 
-### FN 예시
+Concrete instance type을 사람이 확인할 수 있도록 full demangled symbol을 유지한다. Case namespace prefix와 trailing Rust hash만 display에서 줄인다. 이 symbol은 clustering 계산에는 사용되지 않는다.
+
+한 address에 alias symbol이 여러 개면 `|`로 모두 표시한다.
+
+## Pairwise universe
+
+Grouped candidate가 `n`개면 conditional pair 수는:
 
 ```text
-A = share instance 1, predicted C1
-B = share instance 3, predicted C2
-truth: 둘 다 share
-=> FN
+C(n, 2) = n(n-1)/2
 ```
 
-### TN 예시
+각 unordered pair `(a,b)`에 두 질문을 한다.
 
 ```text
-A = share instance
-B = drive_x instance
-prediction: 다른 cluster
-truth: 다른 origin
-=> TN
+pred_same = CG-WL cluster가 같은가?
+true_same = GT origin이 같은가?
 ```
 
-## 7. fg03 O3S의 실제 pair count
+| pred_same | true_same | Count |
+|---:|---:|---|
+| true | true | TP |
+| true | false | FP |
+| false | true | FN |
+| false | false | TN |
 
-Candidate는 13개다.
+예:
 
 ```text
-all pairs = C(13, 2)
-          = 13 * 12 / 2
-          = 78
+GT:
+origin X = {A, B}
+origin Y = {C}
+
+Prediction:
+C1 = {A, C}
+C2 = {B}
 ```
 
-Ground truth의 same-origin pair는 다음과 같다.
+Pairs:
 
 ```text
-share   : C(3,2) = 3
-leaf_p  : C(2,2) = 1
-drive_x : C(3,2) = 3
-drive_y : C(3,2) = 3
-decoy_a : C(1,2) = 0
-decoy_b : C(1,2) = 0
---------------------------------
-total true same-origin pairs = 10
+A-B: true same, predicted different -> FN
+A-C: true different, predicted same -> FP
+B-C: true different, predicted different -> TN
 ```
 
-CG-WL이 복원한 same-origin pair:
+결과:
 
 ```text
-share   : 1/3
-leaf_p  : 1/1
-drive_x : 1/3
-drive_y : 1/3
-----------------
-TP = 4
-FN = 6
+TP=0 FP=1 FN=1 TN=1
 ```
 
-`decoy_a`와 `decoy_b`가 같은 cluster에 들어가므로:
+## PR, RE, F1
 
-```text
-FP = 1
-```
-
-나머지 pair:
-
-```text
-TN = 78 - TP - FP - FN
-   = 78 - 4 - 1 - 6
-   = 67
-```
-
-최종 count:
-
-```text
-TP=4 FP=1 FN=6 TN=67
-```
-
-## 8. Precision, Recall, F1
-
-연구 초기의 다른 PRN 용어와 구분하기 위해 출력에서는 Precision을 `PR`, Recall을 `RE`로 표시한다.
-
-### Precision (`PR`)
+### Precision, `PR`
 
 ```text
 PR = TP / (TP + FP)
 ```
 
-Fg03 O3S:
+질문:
 
-```text
-PR = 4 / (4 + 1)
-   = 4 / 5
-   = 0.80
-```
+> 같은 family라고 예측한 pair 중 실제 같은 origin은 얼마인가?
 
-의미:
+`TP+FP=0`이면 positive prediction이 없으므로 `N/A`다.
 
-> 같은 family라고 묶은 pair 중 실제 같은 origin인 비율
-
-### Recall (`RE`)
+### Recall, `RE`
 
 ```text
 RE = TP / (TP + FN)
 ```
 
-Fg03 O3S:
+질문:
 
-```text
-RE = 4 / (4 + 6)
-   = 4 / 10
-   = 0.40
-```
+> 조건부 grouped universe 안의 실제 same-origin pair 중 얼마를 같은 cluster로 복원했는가?
 
-의미:
+`TP+FN=0`이면 grouped universe에 same-origin pair가 없으므로 `N/A`다.
 
-> 실제 같은 origin pair 중 같은 cluster로 복원한 비율
+이 RE는 abstain target과 source에서 사라진 instance를 포함하지 않는다.
 
 ### F1
 
-```text
-F1 = 2 * PR * RE / (PR + RE)
-   = 2TP / (2TP + FP + FN)
-```
-
-Fg03 O3S:
+Pair가 하나도 없으면:
 
 ```text
-F1 = 2 * 0.80 * 0.40 / (0.80 + 0.40)
-   = 0.64 / 1.20
-   = 0.533...
-   -> 출력 0.53
+TP+FP+FN+TN = 0
+F1 = N/A
 ```
 
-비교할 grouped candidate pair가 하나도 없으면 F1은 `N/A`다. 비교 pair가 있고
-`TP=0, FP=0, FN>0`이면 Precision은 정의되지 않지만, 놓친 true pair가 있으므로 직접
-count 식으로 계산한 F1은 `0`이다.
+그 외에는 다음 count 식과 같다.
 
-## 9. ARI
+```text
+F1 = 2TP / (2TP + FP + FN)
+```
 
-ARI는 predicted partition과 true partition의 전체 일치를 chance-adjusted 방식으로 본다.
+예:
 
-코드가 사용하는 값:
+```text
+TP=0, FP=0, FN=3, TN=7
+PR=N/A, RE=0, F1=0
+```
+
+Missed true pairs가 있는데 precision이 정의되지 않는다는 이유로 F1까지 `N/A`로 숨기지 않는다.
+
+또 다른 예:
+
+```text
+TP=0, FP=2, FN=3, TN=5
+PR=0, RE=0, F1=0
+```
+
+분모 0을 일괄적으로 1.0으로 두지 않는다.
+
+## Adjusted Rand Index
+
+Pairwise count 형태의 Hubert-Arabie ARI를 사용한다.
 
 ```text
 index        = TP
 same_cluster = TP + FP
 same_origin  = TP + FN
 total        = TP + FP + FN + TN
-```
 
-기대값과 최대값:
-
-```text
 expected = same_cluster * same_origin / total
-maximum  = (same_cluster + same_origin) / 2
-```
+maximum  = 0.5 * (same_cluster + same_origin)
 
-최종 공식:
-
-```text
 ARI = (index - expected) / (maximum - expected)
 ```
 
-Fg03 O3S 값을 넣는다.
+Grouped pair가 하나도 없으면 `ARI=N/A`다. `maximum == expected`인 degenerate but non-empty partition에서는 구현이 `1.0`을 반환한다.
+
+ARI는 chance correction을 제공하지만 abstained target이 conditional universe에서 빠지는 문제를 해결하지 않는다. Coverage를 함께 본다.
+
+## Abstain이 conditional score에 미치는 영향
+
+GT family:
 
 ```text
-index        = 4
-same_cluster = 4 + 1 = 5
-same_origin  = 4 + 6 = 10
-total        = 78
-
-expected = 5 * 10 / 78 = 0.641025...
-maximum  = (5 + 10) / 2 = 7.5
-
-ARI = (4 - 0.641025...) / (7.5 - 0.641025...)
-    = 0.4897...
-    -> 출력 0.49
+F = {A, B, C}
 ```
 
-## 10. 분모가 0인 경우
-
-현재 구현은 분모가 0인 지표를 억지로 `1.0`으로 두지 않는다.
-
-- `TP + FP == 0`이면 Precision(`PR`)은 `N/A`다.
-- `TP + FN == 0`이면 Recall(`RE`)은 `N/A`다.
-- grouped candidate pair 자체가 0개이면 F1과 ARI는 `N/A`다.
-- pair는 존재하지만 복원한 positive pair가 하나도 없으면 F1은 `0`이다.
-
-따라서 `N/A`는 비교할 pair 자체가 없다는 뜻이고, F1 `0`은 비교할 pair는 있었지만
-positive pair를 복원하지 못했다는 뜻이다. raw `TP/FP/FN/TN`과 candidate 수를 함께
-확인해야 한다.
-
-## 11. Predicted cluster report
-
-`_make_predicted_clusters()`는 engine cluster에 scoring-side 정보를 붙인다.
-
-예시:
+Projection:
 
 ```text
-C1:
-  FUN_001146b0 | share | origin=share
-  FUN_00114a30 | share | origin=share
+A, B = grouped candidate
+C    = abstain
 ```
 
-각 member는 다음 정보를 가진다.
+전체 same-family pair:
 
 ```text
-id      = FUN_001146b0
-symbols = [share]
-origin  = share
+A-B
+A-C
+B-C
+total = 3
 ```
 
-Cluster 안에 서로 다른 origin이 있으면 `origins` 목록에 모두 표시된다.
+Conditional pairwise scorer는 A-B만 본다. A-B를 복원하면 conditional RE는 1.0이다. 하지만 전체 family pair 중 실제 복원한 것은 1/3이다.
+
+CallKin은 abstain을 FN으로 강제하지 않는다. Abstain은 “different cluster” 예측이 아니라 판단 보류이기 때문이다. 대신 별도 coverage/effective metrics로 책임을 드러낸다.
+
+## Coverage metrics
+
+Notation:
+
+- `T`: 전체 target 수 = grouped + abstained
+- `G`: grouped candidate 수
+- `P_T = C(T,2)`: 전체 target pair
+- `P_G = C(G,2)`: 실제 decision pair
+- `S_T`: GT 전체 same-family pair
+- `S_G`: grouped target 사이 GT same-family pair = TP + FN
+
+### Target coverage
 
 ```text
-C4 origins = [decoy_a, decoy_b]
+target coverage = G / T
 ```
 
-이는 관찰 가능한 collision을 보여주지만 원인을 자동 진단하지 않는다.
+전체 target 중 color와 predicted cluster를 받은 함수 비율이다.
 
-## 12. Origin별 결과
-
-`_make_origin_scores()`는 origin 하나당 다음 값을 계산한다.
+### Pair decision coverage
 
 ```text
-origin
-k_obs
-predicted_cluster_count
-recovered_pairs
-total_pairs
-colliding_origins
+pair decision coverage = P_G / P_T
 ```
 
-Fg03 O3S `share`:
+Target coverage보다 더 빠르게 감소한다.
+
+예:
+
+```text
+T=10, G=8
+target coverage = 0.8
+pair decision coverage = C(8,2)/C(10,2) = 28/45 = 0.6222
+```
+
+### Same-family pair coverage
+
+```text
+same-family pair coverage = S_G / S_T
+                          = (TP + FN) / S_T
+```
+
+전체 family truth pair 중 conditional scorer가 평가할 수 있었던 비율이다. 이름이 `true_positive_pair_count`가 아닌 `same_family_pair_count`인 이유는 복원 여부와 무관한 GT denominator이기 때문이다.
+
+### Effective family-pair recall
+
+```text
+effective family-pair recall = TP / S_T
+```
+
+전체 observed target family pair 중 실제 복원한 비율이다.
+
+관계:
+
+```text
+effective recall
+=
+same-family pair coverage
+x
+conditional RE
+```
+
+두 항이 정의되는 일반 case에서 성립한다.
+
+### Undefined coverage
+
+- `T=0`: target coverage `N/A`
+- `C(T,2)=0`: pair decision coverage `N/A`
+- `S_T=0`: same-family pair coverage와 effective recall `N/A`
+
+All-singleton GT에서 family recall을 1.0으로 만들지 않는다. 평가할 same-family pair가 없다는 뜻이다.
+
+## Origin별 결과
+
+각 GT origin마다 다음을 계산한다.
+
+| Field | 의미 |
+|---|---|
+| `k_obs` | GT에서 관찰된 전체 instance 수 |
+| `scored_instance_count` | grouped candidate 수 |
+| `abstained_instance_count` | abstain 수 |
+| `predicted_cluster_count` | grouped member가 차지한 cluster 수 |
+| `recovered_pairs` | 같은 cluster에 남은 same-origin grouped pair |
+| `total_pairs` | grouped member 사이 same-origin pair |
+| `total_target_pairs` | abstain 포함 전체 same-origin pair |
+| `scored_pair_coverage` | `total_pairs / total_target_pairs` |
+| `effective_recall` | `recovered_pairs / total_target_pairs` |
+| `colliding_origins` | 같은 predicted cluster에 들어온 다른 origin |
+
+예:
 
 ```json
 {
   "origin": "share",
   "k_obs": 3,
-  "predicted_cluster_count": 2,
+  "scored_instance_count": 2,
+  "abstained_instance_count": 1,
+  "predicted_cluster_count": 1,
   "recovered_pairs": 1,
-  "total_pairs": 3,
+  "total_pairs": 1,
+  "total_target_pairs": 3,
+  "scored_pair_coverage": 0.3333,
+  "effective_recall": 0.3333,
   "colliding_origins": []
 }
 ```
 
-의미:
+`predicted_cluster_count=0`은 모든 member가 abstain일 수 있음을 뜻한다. “완전히 하나로 복원”을 뜻하지 않는다.
 
-```text
-최종 binary에서 share instance 3개 관찰
-그 3개가 predicted cluster 2개로 분할
-가능한 같은-origin pair 3개 중 1개 복원
-다른 origin과 합쳐진 cluster는 없음
-```
+## Family status summary
 
-Fg03 O3S `decoy_a`:
+[analysis/summary.py](../analysis/summary.py)는 generic family, 즉 `total_target_pairs>0`인 origin을 evidence와 recovery로 나누어 센다.
+
+### Evidence status
+
+- `full`: abstain 없이 grouped pair가 있음
+- `partial`: 일부 abstain이 있지만 grouped pair가 있음
+- `insufficient`: grouped same-family pair가 하나도 없음
+
+### Recovery status
+
+- `complete`: conditional same-family pair를 모두 복원
+- `partial`: 일부 복원
+- `missed`: 하나도 복원하지 못함
+- `N/A`: evidence insufficient
+
+### Collision
+
+다른 origin과 같은 predicted cluster를 공유하는지 별도 boolean/count로 본다. Evidence/recovery status와 collision을 한 문자열에 섞지 않는다.
+
+## Ground-truth summary
+
+[run_summary.py](../run_summary.py)는 mode-independent GT facts를 한 번 저장한다.
 
 ```json
 {
-  "origin": "decoy_a",
-  "k_obs": 1,
-  "predicted_cluster_count": 1,
-  "recovered_pairs": 0,
-  "total_pairs": 0,
-  "colliding_origins": ["decoy_b"]
+  "target_count": 320,
+  "origin_count": 219,
+  "generic_family_count": 42,
+  "singleton_origin_count": 177,
+  "family_member_count": 143,
+  "same_family_pair_count": 400,
+  "family_size": {
+    "min": 2,
+    "median": 3,
+    "max": 12
+  },
+  "cross_origin_alias_address_count": 6
 }
 ```
 
-Singleton이므로 within-origin pair는 없지만 `decoy_b`와 같은 predicted cluster에 있다는 사실은 기록된다.
+여기서 `generic_family_count`는 source syntax를 다시 분석한 count가 아니다. 관찰된 member가 2개 이상인 origin 수다.
 
-## 13. `ScoreReport`
-
-한 case/mode 결과는 다음 정보를 하나의 객체에 담는다.
+자동 invariant:
 
 ```text
-case, build, profile, mode
-target_count, grouped_candidate_count, abstained_candidate_count
-pair_count, target_pair_count, rounds
-clusters
-origins
-pairwise score
-coverage and effective family-pair recall
-trace (`--trace`를 요청한 경우)
+scored_same_family_pair_count
+=
+TP + FN
 ```
 
-이 객체 하나에서 CLI text와 JSON을 모두 만든다. Scoring을 다시 실행하는 별도 report generator는 없다.
+각 mode에서 이 식이 맞지 않으면 run summary 생성을 중단한다.
 
-## 14. JSON output
+## Extraction diagnostics
 
-전체 pipeline 진단까지 저장하려면 `run_case.py`를 사용한다.
+Result `run_summary.extraction`은 두 종류의 indirect evidence를 whole-binary와 candidate-source로 나누어 기록한다.
 
-```bash
-python3 run_case.py billing-client --track angr --all-modes \
-  --json-output results/billing-client/plain/angr.address.all_modes.json
+### Exact static indirect
+
+주로 `elf-relocation`:
+
+- total
+- resolved internal
+- filtered import
+- unmapped
+- resolver별 count
+
+### Angr unresolved indirect
+
+- total
+- resolved internal
+- resolved import
+- unresolved
+- target resolution rate
+- internal resolution rate
+- operand별 memory/register
+- rejection reason별 count
+
+Import를 정확히 식별하고 policy로 제외한 것을 angr 실패로 세지 않는다.
+
+## Candidate impact
+
+Angr가 전체 binary에서 많은 indirect call을 해결해도 target grouping에 영향이 없을 수 있다.
+
+기록 항목:
+
+- accepted internal callsites/unique edges
+- candidate outgoing/incoming edge 추가 수
+- 새 OUT/IN evidence를 얻은 candidate 수
+- unchanged candidate 수
+
+이 값이 `direct-in -> angr` score 변화의 실제 원인을 설명한다.
+
+## Candidate observability
+
+기록 항목:
+
+- target/grouped/abstained count
+- root에서 reachable/unreachable target
+- zero OUT
+- zero IN
+- fully isolated
+- unresolved indirect call이 있는 target
+- reachability edge policy
+- anchor traversal policy
+
+Reachability는 target selection이 아니라 진단이다. `unreachable_from_root`라는 이유만으로 GT/candidate에서 제거하지 않는다.
+
+## Execution과 artifact summary
+
+Execution:
+
+- completed / completed_with_warnings
+- direct extraction, angr, projection, scoring, total seconds
+- peak RSS
+- normalized warning component/message/count
+
+Artifact:
+
+- binary와 `.text` size
+- known/candidate/fixture node count
+- abstention count
+- boundary oracle supplied/discovered/missing/size mismatch
+
+Tool versions:
+
+- Python
+- radare2
+- r2pipe
+- Capstone
+- pyelftools
+- angr
+- cle
+- pyvex
+
+Build compiler version은 manifest에 있으므로 result에 중복하지 않는다.
+
+## CLI text output
+
+CLI는 다음 순서로 핵심 사실을 출력한다.
+
+```text
+case/build/profile
+track/scope/mode
+target/grouped/pair/round count
+predicted clusters with ID/symbol/origin
+abstentions with reason
+origin recovery rows
+TP FP FN TN
+PR RE F1 ARI
+coverage metrics
+optional trace
 ```
 
-fixture schema가 v6인 경로의 top-level result schema도 version 6이다. 실제 abstention이
-0개여도 coverage 필드와 빈 `abstentions` 배열을 동일하게 저장한다. `run_summary`는
-mode와 무관하므로 한 번만 저장하고, `results` 배열에 full/out/in/out-in 결과를 둔다.
+Symbol과 origin annotation은 설명을 위한 scorer output이다. Engine output 자체가 이 정보를 사용했다는 뜻이 아니다.
+
+## Result JSON
+
+Schema v6 top-level:
 
 ```json
 {
   "schema_version": 6,
   "run_summary": {
-    "ground_truth": {
-      "target_count": 320,
-      "grouped_candidate_count": 241,
-      "abstained_candidate_count": 79,
-      "origin_count": 219,
-      "generic_family_count": 42,
-      "same_family_pair_count": 400,
-      "scored_same_family_pair_count": 286,
-      "same_family_pair_coverage": 0.715
-    },
-    "extraction": {
-      "exact_static_indirect_summary": {
-        "all_sources": {
-          "total": 3456,
-          "resolved_internal": 3420,
-          "filtered_import": 0,
-          "unmapped": 36,
-          "by_resolver": {
-            "elf-relocation": 3456
-          }
-        },
-        "candidate_sources": {}
-      },
-      "indirect_call_summary": {
-        "all_sources": {
-          "total": 2117,
-          "resolved_internal": 151,
-          "resolved_import": 1521,
-          "unresolved": 445,
-          "target_resolution_rate": 0.7898,
-          "internal_resolution_rate": 0.2534,
-          "by_operand": {},
-          "rejected": {}
-        },
-        "candidate_sources": {
-          "total": 1005,
-          "resolved_internal": 147,
-          "resolved_import": 620,
-          "unresolved": 238,
-          "target_resolution_rate": 0.7632,
-          "internal_resolution_rate": 0.3818,
-          "by_operand": {},
-          "rejected": {}
-        }
-      }
-    },
+    "ground_truth": {},
+    "extraction": {},
     "candidate_impact": {},
-    "candidate_observability": {
-      "target_count": 320,
-      "grouped_candidate_count": 241,
-      "abstained_candidate_count": 79
-    },
+    "candidate_observability": {},
     "execution": {},
     "artifact_summary": {},
     "tool_versions": {}
   },
   "results": [
-    {"mode": "full"},
-    {"mode": "out"},
-    {"mode": "in"},
-    {"mode": "out-in"}
-  ]
-}
-```
-
-Family 상태는 `run_summary`에 중복 저장하지 않는다. `analysis/summary.py`가 각
-`results[].origins`의 target pair, scored pair, abstained instance, recovered pair,
-collision 값을 읽어 evidence(`full/partial/insufficient`)와
-recovery(`complete/partial/missed/N/A`)를 별도로 표시한다.
-
-`exact_static_indirect_summary`는 `elf-relocation`이 angr 없이 증명한 indirect
-call/tail-call을 센다. `resolved_internal`, 정책상 제외한
-`filtered_import`, 주소를 알지만 함수 시작점에 연결하지 못한 `unmapped`를 구분한다.
-
-`indirect_call_summary.all_sources`는 전체 raw graph에서 angr에 전달된 unresolved 간접 call/tail-call을,
-`candidate_sources`는 candidate가 source인 transfer만 센다. Exact static resolver가
-먼저 해결한 transfer는 이 angr 분모에 포함되지 않는다. `resolved_import`는 angr가 이름 있는 외부 함수를 찾았지만
-CallKin graph 정책상 filtered 처리한 성공이다. `internal_resolution_rate`는
-`resolved_internal / (total - resolved_import)`이므로 import를 실패 분모에서 제외한다.
-`candidate_impact`는 `resolved_internal` transfer 중 candidate의 OUT/IN에 실제로 추가된
-수를 센다. `candidate_observability`는 projected fixture 기준 root 도달성,
-zero-OUT, zero-IN, 완전 고립, unresolved indirect call/tail-call 보유 candidate를 센다.
-`ground_truth.same_family_pair_count`는 target 전체의 true pair 수다. Abstention이
-있으면 `scored_same_family_pair_count`만 `TP + FN`과 같고, effective family-pair
-recall은 target 전체 true pair를 분모로 삼는다. `execution.warnings`는 같은 component/message를 묶어
-count만 저장한다. 시간과 경고는 raw graph SHA에 넣지 않아 evidence hash를 안정적으로
-유지한다.
-
-이미 생성된 fixture/GT의 점수만 저장하려면 `scores.py`를 사용한다.
-
-```bash
-python3 scores.py family_graph_03 \
-  --profile plain \
-  --candidate-scope subject \
-  --json-output results/family_graph_03/plain/O3S.json
-```
-
-네 canonical build를 저장한다.
-
-```bash
-python3 scores.py --baseline --profile plain \
-  --json-output results/micro-corpus/plain/baseline.json
-```
-
-이 경우에는 extraction 실행 정보가 없으므로 기존 score-only schema를 유지한다.
-
-```json
-{
-  "schema_version": 3,
-  "results": [
     {
-      "case": "family_graph_03",
-      "build": "O3S",
-      "profile": "plain",
-      "mode": "full",
-      "provenance": {
-        "build_id": "...",
-        "source_sha256": "...",
-        "non_stripped_sha256": "...",
-        "stripped_sha256": "..."
-      },
-      "candidate_count": 13,
-      "pair_count": 78,
-      "rounds": 2,
-      "pairwise": {
-        "TP": 4,
-        "FP": 1,
-        "FN": 6,
-        "TN": 67,
-        "precision": 0.8,
-        "recall": 0.4,
-        "F1": 0.5333333333333333,
-        "ARI": 0.48971962616822434
-      },
-      "clusters": [],
-      "origins": []
+      "mode": "full"
+    },
+    {
+      "mode": "out"
+    },
+    {
+      "mode": "in"
+    },
+    {
+      "mode": "out-in"
     }
   ]
 }
 ```
 
-실제 JSON에는 float의 계산값을 저장하고 CLI만 소수점 둘째 자리로 표시한다.
+Mode-independent summary를 네 번 복제하지 않는다. 각 result에는 partition, origin row, pairwise, coverage, provenance/analysis가 들어간다.
 
-`--trace`와 `--json-output`을 함께 사용하면 각 결과에 `trace` 배열도 저장된다. `--trace`를 생략하면 기존 JSON schema와 baseline 파일에는 `trace` field가 추가되지 않는다.
+Schema v6 fixture에서 abstain이 0개여도 v6 output shape를 유지한다.
 
-Plain/min의 candidate universe 차이는 별도 JSON으로 비교한다.
-
-```bash
-python3 compare_profiles.py billing-client --build O3S
+```json
+{
+  "target_count": 10,
+  "grouped_candidate_count": 10,
+  "abstained_candidate_count": 0,
+  "abstentions": [],
+  "coverage": {
+    "target_coverage": 1.0
+  }
+}
 ```
 
-기본 출력은
-`results/profile_comparison/rust-nonstd/billing-client.O3S.json`이며, origin,
-`k_obs >= 2` family, instance의 common/plain-only/min-only 수를 기록한다.
-Instance 비교는 `(origin, 정렬된 symbol alias 목록)`의 멀티셋으로 수행하므로,
-legacy demangling에서 여러 주소가 같은 이름으로 보이더라도 instance 개수가
-하나로 축약되지 않는다. 다만 이 값은 concrete type identity를 복구하는 source-level
-census가 아니라 최종 binary에서 관찰된 symbol instance 비교다. 두 GT의 source
-SHA-256이 다르면 비교를 거부한다.
+데이터 값에 따라 schema가 바뀌면 안 된다.
 
-## 15. Mode와 baseline 실행
+## 결과 요약 CLI
 
-한 mode:
+한 파일:
 
 ```bash
-python3 scores.py family_graph_03 --mode out --candidate-scope subject
+python3 analysis/summary.py \
+  results/billing-client/plain/angr.role.out-in.json
 ```
 
-네 mode:
+한 case:
 
 ```bash
-python3 scores.py family_graph_03 --all-modes --candidate-scope subject
+python3 analysis/summary.py results/billing-client
 ```
 
-선택한 profile의 canonical 네 build full mode:
+전체:
 
 ```bash
-python3 scores.py --baseline --profile min
+python3 analysis/summary.py results
 ```
 
-`min` profile canonical 네 build의 네 mode:
+출력 table:
+
+- Ground truth
+- Scores
+- Coverage
+- Family status
+- Graph and execution
+- Exact static indirect transfers
+- Angr unresolved indirect transfers
+
+이 도구는 새 진단을 추측하지 않는다. Result JSON의 핵심 값을 사람이 profile/track/policy/mode별로 비교하기 쉽게 펼친다.
+
+## Plain/min 비교
+
+Candidate 수가 profile 사이에서 다르면 같은 denominator의 F1 비교가 아니다.
 
 ```bash
-python3 scores.py --baseline --profile min --all-modes \
-  --json-output results/micro-corpus/min/all_modes.json
+python3 compare_profiles.py billing-client \
+  --build O3S \
+  --candidate-scope rust-nonstd \
+  --json-output results/billing-client/profile-comparison.json
 ```
 
-`scores.py --baseline`은 이미 존재하는 fixture/GT를 채점한다. Source compile이나 manifest 검증을 직접 실행하지 않는다. Source부터 재생성하고 manifest를 검증하려면 다음을 사용한다.
+비교:
 
-```bash
-python3 run_baseline.py
-```
+- common/plain-only/min-only origin
+- common/plain-only/min-only observed generic family
+- demangled instance symbol multiset
 
-이 명령은 profile마다 full mode의 `baseline.json`과 네 mode를 모두 담은
-`all_modes.json`을 `results/micro-corpus/<profile>/`에 생성한다.
+먼저 target survival/universe 차이를 본 뒤 동일한 extraction track과 mode score를 비교한다.
 
-## 16. Exact regression
+## 구현 읽는 순서
 
-`tests/test_scores.py`는 두 profile의 8개 canonical artifact set에 대해 다음을 고정한다.
+1. `load_ground_truth()`, `_validate_ground_truth()`
+2. `_check_join()`
+3. `score_case()`
+4. TP/FP/FN/TN loop
+5. `_pairwise_score()`, `_adjusted_rand_index()`
+6. `_make_predicted_clusters()`
+7. `_make_origin_scores()`
+8. `format_report()`
+9. `score_report_to_dict()`, `reports_to_dict()`
+10. [run_summary.py](../run_summary.py)의 `build_run_summary()`
+11. [analysis/summary.py](../analysis/summary.py)의 `print_case()`
 
-- source, non-stripped, stripped hash
-- origin별 instance 수
-- candidate 수와 전체 pair 수
-- refinement rounds
-- exact cluster membership
+## Regression
+
+[tests/test_scores.py](../tests/test_scores.py)는 frozen micro-corpus에 대해 다음을 exact하게 검사한다.
+
+- source/binary hash
+- origin별 observed instance 수
+- target/candidate 수
+- rounds
 - TP/FP/FN/TN
+- pair 수
 - PR/RE/F1/ARI
-- origin별 split/collision 결과
-- 저장된 `results/micro-corpus/plain/baseline.json`,
-  `results/micro-corpus/min/baseline.json` 전체
+- exact cluster membership
+- origin별 split/collision
+- stored baseline JSON
 
-실행:
+[tests/test_run_summary.py](../tests/test_run_summary.py)는 다음을 검사한다.
+
+- indirect classification
+- candidate impact
+- observability/reachability
+- GT denominator
+- abstain coverage
+- profile comparison
+- execution warning/runtime shape
+
+반드시 포함할 edge cases:
+
+- 모든 target abstain
+- 한 family 일부 abstain
+- grouped pair 0
+- `TP=0, FP=0, FN>0`
+- `TP=0, FP>0, FN>0`
+- all singleton origin
+- cross-profile/scope/provenance join rejection
+
+전체:
 
 ```bash
-python3 tests/test_scores.py
+python3 tests/run_all.py
 ```
 
-출력 일부:
+## 해석 시 금지할 주장
+
+다음 해석은 수치만으로 할 수 없다.
+
+- High conditional F1이 source-level survival까지 높다는 주장
+- Abstain이 dead code라는 주장
+- Angr accepted yield가 indirect-call accuracy라는 주장
+- `min` F1 변화가 compiler robustness만의 효과라는 주장
+- Controlled collision count를 real-world frequency로 일반화
+- `rust-nonstd`를 정확한 user/dependency ownership truth로 간주
+- ARI 하나로 extraction coverage 문제를 해결했다는 주장
+
+결과를 설명할 최소 묶음은 다음이다.
 
 ```text
-plain/family_graph_03/O3S: n=13 TP=4 FP=1 FN=6 TN=67 PR=0.80 RE=0.40 F1=0.53 ARI=0.49 PASS
-plain baseline score JSON: PASS
-min baseline score JSON: PASS
-ALL PASS
+target/origin/k_obs
+grouped/abstain coverage
+call evidence recovery
+predicted cluster
+TP/FP/FN/TN
+PR/RE/F1/ARI
+effective family-pair recall
+profile universe comparison
 ```
-
-## 17. Scorer가 하지 않는 일
-
-- Collision이나 fragmentation의 compiler 원인을 자동 판정하지 않는다.
-- Source-level instance census를 만들지 않는다.
-- Grouping 결과를 고치거나 재그룹하지 않는다.
-- GT를 engine 입력으로 전달하지 않는다.
-- 다른 compiler artifact에 canonical V0 hash를 강제하지 않는다.
-
-Scorer는 관찰된 partition을 비교하고 객관적인 count와 metric을 출력하는 역할만 한다.
-
-## 18. 코드 읽기 순서
-
-1. `score_case()`
-2. `GroundTruth`와 `OriginGroup`
-3. `load_ground_truth()`와 `_validate_ground_truth()`
-4. `_check_join()`
-5. Pair loop (`combinations(scored_ids, 2)`)
-6. `_pairwise_score()`
-7. `_adjusted_rand_index()`
-8. `_make_predicted_clusters()`
-9. `_make_origin_scores()`
-10. `ScoreReport` 관련 dataclass
-11. `format_report()`
-12. `score_report_to_dict()`와 `write_reports_json()`
-13. `score_all_modes()`와 `score_v0_baseline()`
