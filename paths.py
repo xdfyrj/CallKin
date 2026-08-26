@@ -196,6 +196,23 @@ def raw_graph_for(
     return "/".join(parts)
 
 
+def body_evidence_for(
+    case: str,
+    build: str,
+    profile: str = DEFAULT_PROFILE,
+    candidate_scope: str = DEFAULT_CANDIDATE_SCOPE,
+) -> str:
+    scope = normalize_candidate_scope(candidate_scope)
+    parts = ["body_evidence"]
+    if scope != DEFAULT_CANDIDATE_SCOPE:
+        parts.append(scope)
+    parts.extend((
+        normalize_profile(profile),
+        f"{output_stem(case, build)}.body.json",
+    ))
+    return "/".join(parts)
+
+
 def gt_json_for(
     case: str,
     build: str,

@@ -304,6 +304,10 @@ angr 결과가 direct baseline을 덮어씀
 | [engine.py](../engine.py) | directed weighted CG-WL | symbols/origins |
 | [scores.py](../scores.py) | GT join, cluster 설명, metrics | machine-code extraction |
 | [run_summary.py](../run_summary.py) | extraction, coverage, runtime 요약 | grouping 변경 |
+| [body_extractor.py](../body_extractor.py) | candidate extent의 exact body decode | source origin/GT |
+| [body_evidence.py](../body_evidence.py) | local-only 정규화와 intraprocedural CFG | source origin/GT |
+| [body_similarity.py](../body_similarity.py) | 두 body의 구조·slot pair evidence | GT label |
+| [analysis/v1_feasibility.py](../analysis/v1_feasibility.py) | F4 진단에서만 body evidence와 GT join | V0 fixture 생성 |
 | [run_case.py](../run_case.py) | 한 case의 전체 분석 orchestration | compilation |
 | [run_baseline.py](../run_baseline.py) | micro-corpus compile부터 regression까지 실행 | 새 corpus 선택 |
 | [all_rust_catalog.py](../all_rust_catalog.py) | FLIRT 평가용 all-Rust symbol catalog 생성 | grouping target 선택 |
@@ -338,6 +342,8 @@ angr 결과가 direct baseline을 덮어씀
 - Source-level mono-item census, inlined/eliminated/folded lifecycle truth는 생성하지 않는다.
 - `rust-nonstd` ownership은 namespace-based 규칙이다. 완전한 crate provenance classifier가 아니다.
 - Oxidizer는 현재 direct-FLIRT label을 측정하는 [audit-only 단계](flirt_audit.md)다. FLIRT label이 candidate/anchor나 CG-WL seed를 바꾸지 않는다.
+- F1–F4 body evidence는 현재 Stage A feasibility 진단 전용이다. V0 CG-WL의 최종
+  grouping이나 F5 이후 family builder에 아직 연결하지 않는다.
 - `plain`과 `min` 점수 차이는 candidate survival과 graph recovery 차이를 함께 포함할 수 있다. F1만 단독 비교해서 compiler 효과로 해석하면 안 된다.
 
 ## 문서 읽는 순서

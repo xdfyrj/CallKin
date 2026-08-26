@@ -59,6 +59,19 @@ python3 run_baseline.py
 python3 tests/run_all.py
 ```
 
+F1–F4 body feasibility 진단을 별도로 실행할 수 있다. 이 단계는 V0 grouping을
+바꾸지 않고, exact body decode·정규화·CFG·pair evidence만 측정한다.
+
+```bash
+python3 body_extractor.py ripgrep-main --build O3S --profile plain \
+  --candidate-scope rust-nonstd \
+  --raw-graph /path/to/ripgrep-main.O3S.raw.json
+python3 analysis/v1_feasibility.py ripgrep-main --build O3S --profile plain \
+  --candidate-scope rust-nonstd \
+  --body-evidence body_evidence/plain/ripgrep-main.O3S.body.json \
+  --ground-truth ground_truth/rust-nonstd/plain/ripgrep-main.O3S.gt.json
+```
+
 ## One-Case Commands
 
 단일-file case를 non-stripped/stripped binary pair로 컴파일한다.
@@ -228,6 +241,8 @@ family_graph_03 / O3KS
 - directed weighted call graph 기반 CG-WL
 - `full`, `out`, `in`, `out-in` relation mode
 - pairwise PR/RE/F1과 ARI
+- F1 exact body decode, F2 local-only instruction normalization, F3 intraprocedural CFG,
+  F4 pairwise body-evidence feasibility 진단 (Stage A 별도 경로)
 
 현재 포함하지 않는 것:
 
@@ -237,6 +252,8 @@ family_graph_03 / O3KS
 - stripped-only std/library classifier를 candidate selection에 적용하는 기능. Direct-FLIRT
   label은 현재 audit-only이며 scope를 바꾸지 않는다.
 - source-level mono-item census와 inlined/eliminated 원인 판정
-- type recovery 또는 body/CFG similarity
+- F5 이후의 body 기반 candidate retrieval/family grouping
+- body evidence를 V0 CG-WL에 자동으로 주입하는 production pipeline
+- type recovery
 
 Example source와 build recipe의 출처는 [rust-loss](https://github.com/xdfyrj/rust-loss) 저장소다.
