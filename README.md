@@ -72,6 +72,40 @@ python3 analysis/v1_feasibility.py ripgrep-main --build O3S --profile plain \
   --ground-truth ground_truth/rust-nonstd/plain/ripgrep-main.O3S.gt.json
 ```
 
+F4.5는 V0가 만든 한 collision cluster 안에서 body evidence가 오군집을
+분리할 수 있는지만 진단한다. 먼저 V0 member list를 이름 없는 hash ID로
+고정하고, 그 artifact를 입력으로 세 조건을 비교한다. 기본값은 함수 325개인
+cluster와 52,650개 pair이며, GT는 pair label과 채점에만 사용한다.
+
+```bash
+# 1) V0 partition을 먼저 고정
+python3 analysis/f45_collision.py ripgrep-main --build O3S --profile plain \
+  --fixture /path/to/ripgrep-main.O3S.fixture.json \
+  --track angr --candidate-scope rust-nonstd --anchor-policy role \
+  --mode out-in --partition-only \
+  --partition-output results/ripgrep-main/plain/v0.partition.json
+
+# 2) hash ID를 지정해 전 pair 진단
+python3 analysis/f45_collision.py ripgrep-main --build O3S --profile plain \
+  --partition-input results/ripgrep-main/plain/v0.partition.json \
+  --partition-output results/ripgrep-main/plain/v0.partition.json \
+  --track angr --candidate-scope rust-nonstd --anchor-policy role \
+  --mode out-in \
+  --cluster-id cluster_<member-list-sha256> \
+  --body-evidence /path/to/ripgrep-main.O3S.body.json \
+  --ground-truth /path/to/ripgrep-main.O3S.gt.json \
+  --output results/ripgrep-main/plain/f4_5.collision.json
+```
+
+`--cluster-size 325`을 사용하면 hash를 직접 입력하지 않아도 되지만, 같은 크기의
+cluster가 둘 이상이면 `--cluster-id`를 요구한다. 결과 JSON에는 structure-only
+(instruction/block/CFG), slot-only (constant/call/data reference), combined의
+TP/FP/FN/TN, Precision/Recall/F1,
+percentile·histogram 분포와 false-positive/false-negative 예시가 함께 저장된다.
+partition의 `raw_graph_sha256`와 `candidate_selection_sha256`는 body-evidence
+provenance와 반드시 일치해야 하며, 선택한 cluster에 속한 GT origin만
+`origin_count`로 집계된다. 불일치 자료는 채점 전에 거부한다.
+
 ## One-Case Commands
 
 단일-file case를 non-stripped/stripped binary pair로 컴파일한다.
@@ -243,6 +277,7 @@ family_graph_03 / O3KS
 - pairwise PR/RE/F1과 ARI
 - F1 exact body decode, F2 local-only instruction normalization, F3 intraprocedural CFG,
   F4 pairwise body-evidence feasibility 진단 (Stage A 별도 경로)
+- F4.5 V0 collision cluster member-list artifact와 body-evidence collision 진단
 
 현재 포함하지 않는 것:
 
@@ -252,6 +287,7 @@ family_graph_03 / O3KS
 - stripped-only std/library classifier를 candidate selection에 적용하는 기능. Direct-FLIRT
   label은 현재 audit-only이며 scope를 바꾸지 않는다.
 - source-level mono-item census와 inlined/eliminated 원인 판정
+- V0 collision을 자동으로 수정하는 F5 family grouping
 - F5 이후의 body 기반 candidate retrieval/family grouping
 - body evidence를 V0 CG-WL에 자동으로 주입하는 production pipeline
 - type recovery

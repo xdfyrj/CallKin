@@ -36,6 +36,7 @@ PYTHON_FILES = (
     "compare_profiles.py",
     "analysis/summary.py",
     "analysis/v1_feasibility.py",
+    "analysis/f45_collision.py",
     "run_baseline.py",
     "tests/test_compile.py",
     "tests/test_engine.py",
@@ -68,6 +69,7 @@ TEST_FILES = (
     "tests/test_run_summary.py",
     "tests/test_gt_extractor.py",
     "tests/test_scores.py",
+    "tests/test_collision_diagnostic.py",
 )
 
 

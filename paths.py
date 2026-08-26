@@ -352,6 +352,48 @@ def result_json_for(
     return f"{result_dir_for(case, profile)}/{filename}"
 
 
+def f45_partition_for(
+    case: str,
+    build: str = DEFAULT_BUILD,
+    profile: str = DEFAULT_PROFILE,
+    mode: str = "out-in",
+    track: str = ANGR_TRACK,
+    candidate_scope: str = RUST_NONSTD_CANDIDATE_SCOPE,
+    anchor_policy: str = ROLE_ANCHOR_POLICY,
+) -> str:
+    """Return the reproducible V0 partition artifact path for F4.5."""
+    track = normalize_track(track)
+    candidate_scope = normalize_candidate_scope(candidate_scope)
+    anchor_policy = normalize_anchor_policy(anchor_policy)
+    return result_json_for(
+        case,
+        f"{output_stem(case, build)}.f4_5.{track}.{candidate_scope}."
+        f"{anchor_policy}.{mode}.partition",
+        profile,
+    )
+
+
+def f45_result_for(
+    case: str,
+    build: str = DEFAULT_BUILD,
+    profile: str = DEFAULT_PROFILE,
+    mode: str = "out-in",
+    track: str = ANGR_TRACK,
+    candidate_scope: str = RUST_NONSTD_CANDIDATE_SCOPE,
+    anchor_policy: str = ROLE_ANCHOR_POLICY,
+) -> str:
+    """Return the F4.5 collision diagnostic result path."""
+    track = normalize_track(track)
+    candidate_scope = normalize_candidate_scope(candidate_scope)
+    anchor_policy = normalize_anchor_policy(anchor_policy)
+    return result_json_for(
+        case,
+        f"{output_stem(case, build)}.f4_5.{track}.{candidate_scope}."
+        f"{anchor_policy}.{mode}.collision",
+        profile,
+    )
+
+
 def baseline_result_for(profile: str = DEFAULT_PROFILE) -> str:
     return result_json_for("micro-corpus", "baseline", profile)
 
