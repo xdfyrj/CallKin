@@ -41,6 +41,7 @@ from paths import (  # noqa: E402
     resolve_fixture_json,
 )
 from v1_retrieval_views import (  # noqa: E402
+    MULTI_VIEW_NAMES,
     VIEW_NAMES,
     VIEW_PROFILE_VERSIONS,
     build_cfg_profiles,
@@ -99,6 +100,12 @@ class CheapBodyProfile:
             self.mnemonic_counts,
             self.mnemonic_ngrams,
         )
+
+    @property
+    def has_evidence(self) -> bool:
+        """Whether this body has any instruction-level retrieval evidence."""
+
+        return self.instruction_count > 0
 
 
 @dataclass
@@ -355,12 +362,13 @@ def generate_multiview_candidate_pairs(
     bodies: Mapping[str, FunctionBody],
     *,
     top_k: int,
-    views: Iterable[str] = VIEW_NAMES,
+    views: Iterable[str] = MULTI_VIEW_NAMES,
     final_groups: Iterable[Iterable[str]] | None = None,
     prior_round_groups: Iterable[tuple[int, Iterable[Iterable[str]]]] | None = None,
     final_round: int | None = None,
     out_signatures: Mapping[str, Any] | None = None,
     in_signatures: Mapping[str, Any] | None = None,
+    anchor_classes: Mapping[str, str] | None = None,
 ) -> list[MultiViewCandidatePair]:
     """Retrieve candidates through independent view-specific top-k searches.
 
@@ -395,6 +403,7 @@ def generate_multiview_candidate_pairs(
             final_round=final_round,
             out_signatures=out_signatures,
             in_signatures=in_signatures,
+            anchor_classes=anchor_classes,
         )
         if "relation" in active_views
         else {}
@@ -453,23 +462,40 @@ def generate_multiview_candidate_pairs(
     for view in active_views:
         view_profiles = profile_maps[view]
         score_fn = score_functions[view]
+        eligible_ids = [
+            function_id
+            for function_id in complete_ids
+            if view_profiles[function_id].has_evidence
+        ]
+        if len(eligible_ids) < 2:
+            continue
         signatures = {
             function_id: _view_profile_signature(view_profiles[function_id])
-            for function_id in complete_ids
+            for function_id in eligible_ids
         }
 
         def score_pair(first: str, second: str, *, _fn=score_fn, _profiles=view_profiles) -> float:
             return float(_fn(_profiles[first], _profiles[second]))
 
         ranked_by_source = _symmetric_top_k(
-            complete_ids,
+            eligible_ids,
             top_k=top_k,
             score=score_pair,
             group_key=lambda member, _signatures=signatures: _signatures[member],
         )
+        selected_rank_by_source: dict[str, int] = defaultdict(int)
         for source, ranked in ranked_by_source.items():
-            for rank, (score, target) in enumerate(ranked, start=1):
-                add(source, target, view=view, score=score, rank=rank)
+            for score, target in ranked:
+                if score <= 0.0:
+                    continue
+                selected_rank_by_source[source] += 1
+                add(
+                    source,
+                    target,
+                    view=view,
+                    score=score,
+                    rank=selected_rank_by_source[source],
+                )
 
     for record in records.values():
         record.same_final_color = _same_membership(
@@ -531,12 +557,18 @@ def relation_context_from_cgwl(
         node_id: tuple(sorted(in_values.get(node_id, [])))
         for node_id in out_signatures
     }
+    anchor_classes = {
+        node.id: node.color_class
+        for node in case.nodes
+        if node.type == "anchor" and node.color_class is not None
+    }
     return {
         "final_groups": final_groups,
         "prior_round_groups": prior_round_groups,
         "final_round": final_round,
         "out_signatures": out_signatures,
         "in_signatures": in_signatures,
+        "anchor_classes": anchor_classes,
         "mode": result.mode,
         "rounds": result.rounds,
     }
@@ -889,7 +921,7 @@ def build_multiview_candidate_artifact_from_files(
     fixture_path: str | Path,
     top_k: int,
     mode: CGWLMode,
-    views: Iterable[str] = VIEW_NAMES,
+    views: Iterable[str] = MULTI_VIEW_NAMES,
     track: str | None = None,
     candidate_scope: str | None = None,
     anchor_policy: str | None = None,
@@ -961,6 +993,7 @@ def build_multiview_candidate_artifact_from_files(
             final_round=relation["final_round"],
             out_signatures=relation["out_signatures"],
             in_signatures=relation["in_signatures"],
+            anchor_classes=relation["anchor_classes"],
         ),
         top_k=top_k,
         views=active_views,
@@ -1480,7 +1513,7 @@ def main(argv: list[str] | None = None) -> int:
                 anchor_policy=args.anchor_policy,
             )
         else:
-            selected_views = VIEW_NAMES if args.variant == "multi" else (args.variant,)
+            selected_views = MULTI_VIEW_NAMES if args.variant == "multi" else (args.variant,)
             if args.output is None:
                 output = _default_multiview_output(
                     args.case,

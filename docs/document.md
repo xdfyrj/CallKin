@@ -372,11 +372,13 @@ angr 결과가 direct baseline을 덮어씀
   증거가 충돌하면 `unknown`, 불완전 body 또는 opaque indirect jump가 있는
   pair는 `abstain`으로 두며, 모든 cross-pair가 `match`인 경우에만
   complete-link family를 승인한다.
-- F5.2는 composite 점수를 단일 순위로 사용하지 않고 `composite`, `token`,
-  `cfg`, `relation` view를 독립적으로 top-k 검색한 뒤 후보를 합친다. Token은
+- F5.2의 새 `multi` variant는 composite 점수를 단일 순위로 사용하지 않고
+  `token`, `cfg`, `relation` view를 독립적으로 top-k 검색한 뒤 후보를 합친다.
+  `composite`는 별도 baseline으로 남긴다. Token은
   mnemonic·operand shape·constant shape, CFG는 block role·degree·topology,
   relation은 WL history와 call context만 사용하며 relation 순위에는 body
-  score를 넣지 않는다. 결과 pair에는 view별 score/rank와 선택 reason이 들어가고,
+  score를 넣지 않는다. 각 view는 evidence가 없는 함수와 유사도 0인 pair를
+  검색 결과에서 제외한다. 결과 pair에는 view별 score/rank와 선택 reason이 들어가고,
   schema-2 `v1-multiview-candidate-pairs`는 기존 F6가 그대로 소비한다.
 - F5 Gate B는 `k=8,16,32,64` sweep에서 candidate-pair recall `>=0.90`,
   candidate pair fraction `<=0.02`, family member coverage `>=0.95`,

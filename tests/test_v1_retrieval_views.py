@@ -13,6 +13,7 @@ from v1_candidates import (  # noqa: E402
     validate_candidate_artifact,
 )
 from v1_retrieval_views import (  # noqa: E402
+    MULTI_VIEW_NAMES,
     build_cfg_profiles,
     build_relation_profiles,
     build_token_profiles,
@@ -186,6 +187,66 @@ def test_empty_views_do_not_turn_missing_evidence_into_a_match():
     ) == 0.0
 
 
+def test_relation_view_does_not_create_candidates_without_evidence():
+    bodies = {
+        "FUN_A": _mov_ret("FUN_A"),
+        "FUN_B": _mov_ret("FUN_B", offset=100),
+        "FUN_C": _mov_ret("FUN_C", offset=200),
+    }
+    pairs = generate_multiview_candidate_pairs(
+        bodies,
+        top_k=1,
+        views=("relation",),
+    )
+    assert pairs == []
+
+
+def test_relation_abstained_member_is_not_forced_into_top_k():
+    bodies = {
+        "FUN_A": _mov_ret("FUN_A"),
+        "FUN_B": _mov_ret("FUN_B", offset=100),
+        "FUN_C": _mov_ret("FUN_C", offset=200),
+    }
+    pairs = generate_multiview_candidate_pairs(
+        bodies,
+        top_k=1,
+        views=("relation",),
+        final_groups=[["FUN_A", "FUN_B"]],
+        prior_round_groups=[(1, [["FUN_A", "FUN_B"]])],
+        final_round=2,
+    )
+    assert {
+        tuple(item.pair.to_list()) for item in pairs
+    } == {("FUN_A", "FUN_B")}
+    assert all(
+        "FUN_C" not in item.pair.to_list() for item in pairs
+    )
+    assert all(
+        value["score"] > 0.0
+        for item in pairs
+        for value in item.views.values()
+        if value is not None
+    )
+
+
+def test_relation_view_preserves_distinct_anchor_classes():
+    profiles = build_relation_profiles(
+        ["FUN_A", "FUN_B"],
+        final_groups=[["FUN_A", "FUN_B"]],
+        final_round=1,
+        out_signatures={
+            "FUN_A": (("ANCHOR_ROOT", 1),),
+            "FUN_B": (("ANCHOR_OUT", 1),),
+        },
+        anchor_classes={
+            "ANCHOR_ROOT": "ROLE:root",
+            "ANCHOR_OUT": "ROLE:outgoing",
+        },
+    )
+    assert profiles["FUN_A"].out_signature != profiles["FUN_B"].out_signature
+    assert relation_similarity(profiles["FUN_A"], profiles["FUN_B"]) < 1.0
+
+
 def test_multiview_union_records_independent_view_scores():
     bodies = {
         "FUN_A": _mov_ret("FUN_A"),
@@ -250,14 +311,23 @@ def test_multiview_generation_is_deterministic_under_input_reordering():
     assert [item.to_dict() for item in first] == [item.to_dict() for item in second]
 
 
+def test_multi_view_names_exclude_composite_baseline():
+    assert MULTI_VIEW_NAMES == ("token", "cfg", "relation")
+    assert "composite" not in MULTI_VIEW_NAMES
+
+
 def main() -> int:
     tests = [
         test_token_view_ignores_offsets_but_keeps_operand_shape,
         test_cfg_view_uses_topology_and_not_block_labels,
         test_relation_view_does_not_read_body_profiles,
         test_empty_views_do_not_turn_missing_evidence_into_a_match,
+        test_relation_view_does_not_create_candidates_without_evidence,
+        test_relation_abstained_member_is_not_forced_into_top_k,
+        test_relation_view_preserves_distinct_anchor_classes,
         test_multiview_union_records_independent_view_scores,
         test_multiview_generation_is_deterministic_under_input_reordering,
+        test_multi_view_names_exclude_composite_baseline,
     ]
     for test in tests:
         test()

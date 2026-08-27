@@ -19,11 +19,14 @@ from body_similarity import FunctionBody
 
 
 VIEW_NAMES = ("composite", "token", "cfg", "relation")
+# ``composite`` is retained as an explicit baseline.  The proposed multi-view
+# retrieval deliberately unions only independent token/CFG/relation evidence.
+MULTI_VIEW_NAMES = ("token", "cfg", "relation")
 VIEW_PROFILE_VERSIONS = {
     "composite": "cheap-body-v1",
     "token": "token-v2-no-sequence",
     "cfg": "cfg-v2-digested-topology",
-    "relation": "relation-v2-optional-call-context",
+    "relation": "relation-v3-anchor-class-context",
 }
 
 
@@ -269,6 +272,7 @@ def build_relation_profiles(
     final_round: int | None = None,
     out_signatures: Mapping[str, Any] | None = None,
     in_signatures: Mapping[str, Any] | None = None,
+    anchor_classes: Mapping[str, str] | None = None,
 ) -> dict[str, RelationProfile]:
     ids = sorted(set(function_ids))
     prior = sorted(
@@ -292,8 +296,22 @@ def build_relation_profiles(
     ) -> tuple[tuple[Any, int], ...]:
         values = []
         for target, count in (mapping or {}).get(function_id, ()):
-            group = final_membership.get(str(target), ("external", 0))
-            values.append((group, int(count)))
+            target_id = str(target)
+            if target_id in final_membership:
+                group_index, group_size = final_membership[target_id]
+                descriptor = (
+                    "candidate_group",
+                    group_index,
+                    group_size,
+                )
+            elif target_id in (anchor_classes or {}):
+                descriptor = (
+                    "anchor_class",
+                    anchor_classes[target_id],
+                )
+            else:
+                descriptor = ("external_unknown",)
+            values.append((descriptor, int(count)))
         return tuple(sorted(values, key=repr))
 
     result: dict[str, RelationProfile] = {}

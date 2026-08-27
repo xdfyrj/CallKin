@@ -65,6 +65,50 @@ def _ground_truth():
     }
 
 
+def _weighted_metric_artifact():
+    members = ["FUN_A", "FUN_B", "FUN_C", "FUN_D", "FUN_E", "FUN_F"]
+    pairs = [
+        CandidatePair(
+            pair=PairKey.make("FUN_A", "FUN_B"),
+            reasons={"body_top_k"},
+            body_rank=1,
+        ),
+        CandidatePair(
+            pair=PairKey.make("FUN_C", "FUN_D"),
+            reasons={"body_top_k"},
+            body_rank=1,
+        ),
+    ]
+    return build_candidate_artifact(
+        case="case",
+        build="O3S",
+        profile="plain",
+        scope="subject",
+        bodies={
+            member: type("Body", (), {"complete": True})()
+            for member in members
+        },
+        pairs=pairs,
+        top_k=1,
+        provenance={"stripped_sha256": "a" * 64},
+        relation={"mode": "out-in"},
+    )
+
+
+def _weighted_metric_ground_truth():
+    return {
+        "case": "case",
+        "build": "O3S",
+        "profile": "plain",
+        "provenance": {"stripped_sha256": "a" * 64},
+        "origins": [
+            {"origin": "origin_ab", "members": ["FUN_A", "FUN_B"]},
+            {"origin": "origin_cde", "members": ["FUN_C", "FUN_D", "FUN_E"]},
+            {"origin": "origin_f", "members": ["FUN_F"]},
+        ],
+    }
+
+
 def test_candidate_evaluation_uses_one_adjacency_pass():
     report = evaluate_candidate_artifact(_candidate_artifact(8), _ground_truth())
     metrics = report["metrics"]
@@ -83,6 +127,23 @@ def test_candidate_sweep_selects_smallest_gate_passing_top_k():
     assert report["selection"]["selected_top_k"] == 8
     assert report["selection"]["gate_b_passed"] is True
     assert [item["top_k"] for item in report["runs"]] == [8, 16]
+
+
+def test_multimember_metrics_exclude_singletons_and_measure_connectivity():
+    report = evaluate_candidate_artifact(
+        _weighted_metric_artifact(),
+        _weighted_metric_ground_truth(),
+    )
+    metrics = report["metrics"]
+    assert metrics["multimember_family_count"] == 2
+    assert metrics["multimember_member_count"] == 5
+    assert metrics["same_origin_covered_member_count"] == 4
+    assert metrics["member_without_same_origin_candidate_count"] == 1
+    assert metrics["same_origin_member_coverage"] == 0.8
+    assert metrics["connected_family_count"] == 1
+    assert metrics["connected_family_rate"] == 0.5
+    assert metrics["all_multimember_families_connected"] is False
+    assert report["gate_b"]["family_member_coverage_ge_0.95"] is False
 
 
 def test_candidate_sweep_rejects_provenance_mismatch():
@@ -219,6 +280,7 @@ def test_development_threshold_selection_combines_multiple_cases():
 def main() -> int:
     test_candidate_evaluation_uses_one_adjacency_pass()
     test_candidate_sweep_selects_smallest_gate_passing_top_k()
+    test_multimember_metrics_exclude_singletons_and_measure_connectivity()
     test_candidate_sweep_rejects_provenance_mismatch()
     test_mixed_accepted_cluster_is_not_counted_as_correct_family_coverage()
     test_development_threshold_selection_combines_multiple_cases()

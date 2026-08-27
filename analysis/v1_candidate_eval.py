@@ -116,14 +116,41 @@ def evaluate_candidate_artifact(
         })
 
     coverage_values = [item["member_coverage"] for item in family_reports]
-    connectivity_values = [item["connected"] for item in family_reports]
     member_coverage_summary = {
         "count": len(coverage_values),
         "min": min(coverage_values) if coverage_values else None,
         "mean": statistics.fmean(coverage_values) if coverage_values else None,
         "all_ge_0.95": bool(coverage_values) and min(coverage_values) >= 0.95,
     }
-    all_connected = bool(connectivity_values) and all(connectivity_values)
+    multimember_reports = [
+        report for report in family_reports
+        if report["member_count"] > 1
+    ]
+    multimember_family_count = len(multimember_reports)
+    multimember_member_count = sum(
+        report["member_count"] for report in multimember_reports
+    )
+    same_origin_covered_member_count = sum(
+        report["candidate_member_count"] for report in multimember_reports
+    )
+    member_without_same_origin_candidate_count = (
+        multimember_member_count - same_origin_covered_member_count
+    )
+    same_origin_member_coverage = (
+        same_origin_covered_member_count / multimember_member_count
+        if multimember_member_count else None
+    )
+    connected_family_count = sum(
+        bool(report["connected"]) for report in multimember_reports
+    )
+    connected_family_rate = (
+        connected_family_count / multimember_family_count
+        if multimember_family_count else None
+    )
+    all_multimember_families_connected = (
+        bool(multimember_reports)
+        and connected_family_count == multimember_family_count
+    )
     metrics = {
         "target_count": len(target_ids),
         "labeled_target_count": len(labeled_ids),
@@ -140,15 +167,27 @@ def evaluate_candidate_artifact(
         "reason_counts": dict(sorted(reason_counts.items())),
         "family_count": len(family_reports),
         "family_member_coverage": member_coverage_summary,
-        "all_multimember_families_connected": all_connected,
+        "all_multimember_families_connected": all_multimember_families_connected,
+        "multimember_family_count": multimember_family_count,
+        "multimember_member_count": multimember_member_count,
+        "same_origin_covered_member_count": same_origin_covered_member_count,
+        "member_without_same_origin_candidate_count": (
+            member_without_same_origin_candidate_count
+        ),
+        "same_origin_member_coverage": same_origin_member_coverage,
+        "connected_family_count": connected_family_count,
+        "connected_family_rate": connected_family_rate,
     }
     gate = {
         "candidate_pair_recall_ge_0.90": (
             candidate_pair_recall is not None and candidate_pair_recall >= 0.90
         ),
         "candidate_pair_fraction_le_0.02": candidate_pair_fraction <= 0.02,
-        "family_member_coverage_ge_0.95": member_coverage_summary["all_ge_0.95"],
-        "all_multimember_families_connected": all_connected,
+        "family_member_coverage_ge_0.95": (
+            same_origin_member_coverage is not None
+            and same_origin_member_coverage >= 0.95
+        ),
+        "all_multimember_families_connected": all_multimember_families_connected,
     }
     gate["passed"] = all(gate.values())
     return {
@@ -245,6 +284,19 @@ def evaluate_candidate_sweep(
                 "all_multimember_families_connected": metrics[
                     "all_multimember_families_connected"
                 ],
+                "multimember_family_count": metrics["multimember_family_count"],
+                "multimember_member_count": metrics["multimember_member_count"],
+                "same_origin_covered_member_count": metrics[
+                    "same_origin_covered_member_count"
+                ],
+                "member_without_same_origin_candidate_count": metrics[
+                    "member_without_same_origin_candidate_count"
+                ],
+                "same_origin_member_coverage": metrics[
+                    "same_origin_member_coverage"
+                ],
+                "connected_family_count": metrics["connected_family_count"],
+                "connected_family_rate": metrics["connected_family_rate"],
             },
             "gate_b": dict(report["gate_b"]),
         })

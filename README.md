@@ -174,8 +174,9 @@ python3 analysis/v1_candidate_eval.py \
   --output results/ripgrep-main/plain/ripgrep-main.O3S.v1.candidate-sweep.json
 ```
 
-F5.2는 하나의 composite 점수로 순위를 섞지 않고 `composite`, `token`, `cfg`,
-`relation` view를 각각 top-k 검색한 뒤 pair 합집합을 만든다. `token`은
+F5.2는 하나의 composite 점수로 순위를 섞지 않고 `token`, `cfg`, `relation`
+view를 각각 top-k 검색한 뒤 pair 합집합을 만든다. `composite`는 별도로
+비교하는 기존 baseline이다. `token`은
 mnemonic·operand shape·constant shape, `cfg`는 block role·degree·topology,
 `relation`은 WL history와 call context만 사용한다. `relation` view 순위에는
 body score가 들어가지 않는다. 기존 F5는 `--variant legacy`이고 F5.2 전체
@@ -190,7 +191,8 @@ python3 v1_candidates.py ripgrep-main --build O3S --profile plain \
   --output results/ripgrep-main/plain/ripgrep-main.O3S.v1.multi.candidates.json
 ```
 
-각 pair에는 view별 `score`·`rank`, 선택 이유와 공통 provenance가 저장된다.
+각 view는 실제 evidence가 있는 함수만 검색하고, 유사도 0인 pair는 저장하지
+않는다. 각 pair에는 view별 `score`·`rank`, 선택 이유와 공통 provenance가 저장된다.
 `analysis/v1_multiview_eval.py`는 단일 view와 union artifact의 pair recall,
 candidate fraction, family coverage/connectivity 및 해당 view만 회수한 정답
 pair를 비교한다. F5.2도 후보만 만들며 family 판정은 기존 F4 lazy comparison과

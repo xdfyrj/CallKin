@@ -82,6 +82,19 @@ def evaluate_multiview_artifacts(
                 "all_multimember_families_connected": metrics[
                     "all_multimember_families_connected"
                 ],
+                "multimember_family_count": metrics["multimember_family_count"],
+                "multimember_member_count": metrics["multimember_member_count"],
+                "same_origin_covered_member_count": metrics[
+                    "same_origin_covered_member_count"
+                ],
+                "member_without_same_origin_candidate_count": metrics[
+                    "member_without_same_origin_candidate_count"
+                ],
+                "same_origin_member_coverage": metrics[
+                    "same_origin_member_coverage"
+                ],
+                "connected_family_count": metrics["connected_family_count"],
+                "connected_family_rate": metrics["connected_family_rate"],
                 "reason_counts": metrics["reason_counts"],
                 "exclusive_candidate_pair_count": len(exclusive_pairs),
                 "exclusive_same_origin_pair_count": exclusive_same_origin,
