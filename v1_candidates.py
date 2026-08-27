@@ -40,10 +40,22 @@ from paths import (  # noqa: E402
     normalize_track,
     resolve_fixture_json,
 )
+from v1_retrieval_views import (  # noqa: E402
+    VIEW_NAMES,
+    VIEW_PROFILE_VERSIONS,
+    build_cfg_profiles,
+    build_relation_profiles,
+    build_token_profiles,
+    cfg_similarity,
+    relation_similarity,
+    token_similarity,
+)
 
 
 ARTIFACT_SCHEMA_VERSION = 1
 ARTIFACT_NAME = "v1-candidate-pairs"
+MULTIVIEW_ARTIFACT_SCHEMA_VERSION = 2
+MULTIVIEW_ARTIFACT_NAME = "v1-multiview-candidate-pairs"
 NGRAM_SIZE = 3
 
 
@@ -78,6 +90,16 @@ class CheapBodyProfile:
     mnemonic_ngrams: frozenset[tuple[str, ...]]
     exact_mnemonic_hash: str
 
+    @property
+    def signature(self) -> tuple[Any, ...]:
+        return (
+            self.size,
+            self.instruction_count,
+            self.block_count,
+            self.mnemonic_counts,
+            self.mnemonic_ngrams,
+        )
+
 
 @dataclass
 class CandidatePair:
@@ -101,6 +123,37 @@ class CandidatePair:
             "cheap_score": self.cheap_score,
             "body_rank": self.body_rank,
             "relation_rank": self.relation_rank,
+            "last_shared_round": self.last_shared_round,
+            "same_out_signature": self.same_out_signature,
+            "same_in_signature": self.same_in_signature,
+            "same_final_color": self.same_final_color,
+            "same_prior_color": self.same_prior_color,
+        }
+
+
+@dataclass
+class MultiViewCandidatePair:
+    """A candidate annotated with the independent views that selected it."""
+
+    pair: PairKey
+    views: dict[str, dict[str, float | int] | None]
+    reasons: set[str] = field(default_factory=set)
+    last_shared_round: int | None = None
+    same_out_signature: bool | None = None
+    same_in_signature: bool | None = None
+    same_final_color: bool | None = None
+    same_prior_color: bool | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "pair": self.pair.to_list(),
+            "first": self.pair.left,
+            "second": self.pair.right,
+            "reasons": sorted(self.reasons),
+            "views": {
+                name: self.views[name]
+                for name in sorted(self.views)
+            },
             "last_shared_round": self.last_shared_round,
             "same_out_signature": self.same_out_signature,
             "same_in_signature": self.same_in_signature,
@@ -298,6 +351,161 @@ def generate_candidate_pairs(
     )
 
 
+def generate_multiview_candidate_pairs(
+    bodies: Mapping[str, FunctionBody],
+    *,
+    top_k: int,
+    views: Iterable[str] = VIEW_NAMES,
+    final_groups: Iterable[Iterable[str]] | None = None,
+    prior_round_groups: Iterable[tuple[int, Iterable[Iterable[str]]]] | None = None,
+    final_round: int | None = None,
+    out_signatures: Mapping[str, Any] | None = None,
+    in_signatures: Mapping[str, Any] | None = None,
+) -> list[MultiViewCandidatePair]:
+    """Retrieve candidates through independent view-specific top-k searches.
+
+    A view ranks pairs using only its own profile.  The returned records are
+    the union of those bounded searches; no view is allowed to re-rank another
+    view's candidates.
+    """
+
+    _validate_top_k(top_k)
+    active_views = _normalize_views(views)
+    final_groups = (
+        [list(group) for group in final_groups]
+        if final_groups is not None
+        else None
+    )
+    prior_round_groups = (
+        [
+            (int(round_index), [list(group) for group in groups])
+            for round_index, groups in prior_round_groups
+        ]
+        if prior_round_groups is not None
+        else None
+    )
+    profiles = build_cheap_profiles(bodies) if "composite" in active_views else {}
+    token_profiles = build_token_profiles(bodies) if "token" in active_views else {}
+    cfg_profiles = build_cfg_profiles(bodies) if "cfg" in active_views else {}
+    relation_profiles = (
+        build_relation_profiles(
+            bodies.keys(),
+            final_groups=final_groups,
+            prior_round_groups=prior_round_groups,
+            final_round=final_round,
+            out_signatures=out_signatures,
+            in_signatures=in_signatures,
+        )
+        if "relation" in active_views
+        else {}
+    )
+    profile_maps: dict[str, Mapping[str, Any]] = {
+        "composite": profiles,
+        "token": token_profiles,
+        "cfg": cfg_profiles,
+        "relation": relation_profiles,
+    }
+    score_functions: dict[str, Any] = {
+        "composite": cheap_body_similarity,
+        "token": token_similarity,
+        "cfg": cfg_similarity,
+        "relation": relation_similarity,
+    }
+    complete_ids = sorted(
+        function_id
+        for function_id, body in bodies.items()
+        if body.complete
+    )
+    records: dict[PairKey, MultiViewCandidatePair] = {}
+
+    final_membership = _membership(final_groups)
+    prior_memberships = []
+    if prior_round_groups is not None:
+        prior_memberships = [
+            (int(round_index), _membership(groups))
+            for round_index, groups in prior_round_groups
+        ]
+
+    def add(
+        first: str,
+        second: str,
+        *,
+        view: str,
+        score: float,
+        rank: int,
+    ) -> None:
+        pair = PairKey.make(first, second)
+        record = records.get(pair)
+        if record is None:
+            record = MultiViewCandidatePair(
+                pair=pair,
+                views={name: None for name in active_views},
+            )
+            records[pair] = record
+        previous = record.views[view]
+        if previous is None:
+            record.views[view] = {"score": float(score), "rank": int(rank)}
+        else:
+            previous["score"] = max(float(previous["score"]), float(score))
+            previous["rank"] = min(int(previous["rank"]), int(rank))
+        record.reasons.add(f"{view}_top_k")
+
+    for view in active_views:
+        view_profiles = profile_maps[view]
+        score_fn = score_functions[view]
+        signatures = {
+            function_id: _view_profile_signature(view_profiles[function_id])
+            for function_id in complete_ids
+        }
+
+        def score_pair(first: str, second: str, *, _fn=score_fn, _profiles=view_profiles) -> float:
+            return float(_fn(_profiles[first], _profiles[second]))
+
+        ranked_by_source = _symmetric_top_k(
+            complete_ids,
+            top_k=top_k,
+            score=score_pair,
+            group_key=lambda member, _signatures=signatures: _signatures[member],
+        )
+        for source, ranked in ranked_by_source.items():
+            for rank, (score, target) in enumerate(ranked, start=1):
+                add(source, target, view=view, score=score, rank=rank)
+
+    for record in records.values():
+        record.same_final_color = _same_membership(
+            final_membership,
+            record.pair.left,
+            record.pair.right,
+        )
+        record.same_prior_color = _same_prior_membership(
+            prior_memberships,
+            record.pair.left,
+            record.pair.right,
+        )
+        record.same_out_signature = _same_mapping_value(
+            out_signatures,
+            record.pair.left,
+            record.pair.right,
+        )
+        record.same_in_signature = _same_mapping_value(
+            in_signatures,
+            record.pair.left,
+            record.pair.right,
+        )
+        record.last_shared_round = _last_shared_round(
+            record.pair.left,
+            record.pair.right,
+            final_membership,
+            prior_memberships,
+            final_round,
+        )
+
+    return sorted(
+        records.values(),
+        key=lambda item: (item.pair.left, item.pair.right),
+    )
+
+
 def relation_context_from_cgwl(
     case: Any,
     result: CGWLResult,
@@ -384,6 +592,67 @@ def build_candidate_artifact(
     return result
 
 
+def build_multiview_candidate_artifact(
+    *,
+    case: str,
+    build: str,
+    profile: str,
+    scope: str,
+    bodies: Mapping[str, FunctionBody],
+    pairs: Iterable[MultiViewCandidatePair],
+    top_k: int,
+    views: Iterable[str],
+    provenance: Mapping[str, Any],
+    relation: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Build the schema-2 artifact consumed by the existing F6 engine."""
+
+    _validate_top_k(top_k)
+    active_views = _normalize_views(views)
+    normalized_build = normalize_build(build)
+    normalized_profile = normalize_profile(profile)
+    normalized_scope = normalize_candidate_scope(scope)
+    pair_records = sorted(
+        (item.to_dict() for item in pairs),
+        key=lambda item: (item["first"], item["second"]),
+    )
+    target_ids = sorted(bodies)
+    incomplete_ids = sorted(
+        function_id
+        for function_id in target_ids
+        if not bodies[function_id].complete
+    )
+    result: dict[str, Any] = {
+        "schema_version": MULTIVIEW_ARTIFACT_SCHEMA_VERSION,
+        "artifact": MULTIVIEW_ARTIFACT_NAME,
+        "case": case,
+        "build": normalized_build,
+        "profile": normalized_profile,
+        "scope": normalized_scope,
+        "config": {
+            "top_k": top_k,
+            "view_top_k": {name: top_k for name in active_views},
+            "views": list(active_views),
+            "view_profiles": {
+                name: VIEW_PROFILE_VERSIONS[name]
+                for name in active_views
+            },
+        },
+        "provenance": dict(provenance),
+        "universe": {
+            "target_count": len(target_ids),
+            "complete_body_count": len(target_ids) - len(incomplete_ids),
+            "incomplete_ids": incomplete_ids,
+            "target_ids": target_ids,
+        },
+        "pairs": pair_records,
+    }
+    if relation is not None:
+        result["relation"] = _json_safe_relation_metadata(relation)
+    validate_candidate_artifact(result)
+    return result
+
+
 def validate_candidate_artifact(artifact: Mapping[str, Any]) -> None:
     """Validate the stable F5 interchange format before F6 consumes it."""
 
@@ -400,10 +669,16 @@ def validate_candidate_artifact(artifact: Mapping[str, Any]) -> None:
         raise ValueError(f"candidate artifact missing field(s): {sorted(missing)}")
     if unknown:
         raise ValueError(f"candidate artifact has unknown field(s): {sorted(unknown)}")
-    if artifact["schema_version"] != ARTIFACT_SCHEMA_VERSION:
-        raise ValueError("unsupported candidate artifact schema_version")
-    if artifact["artifact"] != ARTIFACT_NAME:
-        raise ValueError("unsupported candidate artifact name")
+    is_multiview = (
+        artifact["schema_version"] == MULTIVIEW_ARTIFACT_SCHEMA_VERSION
+        and artifact["artifact"] == MULTIVIEW_ARTIFACT_NAME
+    )
+    is_legacy = (
+        artifact["schema_version"] == ARTIFACT_SCHEMA_VERSION
+        and artifact["artifact"] == ARTIFACT_NAME
+    )
+    if not is_multiview and not is_legacy:
+        raise ValueError("unsupported candidate artifact schema/name")
     if not isinstance(artifact["case"], str) or not artifact["case"]:
         raise ValueError("candidate artifact case must be non-empty")
     normalize_build(artifact["build"])
@@ -411,15 +686,19 @@ def validate_candidate_artifact(artifact: Mapping[str, Any]) -> None:
     normalize_candidate_scope(artifact["scope"])
 
     config = artifact["config"]
-    if not isinstance(config, Mapping) or set(config) != {
-        "top_k", "body_profile", "ngram_size"
-    }:
-        raise ValueError("candidate artifact config has an invalid schema")
-    _validate_top_k(config["top_k"])
-    if config["body_profile"] != "mnemonic+size+block":
-        raise ValueError("unsupported candidate body profile")
-    if config["ngram_size"] != NGRAM_SIZE:
-        raise ValueError("unsupported candidate ngram size")
+    if is_multiview:
+        active_views = _validate_multiview_config(config)
+    else:
+        active_views = ()
+        if not isinstance(config, Mapping) or set(config) != {
+            "top_k", "body_profile", "ngram_size"
+        }:
+            raise ValueError("candidate artifact config has an invalid schema")
+        _validate_top_k(config["top_k"])
+        if config["body_profile"] != "mnemonic+size+block":
+            raise ValueError("unsupported candidate body profile")
+        if config["ngram_size"] != NGRAM_SIZE:
+            raise ValueError("unsupported candidate ngram size")
     if not isinstance(artifact["provenance"], Mapping):
         raise ValueError("candidate artifact provenance must be an object")
 
@@ -456,11 +735,19 @@ def validate_candidate_artifact(artifact: Mapping[str, Any]) -> None:
     for index, item in enumerate(pairs):
         if not isinstance(item, Mapping):
             raise ValueError(f"pairs[{index}] must be an object")
-        required_pair_keys = {
-            "pair", "first", "second", "reasons", "cheap_score", "body_rank",
-            "relation_rank", "last_shared_round", "same_out_signature",
-            "same_in_signature", "same_final_color", "same_prior_color",
-        }
+        required_pair_keys = (
+            {
+                "pair", "first", "second", "reasons", "views",
+                "last_shared_round", "same_out_signature", "same_in_signature",
+                "same_final_color", "same_prior_color",
+            }
+            if is_multiview
+            else {
+                "pair", "first", "second", "reasons", "cheap_score", "body_rank",
+                "relation_rank", "last_shared_round", "same_out_signature",
+                "same_in_signature", "same_final_color", "same_prior_color",
+            }
+        )
         if set(item) != required_pair_keys:
             raise ValueError(f"pairs[{index}] has an invalid schema")
         pair = PairKey.make(item["first"], item["second"])
@@ -481,13 +768,16 @@ def validate_candidate_artifact(artifact: Mapping[str, Any]) -> None:
             or any(not isinstance(reason, str) or not reason for reason in item["reasons"])
         ):
             raise ValueError(f"pairs[{index}].reasons is invalid")
-        score = item["cheap_score"]
-        if not isinstance(score, (int, float)) or isinstance(score, bool) or not math.isfinite(score) or not 0.0 <= score <= 1.0:
-            raise ValueError(f"pairs[{index}].cheap_score is invalid")
-        for key_name in ("body_rank", "relation_rank"):
-            value = item[key_name]
-            if value is not None and (not isinstance(value, int) or isinstance(value, bool) or value < 1):
-                raise ValueError(f"pairs[{index}].{key_name} is invalid")
+        if is_multiview:
+            _validate_multiview_pair(item, active_views, index)
+        else:
+            score = item["cheap_score"]
+            if not isinstance(score, (int, float)) or isinstance(score, bool) or not math.isfinite(score) or not 0.0 <= score <= 1.0:
+                raise ValueError(f"pairs[{index}].cheap_score is invalid")
+            for key_name in ("body_rank", "relation_rank"):
+                value = item[key_name]
+                if value is not None and (not isinstance(value, int) or isinstance(value, bool) or value < 1):
+                    raise ValueError(f"pairs[{index}].{key_name} is invalid")
         shared_round = item["last_shared_round"]
         if shared_round is not None and (
             not isinstance(shared_round, int)
@@ -580,6 +870,100 @@ def build_candidate_artifact_from_files(
             in_signatures=relation["in_signatures"],
         ),
         top_k=top_k,
+        provenance=provenance,
+        relation={
+            "mode": relation["mode"],
+            "rounds": relation["rounds"],
+            "final_round": relation["final_round"],
+            "final_group_count": len(relation["final_groups"]),
+            "prior_round_count": len(relation["prior_round_groups"]),
+        },
+    )
+    validate_candidate_artifact(artifact)
+    return artifact
+
+
+def build_multiview_candidate_artifact_from_files(
+    *,
+    body_path: str | Path,
+    fixture_path: str | Path,
+    top_k: int,
+    mode: CGWLMode,
+    views: Iterable[str] = VIEW_NAMES,
+    track: str | None = None,
+    candidate_scope: str | None = None,
+    anchor_policy: str | None = None,
+) -> dict[str, Any]:
+    """Load one body/fixture pair and run independent F5.2 views."""
+
+    _validate_top_k(top_k)
+    active_views = _normalize_views(views)
+    if mode not in CG_WL_MODES:
+        raise ValueError(f"unknown CG-WL mode: {mode!r}")
+    body_file = Path(body_path)
+    fixture_file = Path(fixture_path)
+    body_artifact = json.loads(body_file.read_text(encoding="utf-8"))
+    bodies = load_body_evidence(body_artifact)
+    case = load_case(str(fixture_file))
+    _validate_body_fixture_join(body_artifact, case)
+    analysis = case.analysis.to_dict() if case.analysis is not None else {}
+    requested = {
+        "track": normalize_track(track) if track is not None else None,
+        "candidate_scope": normalize_candidate_scope(candidate_scope) if candidate_scope is not None else None,
+        "anchor_policy": anchor_policy,
+    }
+    if case.analysis is None:
+        legacy = {
+            "track": "direct",
+            "candidate_scope": "subject",
+            "anchor_policy": "address",
+        }
+        for key, value in requested.items():
+            if value is not None and value != legacy[key]:
+                raise ValueError(
+                    f"legacy fixture has no analysis/{key}; expected {legacy[key]!r}"
+                )
+    else:
+        for key, value in requested.items():
+            if value is not None and analysis.get(key) != value:
+                raise ValueError(
+                    f"fixture analysis/{key} mismatch: {analysis.get(key)!r} != {value!r}"
+                )
+
+    result = run_cg_wl(case, mode=mode, trace=True)
+    relation = relation_context_from_cgwl(case, result)
+    fixture_sha = hashlib.sha256(fixture_file.read_bytes()).hexdigest()
+    provenance = {
+        "body_evidence_sha256": hashlib.sha256(body_file.read_bytes()).hexdigest(),
+        "fixture_sha256": fixture_sha,
+        **dict(body_artifact.get("provenance", {})),
+    }
+    if case.analysis is not None:
+        provenance.update({
+            "projection_config_sha256": case.analysis.projection_config_sha256,
+            "track": case.analysis.track,
+            "anchor_policy": case.analysis.anchor_policy,
+            "edge_policy": list(case.analysis.edge_policy),
+            "oracle_level": case.analysis.oracle_level,
+        })
+    artifact = build_multiview_candidate_artifact(
+        case=case.case,
+        build=case.build,
+        profile=case.profile,
+        scope=bodies_scope(body_artifact),
+        bodies=bodies,
+        pairs=generate_multiview_candidate_pairs(
+            bodies,
+            top_k=top_k,
+            views=active_views,
+            final_groups=relation["final_groups"],
+            prior_round_groups=relation["prior_round_groups"],
+            final_round=relation["final_round"],
+            out_signatures=relation["out_signatures"],
+            in_signatures=relation["in_signatures"],
+        ),
+        top_k=top_k,
+        views=active_views,
         provenance=provenance,
         relation={
             "mode": relation["mode"],
@@ -899,10 +1283,143 @@ def _validate_top_k(value: Any) -> None:
         raise ValueError("top_k must be a positive integer")
 
 
+def _normalize_views(views: Iterable[str]) -> tuple[str, ...]:
+    values = {views} if isinstance(views, str) else set(views)
+    if not values:
+        raise ValueError("at least one retrieval view is required")
+    unknown = values - set(VIEW_NAMES)
+    if unknown:
+        raise ValueError(f"unknown retrieval view(s): {sorted(unknown)}")
+    return tuple(name for name in VIEW_NAMES if name in values)
+
+
+def _view_profile_signature(profile: Any) -> tuple[Any, ...]:
+    signature = getattr(profile, "signature", None)
+    if signature is None:
+        raise ValueError("retrieval profile does not expose a signature")
+    return signature
+
+
+def _validate_multiview_config(config: Any) -> tuple[str, ...]:
+    if not isinstance(config, Mapping) or set(config) != {
+        "top_k", "view_top_k", "views", "view_profiles"
+    }:
+        raise ValueError("multiview candidate artifact config has an invalid schema")
+    _validate_top_k(config["top_k"])
+    active_views = _normalize_views(config["views"])
+    if list(active_views) != config["views"]:
+        raise ValueError("multiview config views must be in canonical order")
+    view_top_k = config["view_top_k"]
+    if not isinstance(view_top_k, Mapping) or set(view_top_k) != set(active_views):
+        raise ValueError("multiview config view_top_k has an invalid schema")
+    for name in active_views:
+        _validate_top_k(view_top_k[name])
+        if view_top_k[name] != config["top_k"]:
+            raise ValueError("multiview config view_top_k must match top_k")
+    view_profiles = config["view_profiles"]
+    if not isinstance(view_profiles, Mapping) or set(view_profiles) != set(active_views):
+        raise ValueError("multiview config view_profiles has an invalid schema")
+    for name in active_views:
+        if view_profiles[name] != VIEW_PROFILE_VERSIONS[name]:
+            raise ValueError(f"unsupported {name} retrieval profile version")
+    return active_views
+
+
+def _validate_multiview_pair(
+    item: Mapping[str, Any],
+    active_views: tuple[str, ...],
+    index: int,
+) -> None:
+    reasons = item["reasons"]
+    if (
+        not isinstance(reasons, list)
+        or reasons != sorted(reasons)
+        or not reasons
+        or any(not isinstance(reason, str) or not reason for reason in reasons)
+    ):
+        raise ValueError(f"pairs[{index}].reasons is invalid")
+    views = item["views"]
+    if not isinstance(views, Mapping) or set(views) != set(active_views):
+        raise ValueError(f"pairs[{index}].views has an invalid schema")
+    selected_reasons = set()
+    for name in active_views:
+        value = views[name]
+        if value is None:
+            continue
+        if not isinstance(value, Mapping) or set(value) != {"score", "rank"}:
+            raise ValueError(f"pairs[{index}].views[{name}] is invalid")
+        score = value["score"]
+        rank = value["rank"]
+        if (
+            not isinstance(score, (int, float))
+            or isinstance(score, bool)
+            or not math.isfinite(score)
+            or not 0.0 <= score <= 1.0
+        ):
+            raise ValueError(f"pairs[{index}].views[{name}].score is invalid")
+        if not isinstance(rank, int) or isinstance(rank, bool) or rank < 1:
+            raise ValueError(f"pairs[{index}].views[{name}].rank is invalid")
+        selected_reasons.add(f"{name}_top_k")
+    if not selected_reasons.issubset(reasons):
+        raise ValueError(f"pairs[{index}] is missing a selected-view reason")
+    if not any(views[name] is not None for name in active_views):
+        raise ValueError(f"pairs[{index}] has no selected view")
+    for key_name in (
+        "same_out_signature", "same_in_signature", "same_final_color", "same_prior_color"
+    ):
+        if item[key_name] is not None and not isinstance(item[key_name], bool):
+            raise ValueError(f"pairs[{index}].{key_name} is invalid")
+    shared_round = item["last_shared_round"]
+    if shared_round is not None and (
+        not isinstance(shared_round, int)
+        or isinstance(shared_round, bool)
+        or shared_round < 0
+    ):
+        raise ValueError(f"pairs[{index}].last_shared_round is invalid")
+
+
+def _last_shared_round(
+    first: str,
+    second: str,
+    final_membership: Mapping[str, int],
+    prior_memberships: Iterable[tuple[int, Mapping[str, int]]],
+    final_round: int | None,
+) -> int | None:
+    shared: list[int] = []
+    if (
+        final_round is not None
+        and first in final_membership
+        and second in final_membership
+        and final_membership[first] == final_membership[second]
+    ):
+        shared.append(int(final_round))
+    for round_index, membership in prior_memberships:
+        if (
+            first in membership
+            and second in membership
+            and membership[first] == membership[second]
+        ):
+            shared.append(int(round_index))
+    return max(shared) if shared else None
+
+
 def _default_output(case: str, build: str, profile: str, scope: str) -> str:
     return (
         f"results/{case}/{profile}/{case}.{normalize_build(build)}."
         f"{normalize_candidate_scope(scope)}.v1.candidates.json"
+    )
+
+
+def _default_multiview_output(
+    case: str,
+    build: str,
+    profile: str,
+    scope: str,
+    variant: str,
+) -> str:
+    return (
+        f"results/{case}/{profile}/{case}.{normalize_build(build)}."
+        f"{normalize_candidate_scope(scope)}.v1.{variant}.candidates.json"
     )
 
 
@@ -917,6 +1434,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--fixture")
     parser.add_argument("--output")
     parser.add_argument("--top-k", type=int, default=16)
+    parser.add_argument(
+        "--variant",
+        choices=("legacy", "composite", "token", "cfg", "relation", "multi"),
+        default="legacy",
+        help="legacy composite+relation F5 or an independent F5.2 view variant",
+    )
     parser.add_argument("--mode", choices=CG_WL_MODES, default="out-in")
     parser.add_argument("--track", choices=ANALYSIS_TRACKS, default="angr")
     parser.add_argument(
@@ -946,15 +1469,36 @@ def main(argv: list[str] | None = None) -> int:
     )
     output = args.output or _default_output(args.case, build, profile, scope)
     try:
-        artifact = build_candidate_artifact_from_files(
-            body_path=body,
-            fixture_path=fixture,
-            top_k=args.top_k,
-            mode=args.mode,
-            track=args.track,
-            candidate_scope=scope,
-            anchor_policy=args.anchor_policy,
-        )
+        if args.variant == "legacy":
+            artifact = build_candidate_artifact_from_files(
+                body_path=body,
+                fixture_path=fixture,
+                top_k=args.top_k,
+                mode=args.mode,
+                track=args.track,
+                candidate_scope=scope,
+                anchor_policy=args.anchor_policy,
+            )
+        else:
+            selected_views = VIEW_NAMES if args.variant == "multi" else (args.variant,)
+            if args.output is None:
+                output = _default_multiview_output(
+                    args.case,
+                    build,
+                    profile,
+                    scope,
+                    args.variant,
+                )
+            artifact = build_multiview_candidate_artifact_from_files(
+                body_path=body,
+                fixture_path=fixture,
+                top_k=args.top_k,
+                mode=args.mode,
+                views=selected_views,
+                track=args.track,
+                candidate_scope=scope,
+                anchor_policy=args.anchor_policy,
+            )
         write_candidate_artifact(output, artifact)
     except Exception as exc:
         print(f"error: {exc}", file=sys.stderr)

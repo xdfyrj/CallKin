@@ -174,6 +174,28 @@ python3 analysis/v1_candidate_eval.py \
   --output results/ripgrep-main/plain/ripgrep-main.O3S.v1.candidate-sweep.json
 ```
 
+F5.2는 하나의 composite 점수로 순위를 섞지 않고 `composite`, `token`, `cfg`,
+`relation` view를 각각 top-k 검색한 뒤 pair 합집합을 만든다. `token`은
+mnemonic·operand shape·constant shape, `cfg`는 block role·degree·topology,
+`relation`은 WL history와 call context만 사용한다. `relation` view 순위에는
+body score가 들어가지 않는다. 기존 F5는 `--variant legacy`이고 F5.2 전체
+union은 다음처럼 생성한다.
+
+```bash
+python3 v1_candidates.py ripgrep-main --build O3S --profile plain \
+  --variant multi --top-k 16 --mode out-in --track angr \
+  --candidate-scope rust-nonstd --anchor-policy role \
+  --body-evidence body_evidence/rust-nonstd/plain/ripgrep-main.O3S.body.json \
+  --fixture /path/to/ripgrep-main.O3S.fixture.json \
+  --output results/ripgrep-main/plain/ripgrep-main.O3S.v1.multi.candidates.json
+```
+
+각 pair에는 view별 `score`·`rank`, 선택 이유와 공통 provenance가 저장된다.
+`analysis/v1_multiview_eval.py`는 단일 view와 union artifact의 pair recall,
+candidate fraction, family coverage/connectivity 및 해당 view만 회수한 정답
+pair를 비교한다. F5.2도 후보만 만들며 family 판정은 기존 F4 lazy comparison과
+F6가 수행한다.
+
 F6는 후보 pair를 `match/reject/unknown/abstain`으로 분류하고, 모든 교차
 pair가 `match`인 경우에만 family를 합친다. 불투명한 간접 jump가 있는 pair는
 CFG가 완전하지 않으므로 기본 정책에서 `abstain`한다. 기본 정책은

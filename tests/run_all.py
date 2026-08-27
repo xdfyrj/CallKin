@@ -31,6 +31,7 @@ PYTHON_FILES = (
     "loader.py",
     "engine.py",
     "v1_candidates.py",
+    "v1_retrieval_views.py",
     "v1_engine.py",
     "scores.py",
     "run_case.py",
@@ -40,6 +41,7 @@ PYTHON_FILES = (
     "analysis/v1_feasibility.py",
     "analysis/f45_collision.py",
     "analysis/v1_candidate_eval.py",
+    "analysis/v1_multiview_eval.py",
     "analysis/v1_pair_eval.py",
     "analysis/v1_retrieval_miss.py",
     "run_baseline.py",
@@ -58,6 +60,7 @@ PYTHON_FILES = (
     "tests/test_gt_extractor.py",
     "tests/test_scores.py",
     "tests/test_v1_candidate_eval.py",
+    "tests/test_v1_multiview_eval.py",
     "tests/test_v1_retrieval_miss.py",
     "tests/run_all.py",
 )
@@ -78,7 +81,9 @@ TEST_FILES = (
     "tests/test_scores.py",
     "tests/test_collision_diagnostic.py",
     "tests/test_v1_candidates.py",
+    "tests/test_v1_retrieval_views.py",
     "tests/test_v1_candidate_eval.py",
+    "tests/test_v1_multiview_eval.py",
     "tests/test_v1_engine.py",
 )
 

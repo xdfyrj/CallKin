@@ -7,7 +7,11 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from body_similarity import parse_body  # noqa: E402
-from v1_candidates import PairKey  # noqa: E402
+from v1_candidates import (  # noqa: E402
+    MultiViewCandidatePair,
+    PairKey,
+    build_multiview_candidate_artifact,
+)
 from v1_engine import (  # noqa: E402
     ABSTAIN,
     MATCH,
@@ -302,6 +306,36 @@ def test_family_id_and_all_cross_pairs_match_are_deterministic():
     )
 
 
+def test_f6_consumes_multiview_candidate_artifact():
+    bodies = {
+        "FUN_A": _body("FUN_A", constant=1),
+        "FUN_B": _body("FUN_B", constant=1),
+    }
+    pair = MultiViewCandidatePair(
+        pair=PairKey.make("FUN_A", "FUN_B"),
+        views={"token": {"score": 1.0, "rank": 1}},
+        reasons={"token_top_k"},
+    )
+    candidate = build_multiview_candidate_artifact(
+        case="case",
+        build="O3S",
+        profile="plain",
+        scope="subject",
+        bodies=bodies,
+        pairs=[pair],
+        top_k=1,
+        views=("token",),
+        provenance={},
+    )
+    report = build_family_artifact(
+        candidate_artifact=candidate,
+        bodies=bodies,
+        config=_config(),
+    )
+    accepted = [item for item in report["clusters"] if item["status"] == "accepted"]
+    assert accepted[0]["members"] == ["FUN_A", "FUN_B"]
+
+
 def main() -> int:
     tests = [
         test_empty_empty_slots_are_unknown_evidence_not_one,
@@ -311,6 +345,7 @@ def main() -> int:
         test_cache_memoizes_on_demand_comparisons,
         test_complete_link_does_not_merge_a_match_chain_when_cross_pair_is_unknown,
         test_family_id_and_all_cross_pairs_match_are_deterministic,
+        test_f6_consumes_multiview_candidate_artifact,
     ]
     for test in tests:
         test()

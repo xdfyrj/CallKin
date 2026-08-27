@@ -310,6 +310,8 @@ angr 결과가 direct baseline을 덮어씀
 | [analysis/v1_feasibility.py](../analysis/v1_feasibility.py) | F4 진단에서만 body evidence와 GT join | V0 fixture 생성 |
 | [analysis/f45_collision.py](../analysis/f45_collision.py) | F4.5에서 V0 partition을 hash ID로 고정하고 한 collision의 모든 pair를 structure/slot/combined 조건으로 진단 | F5 설계 근거 |
 | [v1_candidates.py](../v1_candidates.py) | F5 body/relation top-k로 정밀 비교 후보를 bounded retrieval | GT 없이 candidate pair 생성 |
+| [v1_retrieval_views.py](../v1_retrieval_views.py) | F5.2 token/CFG/relation 독립 profile과 similarity | GT 없이 view score 계산 |
+| [analysis/v1_multiview_eval.py](../analysis/v1_multiview_eval.py) | F5.2 단일 view와 union 비교 | GT label |
 | [v1_engine.py](../v1_engine.py) | F6 tri-state body 판정과 complete-link family builder | GT 없이 family artifact 생성 |
 | [analysis/v1_candidate_eval.py](../analysis/v1_candidate_eval.py) | F5 candidate recall/reduction/connectivity 평가 | GT label |
 | [analysis/v1_retrieval_miss.py](../analysis/v1_retrieval_miss.py) | k=64에서 놓친 same-origin pair의 member/body/WL/retrieval source 원인 진단 | GT label |
@@ -370,6 +372,12 @@ angr 결과가 direct baseline을 덮어씀
   증거가 충돌하면 `unknown`, 불완전 body 또는 opaque indirect jump가 있는
   pair는 `abstain`으로 두며, 모든 cross-pair가 `match`인 경우에만
   complete-link family를 승인한다.
+- F5.2는 composite 점수를 단일 순위로 사용하지 않고 `composite`, `token`,
+  `cfg`, `relation` view를 독립적으로 top-k 검색한 뒤 후보를 합친다. Token은
+  mnemonic·operand shape·constant shape, CFG는 block role·degree·topology,
+  relation은 WL history와 call context만 사용하며 relation 순위에는 body
+  score를 넣지 않는다. 결과 pair에는 view별 score/rank와 선택 reason이 들어가고,
+  schema-2 `v1-multiview-candidate-pairs`는 기존 F6가 그대로 소비한다.
 - F5 Gate B는 `k=8,16,32,64` sweep에서 candidate-pair recall `>=0.90`,
   candidate pair fraction `<=0.02`, family member coverage `>=0.95`,
   family candidate graph connected를 동시에 만족하는 가장 작은 `k`를
