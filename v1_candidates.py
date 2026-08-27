@@ -229,6 +229,7 @@ def generate_candidate_pairs(
         complete_ids,
         top_k=top_k,
         score=score_pair,
+        group_key=lambda member: profile_signatures[member],
     ).items():
         for rank, (pair_score, target) in enumerate(ranked, start=1):
             add(
@@ -628,6 +629,7 @@ def _add_relation_top_k(
             members,
             top_k=top_k,
             score=score_fn,
+            group_key=lambda member: _cheap_profile_signature(profiles[member]),
         ).items():
             for rank, (pair_score, target) in enumerate(ranked, start=1):
                 add(
@@ -770,10 +772,26 @@ def _symmetric_top_k(
     *,
     top_k: int,
     score: Any,
+    group_key: Any | None = None,
 ) -> dict[str, list[tuple[float, str]]]:
-    """Return deterministic top-k neighbors while scoring each pair once."""
+    """Return deterministic top-k neighbors while scoring each pair once.
+
+    When ``group_key`` is supplied, members with the same key are known to
+    have the same score against every other key.  We score profile groups
+    rather than individual functions, then expand only the IDs needed for
+    each top-k list.  This preserves the exact score/ID tie order for the
+    cheap profile used by F5 while avoiding the large duplicate work caused
+    by monomorphized siblings.
+    """
 
     ordered = sorted(members)
+    if group_key is not None:
+        return _grouped_symmetric_top_k(
+            ordered,
+            top_k=top_k,
+            score=score,
+            group_key=group_key,
+        )
     member_index = {member: index for index, member in enumerate(ordered)}
     heaps: dict[str, list[tuple[float, int, str]]] = {
         member: [] for member in ordered
@@ -803,6 +821,57 @@ def _symmetric_top_k(
         ]
         for source, heap in heaps.items()
     }
+
+
+def _grouped_symmetric_top_k(
+    members: Sequence[str],
+    *,
+    top_k: int,
+    score: Any,
+    group_key: Any,
+) -> dict[str, list[tuple[float, str]]]:
+    """Expand exact top-k neighbors from score-equivalent member groups."""
+
+    groups: dict[Any, list[str]] = defaultdict(list)
+    for member in members:
+        groups[group_key(member)].append(member)
+    group_items = sorted(groups.items(), key=lambda item: item[1][0])
+    group_scores: dict[Any, dict[Any, float]] = {
+        key: {} for key, _group_members in group_items
+    }
+    for index, (left_key, left_members) in enumerate(group_items):
+        for right_key, right_members in group_items[index:]:
+            value = float(score(left_members[0], right_members[0]))
+            group_scores[left_key][right_key] = value
+            group_scores[right_key][left_key] = value
+
+    result: dict[str, list[tuple[float, str]]] = {}
+    for source_key, source_members in group_items:
+        by_score: dict[float, list[Any]] = defaultdict(list)
+        for target_key, value in group_scores[source_key].items():
+            by_score[value].append(target_key)
+        ranked_ids: list[str] = []
+        ranked_scores: list[float] = []
+        for value in sorted(by_score, reverse=True):
+            level_ids: list[str] = []
+            for target_key in by_score[value]:
+                level_ids.extend(groups[target_key])
+            # The old per-member heap resolves equal scores by target ID.
+            level_ids.sort()
+            ranked_ids.extend(level_ids)
+            ranked_scores.extend([value] * len(level_ids))
+            # One extra ID is enough because the source member itself may be
+            # present in its own equivalent group.
+            if len(ranked_ids) >= top_k + 1:
+                break
+        for source in source_members:
+            neighbors = [
+                (value, target)
+                for value, target in zip(ranked_scores, ranked_ids)
+                if target != source
+            ][:top_k]
+            result[source] = neighbors
+    return result
 
 
 def _cheap_profile_signature(profile: CheapBodyProfile) -> tuple[Any, ...]:

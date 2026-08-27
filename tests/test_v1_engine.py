@@ -126,6 +126,58 @@ def test_incomplete_body_abstains():
     assert classify_pair(features, _config()) == ABSTAIN
 
 
+def test_opaque_indirect_cfg_abstains_by_default():
+    first = _body("FUN_A", constant=1)
+    second = _body("FUN_B", constant=1)
+    second.quality["opaque_indirect_jumps"] = 1
+    features = pair_features_from_bodies(first, second)
+    assert features.opaque_indirect_jumps == 1
+    assert classify_pair(features, _config()) == ABSTAIN
+    cache = PairEvidenceCache(
+        {"FUN_A": first, "FUN_B": second},
+        [_candidate_pair("FUN_A", "FUN_B")],
+        _config(),
+    )
+    evaluation = cache.get_evaluation("FUN_A", "FUN_B")
+    assert evaluation.decision == ABSTAIN
+    assert cache.abstain_comparisons == 1
+    assert cache.candidate_comparisons == 0
+
+    candidate = {
+        "schema_version": 1,
+        "artifact": "v1-candidate-pairs",
+        "case": "case",
+        "build": "O3S",
+        "profile": "plain",
+        "scope": "subject",
+        "config": {
+            "top_k": 1,
+            "body_profile": "mnemonic+size+block",
+            "ngram_size": 3,
+        },
+        "provenance": {},
+        "universe": {
+            "target_count": 2,
+            "complete_body_count": 2,
+            "incomplete_ids": [],
+            "target_ids": ["FUN_A", "FUN_B"],
+        },
+        "pairs": [_candidate_pair("FUN_A", "FUN_B")],
+    }
+    report = build_family_artifact(
+        candidate_artifact=candidate,
+        bodies={"FUN_A": first, "FUN_B": second},
+        config=_config(),
+    )
+    assert report["status_members"]["abstain"] == ["FUN_B"]
+    assert report["status_members"]["unresolved"] == ["FUN_A"]
+    assert report["abstain_reasons"] == {
+        "FUN_B": "opaque_indirect_jump",
+    }
+    assert report["metrics"]["abstain_comparison_count"] == 1
+    assert report["metrics"]["candidate_detailed_comparison_count"] == 0
+
+
 def test_cache_memoizes_on_demand_comparisons():
     bodies = {
         "FUN_A": _body("FUN_A", constant=1),
@@ -255,6 +307,7 @@ def main() -> int:
         test_empty_empty_slots_are_unknown_evidence_not_one,
         test_data_or_constant_mismatch_is_unknown_not_reject,
         test_incomplete_body_abstains,
+        test_opaque_indirect_cfg_abstains_by_default,
         test_cache_memoizes_on_demand_comparisons,
         test_complete_link_does_not_merge_a_match_chain_when_cross_pair_is_unknown,
         test_family_id_and_all_cross_pairs_match_are_deterministic,

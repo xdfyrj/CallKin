@@ -312,6 +312,7 @@ angr 결과가 direct baseline을 덮어씀
 | [v1_candidates.py](../v1_candidates.py) | F5 body/relation top-k로 정밀 비교 후보를 bounded retrieval | GT 없이 candidate pair 생성 |
 | [v1_engine.py](../v1_engine.py) | F6 tri-state body 판정과 complete-link family builder | GT 없이 family artifact 생성 |
 | [analysis/v1_candidate_eval.py](../analysis/v1_candidate_eval.py) | F5 candidate recall/reduction/connectivity 평가 | GT label |
+| [analysis/v1_retrieval_miss.py](../analysis/v1_retrieval_miss.py) | k=64에서 놓친 same-origin pair의 member/body/WL/retrieval source 원인 진단 | GT label |
 | [analysis/v1_pair_eval.py](../analysis/v1_pair_eval.py) | F6 accepted family/pair-decision 평가와 development threshold grid 선택 | GT label |
 | [run_case.py](../run_case.py) | 한 case의 전체 분석 orchestration | compilation |
 | [run_baseline.py](../run_baseline.py) | micro-corpus compile부터 regression까지 실행 | 새 corpus 선택 |
@@ -361,9 +362,40 @@ angr 결과가 direct baseline을 덮어씀
   TP/FP/FN/TN, Precision/Recall/F1, 분포와 오판 사례가 들어간다.
 - F5는 body 전체의 완전 decode 함수에서 body top-k를 구하고, V0 final/prior
   color 내부의 relation top-k를 합친다. color나 mnemonic hash bucket의
-  Cartesian product는 만들지 않는다. F6는 informative slot이 없거나 증거가
-  충돌하면 `unknown`, 불완전 body는 `abstain`으로 두며, 모든 cross-pair가
-  `match`인 경우에만 complete-link family를 승인한다.
+  Cartesian product는 만들지 않는다. Cheap profile이 동일한 함수들은 먼저
+  profile group으로 묶어 group pair만 score하고, 필요한 top-k ID만 확장한다.
+  따라서 함수 단위의 전체 `nC2` score 계산을 반복하지 않는다. OUT/IN
+  signature은 artifact에 provenance/설명용 annotation으로만 보존하며 F5
+  rank나 F6 판정에는 사용하지 않는다. F6는 informative slot이 없거나
+  증거가 충돌하면 `unknown`, 불완전 body 또는 opaque indirect jump가 있는
+  pair는 `abstain`으로 두며, 모든 cross-pair가 `match`인 경우에만
+  complete-link family를 승인한다.
+- F5 Gate B는 `k=8,16,32,64` sweep에서 candidate-pair recall `>=0.90`,
+  candidate pair fraction `<=0.02`, family member coverage `>=0.95`,
+  family candidate graph connected를 동시에 만족하는 가장 작은 `k`를
+  선택한다. Sweep는 stripped binary뿐 아니라 body/fixture/graph/projection
+  SHA-256, track·anchor policy·relation mode와 target universe가 동일한지
+  검사한다. 선택 결과는 evaluation artifact에 기록하고, 모두 실패하면
+  F6로 진행하지 않고 retrieval feature를 다시 설계한다.
+- Gate B가 실패하면 F5.1 miss audit로 먼저 누락 family/member/pair의 body
+  차이와 V0 색, retrieval source를 기록한다. 이 audit는 검색 후보를 만들지
+  않으며 GT를 평가 라벨로만 사용한다. `member_without_candidate_count`는
+  아무 candidate edge도 없는 함수 수로 보조 지표에 불과하다. 연구용 지표는
+  multi-member family 수/멤버 수, 같은-origin candidate 이웃이 없는 멤버 수,
+  `same_origin_member_coverage`, `connected_family_rate`다. body 차이 요약은
+  mean뿐 아니라 median, p75, p90을 포함하고, exact mnemonic hash pair도
+  found/missed로 나누어 기록한다. 전체 body universe의 exact mnemonic bucket
+  최대 크기, 그 bucket의 전체 pair 수, GT가 다른 origin인 pair 수도 별도
+  기록해 descriptor collision을 직접 측정한다.
+- F6 평가의 family coverage는 두 값을 구분한다. accepted cluster에 한 번이라도
+  들어간 비율은 `accepted participation`이고, origin이 섞이지 않은 accepted
+  cluster에 들어간 비율만 `correct member coverage`로 연구 결과에 사용한다.
+- F6 threshold는 한 development artifact에 맞춰 임의로 고정하지 않는다.
+  `analysis/v1_pair_eval.py --development-pair`로 여러 development case의
+  `source=candidate` pair feature만 합쳐 grid search하고, 선택 정책·사용
+  case·labelled pair 수와 제외한 on-demand pair 수를 selection artifact에
+  기록한다. 그 정책으로 engine을 다시 실행한 뒤에만 held-out test case를
+  평가한다.
 - `plain`과 `min` 점수 차이는 candidate survival과 graph recovery 차이를 함께 포함할 수 있다. F1만 단독 비교해서 compiler 효과로 해석하면 안 된다.
 
 ## 문서 읽는 순서

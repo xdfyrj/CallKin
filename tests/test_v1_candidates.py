@@ -10,7 +10,11 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from body_similarity import parse_body  # noqa: E402
 from v1_candidates import (  # noqa: E402
     PairKey,
+    _cheap_profile_signature,
+    _symmetric_top_k,
     build_candidate_artifact,
+    build_cheap_profiles,
+    cheap_body_similarity,
     generate_candidate_pairs,
 )
 
@@ -129,12 +133,42 @@ def test_candidate_artifact_is_deterministic_and_contains_the_full_target_univer
     assert json.loads(json.dumps(artifact)) == artifact
 
 
+def test_grouped_top_k_matches_individual_pair_scoring():
+    bodies = {
+        f"FUN_{index:02d}": _body(
+            f"FUN_{index:02d}",
+            ["MOV", "RET"] if index % 2 == 0 else ["ADD", "RET"],
+            constants=[index % 3],
+        )
+        for index in range(12)
+    }
+    profiles = build_cheap_profiles(bodies)
+    members = sorted(bodies)
+    expected = _symmetric_top_k(
+        members,
+        top_k=3,
+        score=lambda first, second: cheap_body_similarity(
+            profiles[first], profiles[second]
+        ),
+    )
+    grouped = _symmetric_top_k(
+        members,
+        top_k=3,
+        score=lambda first, second: cheap_body_similarity(
+            profiles[first], profiles[second]
+        ),
+        group_key=lambda member: _cheap_profile_signature(profiles[member]),
+    )
+    assert grouped == expected
+
+
 def main() -> int:
     tests = [
         test_pair_key_is_canonical_and_rejects_self_pairs,
         test_top_k_union_deduplicates_reasons_and_does_not_make_group_cartesian_product,
         test_body_top_k_reaches_a_graph_abstained_function_and_exact_hash_is_only_a_reason,
         test_candidate_artifact_is_deterministic_and_contains_the_full_target_universe,
+        test_grouped_top_k_matches_individual_pair_scoring,
     ]
     for test in tests:
         test()

@@ -108,7 +108,30 @@ provenance와 반드시 일치해야 하며, 선택한 cluster에 속한 GT orig
 
 F5는 F4 정밀 비교 전에 비교할 pair 수를 줄인다. 완전하게 decode된 body의
 body top-k와 V0 final/prior color 안의 relation top-k를 합치며, 같은 mnemonic
-hash 전체 조합은 만들지 않는다. 이 단계는 GT를 읽지 않는다.
+hash 전체 조합은 만들지 않는다. cheap profile이 같은 함수는 profile group
+단위로 score한 뒤 top-k ID만 펼쳐 함수별 전체 `nC2` 계산을 피한다. OUT/IN
+signature은 결과에 annotation으로만 기록하고 판정에는 사용하지 않는다. 이
+단계는 GT를 읽지 않는다.
+
+Gate B가 실패하면 먼저 F5.1 miss audit를 실행한다. 이 도구는 고정된 `k=64`
+candidate와 GT를 비교해 family별 누락 member/pair, body 차이, exact mnemonic
+hash, V0 final/prior color, candidate retrieval source를 기록한다. 기존
+`member_without_candidate_count`는 아무 candidate edge도 없는 함수 수이고,
+핵심 지표는 multi-member family 내부에서 같은-origin edge가 없는 함수 수,
+`same_origin_member_coverage`, `connected_family_rate`다. exact mnemonic hash도
+found/missed pair로 나누어 기록한다. 또한 전체 body universe에서 exact mnemonic
+bucket의 최대 크기, 그 bucket이 만드는 전체 pair 수, GT가 다른 origin인 pair
+수를 별도로 기록해 descriptor collision을 직접 측정한다. body 차이는 평균뿐
+아니라 median, p75, p90도 저장한다. GT는 이 평가기에만 전달된다.
+
+```bash
+python3 analysis/v1_retrieval_miss.py \
+  results/ripgrep-main/plain/ripgrep-main.O3S.v1.k64.candidates.json \
+  ground_truth/rust-nonstd/plain/ripgrep-main.O3S.gt.json \
+  --body-evidence body_evidence/rust-nonstd/plain/ripgrep-main.O3S.body.json \
+  --fixture /path/to/ripgrep-main.O3S.fixture.json \
+  --output results/ripgrep-main/plain/ripgrep-main.O3S.v1.retrieval-miss.json
+```
 
 ```bash
 python3 v1_candidates.py ripgrep-main --build O3S --profile plain \
@@ -122,8 +145,38 @@ python3 analysis/v1_candidate_eval.py \
   ground_truth/rust-nonstd/plain/ripgrep-main.O3S.gt.json
 ```
 
+Gate B는 하나의 `k`만 보고 임의로 고정하지 않는다. `k=8,16,32,64`로 만든
+artifact를 한 번에 넘기면 평가기가 각 결과를 비교하고 Gate B를 통과하는 가장
+작은 `k`를 선택한다. 모두 실패하면 retrieval feature를 다시 설계해야 한다.
+Sweep는 stripped binary뿐 아니라 body/fixture/graph/projection의 SHA-256,
+track·anchor policy·relation mode와 target universe까지 동일한지 먼저 검사한다.
+Threshold 선택도 엔진이 나중에 만든 `on-demand` pair를 제외하고, 처음 F5가
+생성한 `source=candidate` pair만 사용한다.
+
+```bash
+for k in 8 16 32 64; do
+  python3 v1_candidates.py ripgrep-main --build O3S --profile plain \
+    --body-evidence body_evidence/rust-nonstd/plain/ripgrep-main.O3S.body.json \
+    --fixture /path/to/ripgrep-main.O3S.fixture.json \
+    --mode out-in --track angr --candidate-scope rust-nonstd \
+    --anchor-policy role --top-k "$k" \
+    --output "results/ripgrep-main/plain/ripgrep-main.O3S.v1.k${k}.candidates.json"
+done
+```
+
+```bash
+python3 analysis/v1_candidate_eval.py \
+  results/ripgrep-main/plain/ripgrep-main.O3S.v1.k8.candidates.json \
+  results/ripgrep-main/plain/ripgrep-main.O3S.v1.k16.candidates.json \
+  results/ripgrep-main/plain/ripgrep-main.O3S.v1.k32.candidates.json \
+  results/ripgrep-main/plain/ripgrep-main.O3S.v1.k64.candidates.json \
+  ground_truth/rust-nonstd/plain/ripgrep-main.O3S.gt.json \
+  --output results/ripgrep-main/plain/ripgrep-main.O3S.v1.candidate-sweep.json
+```
+
 F6는 후보 pair를 `match/reject/unknown/abstain`으로 분류하고, 모든 교차
-pair가 `match`인 경우에만 family를 합친다. 기본 정책은
+pair가 `match`인 경우에만 family를 합친다. 불투명한 간접 jump가 있는 pair는
+CFG가 완전하지 않으므로 기본 정책에서 `abstain`한다. 기본 정책은
 `configs/v1.json`에 고정되어 있으며, GT는 엔진에 전달하지 않는다.
 
 ```bash
@@ -135,6 +188,21 @@ python3 v1_engine.py \
 python3 analysis/v1_pair_eval.py \
   results/ripgrep-main/plain/ripgrep-main.O3S.v1.families.json \
   ground_truth/rust-nonstd/plain/ripgrep-main.O3S.gt.json
+```
+
+Threshold를 정식으로 고정할 때는 development family/GT를 여러 개 함께
+넣고 선택 artifact를 저장한다. 아래 결과는 test case를 보지 않고
+`configs/v1.selected.json`에 선택 근거와 case 목록을 남긴다. 선택 표본은
+`candidate-only`로 고정되므로, complete-link 과정의 정책 의존적인 on-demand
+비교가 threshold를 바꾸지 않는다.
+
+```bash
+python3 analysis/v1_pair_eval.py \
+  results/fg01/v1.families.json ground_truth/fg01.gt.json \
+  --development-pair results/fg02/v1.families.json ground_truth/fg02.gt.json \
+  --development-pair results/ripgrep-main/plain/ripgrep-main.O3S.v1.families.json \
+                    ground_truth/rust-nonstd/plain/ripgrep-main.O3S.gt.json \
+  --development-config-output configs/v1.selected.json
 ```
 
 ## One-Case Commands
@@ -310,6 +378,7 @@ family_graph_03 / O3KS
   F4 pairwise body-evidence feasibility 진단 (Stage A 별도 경로)
 - F4.5 V0 collision cluster member-list artifact와 body-evidence collision 진단
 - F5 body/relation top-k candidate pair retrieval과 후보 coverage/reduction 평가
+- F5.1 고정 candidate artifact의 retrieval miss 원인(member/body/WL/source) 진단
 - F6 local body evidence의 tri-state family builder와 complete-link 병합
 
 현재 포함하지 않는 것:

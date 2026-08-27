@@ -8,7 +8,7 @@ import sys
 from collections import Counter
 from itertools import combinations
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any, Mapping, Sequence
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -86,21 +86,45 @@ def evaluate_family_artifact(
             )
             decision_confusion[(decision, label)] += 1
 
+    # Two coverage notions are intentionally separated.  A member appearing
+    # in any accepted cluster is only *participation*; if that cluster mixes
+    # origins it is not a correctly recovered family member.  The latter is
+    # the coverage used for research claims.
     accepted_coverage = []
     for origin, members in sorted(gt_groups.items()):
         member_set = set(members) & set(target_ids)
-        covered = set()
+        participating = set()
+        correctly_accepted = set()
+        exact_family = False
         for cluster in accepted_clusters:
             cluster_set = set(cluster)
-            covered.update(member_set & cluster_set)
+            participating.update(member_set & cluster_set)
+            if cluster_set and cluster_set.issubset(member_set):
+                correctly_accepted.update(cluster_set)
+            if cluster_set == member_set and member_set:
+                exact_family = True
         accepted_coverage.append({
             "origin": origin,
             "member_count": len(member_set),
-            "accepted_member_count": len(covered),
-            "member_coverage": (
-                len(covered) / len(member_set) if member_set else 1.0
+            "accepted_participation_count": len(participating),
+            "accepted_participation_coverage": (
+                len(participating) / len(member_set) if member_set else 1.0
             ),
+            "correctly_accepted_member_count": len(correctly_accepted),
+            "correct_member_coverage": (
+                len(correctly_accepted) / len(member_set) if member_set else 1.0
+            ),
+            "exact_family_recovered": exact_family,
         })
+    participation_count = sum(
+        item["accepted_participation_count"] for item in accepted_coverage
+    )
+    correct_member_count = sum(
+        item["correctly_accepted_member_count"] for item in accepted_coverage
+    )
+    exact_family_count = sum(
+        item["exact_family_recovered"] for item in accepted_coverage
+    )
     return {
         "schema_version": 1,
         "artifact": "v1-family-evaluation",
@@ -120,7 +144,12 @@ def evaluate_family_artifact(
             "predicted_pair_count": len(predicted_pairs),
             "predicted_unlabeled_pair_count": len(raw_predicted_pairs - all_pairs),
             "accepted_family_count": len(accepted_clusters),
-            "accepted_member_count": sum(len(cluster) for cluster in accepted_clusters),
+            "accepted_cluster_member_count": sum(
+                len(cluster) for cluster in accepted_clusters
+            ),
+            "accepted_participation_member_count": participation_count,
+            "correctly_accepted_member_count": correct_member_count,
+            "exact_family_recovered_count": exact_family_count,
             "TP": tp,
             "FP": fp,
             "FN": fn,
@@ -150,30 +179,77 @@ def evaluate_family_files(
 
 
 def select_development_policy(
-    family_artifact: Mapping[str, Any],
-    ground_truth: Mapping[str, Any],
+    family_artifact: Mapping[str, Any] | Sequence[Mapping[str, Any]],
+    ground_truth: Mapping[str, Any] | Sequence[Mapping[str, Any]],
+    *,
+    artifact_paths: Sequence[str] | None = None,
 ) -> dict[str, Any]:
-    """Select F6 thresholds on a development artifact only.
+    """Select F6 thresholds on one or more development artifacts.
 
-    The artifact must contain the pair features produced by F6.  This helper
-    never changes the family artifact; after selection, the caller must rerun
-    ``v1_engine.py`` with the returned policy before evaluating a held-out
-    test case.
+    The artifacts must contain the pair features produced by F6.  GT labels
+    are combined only inside this evaluation helper; the engine remains GT
+    free.  After selection, the caller must rerun ``v1_engine.py`` with the
+    returned policy before evaluating a held-out test case.
     """
 
-    _validate_family_artifact(family_artifact)
-    _validate_metadata(family_artifact, ground_truth)
-    origin_by_member, _groups = _ground_truth_index(ground_truth)
+    artifacts = (
+        [family_artifact]
+        if isinstance(family_artifact, Mapping)
+        else list(family_artifact)
+    )
+    truths = (
+        [ground_truth]
+        if isinstance(ground_truth, Mapping)
+        else list(ground_truth)
+    )
+    if len(artifacts) != len(truths) or not artifacts:
+        raise ValueError("development artifacts and GT files must have equal non-zero length")
+    if artifact_paths is not None and len(artifact_paths) != len(artifacts):
+        raise ValueError("development artifact path count mismatch")
+
     rows = []
-    for item in family_artifact["pair_decisions"]:
-        values = item["pair"]
-        pair = PairKey.make(values[0], values[1])
-        if pair.left not in origin_by_member or pair.right not in origin_by_member:
-            continue
-        rows.append((
-            _features_from_dict(item["features"]),
-            origin_by_member[pair.left] == origin_by_member[pair.right],
-        ))
+    development_cases = []
+    for index, (artifact, truth) in enumerate(zip(artifacts, truths)):
+        _validate_family_artifact(artifact)
+        _validate_metadata(artifact, truth)
+        origin_by_member, _groups = _ground_truth_index(truth)
+        case_rows = 0
+        excluded_pair_count = 0
+        for item in artifact["pair_decisions"]:
+            # Thresholds must be selected from a fixed, policy-independent
+            # sample.  On-demand pairs are created only after an engine has
+            # already made a policy-dependent decision (for example during
+            # complete-link validation), so including them would leak the
+            # previous policy into the development split.
+            source = item.get("source")
+            if source is None:
+                raise ValueError(
+                    "development pair decision is missing source; "
+                    "regenerate the family artifact with the current F6 schema"
+                )
+            if source != "candidate":
+                excluded_pair_count += 1
+                continue
+            values = item["pair"]
+            pair = PairKey.make(values[0], values[1])
+            if pair.left not in origin_by_member or pair.right not in origin_by_member:
+                continue
+            rows.append((
+                _features_from_dict(item["features"]),
+                origin_by_member[pair.left] == origin_by_member[pair.right],
+            ))
+            case_rows += 1
+        development_cases.append({
+            "case": artifact["case"],
+            "build": artifact["build"],
+            "profile": artifact["profile"],
+            "scope": artifact["scope"],
+            "pair_count": case_rows,
+            "candidate_pair_count": case_rows,
+            "excluded_non_candidate_pair_count": excluded_pair_count,
+        })
+        if artifact_paths is not None:
+            development_cases[-1]["artifact"] = artifact_paths[index]
     if not rows:
         raise ValueError("development artifact has no GT-labeled pair features")
 
@@ -237,6 +313,9 @@ def select_development_policy(
         "schema_version": 1,
         "version": "v1",
         "selection_split": "development",
+        "pair_source": "candidate-only",
+        "development_cases": development_cases,
+        "development_pair_count": len(rows),
         "policy": selected["config"].to_dict() | {
             "source": "development-grid",
         },
@@ -255,6 +334,22 @@ def select_development_policy(
             "structure_reject_threshold": list(REJECT_THRESHOLD_GRID),
         },
     }
+
+
+def select_development_policy_files(
+    pairs: Sequence[tuple[str | Path, str | Path]],
+) -> dict[str, Any]:
+    """Load several ``(family artifact, GT)`` development pairs."""
+
+    if not pairs:
+        raise ValueError("at least one development pair is required")
+    artifacts = [_read_json(artifact_path) for artifact_path, _ in pairs]
+    truths = [_read_json(gt_path) for _, gt_path in pairs]
+    return select_development_policy(
+        artifacts,
+        truths,
+        artifact_paths=[str(artifact_path) for artifact_path, _ in pairs],
+    )
 
 
 def _validate_family_artifact(artifact: Mapping[str, Any]) -> None:
@@ -382,6 +477,16 @@ def build_arg_parser() -> argparse.ArgumentParser:
         "--development-config-output",
         help="select thresholds on this development artifact and write a policy JSON",
     )
+    parser.add_argument(
+        "--development-pair",
+        action="append",
+        nargs=2,
+        metavar=("FAMILY_ARTIFACT", "GROUND_TRUTH"),
+        help=(
+            "add another (family artifact, GT) development pair; the two "
+            "positional files are always included"
+        ),
+    )
     return parser
 
 
@@ -398,9 +503,9 @@ def main(argv: list[str] | None = None) -> int:
         else:
             print(encoded, end="")
         if args.development_config_output:
-            family_artifact = _read_json(args.family_artifact)
-            ground_truth = _read_json(args.ground_truth)
-            selected = select_development_policy(family_artifact, ground_truth)
+            development_pairs = [(args.family_artifact, args.ground_truth)]
+            development_pairs.extend(tuple(item) for item in (args.development_pair or []))
+            selected = select_development_policy_files(development_pairs)
             destination = Path(args.development_config_output)
             destination.parent.mkdir(parents=True, exist_ok=True)
             destination.write_text(

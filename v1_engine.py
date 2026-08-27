@@ -79,6 +79,7 @@ class PairPolicyConfig:
     slot_match_threshold: float
     structure_reject_threshold: float | None = None
     require_informative_slot: bool = True
+    abstain_on_opaque_indirect: bool = True
     version: str = "v1"
 
     @classmethod
@@ -93,6 +94,9 @@ class PairPolicyConfig:
         informative_flag = policy.get("require_informative_slot", True)
         if not isinstance(informative_flag, bool):
             raise ValueError("require_informative_slot must be boolean")
+        opaque_flag = policy.get("abstain_on_opaque_indirect", True)
+        if not isinstance(opaque_flag, bool):
+            raise ValueError("abstain_on_opaque_indirect must be boolean")
         config = cls(
             structure_match_threshold=_threshold(
                 policy["structure_match_threshold"], "structure_match_threshold"
@@ -109,6 +113,7 @@ class PairPolicyConfig:
                 )
             ),
             require_informative_slot=informative_flag,
+            abstain_on_opaque_indirect=opaque_flag,
             version=str(value.get("version", "v1")),
         )
         return config
@@ -127,6 +132,7 @@ class PairPolicyConfig:
             "slot_match_threshold": self.slot_match_threshold,
             "structure_reject_threshold": self.structure_reject_threshold,
             "require_informative_slot": self.require_informative_slot,
+            "abstain_on_opaque_indirect": self.abstain_on_opaque_indirect,
         }
 
 
@@ -223,6 +229,12 @@ def classify_pair(
     if not features.both_complete:
         return ABSTAIN
 
+    # An opaque indirect jump means the body CFG is not fully observed.  It
+    # may still be useful for diagnostics, but it must not create a family
+    # edge whose primary evidence depends on an incomplete control-flow view.
+    if config.abstain_on_opaque_indirect and features.opaque_indirect_jumps > 0:
+        return ABSTAIN
+
     reject_threshold = config.structure_reject_threshold
     if reject_threshold is not None and features.structure_score <= reject_threshold:
         return REJECT
@@ -290,12 +302,22 @@ class PairEvidenceCache:
         source = "candidate" if candidate_record is not None else "on-demand"
         body_a = self.bodies.get(pair.left)
         body_b = self.bodies.get(pair.right)
-        if (
-            body_a is None
-            or body_b is None
-            or not body_a.complete
-            or not body_b.complete
-        ):
+        bodies_complete = (
+            body_a is not None
+            and body_b is not None
+            and body_a.complete
+            and body_b.complete
+        )
+        opaque_jumps = max(
+            int(body_a.quality.get("opaque_indirect_jumps", 0)) if body_a else 0,
+            int(body_b.quality.get("opaque_indirect_jumps", 0)) if body_b else 0,
+        )
+        opaque_abstain = (
+            bodies_complete
+            and self.config.abstain_on_opaque_indirect
+            and opaque_jumps > 0
+        )
+        if not bodies_complete or opaque_abstain:
             self.abstain_comparisons += 1
             features = _abstain_features(pair, body_a, body_b, candidate_record)
             decision = ABSTAIN
@@ -305,10 +327,8 @@ class PairEvidenceCache:
             else:
                 self.on_demand_comparisons += 1
         if (
-            body_a is not None
-            and body_b is not None
-            and body_a.complete
-            and body_b.complete
+            bodies_complete
+            and not opaque_abstain
             and self.feature_provider is not None
         ):
             features = self.feature_provider(pair)
@@ -316,10 +336,8 @@ class PairEvidenceCache:
                 raise ValueError("feature provider returned a non-canonical pair")
             decision = classify_pair(features, self.config)
         elif (
-            body_a is not None
-            and body_b is not None
-            and body_a.complete
-            and body_b.complete
+            bodies_complete
+            and not opaque_abstain
         ):
             features = pair_features_from_bodies(body_a, body_b, candidate_record)
             decision = classify_pair(features, self.config)
@@ -454,12 +472,19 @@ def build_family_artifact(
     accepted_sets = [members for members in final_sets.values() if len(members) >= 2]
     accepted_sets.sort(key=lambda members: tuple(sorted(members)))
     accepted_ids = set().union(*accepted_sets) if accepted_sets else set()
-    abstain_ids = sorted(
-        function_id
-        for function_id in target_ids
-        if function_id not in bodies_for_targets
-        or not bodies_for_targets[function_id].complete
-    )
+    abstain_reasons: dict[str, str] = {}
+    for function_id in target_ids:
+        body = bodies_for_targets.get(function_id)
+        if body is None:
+            abstain_reasons[function_id] = "missing_body"
+        elif not body.complete:
+            abstain_reasons[function_id] = "incomplete_decode"
+        elif (
+            config.abstain_on_opaque_indirect
+            and int(body.quality.get("opaque_indirect_jumps", 0)) > 0
+        ):
+            abstain_reasons[function_id] = "opaque_indirect_jump"
+    abstain_ids = sorted(abstain_reasons)
     abstain_set = set(abstain_ids)
     usable_ids = target_set - abstain_set
     match_neighbors: dict[str, set[str]] = {function_id: set() for function_id in target_ids}
@@ -522,6 +547,7 @@ def build_family_artifact(
             "unresolved": unresolved_ids,
             "abstain": abstain_ids,
         },
+        "abstain_reasons": abstain_reasons,
         "pair_decisions": [
             cache.entries[pair].to_dict()
             for pair in sorted(cache.entries)
