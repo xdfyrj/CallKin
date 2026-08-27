@@ -308,7 +308,11 @@ angr 결과가 direct baseline을 덮어씀
 | [body_evidence.py](../body_evidence.py) | local-only 정규화와 intraprocedural CFG | source origin/GT |
 | [body_similarity.py](../body_similarity.py) | 두 body의 구조·slot pair evidence | GT label |
 | [analysis/v1_feasibility.py](../analysis/v1_feasibility.py) | F4 진단에서만 body evidence와 GT join | V0 fixture 생성 |
-| [analysis/f45_collision.py](../analysis/f45_collision.py) | F4.5에서 V0 partition을 hash ID로 고정하고 한 collision의 모든 pair를 structure/slot/combined 조건으로 진단 | F5 자동 수정 |
+| [analysis/f45_collision.py](../analysis/f45_collision.py) | F4.5에서 V0 partition을 hash ID로 고정하고 한 collision의 모든 pair를 structure/slot/combined 조건으로 진단 | F5 설계 근거 |
+| [v1_candidates.py](../v1_candidates.py) | F5 body/relation top-k로 정밀 비교 후보를 bounded retrieval | GT 없이 candidate pair 생성 |
+| [v1_engine.py](../v1_engine.py) | F6 tri-state body 판정과 complete-link family builder | GT 없이 family artifact 생성 |
+| [analysis/v1_candidate_eval.py](../analysis/v1_candidate_eval.py) | F5 candidate recall/reduction/connectivity 평가 | GT label |
+| [analysis/v1_pair_eval.py](../analysis/v1_pair_eval.py) | F6 accepted family/pair-decision 평가와 development threshold grid 선택 | GT label |
 | [run_case.py](../run_case.py) | 한 case의 전체 분석 orchestration | compilation |
 | [run_baseline.py](../run_baseline.py) | micro-corpus compile부터 regression까지 실행 | 새 corpus 선택 |
 | [all_rust_catalog.py](../all_rust_catalog.py) | FLIRT 평가용 all-Rust symbol catalog 생성 | grouping target 선택 |
@@ -343,8 +347,8 @@ angr 결과가 direct baseline을 덮어씀
 - Source-level mono-item census, inlined/eliminated/folded lifecycle truth는 생성하지 않는다.
 - `rust-nonstd` ownership은 namespace-based 규칙이다. 완전한 crate provenance classifier가 아니다.
 - Oxidizer는 현재 direct-FLIRT label을 측정하는 [audit-only 단계](flirt_audit.md)다. FLIRT label이 candidate/anchor나 CG-WL seed를 바꾸지 않는다.
-- F1–F4 body evidence는 현재 Stage A feasibility 진단 전용이다. V0 CG-WL의 최종
-  grouping이나 F5 이후 family builder에 아직 연결하지 않는다.
+- F1–F4 body evidence는 F5 후보 retrieval과 F6 family builder가 소비하는
+  local evidence의 원천이다. GT 결합은 `analysis/v1_*_eval.py` 평가기에만 둔다.
 - F4.5의 canonical 조건은 `angr + rust-nonstd + role + out-in`이다. F4.5는 F5가
   아니다. V0 partition을 바꾸지 않고, 한 cluster의 member list를
   재현 가능한 hash artifact로 저장한 뒤 body evidence가 그 collision을 분리할 수
@@ -355,6 +359,11 @@ angr 결과가 direct baseline을 덮어씀
   `slot-only` 점수는 constant, call-shape, data-reference slot 지표의 최소값이다.
   `combined` 점수는 두 점수의 최소값이다. 결과에는 세 조건 각각의
   TP/FP/FN/TN, Precision/Recall/F1, 분포와 오판 사례가 들어간다.
+- F5는 body 전체의 완전 decode 함수에서 body top-k를 구하고, V0 final/prior
+  color 내부의 relation top-k를 합친다. color나 mnemonic hash bucket의
+  Cartesian product는 만들지 않는다. F6는 informative slot이 없거나 증거가
+  충돌하면 `unknown`, 불완전 body는 `abstain`으로 두며, 모든 cross-pair가
+  `match`인 경우에만 complete-link family를 승인한다.
 - `plain`과 `min` 점수 차이는 candidate survival과 graph recovery 차이를 함께 포함할 수 있다. F1만 단독 비교해서 compiler 효과로 해석하면 안 된다.
 
 ## 문서 읽는 순서

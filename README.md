@@ -106,6 +106,37 @@ partition의 `raw_graph_sha256`와 `candidate_selection_sha256`는 body-evidence
 provenance와 반드시 일치해야 하며, 선택한 cluster에 속한 GT origin만
 `origin_count`로 집계된다. 불일치 자료는 채점 전에 거부한다.
 
+F5는 F4 정밀 비교 전에 비교할 pair 수를 줄인다. 완전하게 decode된 body의
+body top-k와 V0 final/prior color 안의 relation top-k를 합치며, 같은 mnemonic
+hash 전체 조합은 만들지 않는다. 이 단계는 GT를 읽지 않는다.
+
+```bash
+python3 v1_candidates.py ripgrep-main --build O3S --profile plain \
+  --body-evidence body_evidence/rust-nonstd/plain/ripgrep-main.O3S.body.json \
+  --fixture /path/to/ripgrep-main.O3S.fixture.json \
+  --mode out-in --track angr --candidate-scope rust-nonstd \
+  --anchor-policy role --top-k 16 \
+  --output results/ripgrep-main/plain/ripgrep-main.O3S.v1.candidates.json
+python3 analysis/v1_candidate_eval.py \
+  results/ripgrep-main/plain/ripgrep-main.O3S.v1.candidates.json \
+  ground_truth/rust-nonstd/plain/ripgrep-main.O3S.gt.json
+```
+
+F6는 후보 pair를 `match/reject/unknown/abstain`으로 분류하고, 모든 교차
+pair가 `match`인 경우에만 family를 합친다. 기본 정책은
+`configs/v1.json`에 고정되어 있으며, GT는 엔진에 전달하지 않는다.
+
+```bash
+python3 v1_engine.py \
+  results/ripgrep-main/plain/ripgrep-main.O3S.v1.candidates.json \
+  --body-evidence body_evidence/rust-nonstd/plain/ripgrep-main.O3S.body.json \
+  --config configs/v1.json \
+  --output results/ripgrep-main/plain/ripgrep-main.O3S.v1.families.json
+python3 analysis/v1_pair_eval.py \
+  results/ripgrep-main/plain/ripgrep-main.O3S.v1.families.json \
+  ground_truth/rust-nonstd/plain/ripgrep-main.O3S.gt.json
+```
+
 ## One-Case Commands
 
 단일-file case를 non-stripped/stripped binary pair로 컴파일한다.
@@ -278,6 +309,8 @@ family_graph_03 / O3KS
 - F1 exact body decode, F2 local-only instruction normalization, F3 intraprocedural CFG,
   F4 pairwise body-evidence feasibility 진단 (Stage A 별도 경로)
 - F4.5 V0 collision cluster member-list artifact와 body-evidence collision 진단
+- F5 body/relation top-k candidate pair retrieval과 후보 coverage/reduction 평가
+- F6 local body evidence의 tri-state family builder와 complete-link 병합
 
 현재 포함하지 않는 것:
 
@@ -287,9 +320,7 @@ family_graph_03 / O3KS
 - stripped-only std/library classifier를 candidate selection에 적용하는 기능. Direct-FLIRT
   label은 현재 audit-only이며 scope를 바꾸지 않는다.
 - source-level mono-item census와 inlined/eliminated 원인 판정
-- V0 collision을 자동으로 수정하는 F5 family grouping
-- F5 이후의 body 기반 candidate retrieval/family grouping
+- 학습된 weight/ML 모델과 type recovery
 - body evidence를 V0 CG-WL에 자동으로 주입하는 production pipeline
-- type recovery
 
 Example source와 build recipe의 출처는 [rust-loss](https://github.com/xdfyrj/rust-loss) 저장소다.

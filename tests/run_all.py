@@ -30,6 +30,8 @@ PYTHON_FILES = (
     "model.py",
     "loader.py",
     "engine.py",
+    "v1_candidates.py",
+    "v1_engine.py",
     "scores.py",
     "run_case.py",
     "run_summary.py",
@@ -37,6 +39,8 @@ PYTHON_FILES = (
     "analysis/summary.py",
     "analysis/v1_feasibility.py",
     "analysis/f45_collision.py",
+    "analysis/v1_candidate_eval.py",
+    "analysis/v1_pair_eval.py",
     "run_baseline.py",
     "tests/test_compile.py",
     "tests/test_engine.py",
@@ -70,6 +74,8 @@ TEST_FILES = (
     "tests/test_gt_extractor.py",
     "tests/test_scores.py",
     "tests/test_collision_diagnostic.py",
+    "tests/test_v1_candidates.py",
+    "tests/test_v1_engine.py",
 )
 
 
