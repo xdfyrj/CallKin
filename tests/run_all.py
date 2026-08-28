@@ -44,6 +44,7 @@ PYTHON_FILES = (
     "analysis/v1_candidate_eval.py",
     "analysis/gt_mangled_audit.py",
     "tests/fixtures/f7_alignment/make_fixture.py",
+    "tests/fixtures/f7_slot_overlay/make_fixture.py",
     "analysis/v1_corrected_gt.py",
     "analysis/v1_multiview_eval.py",
     "analysis/v1_pair_eval.py",
