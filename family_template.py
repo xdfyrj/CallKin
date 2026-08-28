@@ -306,6 +306,76 @@ def axis_pair_coverage(
     return tuple(results)
 
 
+def refines(fine: VariationAxis, coarse: VariationAxis) -> bool:
+    """True when every group of `fine` sits inside one group of `coarse`.
+
+    Distinct axes always have distinct partitions, since identical partitions
+    were merged into one axis, so this relation cannot hold both ways.
+    """
+    return all(
+        len({coarse.labels[member] for member in group}) == 1
+        for group in fine.partition
+    )
+
+
+def coarsening_relations(
+    axes: Sequence[VariationAxis],
+) -> tuple[dict[str, str], ...]:
+    return tuple(
+        {"coarse": coarse.id, "fine": fine.id}
+        for coarse in axes
+        for fine in axes
+        if fine.id != coarse.id and refines(fine, coarse)
+    )
+
+
+def maximal_axes(axes: Sequence[VariationAxis]) -> tuple[VariationAxis, ...]:
+    """The finest axes: those no other axis refines."""
+    return tuple(
+        axis
+        for axis in axes
+        if not any(
+            other.id != axis.id and refines(other, axis) for other in axes
+        )
+    )
+
+
+def select_basis(
+    axes: Sequence[VariationAxis],
+    members: Sequence[str],
+) -> tuple[list[str] | None, str, tuple[AxisPairCoverage, ...]]:
+    """Find the one axis pair that explains the family, if there is exactly one.
+
+    A basis is a pair of maximal axes spanning a bijective Cartesian product
+    such that every remaining axis equals or coarsens one of the two.
+
+    Two candidate pairs would report `ambiguous` rather than a choice being
+    made, though drawing pairs from the maximal axes alone should rule that
+    out: for `(X, Y)` and `(X, Z)` to both qualify, `Z` would have to coarsen
+    `X` or `Y`, and a coarsening is never maximal.
+    """
+    maximal = maximal_axes(axes)
+    bijective = tuple(
+        pair for pair in axis_pair_coverage(maximal, members) if pair.bijective
+    )
+    by_id = {axis.id: axis for axis in axes}
+
+    candidates: list[list[str]] = []
+    for pair in bijective:
+        first, second = by_id[pair.first], by_id[pair.second]
+        others = [axis for axis in axes if axis.id not in (first.id, second.id)]
+        if all(
+            refines(first, other) or refines(second, other) for other in others
+        ):
+            candidates.append([first.id, second.id])
+
+    if not candidates:
+        return None, "none" if not bijective else "no_pair_explains_every_axis", bijective
+    if len(candidates) > 1:
+        return None, "ambiguous", bijective
+    return candidates[0], "unique", bijective
+
+
 def axis_report(template: FamilyTemplate) -> dict[str, Any]:
     """Everything a probe should record, including why slots were excluded."""
     excluded: list[dict[str, Any]] = []
@@ -327,6 +397,8 @@ def axis_report(template: FamilyTemplate) -> dict[str, Any]:
 
     axes = infer_variation_axes(template)
     pairs = axis_pair_coverage(axes, template.members)
+    maximal = maximal_axes(axes)
+    basis, basis_status, bijective = select_basis(axes, template.members)
     kinds: dict[str, int] = {}
     for slot in template.slots:
         kinds[slot.kind] = kinds.get(slot.kind, 0) + 1
@@ -342,6 +414,12 @@ def axis_report(template: FamilyTemplate) -> dict[str, Any]:
         "axis_count": len(axes),
         "axes": [axis.to_dict() for axis in axes],
         "axis_pairs": [pair.to_dict() for pair in pairs],
+        "coarsening_relations": [dict(item) for item in coarsening_relations(axes)],
+        "maximal_axes": [axis.id for axis in maximal],
+        "independent_axis_count": len(maximal),
+        "bijective_bases": [[pair.first, pair.second] for pair in bijective],
+        "selected_basis": basis,
+        "selected_basis_status": basis_status,
         "excluded_slots": excluded,
     }
 
