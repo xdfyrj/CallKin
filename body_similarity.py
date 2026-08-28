@@ -38,6 +38,22 @@ class FunctionBody:
 
 
 @dataclass(frozen=True)
+class BodyAlignment:
+    """Correspondence between two bodies.
+
+    `block_pairs` and `candidate_block_pair_count` are what F4 scores from.
+    `instruction_pairs` is additional detail for F7 template building and is
+    deliberately excluded from every F4 metric.
+    """
+
+    block_pairs: tuple[tuple[str, str], ...]
+    candidate_block_pair_count: int
+    instruction_pairs: tuple[tuple[int, int], ...]
+    unmatched_reference: tuple[int, ...]
+    unmatched_target: tuple[int, ...]
+
+
+@dataclass(frozen=True)
 class BodyPairEvidence:
     first_id: str
     second_id: str
@@ -106,8 +122,11 @@ def compare_bodies(first: FunctionBody, second: FunctionBody) -> BodyPairEvidenc
     first_tokens = [_instruction_token(item) for item in first.instructions]
     second_tokens = [_instruction_token(item) for item in second.instructions]
 
-    alignment = _align_blocks(first, second)
-    matched_pairs, candidate_pair_count = alignment
+    # F4 reads only the block level; instruction pairs would cost an LCS per
+    # block pair and must not influence any score.
+    alignment = align_function_bodies(first, second, with_instructions=False)
+    matched_pairs = list(alignment.block_pairs)
+    candidate_pair_count = alignment.candidate_block_pair_count
     aligned_instruction_numerator = sum(
         min(
             _block_instruction_count(first, label_a),
@@ -189,6 +208,65 @@ def compare_bodies(first: FunctionBody, second: FunctionBody) -> BodyPairEvidenc
     )
 
 
+def align_function_bodies(
+    reference: FunctionBody,
+    target: FunctionBody,
+    *,
+    with_instructions: bool = True,
+) -> BodyAlignment:
+    """Align two bodies at block level, and optionally at instruction level.
+
+    Instruction pairs are produced only inside an aligned block pair, so two
+    instructions from unrelated blocks are never linked. Pass
+    `with_instructions=False` to skip the per-block LCS when only the block
+    alignment is needed.
+    """
+    block_pairs, candidate_block_pair_count = _align_blocks(reference, target)
+    if not with_instructions:
+        return BodyAlignment(
+            block_pairs=tuple(block_pairs),
+            candidate_block_pair_count=candidate_block_pair_count,
+            instruction_pairs=(),
+            unmatched_reference=(),
+            unmatched_target=(),
+        )
+
+    instruction_pairs: list[tuple[int, int]] = []
+    for label_a, label_b in block_pairs:
+        items_a = _block_instruction_items(reference, label_a)
+        items_b = _block_instruction_items(target, label_b)
+        instruction_pairs.extend(
+            (items_a[index_a][0], items_b[index_b][0])
+            for index_a, index_b in _lcs_pairs(
+                [token for _offset, token in items_a],
+                [token for _offset, token in items_b],
+            )
+        )
+    instruction_pairs.sort()
+
+    matched_reference = {offset for offset, _ in instruction_pairs}
+    matched_target = {offset for _, offset in instruction_pairs}
+    return BodyAlignment(
+        block_pairs=tuple(block_pairs),
+        candidate_block_pair_count=candidate_block_pair_count,
+        instruction_pairs=tuple(instruction_pairs),
+        unmatched_reference=tuple(
+            sorted(
+                item["offset"]
+                for item in reference.instructions
+                if item["offset"] not in matched_reference
+            )
+        ),
+        unmatched_target=tuple(
+            sorted(
+                item["offset"]
+                for item in target.instructions
+                if item["offset"] not in matched_target
+            )
+        ),
+    )
+
+
 def _instruction_token(item: dict[str, Any]) -> str:
     return " ".join((item["mnemonic_class"], *item.get("operands", [])))
 
@@ -234,18 +312,61 @@ def _lcs_length(left: list[str], right: list[str]) -> int:
     return previous[-1]
 
 
+def _lcs_pairs(left: list[str], right: list[str]) -> list[tuple[int, int]]:
+    """Index pairs of one longest common subsequence.
+
+    The traceback is fully determined, so equal tokens repeated inside a block
+    always produce the same correspondence.
+    """
+    rows, columns = len(left), len(right)
+    if not rows or not columns:
+        return []
+
+    table = [[0] * (columns + 1) for _ in range(rows + 1)]
+    for row_index in range(rows - 1, -1, -1):
+        row = table[row_index]
+        following = table[row_index + 1]
+        for column_index in range(columns - 1, -1, -1):
+            if left[row_index] == right[column_index]:
+                row[column_index] = following[column_index + 1] + 1
+            else:
+                row[column_index] = max(
+                    following[column_index], row[column_index + 1]
+                )
+
+    pairs: list[tuple[int, int]] = []
+    row_index = column_index = 0
+    while row_index < rows and column_index < columns:
+        if left[row_index] == right[column_index]:
+            pairs.append((row_index, column_index))
+            row_index += 1
+            column_index += 1
+        elif table[row_index + 1][column_index] >= table[row_index][column_index + 1]:
+            row_index += 1
+        else:
+            column_index += 1
+    return pairs
+
+
 def _block_by_label(body: FunctionBody) -> dict[str, dict[str, Any]]:
     return {item["label"]: item for item in body.blocks}
 
 
-def _block_sequence(body: FunctionBody, label: str) -> list[str]:
+def _block_instruction_items(
+    body: FunctionBody,
+    label: str,
+) -> list[tuple[int, str]]:
     instructions = {item["offset"]: item for item in body.instructions}
     block = _block_by_label(body)[label]
     return [
-        _instruction_token(instructions[offset])
+        (offset, _instruction_token(instructions[offset]))
         for offset in block.get("instruction_offsets", [])
         if offset in instructions
     ]
+
+
+def _block_sequence(body: FunctionBody, label: str) -> list[str]:
+    return [token for _offset, token in _block_instruction_items(body, label)]
 
 
 def _degrees(body: FunctionBody) -> tuple[Counter[str], Counter[str]]:

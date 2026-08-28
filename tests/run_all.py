@@ -42,6 +42,7 @@ PYTHON_FILES = (
     "analysis/f45_collision.py",
     "analysis/v1_candidate_eval.py",
     "analysis/gt_mangled_audit.py",
+    "tests/fixtures/f7_alignment/make_fixture.py",
     "analysis/v1_corrected_gt.py",
     "analysis/v1_multiview_eval.py",
     "analysis/v1_pair_eval.py",
@@ -66,6 +67,8 @@ PYTHON_FILES = (
     "tests/test_v1_retrieval_miss.py",
     "tests/test_gt_mangled_audit.py",
     "tests/test_v1_corrected_gt.py",
+    "tests/test_f7_alignment.py",
+    "tests/test_f7_alignment_regression.py",
     "tests/run_all.py",
 )
 TEST_FILES = (
@@ -91,6 +94,8 @@ TEST_FILES = (
     "tests/test_v1_engine.py",
     "tests/test_gt_mangled_audit.py",
     "tests/test_v1_corrected_gt.py",
+    "tests/test_f7_alignment.py",
+    "tests/test_f7_alignment_regression.py",
 )
 
 
