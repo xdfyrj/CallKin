@@ -172,6 +172,180 @@ class FamilyTemplate:
         }
 
 
+@dataclass(frozen=True)
+class VariationAxis:
+    """An anonymous axis: one way the family's members get split.
+
+    Two slots belong to the same axis when they split the members identically,
+    however different their actual values are. The axis carries no claim about
+    which source type parameter caused it.
+    """
+
+    id: str
+    partition: tuple[tuple[str, ...], ...]
+    slots: tuple[tuple[int, int, str], ...]
+    labels: dict[str, int]
+
+    @property
+    def variant_count(self) -> int:
+        return len(self.partition)
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "id": self.id,
+            "variant_count": self.variant_count,
+            "partition": [list(group) for group in self.partition],
+            "slots": [
+                {"offset": offset, "index": index, "kind": kind}
+                for offset, index, kind in self.slots
+            ],
+            "labels": dict(sorted(self.labels.items())),
+        }
+
+
+@dataclass(frozen=True)
+class AxisPairCoverage:
+    first: str
+    second: str
+    expected_combinations: int
+    observed_combinations: int
+    tuple_counts: dict[tuple[int, int], int]
+
+    @property
+    def coverage(self) -> float:
+        return self.observed_combinations / self.expected_combinations
+
+    @property
+    def complete(self) -> bool:
+        return self.observed_combinations == self.expected_combinations
+
+    @property
+    def bijective(self) -> bool:
+        return self.complete and set(self.tuple_counts.values()) == {1}
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "first": self.first,
+            "second": self.second,
+            "expected_combinations": self.expected_combinations,
+            "observed_combinations": self.observed_combinations,
+            "coverage": self.coverage,
+            "complete": self.complete,
+            "bijective": self.bijective,
+            "tuple_counts": {
+                f"{left},{right}": count
+                for (left, right), count in sorted(self.tuple_counts.items())
+            },
+        }
+
+
+def _slot_partition(slot: TemplateSlot) -> tuple[tuple[str, ...], ...]:
+    groups: dict[Any, list[str]] = {}
+    for member, value in slot.values_by_member.items():
+        groups.setdefault(value, []).append(member)
+    return tuple(sorted(tuple(sorted(members)) for members in groups.values()))
+
+
+def infer_variation_axes(template: FamilyTemplate) -> tuple[VariationAxis, ...]:
+    """Group the family's varying slots into anonymous axes.
+
+    A slot qualifies only when every member resolved it. A slot that is
+    unresolved, filtered, ambiguous or missing for even one member cannot say
+    how that member is grouped, so it is left out rather than guessed at.
+    """
+    by_partition: dict[tuple[tuple[str, ...], ...], list[TemplateSlot]] = {}
+    for slot in template.slots:
+        if not slot.observed_by_all or not slot.varies:
+            continue
+        by_partition.setdefault(_slot_partition(slot), []).append(slot)
+
+    ordered = sorted(
+        by_partition.items(),
+        key=lambda item: min((slot.offset, slot.index) for slot in item[1]),
+    )
+    axes: list[VariationAxis] = []
+    for number, (partition, slots) in enumerate(ordered, start=1):
+        labels = {
+            member: index
+            for index, group in enumerate(partition)
+            for member in group
+        }
+        axes.append(
+            VariationAxis(
+                id=f"AXIS_{number}",
+                partition=partition,
+                slots=tuple(
+                    sorted((slot.offset, slot.index, slot.kind) for slot in slots)
+                ),
+                labels=labels,
+            )
+        )
+    return tuple(axes)
+
+
+def axis_pair_coverage(
+    axes: Sequence[VariationAxis],
+    members: Sequence[str],
+) -> tuple[AxisPairCoverage, ...]:
+    """Check whether each pair of axes spans a full Cartesian product."""
+    results: list[AxisPairCoverage] = []
+    for first, second in combinations(axes, 2):
+        counts: dict[tuple[int, int], int] = {}
+        for member in members:
+            key = (first.labels[member], second.labels[member])
+            counts[key] = counts.get(key, 0) + 1
+        results.append(
+            AxisPairCoverage(
+                first=first.id,
+                second=second.id,
+                expected_combinations=first.variant_count * second.variant_count,
+                observed_combinations=len(counts),
+                tuple_counts=counts,
+            )
+        )
+    return tuple(results)
+
+
+def axis_report(template: FamilyTemplate) -> dict[str, Any]:
+    """Everything a probe should record, including why slots were excluded."""
+    excluded: list[dict[str, Any]] = []
+    for slot in template.slots:
+        if slot.observed_by_all and slot.varies:
+            continue
+        reason = (
+            "invariant"
+            if slot.observed_by_all
+            else "not_resolved_for_every_member"
+        )
+        excluded.append({
+            "offset": slot.offset,
+            "index": slot.index,
+            "kind": slot.kind,
+            "reason": reason,
+            "states": sorted(set(slot.states_by_member.values())),
+        })
+
+    axes = infer_variation_axes(template)
+    pairs = axis_pair_coverage(axes, template.members)
+    kinds: dict[str, int] = {}
+    for slot in template.slots:
+        kinds[slot.kind] = kinds.get(slot.kind, 0) + 1
+    return {
+        "medoid": template.medoid,
+        "member_count": len(template.members),
+        "slot_count": len(template.slots),
+        "slot_count_by_kind": dict(sorted(kinds.items())),
+        "observed_by_all_slot_count": sum(
+            1 for slot in template.slots if slot.observed_by_all
+        ),
+        "varying_slot_count": len(template.variation_slots),
+        "axis_count": len(axes),
+        "axes": [axis.to_dict() for axis in axes],
+        "axis_pairs": [pair.to_dict() for pair in pairs],
+        "excluded_slots": excluded,
+    }
+
+
 def _medoid_block_of_offset(body: FunctionBody) -> dict[int, str]:
     return {
         offset: block["label"]

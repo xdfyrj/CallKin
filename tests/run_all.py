@@ -44,6 +44,7 @@ PYTHON_FILES = (
     "analysis/f45_collision.py",
     "analysis/v1_candidate_eval.py",
     "analysis/gt_mangled_audit.py",
+    "analysis/v1_axis_probe.py",
     "tests/fixtures/f7_alignment/make_fixture.py",
     "tests/fixtures/f7_slot_overlay/make_fixture.py",
     "analysis/v1_corrected_gt.py",
@@ -74,6 +75,7 @@ PYTHON_FILES = (
     "tests/test_f7_alignment_regression.py",
     "tests/test_slot_overlay.py",
     "tests/test_family_template.py",
+    "tests/test_variation_axes.py",
     "tests/run_all.py",
 )
 TEST_FILES = (
@@ -103,6 +105,7 @@ TEST_FILES = (
     "tests/test_f7_alignment_regression.py",
     "tests/test_slot_overlay.py",
     "tests/test_family_template.py",
+    "tests/test_variation_axes.py",
 )
 
 
