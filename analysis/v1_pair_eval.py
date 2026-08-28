@@ -9,13 +9,13 @@ from collections import Counter
 from itertools import combinations
 from pathlib import Path
 from typing import Any, Mapping, Sequence
-from linkage_overlay import load_overlay, score_labeled_pairs
 
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from linkage_overlay import load_overlay, score_labeled_pairs  # noqa: E402
 from v1_candidates import PairKey  # noqa: E402
 from v1_engine import (  # noqa: E402
     DECISIONS,
@@ -189,10 +189,12 @@ def evaluate_family_artifact(
 def evaluate_family_files(
     family_path: str | Path,
     ground_truth_path: str | Path,
+    linkage_audit_path: str | Path | None = None,
 ) -> dict[str, Any]:
     return evaluate_family_artifact(
         _read_json(family_path),
         _read_json(ground_truth_path),
+        None if linkage_audit_path is None else _read_json(linkage_audit_path),
     )
 
 
@@ -492,6 +494,11 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("ground_truth")
     parser.add_argument("--output")
     parser.add_argument(
+        "--linkage-audit",
+        help="gt-mangled-audit artifact; adds primary and source-origin metrics "
+             "that set aside pairs the binary cannot decide",
+    )
+    parser.add_argument(
         "--development-config-output",
         help="select thresholds on this development artifact and write a policy JSON",
     )
@@ -511,7 +518,9 @@ def build_arg_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     args = build_arg_parser().parse_args(argv)
     try:
-        report = evaluate_family_files(args.family_artifact, args.ground_truth)
+        report = evaluate_family_files(
+            args.family_artifact, args.ground_truth, args.linkage_audit
+        )
         encoded = json.dumps(report, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
         if args.output:
             destination = Path(args.output)

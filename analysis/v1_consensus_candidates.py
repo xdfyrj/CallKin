@@ -19,12 +19,14 @@ from typing import Any
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from body_similarity import load_body_evidence  # noqa: E402
+from build_manifest import sha256_file  # noqa: E402
 
 
 def build_consensus_artifact(
     artifact: dict[str, Any],
     *,
     minimum_views: int | None = None,
+    source_sha256: str | None = None,
 ) -> dict[str, Any]:
     views = list(artifact["config"]["views"])
     required = len(views) if minimum_views is None else minimum_views
@@ -38,16 +40,22 @@ def build_consensus_artifact(
         if len([reason for reason in pair["reasons"] if reason.endswith("_top_k")])
         >= required
     ]
+    # The F5 top-level and config field sets are both closed, so a derived
+    # artifact cannot rename itself or extend its config. `provenance` is an
+    # open mapping, so the derivation goes there and travels on into the F6
+    # family artifact. The sidecar keeps the fuller cost statistics.
     consensus = dict(artifact)
-    consensus["artifact"] = "v1-consensus-candidate-pairs"
     consensus["pairs"] = kept
-    consensus["config"] = {
-        **artifact["config"],
-        "consensus_minimum_views": required,
-    }
-    consensus["derived_from"] = {
-        "artifact": artifact.get("artifact"),
-        "pair_count": len(artifact["pairs"]),
+    consensus["provenance"] = {
+        **artifact["provenance"],
+        "candidate_derivation": {
+            "kind": "minimum-view-consensus",
+            "minimum_view_count": required,
+            "views": list(views),
+            "source_candidate_sha256": source_sha256,
+            "source_pair_count": len(artifact["pairs"]),
+            "derived_pair_count": len(kept),
+        },
     }
     return consensus
 
@@ -94,20 +102,40 @@ def main(argv: list[str] | None = None) -> int:
     try:
         artifact = json.loads(Path(args.candidates).read_text(encoding="utf-8"))
         consensus = build_consensus_artifact(
-            artifact, minimum_views=args.minimum_views
+            artifact,
+            minimum_views=args.minimum_views,
+            source_sha256=sha256_file(args.candidates),
         )
         bodies = load_body_evidence(args.body_evidence)
         summary = {
             "source": cost_summary(artifact, bodies),
             "consensus": cost_summary(consensus, bodies),
         }
-        consensus["cost"] = summary["consensus"]
         if args.output:
             destination = Path(args.output)
             destination.parent.mkdir(parents=True, exist_ok=True)
             destination.write_text(
                 json.dumps(consensus, indent=2, sort_keys=True, ensure_ascii=False)
                 + "\n",
+                encoding="utf-8",
+            )
+            sidecar = destination.with_suffix(".derivation.json")
+            sidecar.write_text(
+                json.dumps(
+                    {
+                        "artifact": "v1-consensus-candidate-derivation",
+                        "source_artifact": str(args.candidates),
+                        "source_artifact_sha256": sha256_file(args.candidates),
+                        "consensus_minimum_views": (
+                            args.minimum_views
+                            if args.minimum_views is not None
+                            else len(artifact["config"]["views"])
+                        ),
+                        "views": list(artifact["config"]["views"]),
+                        "cost": summary,
+                    },
+                    indent=2, sort_keys=True, ensure_ascii=False,
+                ) + "\n",
                 encoding="utf-8",
             )
     except Exception as exc:

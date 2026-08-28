@@ -451,6 +451,7 @@ def build_family_artifact(
     feature_provider: Callable[[PairKey], PairFeatures] | None = None,
     body_sha256: str | None = None,
     body_provenance: Mapping[str, Any] | None = None,
+    candidate_sha256: str | None = None,
 ) -> dict[str, Any]:
     """Build accepted/provisional/unresolved/abstain families."""
 
@@ -642,6 +643,8 @@ def build_family_artifact(
     result_provenance = dict(candidate_provenance)
     if body_sha256 is not None:
         result_provenance["body_evidence_sha256"] = body_sha256
+    if candidate_sha256 is not None:
+        result_provenance["candidate_artifact_sha256"] = candidate_sha256
     output = {
         "schema_version": 1,
         "artifact": "v1-family-grouping",
@@ -893,6 +896,9 @@ def main(argv: list[str] | None = None) -> int:
             config=config,
             body_sha256=body_sha256,
             body_provenance=body_artifact.get("provenance"),
+            candidate_sha256=hashlib.sha256(
+                Path(args.candidate_artifact).read_bytes()
+            ).hexdigest(),
         )
         write_family_artifact(args.output, report)
     except Exception as exc:
