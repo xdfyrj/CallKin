@@ -9,6 +9,7 @@ from collections import Counter
 from itertools import combinations
 from pathlib import Path
 from typing import Any, Mapping, Sequence
+from linkage_overlay import load_overlay, score_labeled_pairs
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -32,8 +33,14 @@ REJECT_THRESHOLD_GRID: tuple[float | None, ...] = (None, 0.00, 0.10, 0.20, 0.30)
 def evaluate_family_artifact(
     family_artifact: Mapping[str, Any],
     ground_truth: Mapping[str, Any],
+    linkage_audit: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Score accepted F6 families against GT after grouping is complete."""
+    """Score accepted F6 families against GT after grouping is complete.
+
+    Supplying the linkage audit adds `linkage_metrics`, which sets aside pairs
+    the binary cannot decide: two emissions of one mono item, and addresses
+    standing for several source origins.
+    """
 
     _validate_family_artifact(family_artifact)
     _validate_metadata(family_artifact, ground_truth)
@@ -70,6 +77,16 @@ def evaluate_family_artifact(
         if precision is not None and recall is not None and precision + recall
         else None
     )
+
+    linkage_metrics = None
+    if linkage_audit is not None:
+        origins_by_address, identities_by_address = load_overlay(linkage_audit)
+        linkage_metrics = score_labeled_pairs(
+            [(pair.left, pair.right) for pair in all_pairs],
+            [(pair.left, pair.right) for pair in predicted_pairs],
+            origins_by_address=origins_by_address,
+            identities_by_address=identities_by_address,
+        )
 
     decision_counts: Counter[str] = Counter()
     decision_confusion: Counter[tuple[str, str]] = Counter()
@@ -132,6 +149,7 @@ def evaluate_family_artifact(
         "build": family_artifact["build"],
         "profile": family_artifact["profile"],
         "scope": family_artifact["scope"],
+        "linkage_metrics": linkage_metrics,
         "ground_truth": {
             "used_for": "evaluation labels only",
             "origin_count": len(gt_groups),

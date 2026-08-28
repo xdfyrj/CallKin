@@ -1,5 +1,14 @@
 """Build the corrected ground truth used to score generic family recovery.
 
+DEPRECATED. Flattening duplicates into singletons cannot express the case where
+one origin has both a duplicated mono item and a distinct one: grouping the two
+copies becomes a false positive, while splitting them makes the genuinely
+distinct pair a false negative. Both are wrong, because the binary offers no
+way to tell them apart. `linkage_overlay.py` labels such pairs neutral instead,
+and `analysis/v1_pair_eval.py` drops them from the denominator. This module is
+kept so existing artifacts stay reproducible; do not build new evaluations on
+it.
+
 Origins whose members all carry the same raw linkage symbol are codegen
 duplicates of one mono item, not distinct monomorphizations. They are not
 deleted, because deleting them would change the evaluation universe. Each of
@@ -113,6 +122,7 @@ def build_corrected_ground_truth(
     positive = [group for group in origins if len(group["members"]) > 1]
     return {
         "artifact": CORRECTED_GT_ARTIFACT,
+        "deprecated": "superseded by the linkage overlay; see linkage_overlay.py",
         "schema_version": CORRECTED_GT_SCHEMA_VERSION,
         "case": ground_truth.get("case"),
         "build": ground_truth.get("build"),

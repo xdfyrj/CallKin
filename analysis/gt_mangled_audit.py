@@ -14,6 +14,7 @@ import argparse
 import json
 import os
 import sys
+from collections import defaultdict
 from pathlib import Path
 from typing import Any, Iterable, Mapping
 
@@ -22,6 +23,13 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from build_manifest import sha256_file  # noqa: E402
 from gt_extractor import DEFAULT_ID_BIAS  # noqa: E402
+from linkage_overlay import (  # noqa: E402
+    FOLDED,
+    MIXED,
+    SHAPES,
+    build_origin_linkage,
+    canonical_identity,
+)
 
 
 AUDIT_SCHEMA_VERSION = 1
@@ -150,6 +158,17 @@ def build_audit(
     for entry in entries:
         member_counts[entry["classification"]] += len(entry["members"])
 
+    overlay = _build_overlay(
+        origins,
+        raw_symbols,
+        id_bias=id_bias,
+        cross_origin_aliases=ground_truth.get("cross_origin_aliases") or (),
+    )
+    for entry in entries:
+        linkage = overlay["linkage_by_origin"][entry["origin"]]
+        entry["shape"] = linkage["shape"]
+        entry["identity_count"] = linkage["identity_count"]
+
     return {
         "artifact": AUDIT_ARTIFACT,
         "schema_version": AUDIT_SCHEMA_VERSION,
@@ -165,8 +184,85 @@ def build_audit(
             "multimember_origin_count": len(entries),
             "family_counts": counts,
             "member_counts": member_counts,
+            **overlay["summary"],
         },
+        "addresses": overlay["addresses"],
+        "linkage": sorted(
+            overlay["linkage_by_origin"].values(), key=lambda item: item["origin"]
+        ),
         "origins": entries,
+    }
+
+
+def _build_overlay(
+    origins: list[Any],
+    raw_symbols: Mapping[int, frozenset[str]],
+    *,
+    id_bias: int,
+    cross_origin_aliases: Iterable[Mapping[str, Any]] = (),
+) -> dict[str, Any]:
+    """Map every ground-truth address to its identities and source origins."""
+    origins_by_address: dict[str, set[str]] = defaultdict(set)
+    for group in origins:
+        for member in group["members"]:
+            origins_by_address[member].add(group["origin"])
+
+    # An address standing for several origins is filed under a synthetic
+    # `shared-address@...` group, with the real origins recorded separately.
+    # Restore the real set so such a pair can be recognised as ambiguous.
+    for alias in cross_origin_aliases:
+        origins_by_address[alias["member"]] = set(alias["origins"])
+
+    addresses: dict[str, dict[str, Any]] = {}
+    for member in sorted(origins_by_address):
+        raw = sorted(raw_symbols.get(address_from_function_id(member, id_bias=id_bias), ()))
+        addresses[member] = {
+            "origins": sorted(origins_by_address[member]),
+            "identities": sorted({canonical_identity(name) for name in raw}),
+            "raw_symbols": raw,
+        }
+
+    identities_by_address = {
+        member: record["identities"] for member, record in addresses.items()
+    }
+    linkage_by_origin: dict[str, dict[str, Any]] = {}
+    shape_counts = {name: 0 for name in SHAPES}
+    folded_addresses = folded_identities = unobservable = 0
+    for group in origins:
+        if len(group["members"]) < 2:
+            continue
+        linkage = build_origin_linkage(
+            group["origin"], group["members"], identities_by_address
+        )
+        linkage_by_origin[group["origin"]] = linkage.to_dict()
+        shape_counts[linkage.shape] += 1
+        if linkage.has_folding:
+            folded_addresses += sum(
+                1 for value in linkage.identities_by_address.values() if len(value) > 1
+            )
+            folded_identities += sum(
+                len(value) for value in linkage.identities_by_address.values()
+                if len(value) > 1
+            )
+            unobservable += linkage.unobservable_identity_pairs
+
+    cross_origin = sorted(
+        member for member, record in addresses.items() if len(record["origins"]) > 1
+    )
+    return {
+        "addresses": addresses,
+        "linkage_by_origin": linkage_by_origin,
+        "summary": {
+            "shape_counts": shape_counts,
+            "cross_origin_addresses": cross_origin,
+            "cross_origin_address_count": len(cross_origin),
+            "folded": {
+                "origin_count": shape_counts[FOLDED] + shape_counts[MIXED],
+                "address_count": folded_addresses,
+                "identity_count": folded_identities,
+                "unobservable_identity_pair_count": unobservable,
+            },
+        },
     }
 
 
@@ -217,6 +313,9 @@ def main(argv: list[str] | None = None) -> int:
     summary = report["summary"]
     for name, count in sorted(summary["family_counts"].items()):
         print(f"{name}={count}")
+    for name, count in sorted(summary["shape_counts"].items()):
+        print(f"shape.{name}={count}")
+    print(f"cross_origin_addresses={summary['cross_origin_address_count']}")
     return 0
 
 
