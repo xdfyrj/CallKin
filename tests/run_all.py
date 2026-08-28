@@ -77,6 +77,7 @@ PYTHON_FILES = (
     "tests/test_family_template.py",
     "tests/test_variation_axes.py",
     "tests/test_v1_axis_probe.py",
+    "tests/test_family_axis_03.py",
     "tests/run_all.py",
 )
 TEST_FILES = (
@@ -108,6 +109,7 @@ TEST_FILES = (
     "tests/test_family_template.py",
     "tests/test_variation_axes.py",
     "tests/test_v1_axis_probe.py",
+    "tests/test_family_axis_03.py",
 )
 
 
