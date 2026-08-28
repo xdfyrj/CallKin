@@ -80,6 +80,11 @@ class PairPolicyConfig:
     structure_reject_threshold: float | None = None
     require_informative_slot: bool = True
     abstain_on_opaque_indirect: bool = True
+    # Cost ceilings for F4 work. One alignment cell is one left normalized
+    # instruction paired with one right one, a deterministic proxy for the
+    # O(Ia * Ib) LCS work a comparison actually does.
+    max_comparison_count: int | None = None
+    max_alignment_cell_budget: int | None = None
     version: str = "v1"
 
     @classmethod
@@ -97,6 +102,14 @@ class PairPolicyConfig:
         opaque_flag = policy.get("abstain_on_opaque_indirect", True)
         if not isinstance(opaque_flag, bool):
             raise ValueError("abstain_on_opaque_indirect must be boolean")
+        limits = {}
+        for name in ("max_comparison_count", "max_alignment_cell_budget"):
+            limit = policy.get(name)
+            if limit is not None and (
+                not isinstance(limit, int) or isinstance(limit, bool) or limit < 0
+            ):
+                raise ValueError(f"{name} must be a non-negative integer or null")
+            limits[name] = limit
         config = cls(
             structure_match_threshold=_threshold(
                 policy["structure_match_threshold"], "structure_match_threshold"
@@ -114,6 +127,8 @@ class PairPolicyConfig:
             ),
             require_informative_slot=informative_flag,
             abstain_on_opaque_indirect=opaque_flag,
+            max_comparison_count=limits["max_comparison_count"],
+            max_alignment_cell_budget=limits["max_alignment_cell_budget"],
             version=str(value.get("version", "v1")),
         )
         return config
@@ -133,6 +148,8 @@ class PairPolicyConfig:
             "structure_reject_threshold": self.structure_reject_threshold,
             "require_informative_slot": self.require_informative_slot,
             "abstain_on_opaque_indirect": self.abstain_on_opaque_indirect,
+            "max_comparison_count": self.max_comparison_count,
+            "max_alignment_cell_budget": self.max_alignment_cell_budget,
         }
 
 
@@ -282,12 +299,76 @@ class PairEvidenceCache:
         self._entries: dict[PairKey, PairEvaluation] = {}
         self.candidate_comparisons = 0
         self.on_demand_comparisons = 0
+        self.candidate_alignment_cells = 0
+        self.on_demand_alignment_cells = 0
         self.abstain_comparisons = 0
         self.cache_hits = 0
 
     @property
     def entries(self) -> dict[PairKey, PairEvaluation]:
         return dict(self._entries)
+
+    @property
+    def total_comparisons(self) -> int:
+        return self.candidate_comparisons + self.on_demand_comparisons
+
+    @property
+    def total_alignment_cells(self) -> int:
+        return self.candidate_alignment_cells + self.on_demand_alignment_cells
+
+    def alignment_cells(self, pair: PairKey) -> int:
+        left = self.bodies.get(pair.left)
+        right = self.bodies.get(pair.right)
+        if left is None or right is None:
+            return 0
+        return len(left.instructions) * len(right.instructions)
+
+    def would_compare(self, pair: PairKey) -> bool:
+        """True when evaluating this pair would actually run F4.
+
+        Cache hits, absent or incomplete bodies and opaque-jump abstains cost
+        no alignment work, so they are not charged to the budget.
+        """
+        if pair in self._entries:
+            return False
+        left = self.bodies.get(pair.left)
+        right = self.bodies.get(pair.right)
+        if left is None or right is None or not left.complete or not right.complete:
+            return False
+        if self.config.abstain_on_opaque_indirect and max(
+            int(left.quality.get("opaque_indirect_jumps", 0)),
+            int(right.quality.get("opaque_indirect_jumps", 0)),
+        ) > 0:
+            return False
+        return True
+
+    def demand(self, pairs: Iterable[PairKey]) -> tuple[int, int]:
+        """How many comparisons and cells running these pairs would cost."""
+        required = [pair for pair in pairs if self.would_compare(pair)]
+        return len(required), sum(self.alignment_cells(pair) for pair in required)
+
+    def within_budget(self, count: int, cells: int) -> bool:
+        limit_count = self.config.max_comparison_count
+        limit_cells = self.config.max_alignment_cell_budget
+        if limit_count is not None and self.total_comparisons + count > limit_count:
+            return False
+        if limit_cells is not None and self.total_alignment_cells + cells > limit_cells:
+            return False
+        return True
+
+    def remaining(self) -> dict[str, int | None]:
+        limit_count = self.config.max_comparison_count
+        limit_cells = self.config.max_alignment_cell_budget
+        return {
+            "remaining_comparisons": (
+                None if limit_count is None
+                else max(0, limit_count - self.total_comparisons)
+            ),
+            "remaining_alignment_cells": (
+                None if limit_cells is None
+                else max(0, limit_cells - self.total_alignment_cells)
+            ),
+        }
 
     def get_or_compare(self, first: str, second: str) -> str:
         return self.get_evaluation(first, second).decision
@@ -322,10 +403,13 @@ class PairEvidenceCache:
             features = _abstain_features(pair, body_a, body_b, candidate_record)
             decision = ABSTAIN
         else:
+            cells = self.alignment_cells(pair)
             if source == "candidate":
                 self.candidate_comparisons += 1
+                self.candidate_alignment_cells += cells
             else:
                 self.on_demand_comparisons += 1
+                self.on_demand_alignment_cells += cells
         if (
             bodies_complete
             and not opaque_abstain
@@ -413,10 +497,20 @@ def build_family_artifact(
         config,
         feature_provider=feature_provider,
     )
-    candidate_evaluations = [
-        cache.get_evaluation(_pair_from_record(item))
-        for item in candidate_records
-    ]
+    # Candidates are stored in function-id order, so spending the budget as we
+    # walk them would silently pick an arbitrary prefix of the binary. Price
+    # the whole artifact first and refuse it outright if it does not fit: the
+    # fix belongs in F5, which should produce a smaller artifact.
+    candidate_pairs = [_pair_from_record(item) for item in candidate_records]
+    candidate_required_count, candidate_required_cells = cache.demand(candidate_pairs)
+    if not cache.within_budget(candidate_required_count, candidate_required_cells):
+        raise ValueError(
+            "candidate artifact exceeds F6 comparison budget: "
+            f"{candidate_required_count} comparisons and "
+            f"{candidate_required_cells} alignment cells required, limits are "
+            f"{config.max_comparison_count} and {config.max_alignment_cell_budget}"
+        )
+    candidate_evaluations = [cache.get_evaluation(pair) for pair in candidate_pairs]
     match_evaluations = sorted(
         (item for item in candidate_evaluations if item.decision == MATCH),
         key=lambda item: (
@@ -429,6 +523,7 @@ def build_family_artifact(
 
     clusters: dict[str, set[str]] = {function_id: {function_id} for function_id in target_ids}
     blocked_merges: list[dict[str, Any]] = []
+    budget_blocked_merges = 0
     for evaluation in match_evaluations:
         left_cluster = _cluster_for(clusters, evaluation.pair.left)
         right_cluster = _cluster_for(clusters, evaluation.pair.right)
@@ -436,6 +531,27 @@ def build_family_artifact(
             continue
         left_members = sorted(left_cluster)
         right_members = sorted(right_cluster)
+        pending = [
+            PairKey.make(first, second)
+            for first in left_members
+            for second in right_members
+        ]
+        # A merge is allowed or blocked whole. Comparing part of a cross
+        # product and then giving up would make the outcome depend on the
+        # order merges happen to be tried.
+        required_count, required_cells = cache.demand(pending)
+        if not cache.within_budget(required_count, required_cells):
+            blocked_merges.append({
+                "edge": evaluation.pair.to_list(),
+                "reason": "comparison_budget",
+                "left_members": left_members,
+                "right_members": right_members,
+                "required_comparisons": required_count,
+                "required_alignment_cells": required_cells,
+                **cache.remaining(),
+            })
+            budget_blocked_merges += 1
+            continue
         cross_evaluations = [
             cache.get_evaluation(first, second)
             for first in left_members
@@ -452,6 +568,7 @@ def build_family_artifact(
         else:
             blocked_merges.append({
                 "edge": evaluation.pair.to_list(),
+                "reason": "cross_pair_mismatch",
                 "left_members": left_members,
                 "right_members": right_members,
                 "blocking_pairs": [
@@ -558,9 +675,13 @@ def build_family_artifact(
             "on_demand_comparison_count": cache.on_demand_comparisons,
             "cache_hit_count": cache.cache_hits,
             "abstain_comparison_count": cache.abstain_comparisons,
-            "total_detailed_comparisons": (
-                cache.candidate_comparisons + cache.on_demand_comparisons
-            ),
+            "total_detailed_comparisons": cache.total_comparisons,
+            "candidate_alignment_cells": cache.candidate_alignment_cells,
+            "on_demand_alignment_cells": cache.on_demand_alignment_cells,
+            "total_alignment_cells": cache.total_alignment_cells,
+            "budget_blocked_merge_count": budget_blocked_merges,
+            "budget_limited": budget_blocked_merges > 0,
+            **cache.remaining(),
         },
     }
     _validate_family_statuses(output)
