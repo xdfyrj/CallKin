@@ -8,11 +8,27 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from body_similarity import FunctionBody  # noqa: E402
+import gzip  # noqa: E402
+import json  # noqa: E402
+from pathlib import Path  # noqa: E402
+
+from body_similarity import FunctionBody, parse_body  # noqa: E402
 from family_template import (  # noqa: E402
+    COMMON,
+    OPTIONAL,
+    FamilyMedoid,
     align_members_to_medoid,
+    build_family_template,
     select_medoid,
     structure_similarity,
+)
+from slot_overlay import (  # noqa: E402
+    CALL_TARGET,
+    RESOLVED,
+    UNRESOLVED,
+    SlotObservation,
+    collect_slot_observations,
+    transfers_by_source,
 )
 
 
@@ -124,6 +140,168 @@ def test_every_other_member_is_aligned_onto_the_medoid():
         assert (3, 3) in alignment.instruction_pairs
 
 
+def _blocks_body(identifier: str, blocks: dict[str, list[str]]) -> FunctionBody:
+    instructions: list[dict[str, object]] = []
+    block_records: list[dict[str, object]] = []
+    offset = 0
+    for label, mnemonics in blocks.items():
+        offsets: list[int] = []
+        for mnemonic in mnemonics:
+            instructions.append({
+                "offset": offset,
+                "mnemonic_class": mnemonic,
+                "operands": [],
+                "control_flow": "return" if mnemonic == "RET" else "none",
+            })
+            offsets.append(offset)
+            offset += 1
+        block_records.append({"label": label, "instruction_offsets": offsets})
+    return FunctionBody(
+        id=identifier,
+        size=offset,
+        instructions=tuple(instructions),
+        edges=(),
+        blocks=tuple(block_records),
+        quality={"complete_decode": True, "opaque_indirect_jumps": 0},
+    )
+
+
+def _call_slot(offset: int, value, state=RESOLVED) -> SlotObservation:
+    return SlotObservation(
+        offset=offset, index=0, kind=CALL_TARGET, value=value, state=state
+    )
+
+
+def test_the_medoid_observes_itself_through_an_identity_mapping():
+    bodies = _family([_body("A", ["CALL", "RET"]), _body("B", ["CALL", "RET"])])
+    selection = select_medoid(bodies, ["A", "B"])
+    observations = {
+        "A": (_call_slot(0, "0x1111"),),
+        "B": (_call_slot(0, "0x2222"),),
+    }
+
+    template = build_family_template(bodies, selection, observations)
+
+    (slot,) = template.slots
+    assert template.medoid == "A"
+    assert slot.values_by_member == {"A": "0x1111", "B": "0x2222"}
+    assert slot.states_by_member == {"A": RESOLVED, "B": RESOLVED}
+    assert slot.varies and slot.resolved_values == ("0x1111", "0x2222")
+
+
+def test_an_invariant_target_is_not_a_variation_slot():
+    bodies = _family([_body("A", ["CALL", "RET"]), _body("B", ["CALL", "RET"])])
+    selection = select_medoid(bodies, ["A", "B"])
+    observations = {"A": (_call_slot(0, "0x1111"),), "B": (_call_slot(0, "0x1111"),)}
+
+    template = build_family_template(bodies, selection, observations)
+
+    assert template.slots[0].resolved_values == ("0x1111",)
+    assert not template.slots[0].varies
+    assert template.variation_slots == ()
+
+
+def test_unresolved_observations_do_not_create_variants():
+    bodies = _family([_body("A", ["CALL", "RET"]), _body("B", ["CALL", "RET"])])
+    selection = select_medoid(bodies, ["A", "B"])
+    observations = {
+        "A": (_call_slot(0, "0x1111"),),
+        "B": (_call_slot(0, None, state=UNRESOLVED),),
+    }
+
+    template = build_family_template(bodies, selection, observations)
+    slot = template.slots[0]
+
+    assert slot.resolved_values == ("0x1111",)
+    assert not slot.varies
+    assert not slot.observed_by_all
+
+
+def test_a_medoid_block_missing_from_a_member_is_optional():
+    bodies = _family([
+        _blocks_body("A", {"B0": ["PUSH", "MOV"], "B1": ["XOR", "RET"]}),
+        _blocks_body("B", {"B0": ["PUSH", "MOV"], "B1": ["XOR", "RET"]}),
+        _blocks_body("C", {"B0": ["PUSH", "MOV"]}),
+    ])
+    selection = select_medoid(bodies, ["A", "B", "C"])
+    observations = {member: () for member in bodies}
+
+    template = build_family_template(bodies, selection, observations)
+
+    assert template.block_roles["B0"] == COMMON
+    assert template.block_roles["B1"] == OPTIONAL
+
+
+def test_member_only_blocks_stay_attributed_to_that_member():
+    bodies = _family([
+        _blocks_body("A", {"B0": ["PUSH", "MOV"]}),
+        _blocks_body("B", {"B0": ["PUSH", "MOV"], "B1": ["XOR", "RET"]}),
+        _blocks_body("C", {"B0": ["PUSH", "MOV"], "B1": ["AAA", "RET"]}),
+    ])
+    # Pin the medoid: this test is about template construction, not selection,
+    # and A is the member the orphan blocks have to be measured against.
+    selection = FamilyMedoid(
+        medoid="A",
+        members=("A", "B", "C"),
+        mean_similarity={"A": 1.0, "B": 0.5, "C": 0.5},
+    )
+    observations = {member: () for member in bodies}
+
+    template = build_family_template(bodies, selection, observations)
+
+    # B and C each own an orphan block; they are never merged into one region.
+    assert template.medoid == "A"
+    assert set(template.member_specific_blocks) == {"B", "C"}
+    assert template.member_specific_blocks["B"] == ("B1",)
+    assert template.member_specific_blocks["C"] == ("B1",)
+
+
+def test_missing_observations_for_a_member_are_refused():
+    bodies = _family([_body("A", ["CALL", "RET"]), _body("B", ["CALL", "RET"])])
+    selection = select_medoid(bodies, ["A", "B"])
+    try:
+        build_family_template(bodies, selection, {"A": ()})
+    except ValueError as exc:
+        assert "slot observations" in str(exc)
+    else:
+        raise AssertionError("a member without observations was accepted")
+
+
+def test_real_line_buffer_fill_has_one_varying_call_target():
+    fixtures = Path(__file__).resolve().parent / "fixtures"
+    with gzip.open(fixtures / "f7_alignment" / "ripgrep_219_bodies.json.gz",
+                   "rt", encoding="utf-8") as handle:
+        records = {item["id"]: item for item in json.load(handle)["functions"]}
+    with gzip.open(fixtures / "f7_slot_overlay" / "ripgrep_positive_41.raw.json.gz",
+                   "rt", encoding="utf-8") as handle:
+        raw = json.load(handle)
+
+    members = raw["origins"]["grep_searcher::line_buffer::LineBuffer::fill"]
+    bodies = {member: parse_body(records[member]) for member in members}
+    index = transfers_by_source(raw)
+    observations = {}
+    for member in members:
+        base = int(raw["address_by_member"][member], 16)
+        observations[member] = collect_slot_observations(
+            bodies[member], base, index.get(base, {})
+        )
+
+    selection = select_medoid(bodies, members)
+    template = build_family_template(bodies, selection, observations)
+    calls = [slot for slot in template.slots if slot.kind == CALL_TARGET]
+    varying = [slot for slot in calls if slot.varies]
+
+    assert len(members) == 5
+    assert len(calls) == 10, len(calls)
+    assert len(varying) == 1, len(varying)
+    assert len(calls) - len(varying) == 9
+    (slot,) = varying
+    assert slot.offset == 0xEC, hex(slot.offset)
+    assert len(slot.resolved_values) == 5, slot.resolved_values
+    assert set(template.block_roles.values()) == {COMMON}
+    assert template.member_specific_blocks == {}
+
+
 def main() -> int:
     test_the_central_member_is_chosen()
     test_the_medoid_is_a_real_member_not_a_synthetic_body()
@@ -131,7 +309,14 @@ def main() -> int:
     test_identical_members_score_one()
     test_bad_input_is_refused()
     test_every_other_member_is_aligned_onto_the_medoid()
-    print("F7.1 medoid PASS")
+    test_the_medoid_observes_itself_through_an_identity_mapping()
+    test_an_invariant_target_is_not_a_variation_slot()
+    test_unresolved_observations_do_not_create_variants()
+    test_a_medoid_block_missing_from_a_member_is_optional()
+    test_member_only_blocks_stay_attributed_to_that_member()
+    test_missing_observations_for_a_member_are_refused()
+    test_real_line_buffer_fill_has_one_varying_call_target()
+    print("F7.1 medoid and F7.2 template PASS")
     return 0
 
 

@@ -16,6 +16,7 @@ PYTHON_FILES = (
     "body_evidence.py",
     "body_extractor.py",
     "body_similarity.py",
+    "slot_overlay.py",
     "family_template.py",
     "function_boundaries.py",
     "analysis_provenance.py",
@@ -71,6 +72,7 @@ PYTHON_FILES = (
     "tests/test_v1_corrected_gt.py",
     "tests/test_f7_alignment.py",
     "tests/test_f7_alignment_regression.py",
+    "tests/test_slot_overlay.py",
     "tests/test_family_template.py",
     "tests/run_all.py",
 )
@@ -99,6 +101,7 @@ TEST_FILES = (
     "tests/test_v1_corrected_gt.py",
     "tests/test_f7_alignment.py",
     "tests/test_f7_alignment_regression.py",
+    "tests/test_slot_overlay.py",
     "tests/test_family_template.py",
 )
 
