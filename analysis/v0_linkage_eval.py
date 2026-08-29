@@ -128,6 +128,7 @@ def evaluate_v0(
     ground_truth: Mapping[str, Any],
     linkage_audit: Mapping[str, Any],
     *,
+    ground_truth_sha256: str,
     provenance: Mapping[str, str] | None = None,
     mode: str = RELATION_MODE,
 ) -> dict[str, Any]:
@@ -149,6 +150,17 @@ def evaluate_v0(
             raise ValueError(f"ground truth disagrees on {field}")
         if linkage_audit.get(field) != run.get(field):
             raise ValueError(f"linkage audit disagrees on {field}")
+    # Matching case/build/profile does not make these the same file. The audit
+    # records the ground truth it was built from; anything else is a different
+    # set of labels wearing the same name.
+    audited = (linkage_audit.get("provenance") or {}).get("ground_truth_sha256")
+    if not audited:
+        raise ValueError("linkage audit does not record a ground_truth_sha256")
+    if audited != ground_truth_sha256:
+        raise ValueError(
+            "linkage audit ground_truth_sha256 mismatch: audit was built from "
+            f"{audited}, supplied ground truth is {ground_truth_sha256}"
+        )
 
     origins_by_address, identities_by_address = load_overlay(linkage_audit)
     predicted = v0_predicted_pairs(run)
@@ -196,6 +208,7 @@ def evaluate_v0_files(
         read(v1_universe_path),
         read(ground_truth_path),
         read(linkage_audit_path),
+        ground_truth_sha256=sha256_file(ground_truth_path),
         provenance={
             "v0_result_sha256": sha256_file(v0_result_path),
             "v1_universe_sha256": sha256_file(v1_universe_path),

@@ -17,6 +17,22 @@ from analysis.v0_linkage_eval import (  # noqa: E402
     v0_predicted_pairs,
     v0_target_ids,
 )
+from build_manifest import sha256_file  # noqa: E402
+
+
+GT_SHA = "9" * 64
+
+
+def _gt():
+    return {"case": "demo", "build": "O3S", "profile": "plain", "origins": []}
+
+
+def _audit(addresses=None, ground_truth_sha256=GT_SHA):
+    return {
+        "case": "demo", "build": "O3S", "profile": "plain",
+        "provenance": {"ground_truth_sha256": ground_truth_sha256},
+        "addresses": addresses or {},
+    }
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -124,10 +140,39 @@ def test_a_different_universe_is_refused():
         lambda: evaluate_v0(
             {"results": [_run()]},
             _v1(target_ids=("A", "B", "C")),
-            {"case": "demo", "build": "O3S", "profile": "plain", "origins": []},
-            {"case": "demo", "build": "O3S", "profile": "plain", "addresses": {}},
+            _gt(),
+            _audit(),
+            ground_truth_sha256=GT_SHA,
         ),
         "target universes differ",
+    )
+
+
+def test_an_audit_built_from_another_ground_truth_is_refused():
+    # Same case, build and profile, different file: the labels are not the ones
+    # the audit was built against.
+    _expect(
+        lambda: evaluate_v0(
+            {"results": [_run()]},
+            _v1(),
+            _gt(),
+            _audit(ground_truth_sha256="1" * 64),
+            ground_truth_sha256=GT_SHA,
+        ),
+        "ground_truth_sha256 mismatch",
+    )
+
+
+def test_an_audit_without_a_recorded_ground_truth_is_refused():
+    _expect(
+        lambda: evaluate_v0(
+            {"results": [_run()]},
+            _v1(),
+            _gt(),
+            _audit(ground_truth_sha256=None),
+            ground_truth_sha256=GT_SHA,
+        ),
+        "does not record a ground_truth_sha256",
     )
 
 
@@ -136,14 +181,12 @@ def test_v1_grouping_is_never_read():
     report = evaluate_v0(
         {"results": [_run()]},
         _v1(),
-        {"case": "demo", "build": "O3S", "profile": "plain", "origins": []},
-        {
-            "case": "demo", "build": "O3S", "profile": "plain",
-            "addresses": {
-                name: {"origins": ["O"], "identities": [f"M{name}"]}
-                for name in ("A", "B", "C", "D")
-            },
-        },
+        _gt(),
+        _audit({
+            name: {"origins": ["O"], "identities": [f"M{name}"]}
+            for name in ("A", "B", "C", "D")
+        }),
+        ground_truth_sha256=GT_SHA,
     )
 
     assert report["predicted_pair_count"] == 1
@@ -154,7 +197,8 @@ def test_v1_grouping_is_never_read():
     assert (primary["TP"], primary["FP"], primary["FN"]) == (1, 0, 5)
 
 
-def _regression(case: str, expected: dict[str, int]):
+def _regression(case: str, expected: dict[str, int]) -> bool:
+    """Return True when the real artifacts were present and checked."""
     v0_result = ROOT.parent / "v0-engine-py" / "results" / case / "plain" / (
         "angr.role.out-in.json"
     )
@@ -164,20 +208,26 @@ def _regression(case: str, expected: dict[str, int]):
     )
     audit = ROOT / "results" / case / "plain" / f"{case}.O3S.gt-mangled-audit.json"
     if not all(path.exists() for path in (v0_result, v1, gt, audit)):
-        return
+        return False
     read = lambda path: json.loads(path.read_text(encoding="utf-8"))  # noqa: E731
-    report = evaluate_v0(read(v0_result), read(v1), read(gt), read(audit))
+    report = evaluate_v0(
+        read(v0_result), read(v1), read(gt), read(audit),
+        ground_truth_sha256=sha256_file(gt),
+    )
     primary = report["linkage_metrics"]["primary"]
     for name, value in expected.items():
         assert primary[name] == value, (case, name, primary[name], value)
+    return True
 
 
-def test_ripgrep_regression():
-    _regression("ripgrep-main", {"TP": 302, "FP": 57162, "FN": 3555, "TN": 6992815})
+def test_ripgrep_regression() -> bool:
+    return _regression(
+        "ripgrep-main", {"TP": 302, "FP": 57162, "FN": 3555, "TN": 6992815}
+    )
 
 
-def test_fd_regression():
-    _regression("fd", {"TP": 1843, "FP": 4554, "FN": 1337, "TN": 2441597})
+def test_fd_regression() -> bool:
+    return _regression("fd", {"TP": 1843, "FP": 4554, "FN": 1337, "TN": 2441597})
 
 
 def main() -> int:
@@ -187,11 +237,25 @@ def main() -> int:
     test_singletons_and_abstentions_predict_nothing()
     test_mismatched_analysis_is_refused()
     test_a_different_universe_is_refused()
+    test_an_audit_built_from_another_ground_truth_is_refused()
+    test_an_audit_without_a_recorded_ground_truth_is_refused()
     test_v1_grouping_is_never_read()
-    test_ripgrep_regression()
-    test_fd_regression()
-    print("V0 linkage evaluation PASS")
-    return 0
+
+    # A missing artifact must not read as a checked regression. Half an
+    # environment is worse than none, because it looks like a full run.
+    checked = [test_ripgrep_regression(), test_fd_regression()]
+    if all(checked):
+        print("V0 linkage evaluation FULL PASS (ripgrep and fd regressions)")
+        return 0
+    if not any(checked):
+        print("V0 linkage evaluation PENDING: real regression artifacts unavailable")
+        return 0
+    print(
+        "V0 linkage evaluation ERROR: partial regression environment, "
+        f"ripgrep={checked[0]} fd={checked[1]}",
+        file=sys.stderr,
+    )
+    return 1
 
 
 if __name__ == "__main__":
