@@ -55,16 +55,22 @@ fn common_marker(x: u64, salt: u64) -> u64 {
 
 // Only the salt differs, which keeps identical-code folding from merging the
 // two kernels while leaving their call relation identical.
+//
+// The callee's result is used afterwards on purpose. Returning it directly
+// compiles to a tail `jmp`, and F2 turns a jump out of the function into
+// `external_jump` with the target erased and no slot emitted, which would hide
+// the A axis entirely and leave only the salt. The extra rotate keeps it a real
+// `call`, so the A axis survives as a CALL_TARGET slot.
 #[inline(never)]
 fn left<A: Axis>(x: u64) -> u64 {
     let marked = common_marker(x, 0x0000_1EF7);
-    A::callee(marked)
+    A::callee(marked).rotate_left(3)
 }
 
 #[inline(never)]
 fn right<A: Axis>(x: u64) -> u64 {
     let marked = common_marker(x, 0x0000_2167);
-    A::callee(marked)
+    A::callee(marked).rotate_left(3)
 }
 
 fn main() {
