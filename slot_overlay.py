@@ -19,9 +19,16 @@ from body_similarity import FunctionBody
 
 
 CALL_TARGET = "CALL_TARGET"
+TAIL_CALL_TARGET = "TAIL_CALL_TARGET"
 DATA_REFERENCE = "DATA_REFERENCE"
 IMMEDIATE_CONSTANT = "IMMEDIATE_CONSTANT"
-SLOT_KINDS = (CALL_TARGET, DATA_REFERENCE, IMMEDIATE_CONSTANT)
+SLOT_KINDS = (CALL_TARGET, TAIL_CALL_TARGET, DATA_REFERENCE, IMMEDIATE_CONSTANT)
+
+# The raw graph marks a jump that leaves the function as a tail call. F2 turns
+# such a jump into `external_jump` and erases its target, so without this the
+# callee a tail call selects would be invisible even though the raw graph knows
+# it. ripgrep alone has 2,955 of them.
+TAIL_CALL_KIND = "tail-call"
 
 RESOLVED = "resolved"
 UNRESOLVED = "unresolved"
@@ -85,10 +92,14 @@ def transfers_by_source(
 def _call_observation(
     offset: int,
     transfer: Mapping[str, Any] | None,
+    *,
+    kind: str = CALL_TARGET,
 ) -> SlotObservation:
+    """Read one transfer into a slot. The state rules are the same whether the
+    control transfer was a call or a tail call; only the kind differs."""
     if transfer is None:
         return SlotObservation(
-            offset=offset, index=0, kind=CALL_TARGET, value=None, state=MISSING
+            offset=offset, index=0, kind=kind, value=None, state=MISSING
         )
 
     resolver = transfer.get("resolver")
@@ -100,7 +111,7 @@ def _call_observation(
         return SlotObservation(
             offset=offset,
             index=0,
-            kind=CALL_TARGET,
+            kind=kind,
             value=value,
             state=state,
             resolver=resolver,
@@ -132,10 +143,25 @@ def collect_slot_observations(
     observations: list[SlotObservation] = []
     for instruction in body.instructions:
         offset = int(instruction["offset"])
-        if instruction.get("control_flow") == "call":
+        control_flow = instruction.get("control_flow")
+        transfer = transfers.get(base_address + offset)
+        if control_flow == "call":
+            observations.append(_call_observation(offset, transfer))
+        elif control_flow == "external_jump":
+            # A direct jump out of the function is a tail call by construction,
+            # so the position is recorded even when the raw graph has nothing
+            # for it. That absence is `missing`, not silence.
             observations.append(
-                _call_observation(offset, transfers.get(base_address + offset))
+                _call_observation(offset, transfer, kind=TAIL_CALL_TARGET)
             )
+        elif control_flow == "indirect_jump":
+            # An indirect jump may be a tail call or a jump table. Only the raw
+            # graph can tell, so nothing is claimed without it.
+            if transfer is not None and transfer.get("kind") == TAIL_CALL_KIND:
+                observations.append(
+                    _call_observation(offset, transfer, kind=TAIL_CALL_TARGET)
+                )
+        # `local_jump` stays inside the function and selects no callee.
 
         index = 1
         for slot in instruction.get("slots", ()):

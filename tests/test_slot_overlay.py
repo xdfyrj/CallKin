@@ -15,6 +15,7 @@ from body_similarity import FunctionBody, parse_body  # noqa: E402
 from slot_overlay import (  # noqa: E402
     AMBIGUOUS,
     CALL_TARGET,
+    TAIL_CALL_TARGET,
     DATA_REFERENCE,
     FILTERED,
     IMMEDIATE_CONSTANT,
@@ -39,6 +40,17 @@ def _call(offset: int) -> dict:
         "constants": [],
         "slots": [{"kind": "call", "value": None, "status": "address-only",
                    "resolver": None}],
+    }
+
+
+def _jump(offset: int, control_flow: str) -> dict:
+    return {
+        "offset": offset,
+        "mnemonic_class": "JMP",
+        "operands": ["external_target"],
+        "control_flow": control_flow,
+        "constants": [],
+        "slots": [],
     }
 
 
@@ -170,6 +182,65 @@ def test_a_data_slot_without_a_value_is_missing():
     assert (data.kind, data.state) == (DATA_REFERENCE, MISSING)
 
 
+def test_a_resolved_direct_tail_call_is_a_usable_slot():
+    (tail,) = _observe(
+        [_jump(0, "external_jump")],
+        [_transfer(0, kind="tail-call", status="resolved", target="0x2000",
+                   resolver="direct-tail")],
+    )
+    assert (tail.kind, tail.state, tail.value) == (
+        TAIL_CALL_TARGET, RESOLVED, "0x2000"
+    )
+    assert tail.usable
+
+
+def test_a_resolved_angr_tail_call_is_a_usable_slot():
+    (tail,) = _observe(
+        [_jump(0, "external_jump")],
+        [_transfer(0, kind="tail-call", status="resolved", target="0x3000",
+                   resolver="angr-cfg", angr_targets=["0x3000"])],
+    )
+    assert (tail.kind, tail.state, tail.value) == (
+        TAIL_CALL_TARGET, RESOLVED, "0x3000"
+    )
+    assert tail.resolver == "angr-cfg"
+
+
+def test_an_unresolved_indirect_tail_call_is_observed_but_unusable():
+    (tail,) = _observe(
+        [_jump(0, "indirect_jump")],
+        [_transfer(0, kind="tail-call", status="unresolved", target=None)],
+    )
+    assert (tail.kind, tail.state, tail.value) == (
+        TAIL_CALL_TARGET, UNRESOLVED, None
+    )
+    assert not tail.usable
+
+
+def test_an_indirect_jump_that_is_not_a_tail_call_gets_no_slot():
+    # A jump table is not a callee choice, and only the raw graph can say so.
+    assert _observe(
+        [_jump(0, "indirect_jump")],
+        [_transfer(0, kind="call", status="resolved", target="0x2000")],
+    ) == ()
+    assert _observe([_jump(0, "indirect_jump")], []) == ()
+
+
+def test_a_local_jump_never_produces_a_slot():
+    assert _observe([_jump(0, "local_jump")], []) == ()
+    assert _observe(
+        [_jump(0, "local_jump")],
+        [_transfer(0, kind="tail-call", status="resolved", target="0x2000")],
+    ) == ()
+
+
+def test_an_external_jump_without_a_transfer_is_missing():
+    # The position still exists; the raw graph simply had nothing for it.
+    (tail,) = _observe([_jump(0, "external_jump")], [])
+    assert (tail.kind, tail.state) == (TAIL_CALL_TARGET, MISSING)
+    assert not tail.usable
+
+
 def test_real_callsites_join_the_raw_graph_exactly():
     with gzip.open(FIXTURES / "f7_alignment" / "ripgrep_219_bodies.json.gz",
                    "rt", encoding="utf-8") as handle:
@@ -207,6 +278,12 @@ def main() -> int:
     test_duplicate_source_callsite_is_refused()
     test_data_references_and_constants_come_from_the_instruction()
     test_a_data_slot_without_a_value_is_missing()
+    test_a_resolved_direct_tail_call_is_a_usable_slot()
+    test_a_resolved_angr_tail_call_is_a_usable_slot()
+    test_an_unresolved_indirect_tail_call_is_observed_but_unusable()
+    test_an_indirect_jump_that_is_not_a_tail_call_gets_no_slot()
+    test_a_local_jump_never_produces_a_slot()
+    test_an_external_jump_without_a_transfer_is_missing()
     test_real_callsites_join_the_raw_graph_exactly()
     print("F7.2a slot overlay PASS (814 body calls joined to 814 raw transfers)")
     return 0
