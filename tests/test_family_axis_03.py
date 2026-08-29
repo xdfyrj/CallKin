@@ -8,6 +8,8 @@ Build the artifacts on a Linux toolchain, then re-run:
 
     python compile.py family_axis_03 --build O3S --profile plain
     python gt_extractor.py family_axis_03 --build O3S --profile plain
+    python binary_extractor.py family_axis_03 --build O3S --profile plain
+        --track angr --candidate-scope subject
     python body_extractor.py family_axis_03 --build O3S --profile plain
 """
 
@@ -27,6 +29,7 @@ from analysis.gt_mangled_audit import (  # noqa: E402
     raw_symbols_by_member,
     read_raw_function_symbols,
 )
+from build_manifest import sha256_file  # noqa: E402
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -80,11 +83,13 @@ def test_ground_truth_gates():
         group["origin"]: sorted(group["members"]) for group in ground_truth["origins"]
     }
 
+    # Real hashes: the audit cross-checks the binary against the ground
+    # truth's own provenance, and empty strings would skip that check.
     audit = build_audit(
         ground_truth,
         raw_symbols,
-        ground_truth_sha256="",
-        binary_sha256="",
+        ground_truth_sha256=sha256_file(GT),
+        binary_sha256=sha256_file(GT_BIN),
     )
     repeated = {
         entry["origin"]
@@ -119,7 +124,7 @@ def test_axis_expectations():
         json.loads(RAW.read_text(encoding="utf-8")),
         json.loads(GT.read_text(encoding="utf-8")),
         sorted(expected),
-        provenance={"raw_graph_sha256": ""},
+        provenance={"raw_graph_sha256": sha256_file(RAW)},
     )
     families = {family["origin"]: family for family in report["families"]}
 
@@ -151,10 +156,14 @@ def main() -> int:
     test_expectations_are_self_consistent()
     test_ground_truth_gates()
     test_axis_expectations()
-    if _artifacts_present():
-        print("F7.3 control fixture PASS")
-    else:
+    # Three states, because a green line for "the ground truth looks right"
+    # must not read as "the axes were checked".
+    if not _artifacts_present():
         print("F7.3 control fixture PENDING (expectations fixed, artifacts not built)")
+    elif BODY.exists() and RAW.exists():
+        print("F7.3 control fixture FULL PASS (ground-truth gates and axes)")
+    else:
+        print("F7.3 control fixture GT PASS (axes not checked: no body or raw graph)")
     return 0
 
 
