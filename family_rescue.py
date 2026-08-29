@@ -417,3 +417,70 @@ def final_partition(
             "origin": "rescued",
         })
     return partition
+
+
+def rescued_clusters(
+    family_artifact: Mapping[str, Any],
+    rescue_artifact: Mapping[str, Any],
+    *,
+    family_artifact_sha256: str,
+) -> list[list[str]]:
+    """Validate a rescue artifact against its strict partition, return the final one.
+
+    The rescue stage may only regroup what strict F6 accepted. It may not add a
+    function, drop one, or place one in two families, so the member multiset is
+    checked rather than trusted.
+    """
+    if rescue_artifact.get("artifact") != "v1-family-rescue":
+        raise ValueError("expected a v1-family-rescue artifact")
+    for field_name in ("case", "build", "profile", "scope"):
+        left = family_artifact.get(field_name)
+        right = rescue_artifact.get(field_name)
+        if left != right:
+            raise ValueError(
+                f"family and rescue artifacts disagree on {field_name}: "
+                f"{left!r} vs {right!r}"
+            )
+
+    recorded = (rescue_artifact.get("provenance") or {}).get("family_artifact_sha256")
+    if not recorded:
+        raise ValueError("rescue artifact does not record a family_artifact_sha256")
+    if recorded != family_artifact_sha256:
+        raise ValueError(
+            "rescue artifact was built from family artifact "
+            f"{recorded}, not {family_artifact_sha256}"
+        )
+
+    strict = accepted_fragments(family_artifact)
+    declared = {
+        item["id"]: tuple(sorted(item["members"]))
+        for item in rescue_artifact["strict_partition"]
+    }
+    if declared != {name: tuple(sorted(members)) for name, members in strict.items()}:
+        raise ValueError(
+            "rescue artifact's strict partition does not match the family artifact"
+        )
+
+    clusters = [sorted(item["members"]) for item in rescue_artifact["final_partition"]]
+    flattened = [member for cluster in clusters for member in cluster]
+    duplicates = sorted({m for m in flattened if flattened.count(m) > 1})
+    if duplicates:
+        raise ValueError(
+            f"{len(duplicates)} member(s) appear in more than one rescued family, "
+            f"first is {duplicates[0]!r}"
+        )
+    expected = {member for members in strict.values() for member in members}
+    seen = set(flattened)
+    missing = sorted(expected - seen)
+    added = sorted(seen - expected)
+    if missing:
+        raise ValueError(
+            f"{len(missing)} strict accepted member(s) are absent from the rescued "
+            f"partition, first is {missing[0]!r}"
+        )
+    if added:
+        raise ValueError(
+            f"{len(added)} member(s) were added by the rescued partition, "
+            f"first is {added[0]!r}"
+        )
+    return clusters

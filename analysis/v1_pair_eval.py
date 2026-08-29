@@ -15,6 +15,8 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from build_manifest import sha256_file  # noqa: E402
+from family_rescue import rescued_clusters  # noqa: E402
 from linkage_overlay import load_overlay, score_labeled_pairs  # noqa: E402
 from v1_candidates import PairKey  # noqa: E402
 from v1_engine import (  # noqa: E402
@@ -34,6 +36,10 @@ def evaluate_family_artifact(
     family_artifact: Mapping[str, Any],
     ground_truth: Mapping[str, Any],
     linkage_audit: Mapping[str, Any] | None = None,
+    rescue_artifact: Mapping[str, Any] | None = None,
+    *,
+    family_artifact_sha256: str | None = None,
+    provenance: Mapping[str, str] | None = None,
 ) -> dict[str, Any]:
     """Score accepted F6 families against GT after grouping is complete.
 
@@ -47,11 +53,25 @@ def evaluate_family_artifact(
     target_ids = list(family_artifact["universe"]["target_ids"])
     origin_by_member, gt_groups = _ground_truth_index(ground_truth)
     labeled_ids = sorted(set(target_ids) & set(origin_by_member))
-    accepted_clusters = [
-        sorted(item["members"])
-        for item in family_artifact["clusters"]
-        if item["status"] == "accepted"
-    ]
+    partition_kind = "strict"
+    if rescue_artifact is None:
+        accepted_clusters = [
+            sorted(item["members"])
+            for item in family_artifact["clusters"]
+            if item["status"] == "accepted"
+        ]
+    else:
+        # The rescue stage regroups what strict F6 accepted; every other part of
+        # the artifact, including pair decisions and statuses, stays as it was.
+        if family_artifact_sha256 is None:
+            raise ValueError(
+                "scoring a rescue artifact requires the strict family artifact hash"
+            )
+        accepted_clusters = rescued_clusters(
+            family_artifact, rescue_artifact,
+            family_artifact_sha256=family_artifact_sha256,
+        )
+        partition_kind = "f7-rescue"
     raw_predicted_pairs = {
         PairKey.make(first, second)
         for cluster in accepted_clusters
@@ -149,6 +169,7 @@ def evaluate_family_artifact(
         "build": family_artifact["build"],
         "profile": family_artifact["profile"],
         "scope": family_artifact["scope"],
+        "evaluation_provenance": {"partition": partition_kind, **dict(provenance or {})},
         "linkage_metrics": linkage_metrics,
         "ground_truth": {
             "used_for": "evaluation labels only",
@@ -190,11 +211,21 @@ def evaluate_family_files(
     family_path: str | Path,
     ground_truth_path: str | Path,
     linkage_audit_path: str | Path | None = None,
+    rescue_path: str | Path | None = None,
 ) -> dict[str, Any]:
+    provenance = {"family_artifact_sha256": sha256_file(family_path),
+                  "ground_truth_sha256": sha256_file(ground_truth_path)}
+    if linkage_audit_path is not None:
+        provenance["linkage_audit_sha256"] = sha256_file(linkage_audit_path)
+    if rescue_path is not None:
+        provenance["rescue_artifact_sha256"] = sha256_file(rescue_path)
     return evaluate_family_artifact(
         _read_json(family_path),
         _read_json(ground_truth_path),
         None if linkage_audit_path is None else _read_json(linkage_audit_path),
+        None if rescue_path is None else _read_json(rescue_path),
+        family_artifact_sha256=provenance["family_artifact_sha256"],
+        provenance=provenance,
     )
 
 
@@ -494,6 +525,11 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("ground_truth")
     parser.add_argument("--output")
     parser.add_argument(
+        "--rescue-artifact",
+        help="v1-family-rescue artifact; its final_partition replaces the strict "
+             "accepted clusters, everything else is unchanged",
+    )
+    parser.add_argument(
         "--linkage-audit",
         help="gt-mangled-audit artifact; adds primary and source-origin metrics "
              "that set aside pairs the binary cannot decide",
@@ -519,7 +555,8 @@ def main(argv: list[str] | None = None) -> int:
     args = build_arg_parser().parse_args(argv)
     try:
         report = evaluate_family_files(
-            args.family_artifact, args.ground_truth, args.linkage_audit
+            args.family_artifact, args.ground_truth, args.linkage_audit,
+            args.rescue_artifact,
         )
         encoded = json.dumps(report, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
         if args.output:

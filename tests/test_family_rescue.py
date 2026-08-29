@@ -27,6 +27,7 @@ from family_rescue import (  # noqa: E402
     evaluate_component,
     final_partition,
     rescue_families,
+    rescued_clusters,
     reserve_cost,
 )
 from slot_overlay import CALL_TARGET, RESOLVED, SlotObservation  # noqa: E402
@@ -293,6 +294,90 @@ def test_the_final_partition_merges_only_accepted_components():
     assert partition[0]["origin"] == "rescued"
 
 
+FAMILY_SHA = "0" * 64
+
+
+def _rescue(final=None, **overrides):
+    record = {
+        "artifact": "v1-family-rescue",
+        "case": "demo", "build": "O3S", "profile": "plain", "scope": "rust-nonstd",
+        "provenance": {"family_artifact_sha256": FAMILY_SHA},
+        "strict_partition": [
+            {"id": "F1", "members": ["A", "B"]},
+            {"id": "F2", "members": ["C", "D"]},
+        ],
+        "final_partition": final if final is not None else [
+            {"id": "F1+F2", "members": ["A", "B", "C", "D"], "origin": "rescued"},
+        ],
+    }
+    record.update(overrides)
+    return record
+
+
+def test_a_valid_rescue_replaces_the_strict_clusters():
+    family, _ = _artifacts()
+    clusters = rescued_clusters(
+        family, _rescue(), family_artifact_sha256=FAMILY_SHA
+    )
+    assert clusters == [["A", "B", "C", "D"]]
+
+    unchanged = rescued_clusters(
+        family,
+        _rescue(final=[
+            {"id": "F1", "members": ["A", "B"]},
+            {"id": "F2", "members": ["C", "D"]},
+        ]),
+        family_artifact_sha256=FAMILY_SHA,
+    )
+    assert unchanged == [["A", "B"], ["C", "D"]]
+
+
+def test_a_rescue_built_from_another_family_artifact_is_refused():
+    family, _ = _artifacts()
+    _expect(
+        lambda: rescued_clusters(
+            family, _rescue(), family_artifact_sha256="9" * 64
+        ),
+        "was built from family artifact",
+    )
+
+
+def test_a_rescue_whose_strict_partition_drifted_is_refused():
+    family, _ = _artifacts()
+    drifted = _rescue()
+    drifted["strict_partition"] = [{"id": "F1", "members": ["A", "B", "C", "D"]}]
+    _expect(
+        lambda: rescued_clusters(family, drifted, family_artifact_sha256=FAMILY_SHA),
+        "strict partition does not match",
+    )
+
+
+def test_the_rescued_partition_may_not_change_the_membership():
+    family, _ = _artifacts()
+    for final, expected in (
+        ([{"id": "X", "members": ["A", "B", "C"]}], "absent from the rescued"),
+        ([{"id": "X", "members": ["A", "B", "C", "D", "E"]}], "were added"),
+        ([{"id": "X", "members": ["A", "B", "C", "D"]},
+          {"id": "Y", "members": ["A"]}], "more than one rescued family"),
+    ):
+        _expect(
+            lambda final=final: rescued_clusters(
+                family, _rescue(final=final), family_artifact_sha256=FAMILY_SHA
+            ),
+            expected,
+        )
+
+
+def test_a_rescue_for_a_different_case_is_refused():
+    family, _ = _artifacts()
+    _expect(
+        lambda: rescued_clusters(
+            family, _rescue(profile="min"), family_artifact_sha256=FAMILY_SHA
+        ),
+        "disagree on profile",
+    )
+
+
 def main() -> int:
     test_a_complete_two_by_three_with_internal_support_is_accepted()
     test_an_incomplete_product_is_refused()
@@ -306,6 +391,11 @@ def main() -> int:
     test_a_component_over_budget_runs_nothing_and_keeps_its_fragments()
     test_an_oversized_component_is_blocked_before_it_is_priced()
     test_the_final_partition_merges_only_accepted_components()
+    test_a_valid_rescue_replaces_the_strict_clusters()
+    test_a_rescue_built_from_another_family_artifact_is_refused()
+    test_a_rescue_whose_strict_partition_drifted_is_refused()
+    test_the_rescued_partition_may_not_change_the_membership()
+    test_a_rescue_for_a_different_case_is_refused()
     print("F7 family rescue PASS")
     return 0
 
