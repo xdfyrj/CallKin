@@ -50,6 +50,7 @@ PYTHON_FILES = (
     "analysis/v1_consensus_candidates.py",
     "analysis/v0_linkage_eval.py",
     "analysis/v1_family_rescue.py",
+    "analysis/v1_family_label_propagation.py",
     "tests/fixtures/f7_alignment/make_fixture.py",
     "tests/fixtures/f7_slot_overlay/make_fixture.py",
     "analysis/v1_corrected_gt.py",
@@ -87,6 +88,7 @@ PYTHON_FILES = (
     "tests/test_v1_axis_probe.py",
     "tests/test_family_axis_03.py",
     "tests/test_family_rescue.py",
+    "tests/test_family_label_propagation.py",
     "tests/test_family_axis_04.py",
     "tests/run_all.py",
 )
@@ -124,6 +126,7 @@ TEST_FILES = (
     "tests/test_v1_axis_probe.py",
     "tests/test_family_axis_03.py",
     "tests/test_family_rescue.py",
+    "tests/test_family_label_propagation.py",
     "tests/test_family_axis_04.py",
 )
 
