@@ -147,6 +147,7 @@ def score_family_label_propagation(
     prediction: Mapping[str, Any],
     *,
     oxidizer_labels_sha256: str,
+    family_label_propagation_sha256: str | None = None,
 ) -> dict[str, Any]:
     """Score a GT-free propagation artifact against the all-Rust catalog.
 
@@ -310,6 +311,12 @@ def score_family_label_propagation(
             "all_rust_catalog_sha256": all_rust_catalog_sha256(dict(catalog)),
             "propagation_stripped_sha256": prediction_provenance["stripped_sha256"],
             "oxidizer_labels_sha256": prediction_provenance.get("oxidizer_labels_sha256"),
+            # Which prediction produced this score. Two propagation artifacts
+            # that both propagate nothing yield identical metrics, so without
+            # the prediction's own file hash the evaluation cannot say which
+            # partition it scored.
+            "family_label_propagation_sha256": family_label_propagation_sha256,
+            "method": prediction.get("method"),
         },
         "direct": direct_report,
         "propagated": propagated_report,
@@ -326,6 +333,7 @@ def build_flirt_audit(
     labels: dict[str, Any],
     prediction: Mapping[str, Any] | None = None,
     oxidizer_labels_sha256: str | None = None,
+    family_label_propagation_sha256: str | None = None,
 ) -> dict[str, Any]:
     """Build evaluation-only direct-FLIRT and mixed-family measurements."""
     identity = ("case", "build", "profile", "provenance")
@@ -464,6 +472,7 @@ def build_flirt_audit(
             labels,
             prediction,
             oxidizer_labels_sha256=oxidizer_labels_sha256,
+            family_label_propagation_sha256=family_label_propagation_sha256,
         )
     return output
 
@@ -513,13 +522,17 @@ def main(argv: list[str] | None = None) -> int:
         labels_path = args.labels or oxidizer_labels_for(case, build, args.profile)
         labels = load_label_artifact(labels_path)
         prediction = None
+        prediction_sha256 = None
         if args.prediction:
-            prediction = json.loads(Path(args.prediction).read_text(encoding="utf-8"))
+            prediction_bytes = Path(args.prediction).read_bytes()
+            prediction = json.loads(prediction_bytes.decode("utf-8"))
+            prediction_sha256 = hashlib.sha256(prediction_bytes).hexdigest()
         audit = build_flirt_audit(
             catalog=catalog,
             labels=labels,
             prediction=prediction,
             oxidizer_labels_sha256=hashlib.sha256(Path(labels_path).read_bytes()).hexdigest(),
+            family_label_propagation_sha256=prediction_sha256,
         )
         output = args.output or flirt_audit_for(case, build, args.profile)
         write_flirt_audit(audit, output)

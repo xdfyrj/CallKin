@@ -455,6 +455,50 @@ def _catalog(*, owner_a="crate_a", include=(
     }
 
 
+def test_evaluation_provenance_distinguishes_identical_strict_and_rescue_metrics():
+    family = _family()
+    labels = _labels([])
+    labels_sha = _sha(labels)
+    strict = _build(family, labels, labels_sha=labels_sha)
+    rescue, family_sha = _rescue(
+        family,
+        [
+            {"id": "F1", "members": family["clusters"][0]["members"], "origin": "strict"},
+            {"id": "F2", "members": family["clusters"][1]["members"], "origin": "strict"},
+        ],
+    )
+    rescued = _build(
+        family,
+        labels,
+        rescue,
+        family_sha=family_sha,
+        labels_sha=labels_sha,
+    )
+
+    strict_report = score_family_label_propagation(
+        _catalog(),
+        labels,
+        strict,
+        oxidizer_labels_sha256=labels_sha,
+        family_label_propagation_sha256="4" * 64,
+    )
+    rescue_report = score_family_label_propagation(
+        _catalog(),
+        labels,
+        rescued,
+        oxidizer_labels_sha256=labels_sha,
+        family_label_propagation_sha256="5" * 64,
+    )
+
+    for key in ("direct", "propagated", "combined", "metrics", "gt_upper_bound"):
+        assert strict_report[key] == rescue_report[key]
+    assert strict_report["provenance"]["family_label_propagation_sha256"] == "4" * 64
+    assert rescue_report["provenance"]["family_label_propagation_sha256"] == "5" * 64
+    assert strict_report["provenance"]["method"] == "strict"
+    assert rescue_report["provenance"]["method"] == "rescue"
+    assert strict_report != rescue_report
+
+
 def test_raw_labels_sha_binds_prediction_to_scoring():
     family = _family()
     labels = _labels([_match(0, "origin_a", "crate_a")])
