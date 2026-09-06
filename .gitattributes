@@ -4,3 +4,6 @@ docs/results/*.json -text
 experiments/concrete-null/** -text
 docs/protocols/wl-depth.md -text
 *.bin binary
+
+# Preserve upstream license notices without applying project whitespace rules.
+third_party/licenses/** -whitespace
