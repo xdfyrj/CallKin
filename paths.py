@@ -196,6 +196,23 @@ def raw_graph_for(
     return "/".join(parts)
 
 
+def body_evidence_for(
+    case: str,
+    build: str,
+    profile: str = DEFAULT_PROFILE,
+    candidate_scope: str = DEFAULT_CANDIDATE_SCOPE,
+) -> str:
+    scope = normalize_candidate_scope(candidate_scope)
+    parts = ["body_evidence"]
+    if scope != DEFAULT_CANDIDATE_SCOPE:
+        parts.append(scope)
+    parts.extend((
+        normalize_profile(profile),
+        f"{output_stem(case, build)}.body.json",
+    ))
+    return "/".join(parts)
+
+
 def gt_json_for(
     case: str,
     build: str,
@@ -354,6 +371,48 @@ def score_result_for(
         f"{result_mode}"
     )
     return result_json_for(case, name, profile)
+
+
+def f45_partition_for(
+    case: str,
+    build: str = DEFAULT_BUILD,
+    profile: str = DEFAULT_PROFILE,
+    mode: str = "out-in",
+    track: str = ANGR_TRACK,
+    candidate_scope: str = RUST_NONSTD_CANDIDATE_SCOPE,
+    anchor_policy: str = ROLE_ANCHOR_POLICY,
+) -> str:
+    """Return the reproducible V0 partition artifact path for F4.5."""
+    track = normalize_track(track)
+    candidate_scope = normalize_candidate_scope(candidate_scope)
+    anchor_policy = normalize_anchor_policy(anchor_policy)
+    return result_json_for(
+        case,
+        f"{output_stem(case, build)}.f4_5.{track}.{candidate_scope}."
+        f"{anchor_policy}.{mode}.partition",
+        profile,
+    )
+
+
+def f45_result_for(
+    case: str,
+    build: str = DEFAULT_BUILD,
+    profile: str = DEFAULT_PROFILE,
+    mode: str = "out-in",
+    track: str = ANGR_TRACK,
+    candidate_scope: str = RUST_NONSTD_CANDIDATE_SCOPE,
+    anchor_policy: str = ROLE_ANCHOR_POLICY,
+) -> str:
+    """Return the F4.5 collision diagnostic result path."""
+    track = normalize_track(track)
+    candidate_scope = normalize_candidate_scope(candidate_scope)
+    anchor_policy = normalize_anchor_policy(anchor_policy)
+    return result_json_for(
+        case,
+        f"{output_stem(case, build)}.f4_5.{track}.{candidate_scope}."
+        f"{anchor_policy}.{mode}.collision",
+        profile,
+    )
 
 
 def baseline_result_for(profile: str = DEFAULT_PROFILE) -> str:

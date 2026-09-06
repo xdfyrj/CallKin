@@ -230,21 +230,32 @@ def main(argv: list[str] | None = None) -> int:
         )
         mismatched_gt = json.loads(Path(gt_path).read_text(encoding="utf-8"))
         mismatched_gt["provenance"]["build_id"] = "another-build-generation"
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", encoding="utf-8") as f:
-            json.dump(mismatched_gt, f)
-            f.flush()
+        temp_path: str | None = None
+        try:
+            with tempfile.NamedTemporaryFile(
+                mode="w",
+                suffix=".json",
+                encoding="utf-8",
+                delete=False,
+            ) as f:
+                json.dump(mismatched_gt, f)
+                f.flush()
+            temp_path = f.name
             try:
                 score_case(
                     fixture_json_for(
                         "family_graph_01", "O3S", "plain",
                         candidate_scope=SUBJECT_CANDIDATE_SCOPE,
                     ),
-                    f.name,
+                    temp_path,
                 )
             except ValueError as exc:
                 provenance_join_ok = "build provenance mismatch" in str(exc)
             else:
                 provenance_join_ok = False
+        finally:
+            if temp_path is not None:
+                Path(temp_path).unlink(missing_ok=True)
         all_ok = all_ok and provenance_join_ok
         print(
             "cross-generation provenance rejection: "
