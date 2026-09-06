@@ -12,6 +12,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from graph_evidence import make_raw_graph
 from oxidizer_adapter import (
+    DEFAULT_OXIDIZER_DIR,
     build_label_artifact,
     probe_from_label_cache,
     run_oxidizer_probe,
@@ -50,6 +51,7 @@ def _match(address: int, name: str, evidence: str) -> dict[str, str]:
 
 
 def main() -> int:
+    assert Path(DEFAULT_OXIDIZER_DIR) == Path(__file__).resolve().parents[2] / "oxidizer"
     raw = make_raw_graph(
         case="oxidizer-test",
         build="O3S",

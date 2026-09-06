@@ -37,7 +37,7 @@ DIRECT_FLIRT = "direct-flirt"
 PROPAGATED_WRAPPER = "propagated-wrapper"
 CLEANUP_HEURISTIC = "cleanup-heuristic"
 EVIDENCE_STAGES = (DIRECT_FLIRT, PROPAGATED_WRAPPER, CLEANUP_HEURISTIC)
-DEFAULT_OXIDIZER_DIR = "/mnt/c/users/sumyr/playground/oxidizer"
+DEFAULT_OXIDIZER_DIR = str(Path(__file__).resolve().parent.parent / "oxidizer")
 
 
 def _address(value: object, *, where: str) -> int:

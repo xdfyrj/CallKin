@@ -287,7 +287,7 @@ stripped binary만으로 library 소유권을 분류하는 기능은 아니다.
 따라서 일반 subject는 case 이름만으로 주 분석 조건을 실행할 수 있다.
 
 ```bash
-python3 run_case.py fd-1160 --json-output
+python3 run_case.py fd --json-output
 ```
 
 `subject + direct + address + full`은 동결 baseline을

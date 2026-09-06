@@ -561,7 +561,7 @@ Symbol과 origin annotation은 설명을 위한 scorer output이다. Engine outp
 `run_case.py`에서는 출력 경로를 생략할 수 있다.
 
 ```bash
-python3 run_case.py fd-1160 \
+python3 run_case.py fd \
   --profile plain \
   --build O3S \
   --candidate-scope rust-nonstd \
@@ -574,7 +574,7 @@ python3 run_case.py fd-1160 \
 자동 경로:
 
 ```text
-results/fd-1160/plain/angr.role.out-in.json
+results/fd/plain/angr.role.out-in.json
 ```
 
 `--all-modes --json-output`이면 마지막 이름은 `all_modes`가 된다.

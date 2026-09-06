@@ -108,10 +108,10 @@ labels/oxidizer/plain/billing-client.O3S.labels.json
 results/billing-client/plain/billing-client.O3S.flirt_audit.json
 ```
 
-기본 Oxidizer checkout은 다음 경로다.
+기본 Oxidizer checkout은 CallKin 디렉토리와 나란히 둔 `oxidizer/`다.
 
 ```text
-/mnt/c/users/sumyr/playground/oxidizer
+../oxidizer
 ```
 
 다른 checkout을 쓸 때만 명시한다.
