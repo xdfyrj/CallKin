@@ -1,5 +1,8 @@
 import os
+import subprocess
 import sys
+import tempfile
+from pathlib import Path
 
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -25,9 +28,9 @@ try:
     except ImportError:
         _validate_job_identity = None
     try:
-        from analysis.wl_depth_baseline import _verify_protocol_commit
+        from analysis.wl_depth_baseline import _verify_protocol_bytes
     except ImportError:
-        _verify_protocol_commit = None
+        _verify_protocol_bytes = None
     try:
         from analysis.wl_depth_baseline import _score_with_existing_scorer
     except ImportError:
@@ -147,9 +150,66 @@ def test_job_labels_cannot_disagree_with_loaded_inputs() -> None:
         raise AssertionError("mislabeled job inputs were accepted")
 
 
-def test_protocol_bytes_are_present_in_preregistered_commit() -> None:
-    assert _verify_protocol_commit is not None
-    _verify_protocol_commit(DEFAULT_PROTOCOL)
+def test_bundled_protocol_bytes_match_preregistered_hash() -> None:
+    assert _verify_protocol_bytes is not None
+    _verify_protocol_bytes(DEFAULT_PROTOCOL)
+
+
+def test_public_defaults_use_bundled_protocol_and_repository_inputs() -> None:
+    from analysis.wl_depth_baseline import (
+        DEFAULT_PROTOCOL as protocol,
+        DEFAULT_RIPGREP_ROOT as ripgrep_root,
+        PROTOCOL_SHA256,
+        ROOT,
+        sha256_file,
+    )
+
+    assert protocol == ROOT / "docs/protocols/wl-depth.md"
+    assert ripgrep_root == ROOT
+    assert sha256_file(protocol) == PROTOCOL_SHA256
+
+
+def test_external_protocol_commit_verification_is_explicit() -> None:
+    import analysis.wl_depth_baseline as baseline
+
+    with tempfile.TemporaryDirectory(prefix="callkin-wl-protocol-") as directory:
+        repository = Path(directory)
+        external = repository / "30_Experiments" / "protocol.md"
+        external.parent.mkdir(parents=True)
+        external.write_bytes(baseline.DEFAULT_PROTOCOL.read_bytes())
+        subprocess.run(["git", "init", str(repository)], check=True, capture_output=True)
+        subprocess.run(
+            ["git", "-C", str(repository), "add", str(external.relative_to(repository))],
+            check=True,
+            capture_output=True,
+        )
+        subprocess.run(
+            [
+                "git",
+                "-C",
+                str(repository),
+                "-c",
+                "user.name=CallKin test",
+                "-c",
+                "user.email=callkin-test@example.invalid",
+                "commit",
+                "-m",
+                "pin protocol",
+            ],
+            check=True,
+            capture_output=True,
+        )
+        original_commit = baseline.PROTOCOL_COMMIT
+        baseline.PROTOCOL_COMMIT = subprocess.run(
+            ["git", "-C", str(repository), "rev-parse", "HEAD"],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        try:
+            baseline._verify_external_protocol_commit(external)
+        finally:
+            baseline.PROTOCOL_COMMIT = original_commit
 
 
 def test_changed_depths_match_unchanged_scorer() -> None:
@@ -191,7 +251,9 @@ def main() -> int:
     test_reference_validation_compares_exact_partition_members()
     test_cost_cap_failure_records_job_and_stage()
     test_job_labels_cannot_disagree_with_loaded_inputs()
-    test_protocol_bytes_are_present_in_preregistered_commit()
+    test_bundled_protocol_bytes_match_preregistered_hash()
+    test_public_defaults_use_bundled_protocol_and_repository_inputs()
+    test_external_protocol_commit_verification_is_explicit()
     test_changed_depths_match_unchanged_scorer()
     print("WL-depth early-fixpoint carry-forward PASS")
     print("WL-depth external input pinning PASS")

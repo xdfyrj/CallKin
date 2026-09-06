@@ -4,5 +4,7 @@ r2pipe>=1.9
 capstone>=5.0
 pyelftools>=0.31
 pefile>=2024.8.26
+# angr 9.2.165 requires the Python 3-compatible parser API.
+pycparser==2.22
 # Pinned because the angr CFG API is part of the recorded extraction method.
 angr==9.2.165

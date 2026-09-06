@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import shutil
 import sys
 import time
@@ -97,12 +98,19 @@ def open_r2(binary_path: str) -> Any:
             "dependencies with `python3 -m pip install -r requirements.txt`."
         ) from exc
 
+    previous_term = os.environ.get("TERM")
+    os.environ["TERM"] = "dumb"
     try:
         return r2pipe.open(binary_path, flags=["-2"])
     except Exception as exc:
         raise RuntimeError(
             f"failed to open {binary_path!r} with radare2/r2pipe: {exc}"
         ) from exc
+    finally:
+        if previous_term is None:
+            os.environ.pop("TERM", None)
+        else:
+            os.environ["TERM"] = previous_term
 
 
 def function_id(addr: int, *, id_bias: int = 0) -> str:

@@ -45,11 +45,8 @@ RIPGREP_FIXTURE_SHA256 = "cb224f069a413c82a8f2a45029be8d0660ea008a89ff32333fb38d
 RIPGREP_GT_SHA256 = "e792a9c8442ffb833b5d47f34fbcf5f26395c8369230780f0a46a5903b5bf166"
 DEFAULT_OUTPUT = ROOT / "results/wl-depth-baseline/plain/wl-depth-baseline.json"
 DEFAULT_RUNTIME_OUTPUT = ROOT / "results/wl-depth-baseline/plain/wl-depth-baseline.runtime.json"
-DEFAULT_RIPGREP_ROOT = ROOT.parent / "v0-engine-py"
-DEFAULT_PROTOCOL = (
-    Path("/mnt/c/users/sumyr/playground/+/obsidian/gear/research")
-    / "30_Experiments/CallKin WL Depth Baseline Protocol.md"
-)
+DEFAULT_RIPGREP_ROOT = ROOT
+DEFAULT_PROTOCOL = ROOT / "docs/protocols/wl-depth.md"
 DEPTHS = (("seed", 0), ("r1", 1), ("r2", 2), ("fixpoint", None))
 
 
@@ -317,9 +314,18 @@ def _git_commit(repository_root: Path) -> str:
     ).stdout.strip()
 
 
-def _verify_protocol_commit(protocol_path: Path) -> None:
+def _verify_protocol_bytes(protocol_path: Path) -> None:
+    if not protocol_path.is_file():
+        raise ValueError(f"protocol file not found: {protocol_path}")
+    if sha256_file(protocol_path) != PROTOCOL_SHA256:
+        raise ValueError("protocol bytes do not match the preregistered hash")
+
+
+def _verify_external_protocol_commit(protocol_path: Path) -> None:
+    """Optionally verify the original research-vault commit when available."""
+    _verify_protocol_bytes(protocol_path)
     vault_root = protocol_path.parents[1]
-    relative = protocol_path.relative_to(vault_root).as_posix()
+    relative = protocol_path.resolve().relative_to(vault_root.resolve()).as_posix()
     committed = subprocess.run(
         ["git", "-C", str(vault_root), "show", f"{PROTOCOL_COMMIT}:{relative}"],
         check=True,
@@ -434,11 +440,12 @@ def build_report(
     *,
     ripgrep_root: Path = DEFAULT_RIPGREP_ROOT,
     protocol_path: Path = DEFAULT_PROTOCOL,
+    external_protocol_path: Path | None = None,
     runtime_output_path: Path = DEFAULT_RUNTIME_OUTPUT,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
-    _verify_protocol_commit(protocol_path)
-    if sha256_file(protocol_path) != PROTOCOL_SHA256:
-        raise ValueError("protocol bytes do not match preregistered commit")
+    _verify_protocol_bytes(protocol_path)
+    if external_protocol_path is not None:
+        _verify_external_protocol_commit(external_protocol_path)
 
     repositories = {
         "experiment": ROOT,
@@ -573,8 +580,10 @@ def build_report(
         "schema_version": SCHEMA_VERSION,
         "protocol": {
             "commit": PROTOCOL_COMMIT,
-            "path": "30_Experiments/CallKin WL Depth Baseline Protocol.md",
+            "path": "docs/protocols/wl-depth.md",
             "sha256": PROTOCOL_SHA256,
+            "verification": "bundled-sha256",
+            "external_commit_verified": external_protocol_path is not None,
         },
         "code": {
             "repository_commit": _git_commit(ROOT),
@@ -624,11 +633,17 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--runtime-output", type=Path, default=DEFAULT_RUNTIME_OUTPUT)
     parser.add_argument("--ripgrep-root", type=Path, default=DEFAULT_RIPGREP_ROOT)
     parser.add_argument("--protocol", type=Path, default=DEFAULT_PROTOCOL)
+    parser.add_argument(
+        "--verify-external-protocol",
+        type=Path,
+        help="also verify the original protocol against its research-vault commit",
+    )
     args = parser.parse_args(argv)
     try:
         report, runtime = build_report(
             ripgrep_root=args.ripgrep_root,
             protocol_path=args.protocol,
+            external_protocol_path=args.verify_external_protocol,
             runtime_output_path=args.runtime_output,
         )
         _write_json(args.output, report)

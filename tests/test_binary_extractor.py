@@ -4,6 +4,7 @@ import struct
 import sys
 from collections import Counter
 from pathlib import Path
+from types import SimpleNamespace
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -33,6 +34,67 @@ class FakeR2:
 
     def cmdj(self, command):
         return self.responses[command]
+
+
+def check_r2_terminal_environment_restore() -> int:
+    original_which = binary_extractor_module.shutil.which
+    original_term = os.environ.get("TERM")
+    original_r2pipe = sys.modules.get("r2pipe")
+    seen: list[str | None] = []
+
+    class FakeR2Pipe:
+        @staticmethod
+        def open(_binary_path, *, flags):
+            if flags != ["-2"]:
+                raise AssertionError(f"unexpected r2pipe flags: {flags!r}")
+            seen.append(os.environ.get("TERM"))
+            return object()
+
+    binary_extractor_module.shutil.which = lambda _name: "/usr/bin/radare2"
+    sys.modules["r2pipe"] = SimpleNamespace(open=FakeR2Pipe.open)
+    os.environ["TERM"] = "xterm-test"
+    try:
+        binary_extractor_module.open_r2("fixture.bin")
+        if seen != ["dumb"] or os.environ.get("TERM") != "xterm-test":
+            print(
+                "FAIL r2 TERM was not forced to dumb and restored after success: "
+                f"seen={seen!r} after={os.environ.get('TERM')!r}"
+            )
+            return 1
+
+        def failing_open(_binary_path, *, flags):
+            if flags != ["-2"]:
+                raise AssertionError(f"unexpected r2pipe flags: {flags!r}")
+            seen.append(os.environ.get("TERM"))
+            raise RuntimeError("synthetic r2 startup failure")
+
+        sys.modules["r2pipe"] = SimpleNamespace(open=failing_open)
+        try:
+            binary_extractor_module.open_r2("fixture.bin")
+        except RuntimeError as exc:
+            if "failed to open 'fixture.bin'" not in str(exc):
+                print(f"FAIL r2 startup error was not wrapped: {exc}")
+                return 1
+        else:
+            print("FAIL r2 startup error was swallowed")
+            return 1
+        if seen != ["dumb", "dumb"] or os.environ.get("TERM") != "xterm-test":
+            print(
+                "FAIL r2 TERM was not restored after error: "
+                f"seen={seen!r} after={os.environ.get('TERM')!r}"
+            )
+            return 1
+        return 0
+    finally:
+        binary_extractor_module.shutil.which = original_which
+        if original_r2pipe is None:
+            sys.modules.pop("r2pipe", None)
+        else:
+            sys.modules["r2pipe"] = original_r2pipe
+        if original_term is None:
+            os.environ.pop("TERM", None)
+        else:
+            os.environ["TERM"] = original_term
 
 
 def check_missing_radare2_error() -> int:
@@ -670,6 +732,8 @@ def check_billing_expected_relocation() -> int:
 
 def main() -> int:
     if check_missing_radare2_error() != 0:
+        return 1
+    if check_r2_terminal_environment_restore() != 0:
         return 1
 
     if check_rust_startup_main_detection() != 0:
