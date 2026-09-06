@@ -78,7 +78,7 @@ python3 run_case.py billing-client --profile plain --build O3S --track direct-in
 python3 run_case.py billing-client --profile plain --build O3S --track angr
 python3 run_case.py billing-client --track angr --anchor-policy role
 python3 run_case.py billing-client --track angr --all-modes \
-  --json-output results/billing-client/plain/angr.address.all_modes.json
+  --json-output
 ```
 
 이미 컴파일된 한 build에서 GT, users, fixture를 생성하고 grouping과 scoring까지 수행한다.
@@ -97,7 +97,15 @@ text symbol 중 함수 소유 namespace가 `core`, `alloc`, `std`, `__rustc`인 
 명시한다. 두 scope 모두 candidate 주소를 compiler symbol에서 받는 oracle 조건이며,
 stripped binary만으로 library 소유권을 분류하는 기능은 아니다.
 
-기본 projection track은 `direct`다. `subject + direct + address`는 동결 baseline을
+`run_case.py`의 기본 실행 조합은
+`plain + O3S + rust-nonstd + angr + role + out-in`이다.
+따라서 일반 subject는 case 이름만으로 주 분석 조건을 실행할 수 있다.
+
+```bash
+python3 run_case.py fd-1160 --json-output
+```
+
+`subject + direct + address + full`은 동결 baseline을
 재생성하는 schema v4 compatibility 경로를 유지하며 `direct-immediate`와
 `direct-tail`만 사용한다. Raw graph에 새 `elf-relocation` evidence가 있어도 이 경로는
 무시한다. 그 외 새 projection은 schema v6으로 생성된다.
@@ -116,12 +124,17 @@ seed를 사용한다. 모든 track은 seed에서 시작한 resolved outgoing clo
 anchor도 선택된 다른 anchor로 향하는 edge를 유지한다. Angr evidence는 extraction 자체가 다르므로
 `extractions/angr/<profile>/`에 별도로 저장된다.
 
-Anchor policy 기본값은 `address`다. `--anchor-policy role`은 anchor 주소 대신
+`run_case.py`의 기본 anchor policy는 `role`이다. `role`은 anchor 주소 대신
 `root/incoming/outgoing/both/context` 역할을 color class로 사용한다. `context`는
 candidate와 직접 맞닿지 않은 outgoing closure 내부 anchor다. Role fixture는
 `fixtures/<track>/role/...`에 저장되어 address 결과를 덮어쓰지 않는다.
+주소별 identity가 필요한 실험에서는 `--anchor-policy address`를 명시한다.
 
-`run_case.py --json-output`은 mode별 점수 외에 `run_summary`를 한 번 저장한다.
+`run_case.py --json-output`은 경로를 생략하면
+`results/<case>/<profile>/<track>.<anchor>.<mode>.json`에 자동 저장한다.
+`--all-modes`에서는 mode 부분이 `all_modes`가 된다. 기존처럼
+`--json-output PATH`로 출력 경로를 직접 지정할 수도 있다. 결과에는 mode별 점수
+외에 `run_summary`를 한 번 저장한다.
 여기에는 exact-static 간접 transfer 복구 수, angr 성공/거절 이유, candidate에 추가된
 edge, root 도달성·고립
 통계, GT family 난이도, 단계별 시간·경고·peak RSS, binary/boundary/tool 통계가
@@ -149,6 +162,29 @@ python3 scores.py family_graph_03 --mode full --candidate-scope subject
 python3 engine.py family_graph_03 --trace --candidate-scope subject
 ```
 
+## Windows PE GT
+
+1단계 PE 실험은 stripped PE와 평가자 전용 PDB에서 RVA 기반 함수 목록과 익명
+ground-truth group을 만든다. 아직 PE call-graph 추출이나 PE용 `run_case.py` 경로는
+포함하지 않는다.
+
+```bash
+python3 pe_gt_extractor.py subject.exe \
+  --linked-binary subject-linked.exe \
+  --pdb subject.pdb \
+  --case subject \
+  --candidate-scope rust-nonstd \
+  --root-namespace subject_crate \
+  --output-dir evaluation/pe/subject
+```
+
+`llvm-pdbutil`과 `pefile`이 필요하다. 주소는 PE image base가 아닌 RVA로 기록된다.
+`evaluator_catalog.json`만 PDB 이름과 origin을 포함하는 평가자용 catalog이고,
+`functions.json`은 RVA, 크기, `root/target/context` role만 포함한다.
+`gt_groups.json`은 반복 origin에 해당하는 `G0001`과 `FUN_<rva>`만 포함하는 익명
+입력이다. PDB와 `evaluator_catalog.json`은 분석 대상에게 제공하지 않는다. 자세한 형식은
+[PE GT 실험 문서](docs/pe_gt.md)를 참고한다.
+
 기본 build는 `O3S`, 기본 compiler profile은 `plain`이다. `O3KS`는 profile 설정에 `--cfg keep`을 추가한다.
 
 | Profile | Compiler flags |
@@ -165,6 +201,7 @@ python3 engine.py family_graph_03 --trace --candidate-scope subject
 | [전체 구현 안내](docs/document.md) | 연구 범위, 전체 data flow, artifact와 module의 관계 |
 | [컴파일 파이프라인](docs/compilation.md) | `compile.py`, build profile, staging, manifest, failure safety |
 | [바이너리 추출](docs/binary_extraction.md) | `binary_extractor.py`, radare2, root, call edge, user/anchor 경계 |
+| [Windows PE GT](docs/pe_gt.md) | PDB procedure symbol에서 RVA와 익명 ground truth를 만드는 1단계 |
 | [Ground truth 추출](docs/ground_truth.md) | `gt_extractor.py`, symbol normalization, origin과 users JSON |
 | [CG-WL](docs/CG-WL.md) | `engine.py`, seed, refinement, mode, fixpoint |
 | [채점](docs/scoring.md) | `scores.py`, pairwise count, PR/RE/F1/ARI, 결과 JSON |
@@ -240,3 +277,11 @@ family_graph_03 / O3KS
 - type recovery 또는 body/CFG similarity
 
 Example source와 build recipe의 출처는 [rust-loss](https://github.com/xdfyrj/rust-loss) 저장소다.
+
+
+## Local workspace organization (2026-09-07)
+
+Related experiment worktrees are preserved under `worktrees/`. The current
+branch and uncommitted changes were kept; this directory move does not merge
+experiment branches into main. See `../CALLKIN-WORKSPACE.md` for the directory
+map and the WSL wrapper for commands that use historical paths.

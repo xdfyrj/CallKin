@@ -81,6 +81,12 @@ def main(argv: list[str] | None = None) -> int:
                     profile,
                     "--candidate-scope",
                     "subject",
+                    "--track",
+                    "direct",
+                    "--anchor-policy",
+                    "address",
+                    "--mode",
+                    "full",
                 ])
 
             run_step([

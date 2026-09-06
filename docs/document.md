@@ -9,7 +9,7 @@
 - build profile, candidate scope, extraction track, anchor policy, CG-WL mode는 서로 무엇이 다른가?
 - 구현을 바꿀 때 어느 계약과 테스트를 함께 확인해야 하는가?
 
-세부 형식과 함수는 각 단계 문서에서 다룬다. 공통 경로와 JSON 계약은 [Artifact와 provenance](artifacts.md)에 모아 두었다.
+세부 형식과 함수는 각 단계 문서에서 다룬다. 공통 경로와 JSON 계약은 [Artifact와 provenance](artifacts.md)에 모아 두었다. Windows PE는 우선 [PE GT 실험](pe_gt.md)에서 PDB 기반 익명 ground truth만 만든다.
 
 ## 한 문장 정의
 
@@ -121,8 +121,12 @@ python3 run_case.py billing-client \
   --track angr \
   --anchor-policy role \
   --mode out-in \
-  --json-output results/billing-client/plain/angr.role.out-in.json
+  --json-output
 ```
+
+값 없는 `--json-output`은 이 설정에서
+`results/billing-client/plain/angr.role.out-in.json`을 선택한다.
+명시적 경로가 필요하면 기존처럼 `--json-output PATH`를 사용한다.
 
 이 명령 한 번이 수행하는 순서는 고정되어 있다.
 
@@ -148,9 +152,9 @@ python3 run_case.py billing-client \
 | build profile | `plain`, `min` | `plain` | compiler optimization과 panic/LTO 조건 |
 | build | `O3S`, `O3KS` | `O3S` | source의 `cfg(keep)` 활성화 여부 |
 | candidate scope | `subject`, `rust-nonstd` | `rust-nonstd` | 어떤 함수가 grouping target인가 |
-| extraction track | `direct`, `direct-in`, `angr` | `direct` | 어떤 call evidence와 incoming context를 fixture에 투영하는가 |
-| anchor policy | `address`, `role` | `address` | anchor의 초기 identity를 주소로 볼지 역할로 볼지 |
-| CG-WL mode | `full`, `out`, `in`, `out-in` | `full` | refinement signature에서 OUT/IN을 어떻게 쓰는가 |
+| extraction track | `direct`, `direct-in`, `angr` | `angr` | 어떤 call evidence와 incoming context를 fixture에 투영하는가 |
+| anchor policy | `address`, `role` | `role` | anchor의 초기 identity를 주소로 볼지 역할로 볼지 |
+| CG-WL mode | `full`, `out`, `in`, `out-in` | `out-in` | refinement signature에서 OUT/IN을 어떻게 쓰는가 |
 
 ### Build profile
 
@@ -204,7 +208,9 @@ O3, codegen-units=1, lto=true, panic=abort
 - `in`: IN만 사용한다.
 - `out-in`: OUT을 우선하고 OUT이 없는 leaf에서만 IN을 추가한다.
 
-기본값은 `full`이다. 각 mode의 정확한 signature는 [CG-WL](CG-WL.md)에 정의한다.
+`run_case.py`의 기본값은 `out-in`이다. `engine.py`를 fixture에 직접 실행하는
+하위 CLI는 기존 `full` 기본값을 유지한다. 각 mode의 정확한 signature는
+[CG-WL](CG-WL.md)에 정의한다.
 
 ## 함수의 세 graph role
 
@@ -352,6 +358,11 @@ angr 결과가 direct baseline을 덮어씀
 6. [CG-WL](CG-WL.md)
 7. [채점과 결과](scoring.md)
 8. [Oxidizer direct-FLIRT audit](flirt_audit.md)
+
+### Windows PE GT만 확인할 때
+
+1. [PE GT 실험](pe_gt.md)
+2. `pe_gt_extractor.py`
 
 ### FLIRT 결과를 조사할 때
 

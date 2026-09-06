@@ -40,9 +40,12 @@ all-Rust catalog + Oxidizer labels --------> FLIRT audit result
 | build | `O3S`, `O3KS` | `O3S` | `cfg(keep)` 적용 여부 |
 | profile | `plain`, `min` | `plain` | compiler codegen 조건 |
 | candidate scope | `subject`, `rust-nonstd` | `rust-nonstd` | target universe |
-| track | `direct`, `direct-in`, `angr` | `direct` | evidence projection |
-| anchor policy | `address`, `role` | `address` | anchor 초기 identity |
-| mode | `full`, `out`, `in`, `out-in` | `full` | CG-WL relation signature |
+| track | `direct`, `direct-in`, `angr` | `angr` | evidence projection |
+| anchor policy | `address`, `role` | `role` | anchor 초기 identity |
+| mode | `full`, `out`, `in`, `out-in` | `out-in` | CG-WL relation signature |
+
+표의 기본값은 일반 사용 entry point인 `run_case.py` 기준이다. 하위 extractor와
+engine CLI는 재현성과 단독 실행 호환성을 위해 기존 기본값을 유지한다.
 
 `<stem>`은 `<case>.<build>`다. 예를 들어 `billing-client.O3S`다.
 
@@ -118,6 +121,15 @@ results/micro-corpus/<profile>/all_modes.json
 results/billing-client/plain/angr.role.out-in.json
 results/fd/min/direct-in.role.out-in.json
 ```
+
+`run_case.py --json-output`에서 PATH를 생략하면 다음 규칙으로 자동 생성한다.
+
+```text
+results/<case>/<profile>/<track>.<anchor-policy>.<mode>.json
+```
+
+`--all-modes`에서는 `<mode>`가 `all_modes`가 된다. PATH를 직접 주면 이 자동
+규칙 대신 사용자가 지정한 경로를 사용한다.
 
 ### FLIRT audit artifacts
 

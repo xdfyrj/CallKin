@@ -22,6 +22,7 @@ PYTHON_FILES = (
     "graph_projector.py",
     "binary_extractor.py",
     "gt_extractor.py",
+    "pe_gt_extractor.py",
     "all_rust_catalog.py",
     "flirt_audit.py",
     "model.py",
@@ -44,6 +45,8 @@ PYTHON_FILES = (
     "tests/test_flirt_audit.py",
     "tests/test_run_summary.py",
     "tests/test_gt_extractor.py",
+    "tests/test_pe_gt_extractor.py",
+    "tests/test_pe_gt_integration.py",
     "tests/test_scores.py",
     "tests/run_all.py",
 )
@@ -59,6 +62,8 @@ TEST_FILES = (
     "tests/test_flirt_audit.py",
     "tests/test_run_summary.py",
     "tests/test_gt_extractor.py",
+    "tests/test_pe_gt_extractor.py",
+    "tests/test_pe_gt_integration.py",
     "tests/test_scores.py",
 )
 

@@ -16,3 +16,10 @@ results/micro-corpus/min/*
 !results/micro-corpus/plain/all_modes.json
 !results/micro-corpus/min/all_modes.json
 subjects/**/target/
+# PDB-derived evaluator catalog; keep symbol names out of the repository.
+evaluation/pe/
+
+# Local research checkouts and migration backups.
+/worktrees/
+/.local/
+/research/

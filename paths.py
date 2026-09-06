@@ -335,6 +335,27 @@ def result_json_for(
     return f"{result_dir_for(case, profile)}/{filename}"
 
 
+def score_result_for(
+    case: str,
+    profile: str,
+    track: str,
+    anchor_policy: str,
+    mode: str,
+    *,
+    all_modes: bool = False,
+) -> str:
+    """Return the canonical result path for one run_case scoring job."""
+    if not re.fullmatch(r"[a-z][a-z0-9-]*", mode):
+        raise ValueError(f"invalid CG-WL mode for result path: {mode!r}")
+    result_mode = "all_modes" if all_modes else mode
+    name = (
+        f"{normalize_track(track)}."
+        f"{normalize_anchor_policy(anchor_policy)}."
+        f"{result_mode}"
+    )
+    return result_json_for(case, name, profile)
+
+
 def baseline_result_for(profile: str = DEFAULT_PROFILE) -> str:
     return result_json_for("micro-corpus", "baseline", profile)
 

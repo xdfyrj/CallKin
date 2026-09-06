@@ -10,21 +10,21 @@ from build_manifest import BUILD_TARGET, load_and_verify_manifest
 from candidate_selection import load_candidate_selection
 from engine import (
     CG_WL_MODES,
-    DEFAULT_CG_WL_MODE,
+    MODE_OUT_IN,
     format_cg_wl_trace,
     run_cg_wl,
 )
 from loader import load_case
 from paths import (
     ANALYSIS_TRACKS,
+    ANGR_TRACK,
     ANCHOR_POLICIES,
     BUILD_PROFILES,
     CANDIDATE_SCOPES,
-    DEFAULT_ANALYSIS_TRACK,
-    DEFAULT_ANCHOR_POLICY,
     DEFAULT_BUILD,
     DEFAULT_CANDIDATE_SCOPE,
     DEFAULT_PROFILE,
+    ROLE_ANCHOR_POLICY,
     boundaries_json_for,
     build_manifest_for,
     fixture_json_for,
@@ -35,10 +35,16 @@ from paths import (
     normalize_candidate_scope,
     normalize_track,
     raw_graph_for,
+    score_result_for,
     split_case_build,
     users_json_for,
 )
 from scores import format_report, score_all_modes, score_case, write_reports_json
+
+
+DEFAULT_RUN_TRACK = ANGR_TRACK
+DEFAULT_RUN_ANCHOR_POLICY = ROLE_ANCHOR_POLICY
+DEFAULT_RUN_MODE = MODE_OUT_IN
 
 
 def run_fixture_only(fixture_path: str, mode: str, *, trace: bool = False) -> None:
@@ -58,6 +64,18 @@ def run_pipeline(args: argparse.Namespace) -> None:
     track = normalize_track(args.track)
     anchor_policy = normalize_anchor_policy(args.anchor_policy)
     candidate_scope = normalize_candidate_scope(args.candidate_scope)
+    json_output = (
+        score_result_for(
+            case_name,
+            profile,
+            track,
+            anchor_policy,
+            args.mode,
+            all_modes=args.all_modes,
+        )
+        if args.json_output is True
+        else args.json_output
+    )
     manifest_path = args.manifest or build_manifest_for(case_name, build, profile)
     verified = load_and_verify_manifest(
         manifest_path,
@@ -164,7 +182,7 @@ def run_pipeline(args: argparse.Namespace) -> None:
     scoring_duration = time.perf_counter() - scoring_started
 
     print("\n\n".join(format_report(report) for report in reports))
-    if args.json_output:
+    if json_output:
         from binary_extractor import DEFAULT_ID_BIAS
         from run_summary import build_run_summary, execution_summary
 
@@ -196,10 +214,10 @@ def run_pipeline(args: argparse.Namespace) -> None:
         )
         write_reports_json(
             reports,
-            args.json_output,
+            json_output,
             run_summary=summary,
         )
-        print(f"\nJSON: {args.json_output}")
+        print(f"\nJSON: {json_output}")
 
 
 def extract_fixture(
@@ -357,14 +375,14 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--track",
         choices=ANALYSIS_TRACKS,
-        default=DEFAULT_ANALYSIS_TRACK,
-        help=f"analysis track. Default: {DEFAULT_ANALYSIS_TRACK}",
+        default=DEFAULT_RUN_TRACK,
+        help=f"analysis track. Default: {DEFAULT_RUN_TRACK}",
     )
     parser.add_argument(
         "--anchor-policy",
         choices=ANCHOR_POLICIES,
-        default=DEFAULT_ANCHOR_POLICY,
-        help=f"anchor color policy. Default: {DEFAULT_ANCHOR_POLICY}",
+        default=DEFAULT_RUN_ANCHOR_POLICY,
+        help=f"anchor color policy. Default: {DEFAULT_RUN_ANCHOR_POLICY}",
     )
     parser.add_argument(
         "--candidate-scope",
@@ -385,8 +403,8 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--mode",
         choices=CG_WL_MODES,
-        default=DEFAULT_CG_WL_MODE,
-        help=f"CG-WL relation mode. Default: {DEFAULT_CG_WL_MODE}",
+        default=DEFAULT_RUN_MODE,
+        help=f"CG-WL relation mode. Default: {DEFAULT_RUN_MODE}",
     )
     parser.add_argument(
         "--all-modes",
@@ -395,7 +413,13 @@ def build_arg_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--json-output",
-        help="write the score result set to one JSON file",
+        nargs="?",
+        const=True,
+        metavar="PATH",
+        help=(
+            "write the score result set to JSON. If PATH is omitted, use "
+            "results/<case>/<profile>/<track>.<anchor>.<mode>.json"
+        ),
     )
     parser.add_argument(
         "--trace",

@@ -558,6 +558,29 @@ Symbol과 origin annotation은 설명을 위한 scorer output이다. Engine outp
 
 ## Result JSON
 
+`run_case.py`에서는 출력 경로를 생략할 수 있다.
+
+```bash
+python3 run_case.py fd-1160 \
+  --profile plain \
+  --build O3S \
+  --candidate-scope rust-nonstd \
+  --track angr \
+  --anchor-policy role \
+  --mode out-in \
+  --json-output
+```
+
+자동 경로:
+
+```text
+results/fd-1160/plain/angr.role.out-in.json
+```
+
+`--all-modes --json-output`이면 마지막 이름은 `all_modes`가 된다.
+`scores.py --json-output PATH`와 `run_case.py --json-output PATH`의 기존 명시적
+경로 사용법도 유지된다.
+
 Schema v6 top-level:
 
 ```json

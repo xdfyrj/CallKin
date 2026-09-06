@@ -30,8 +30,11 @@ from paths import (
     SUBJECT_CANDIDATE_SCOPE,
     fixture_json_for,
     raw_graph_for,
+    score_result_for,
+    split_case_build,
 )
 from provenance import BuildProvenance
+from run_case import build_arg_parser as build_run_case_arg_parser
 from scores import reports_to_dict, score_case, score_report_to_dict
 
 
@@ -244,6 +247,43 @@ def check_track_paths() -> int:
     )
     if role != "fixtures/direct-in/role/plain/sample.O3S.fixture.json":
         print(f"FAIL role fixture path: {role}")
+        return 1
+    result = score_result_for(
+        "fd-1160", "plain", ANGR_TRACK, ROLE_ANCHOR_POLICY, "out-in"
+    )
+    if result != "results/fd-1160/plain/angr.role.out-in.json":
+        print(f"FAIL automatic score result path: {result}")
+        return 1
+    all_modes = score_result_for(
+        "fd-1160",
+        "plain",
+        ANGR_TRACK,
+        ROLE_ANCHOR_POLICY,
+        "full",
+        all_modes=True,
+    )
+    if all_modes != "results/fd-1160/plain/angr.role.all_modes.json":
+        print(f"FAIL automatic all-modes result path: {all_modes}")
+        return 1
+    auto_args = build_run_case_arg_parser().parse_args(
+        ["fd-1160", "--json-output"]
+    )
+    explicit_args = build_run_case_arg_parser().parse_args(
+        ["fd-1160", "--json-output", "custom.json"]
+    )
+    if auto_args.json_output is not True or explicit_args.json_output != "custom.json":
+        print("FAIL --json-output optional path parsing")
+        return 1
+    if (
+        auto_args.profile != "plain"
+        or auto_args.candidate_scope != RUST_NONSTD_CANDIDATE_SCOPE
+        or auto_args.track != ANGR_TRACK
+        or auto_args.anchor_policy != ROLE_ANCHOR_POLICY
+        or auto_args.mode != "out-in"
+        or split_case_build(auto_args.stem, auto_args.build)
+        != ("fd-1160", "O3S")
+    ):
+        print("FAIL run_case real-world defaults")
         return 1
     return 0
 

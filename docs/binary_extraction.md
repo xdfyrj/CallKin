@@ -33,7 +33,7 @@ python3 run_case.py billing-client \
   --track angr \
   --anchor-policy role \
   --mode out-in \
-  --json-output results/billing-client/plain/angr.role.out-in.json
+  --json-output
 ```
 
 Extraction만 직접 실행:
