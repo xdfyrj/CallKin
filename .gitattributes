@@ -1,0 +1,6 @@
+
+# Preserve byte-identical retained research records on every platform.
+docs/results/*.json -text
+experiments/concrete-null/** -text
+docs/protocols/wl-depth.md -text
+*.bin binary

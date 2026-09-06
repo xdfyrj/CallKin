@@ -1,0 +1,6 @@
+source=/mnt/e/sumyr/playground/REV/rust-loss/examples/concrete/func_largest.rs
+profile=O3
+rustc=rustc 1.93.1 (01f6ddf75 2026-02-11)
+flags=-C opt-level=3 -C debuginfo=0
+emit=llvm-ir,asm,link
+role=concrete-concrete-cross-check

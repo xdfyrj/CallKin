@@ -23,3 +23,13 @@ evaluation/pe/
 /worktrees/
 /.local/
 /research/
+
+# Local environments and unpublished experiment caches.
+.venv/
+.codex/
+.ruff_cache/
+**/*_angr_rtdb/
+/replay_inputs/
+/workspace/
+/body_evidence/
+/labels/

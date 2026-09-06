@@ -1,0 +1,70 @@
+{
+  "artifact": "callkin-wl-depth-baseline-runtime",
+  "canonical_result_sha256": "dc787ae8709c4c7fd16a2796c33e9901bc9adb9058c82fd203e4c0adc80192e1",
+  "jobs": [
+    {
+      "id": "controlled/family_graph_01/O3S/plain",
+      "seconds": 0.18824348199996166
+    },
+    {
+      "id": "controlled/family_graph_02/O3S/plain",
+      "seconds": 0.19448744499823079
+    },
+    {
+      "id": "controlled/family_graph_03/O3S/plain",
+      "seconds": 0.1979064230035874
+    },
+    {
+      "id": "controlled/family_graph_03/O3KS/plain",
+      "seconds": 0.2103541620017495
+    },
+    {
+      "id": "controlled/family_graph_01/O3S/min",
+      "seconds": 0.2270405640010722
+    },
+    {
+      "id": "controlled/family_graph_02/O3S/min",
+      "seconds": 0.21781697800179245
+    },
+    {
+      "id": "controlled/family_graph_03/O3S/min",
+      "seconds": 0.23403895599767566
+    },
+    {
+      "id": "controlled/family_graph_03/O3KS/min",
+      "seconds": 0.24408712000149535
+    },
+    {
+      "id": "real-world/billing-client/O3S/plain",
+      "seconds": 0.6658981109940214
+    },
+    {
+      "id": "real-world/zoxide/O3S/plain",
+      "seconds": 0.9986141519984812
+    },
+    {
+      "id": "real-world/fd/O3S/plain",
+      "seconds": 4.697245663999638
+    },
+    {
+      "id": "real-world/billing-client/O3S/min",
+      "seconds": 0.4252411939960439
+    },
+    {
+      "id": "real-world/zoxide/O3S/min",
+      "seconds": 0.5736811210008455
+    },
+    {
+      "id": "real-world/fd/O3S/min",
+      "seconds": 2.2266773540031863
+    },
+    {
+      "id": "real-world/ripgrep-main/O3S/plain",
+      "seconds": 6.383421876002103
+    }
+  ],
+  "platform": "Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+  "python": "3.10.14",
+  "schema_version": 1,
+  "total_seconds": 40.16103293500055
+}

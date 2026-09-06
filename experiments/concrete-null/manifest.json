@@ -1,0 +1,17 @@
+{
+  "source_repository": "https://github.com/xdfyrj/rust-loss",
+  "base_commit": "161cdc5155b5096b58ccd0b19f7844e4230a3d36",
+  "files": {
+    "test_concrete_null_test.py": "a972dd8effb65fc2dbf3551486cebc706ce204001764e038b85e0445d603b59a",
+    "examples/func_largest.rs": "5a355c97cd1266007f043515dca9ebcccfef1f1f383b4940f47fd1b102b63142",
+    "examples/concrete/func_largest.rs": "c0a84f4a8cbf610d301c511f621bcdb0812fd8e944f1dba40f05135c1da0231e",
+    "artifacts/O3/func_largest/func_largest.bin": "e89435d09d070f45c449b14fe491b00b12368e998d9e37f25b6c5ee8920955d4",
+    "artifacts/O3/func_largest/build_info.txt": "66fc849059916672c6cafaee0322eda7c5bddb44775c3b35b0d530e1ac7da15f",
+    "artifacts/O3S/func_largest/func_largest.bin": "a570906ec63033173a7e115fdb75c17ebbfce34c61e1845c29a86497c8dab022",
+    "artifacts/O3S/func_largest/build_info.txt": "8ae7d585de33828c29684712ccedba22bffb7e79fed90deda9744c7e674cec79",
+    "artifacts/concrete/O3/func_largest/func_largest.bin": "4e5eeedecc1577b5d6d78716394f38f556bc8ffc02e9aa26d52d89c0e2b14836",
+    "artifacts/concrete/O3/func_largest/build_info.txt": "b0c70af5915c3fb421f271303f226c68f6d3fde820551e41128a9e5b3cb89a72",
+    "artifacts/concrete/O3S/func_largest/func_largest.bin": "246c29ed5fb064a3cd0bd8afd76995fe84ab5f2da6df204dfdcf6708fed04646",
+    "artifacts/concrete/O3S/func_largest/build_info.txt": "821fb443fb8b4495be1c3fdc6291414980cbbedb60574b1429863fdab057bad2"
+  }
+}

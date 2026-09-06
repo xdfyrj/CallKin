@@ -1,0 +1,149 @@
+{
+  "artifact": "callkin-real-relaxed-evaluation",
+  "case": "fd",
+  "methods": {
+    "strict": {
+      "f1": 0.0524,
+      "false_negative": 3093,
+      "false_positive": 56,
+      "neutral_pair_counts": {
+        "ambiguous-neutral": 17740,
+        "duplicate-neutral": 460,
+        "unresolved-neutral": 0
+      },
+      "neutral_pair_total": 18200,
+      "precision": 0.6084,
+      "recall": 0.0274,
+      "scored_member_count": 2222,
+      "true_negative": 2446095,
+      "true_positive": 87
+    },
+    "strict_f7": {
+      "f1": 0.0524,
+      "false_negative": 3093,
+      "false_positive": 56,
+      "neutral_pair_counts": {
+        "ambiguous-neutral": 17740,
+        "duplicate-neutral": 460,
+        "unresolved-neutral": 0
+      },
+      "neutral_pair_total": 18200,
+      "precision": 0.6084,
+      "recall": 0.0274,
+      "scored_member_count": 2222,
+      "true_negative": 2446095,
+      "true_positive": 87
+    },
+    "strict_f7_relaxed": {
+      "f1": 0.0523,
+      "false_negative": 3093,
+      "false_positive": 59,
+      "neutral_pair_counts": {
+        "ambiguous-neutral": 17740,
+        "duplicate-neutral": 460,
+        "unresolved-neutral": 0
+      },
+      "neutral_pair_total": 18200,
+      "precision": 0.5959,
+      "recall": 0.0274,
+      "scored_member_count": 2222,
+      "true_negative": 2446092,
+      "true_positive": 87
+    },
+    "strict_relaxed": {
+      "f1": 0.0523,
+      "false_negative": 3093,
+      "false_positive": 59,
+      "neutral_pair_counts": {
+        "ambiguous-neutral": 17740,
+        "duplicate-neutral": 460,
+        "unresolved-neutral": 0
+      },
+      "neutral_pair_total": 18200,
+      "precision": 0.5959,
+      "recall": 0.0274,
+      "scored_member_count": 2222,
+      "true_negative": 2446092,
+      "true_positive": 87
+    },
+    "v0": {
+      "f1": 0.3849,
+      "false_negative": 1337,
+      "false_positive": 4554,
+      "neutral_pair_counts": {
+        "ambiguous-neutral": 17740,
+        "duplicate-neutral": 460,
+        "unresolved-neutral": 0
+      },
+      "neutral_pair_total": 18200,
+      "precision": 0.2881,
+      "recall": 0.5796,
+      "scored_member_count": 2222,
+      "true_negative": 2441597,
+      "true_positive": 1843
+    }
+  },
+  "output_path": "C:\\Users\\sumyr\\playground\\REV\\CallKin-Real-relaxed-f7\\results\\replay-relaxed-v1\\fd\\fd.evaluation.json",
+  "provenance": {
+    "inputs": {
+      "body": {
+        "path": "C:\\users\\sumyr\\playground\\REV\\v0-engine-py-f1\\body_evidence\\rust-nonstd\\plain\\fd.O3S.body.json",
+        "sha256": "ebed20a449a0d758a3e134b985ffb8764455d75d56682415fe5b393d57ec0743"
+      },
+      "candidates": {
+        "path": "C:\\users\\sumyr\\playground\\REV\\v0-engine-py-f1\\results\\fd\\plain\\fd.O3S.v1.consensus2.k16.candidates.json",
+        "sha256": "3e99e07b7255f722cc9342b7389fc61a4bbd1b407a1950ff938d0ede3f7dbac2"
+      },
+      "config": {
+        "path": "C:\\Users\\sumyr\\playground\\REV\\CallKin-Real-relaxed-f7\\frozen_v1\\configs\\v1.formal.json",
+        "sha256": "77f394244c67b6633698e80af5265da4544c8ad5033aff7d0474a5ff8f1eebfa"
+      },
+      "ground_truth": {
+        "path": "C:\\users\\sumyr\\playground\\REV\\v0-engine-py-f1\\ground_truth\\rust-nonstd\\plain\\fd.O3S.gt.json",
+        "sha256": "ada83ff652f59decbde72328b3d34daa1d0e73b19aa80f96c6dd4a8c578818af"
+      },
+      "linkage_audit": {
+        "path": "C:\\users\\sumyr\\playground\\REV\\v0-engine-py-f1\\results\\fd\\plain\\fd.O3S.gt-mangled-audit.json",
+        "sha256": "d30d5389c7f09c830962f26110f2f65ca1d46f429005c37e7357d1784331aaf6"
+      },
+      "rescue": {
+        "canonical_sha256": "b4f16c026664fc1ef048b4b15daa0de13d49a528427fd73ce79958569f8ce889",
+        "path": "C:\\users\\sumyr\\playground\\REV\\v0-engine-py-f1\\results\\fd\\plain\\fd.O3S.v1.consensus3.k16.formal.rescue.json",
+        "sha256": "87a39e77561a723bf2ec98ea7dbe2a3281939a9cc024ab6d1e85d5ef2f28d380"
+      },
+      "strict": {
+        "path": "C:\\users\\sumyr\\playground\\REV\\v0-engine-py-f1\\results\\fd\\plain\\fd.O3S.v1.consensus3.k16.formal.families.json",
+        "sha256": "7cd92784e734b3fcfc67455010af92c1cbf0e252774afbfa1a570007612c5320"
+      },
+      "v0": {
+        "path": "C:\\users\\sumyr\\playground\\REV\\v0-engine-py\\results\\fd\\plain\\angr.role.out-in.json",
+        "sha256": "c711e11d2a6e3985569595c9bc58f88a9804fd4418623dc35fecf98b5baad671"
+      }
+    },
+    "neutral_pair_counts": {
+      "ambiguous-neutral": 17740,
+      "duplicate-neutral": 460,
+      "unresolved-neutral": 0
+    },
+    "normalized_linkage": {
+      "path": "C:\\Users\\sumyr\\playground\\REV\\CallKin-Real-relaxed-f7\\results\\replay-relaxed-v1\\fd\\linkage-pairs.json",
+      "sha256": "353fde5573f7c5418966aba602fa0633bbc38ca919140972a463e3dd5cd4e472"
+    },
+    "oracle_boundary": {
+      "ground_truth_sha256": "ada83ff652f59decbde72328b3d34daa1d0e73b19aa80f96c6dd4a8c578818af",
+      "linkage_audit_sha256": "d30d5389c7f09c830962f26110f2f65ca1d46f429005c37e7357d1784331aaf6",
+      "predictions_written_and_hashed_before_ground_truth": true
+    },
+    "predictions": {
+      "strict_f7_relaxed": {
+        "path": "C:\\Users\\sumyr\\playground\\REV\\CallKin-Real-relaxed-f7\\results\\replay-relaxed-v1\\fd\\fd.v1.families.rescue-relaxed.json",
+        "sha256": "2dc6ea81cd9d175ece817c016eff3318a137110c0119fb29702d855edf4726e5"
+      },
+      "strict_relaxed": {
+        "path": "C:\\Users\\sumyr\\playground\\REV\\CallKin-Real-relaxed-f7\\results\\replay-relaxed-v1\\fd\\fd.v1.families.relaxed.json",
+        "sha256": "c9b2420675ea5acb2bf95e77223ae79e5ff23c5ee891b8d547a49238047addc3"
+      }
+    }
+  },
+  "schema_version": 1
+}

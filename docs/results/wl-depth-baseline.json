@@ -1,0 +1,2194 @@
+{
+  "artifact": "callkin-wl-depth-baseline",
+  "code": {
+    "engine_sha256": "f1d89dc1e1ec2541d62fa4f343ab0245b1032d5792f7f6421eaaed268fa04bb0",
+    "repository_commit": "0ad2391497f96b37f9ca995c4789f3f27366cb0c",
+    "runner_sha256": "8e5681884983dc4b06d2162c28819378640df5648c9035d6d8c639476a9d7bcb",
+    "scores_sha256": "e078c3659f4af373e547fe5061e40c51c7dc4448ce929a770634102d667c3c14"
+  },
+  "jobs": [
+    {
+      "analysis": null,
+      "build": "O3S",
+      "case": "family_graph_01",
+      "cohort": "controlled",
+      "common_coverage": {
+        "abstained_candidate_count": 0,
+        "decision_pair_count": 15,
+        "grouped_candidate_count": 6,
+        "pair_decision_coverage": 1.0,
+        "same_family_pair_coverage": 1.0,
+        "scored_same_family_pair_count": 6,
+        "target_count": 6,
+        "target_coverage": 1.0,
+        "target_pair_count": 15,
+        "total_same_family_pair_count": 6
+      },
+      "depths": {
+        "fixpoint": {
+          "carried_forward": false,
+          "cluster_count": 2,
+          "collision_cluster_count": 0,
+          "delta_from_seed": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 0
+          },
+          "fragmented_origin_count": 0,
+          "pairwise": {
+            "F1": 1.0,
+            "FN": 0,
+            "FP": 0,
+            "TN": 9,
+            "TP": 6,
+            "precision": 1.0,
+            "recall": 1.0
+          },
+          "partition_sha256": "68763c17bdea2e48b3e0398a89a64aa5a7f1b5f57220713d99d839d11a1fb561",
+          "singleton_count": 0,
+          "source_round": 1
+        },
+        "r1": {
+          "carried_forward": false,
+          "cluster_count": 2,
+          "collision_cluster_count": 0,
+          "delta_from_seed": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 0
+          },
+          "fragmented_origin_count": 0,
+          "pairwise": {
+            "F1": 1.0,
+            "FN": 0,
+            "FP": 0,
+            "TN": 9,
+            "TP": 6,
+            "precision": 1.0,
+            "recall": 1.0
+          },
+          "partition_sha256": "68763c17bdea2e48b3e0398a89a64aa5a7f1b5f57220713d99d839d11a1fb561",
+          "singleton_count": 0,
+          "source_round": 1
+        },
+        "r2": {
+          "carried_forward": true,
+          "cluster_count": 2,
+          "collision_cluster_count": 0,
+          "delta_from_seed": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 0
+          },
+          "fragmented_origin_count": 0,
+          "pairwise": {
+            "F1": 1.0,
+            "FN": 0,
+            "FP": 0,
+            "TN": 9,
+            "TP": 6,
+            "precision": 1.0,
+            "recall": 1.0
+          },
+          "partition_sha256": "68763c17bdea2e48b3e0398a89a64aa5a7f1b5f57220713d99d839d11a1fb561",
+          "singleton_count": 0,
+          "source_round": 1
+        },
+        "seed": {
+          "carried_forward": false,
+          "cluster_count": 2,
+          "collision_cluster_count": 0,
+          "delta_from_seed": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 0
+          },
+          "fragmented_origin_count": 0,
+          "pairwise": {
+            "F1": 1.0,
+            "FN": 0,
+            "FP": 0,
+            "TN": 9,
+            "TP": 6,
+            "precision": 1.0,
+            "recall": 1.0
+          },
+          "partition_sha256": "68763c17bdea2e48b3e0398a89a64aa5a7f1b5f57220713d99d839d11a1fb561",
+          "singleton_count": 0,
+          "source_round": 0
+        }
+      },
+      "fixpoint_round": 1,
+      "grouped_universe_sha256": "351049dd7ddcad242fb63e5a7830f25b506f4052d1c305455fc7300e28a139f5",
+      "id": "controlled/family_graph_01/O3S/plain",
+      "inputs": {
+        "fixture": {
+          "git_tracked": true,
+          "path": "fixtures/plain/family_graph_01.O3S.fixture.json",
+          "repository": "experiment",
+          "sha256": "08a8a77a7f295d65c71727688269936e8ffa43fe829444b507343b81fb24f572"
+        },
+        "ground_truth": {
+          "git_tracked": true,
+          "path": "ground_truth/plain/family_graph_01.O3S.gt.json",
+          "repository": "experiment",
+          "sha256": "987e17adc2adf325fb7067687f8d3cc545db28e0c106f29c9a63acf4ceba93f1"
+        }
+      },
+      "mode": "full",
+      "profile": "plain",
+      "target_universe_sha256": "351049dd7ddcad242fb63e5a7830f25b506f4052d1c305455fc7300e28a139f5",
+      "validation": {
+        "all_depths_match_existing_scorer": true,
+        "partition_nesting_monotonic": true,
+        "target_universe_fixed": true
+      }
+    },
+    {
+      "analysis": null,
+      "build": "O3S",
+      "case": "family_graph_02",
+      "cohort": "controlled",
+      "common_coverage": {
+        "abstained_candidate_count": 0,
+        "decision_pair_count": 66,
+        "grouped_candidate_count": 12,
+        "pair_decision_coverage": 1.0,
+        "same_family_pair_coverage": 1.0,
+        "scored_same_family_pair_count": 4,
+        "target_count": 12,
+        "target_coverage": 1.0,
+        "target_pair_count": 66,
+        "total_same_family_pair_count": 4
+      },
+      "depths": {
+        "fixpoint": {
+          "carried_forward": false,
+          "cluster_count": 4,
+          "collision_cluster_count": 2,
+          "delta_from_seed": {
+            "FN": 0,
+            "FP": -8,
+            "TP": 0
+          },
+          "fragmented_origin_count": 0,
+          "pairwise": {
+            "F1": 0.4444444444444445,
+            "FN": 0,
+            "FP": 10,
+            "TN": 52,
+            "TP": 4,
+            "precision": 0.2857142857142857,
+            "recall": 1.0
+          },
+          "partition_sha256": "d374386f2908fea380ef9e033c8534791fcab7686e6144d62557be211560ea22",
+          "singleton_count": 0,
+          "source_round": 2
+        },
+        "r1": {
+          "carried_forward": false,
+          "cluster_count": 4,
+          "collision_cluster_count": 2,
+          "delta_from_seed": {
+            "FN": 0,
+            "FP": -8,
+            "TP": 0
+          },
+          "fragmented_origin_count": 0,
+          "pairwise": {
+            "F1": 0.4444444444444445,
+            "FN": 0,
+            "FP": 10,
+            "TN": 52,
+            "TP": 4,
+            "precision": 0.2857142857142857,
+            "recall": 1.0
+          },
+          "partition_sha256": "d374386f2908fea380ef9e033c8534791fcab7686e6144d62557be211560ea22",
+          "singleton_count": 0,
+          "source_round": 1
+        },
+        "r2": {
+          "carried_forward": false,
+          "cluster_count": 4,
+          "collision_cluster_count": 2,
+          "delta_from_seed": {
+            "FN": 0,
+            "FP": -8,
+            "TP": 0
+          },
+          "fragmented_origin_count": 0,
+          "pairwise": {
+            "F1": 0.4444444444444445,
+            "FN": 0,
+            "FP": 10,
+            "TN": 52,
+            "TP": 4,
+            "precision": 0.2857142857142857,
+            "recall": 1.0
+          },
+          "partition_sha256": "d374386f2908fea380ef9e033c8534791fcab7686e6144d62557be211560ea22",
+          "singleton_count": 0,
+          "source_round": 2
+        },
+        "seed": {
+          "carried_forward": false,
+          "cluster_count": 3,
+          "collision_cluster_count": 2,
+          "delta_from_seed": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 0
+          },
+          "fragmented_origin_count": 0,
+          "pairwise": {
+            "F1": 0.3076923076923077,
+            "FN": 0,
+            "FP": 18,
+            "TN": 44,
+            "TP": 4,
+            "precision": 0.18181818181818182,
+            "recall": 1.0
+          },
+          "partition_sha256": "852080ed9c8358490bb7577842b9198516a8fe4e4e5ab2d5e30c703c57a4513a",
+          "singleton_count": 0,
+          "source_round": 0
+        }
+      },
+      "fixpoint_round": 2,
+      "grouped_universe_sha256": "d06192324404d41df5cf83d810c90826ca1753f9c8fcb4f3270aeece0967b098",
+      "id": "controlled/family_graph_02/O3S/plain",
+      "inputs": {
+        "fixture": {
+          "git_tracked": true,
+          "path": "fixtures/plain/family_graph_02.O3S.fixture.json",
+          "repository": "experiment",
+          "sha256": "fd7be484ad8e8bb929d3a202a4277eb50d50976cf1df0ed47b1bfd11b0cd534b"
+        },
+        "ground_truth": {
+          "git_tracked": true,
+          "path": "ground_truth/plain/family_graph_02.O3S.gt.json",
+          "repository": "experiment",
+          "sha256": "aeaaba60f3f8378d5a5a4d6140b0a0a9a4c08a25bf027f5eaea2a5156d959325"
+        }
+      },
+      "mode": "full",
+      "profile": "plain",
+      "target_universe_sha256": "d06192324404d41df5cf83d810c90826ca1753f9c8fcb4f3270aeece0967b098",
+      "validation": {
+        "all_depths_match_existing_scorer": true,
+        "partition_nesting_monotonic": true,
+        "target_universe_fixed": true
+      }
+    },
+    {
+      "analysis": null,
+      "build": "O3S",
+      "case": "family_graph_03",
+      "cohort": "controlled",
+      "common_coverage": {
+        "abstained_candidate_count": 0,
+        "decision_pair_count": 78,
+        "grouped_candidate_count": 13,
+        "pair_decision_coverage": 1.0,
+        "same_family_pair_coverage": 1.0,
+        "scored_same_family_pair_count": 10,
+        "target_count": 13,
+        "target_coverage": 1.0,
+        "target_pair_count": 78,
+        "total_same_family_pair_count": 10
+      },
+      "depths": {
+        "fixpoint": {
+          "carried_forward": false,
+          "cluster_count": 8,
+          "collision_cluster_count": 1,
+          "delta_from_seed": {
+            "FN": 4,
+            "FP": -29,
+            "TP": -4
+          },
+          "fragmented_origin_count": 3,
+          "pairwise": {
+            "F1": 0.5333333333333333,
+            "FN": 6,
+            "FP": 1,
+            "TN": 67,
+            "TP": 4,
+            "precision": 0.8,
+            "recall": 0.4
+          },
+          "partition_sha256": "517be354a60a19a9b13e49cf847814e0937a2bd7b35a567ab9c4cd12355a40bd",
+          "singleton_count": 3,
+          "source_round": 2
+        },
+        "r1": {
+          "carried_forward": false,
+          "cluster_count": 8,
+          "collision_cluster_count": 1,
+          "delta_from_seed": {
+            "FN": 4,
+            "FP": -29,
+            "TP": -4
+          },
+          "fragmented_origin_count": 3,
+          "pairwise": {
+            "F1": 0.5333333333333333,
+            "FN": 6,
+            "FP": 1,
+            "TN": 67,
+            "TP": 4,
+            "precision": 0.8,
+            "recall": 0.4
+          },
+          "partition_sha256": "517be354a60a19a9b13e49cf847814e0937a2bd7b35a567ab9c4cd12355a40bd",
+          "singleton_count": 3,
+          "source_round": 1
+        },
+        "r2": {
+          "carried_forward": false,
+          "cluster_count": 8,
+          "collision_cluster_count": 1,
+          "delta_from_seed": {
+            "FN": 4,
+            "FP": -29,
+            "TP": -4
+          },
+          "fragmented_origin_count": 3,
+          "pairwise": {
+            "F1": 0.5333333333333333,
+            "FN": 6,
+            "FP": 1,
+            "TN": 67,
+            "TP": 4,
+            "precision": 0.8,
+            "recall": 0.4
+          },
+          "partition_sha256": "517be354a60a19a9b13e49cf847814e0937a2bd7b35a567ab9c4cd12355a40bd",
+          "singleton_count": 3,
+          "source_round": 2
+        },
+        "seed": {
+          "carried_forward": false,
+          "cluster_count": 2,
+          "collision_cluster_count": 2,
+          "delta_from_seed": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 0
+          },
+          "fragmented_origin_count": 1,
+          "pairwise": {
+            "F1": 0.3333333333333333,
+            "FN": 2,
+            "FP": 30,
+            "TN": 38,
+            "TP": 8,
+            "precision": 0.21052631578947367,
+            "recall": 0.8
+          },
+          "partition_sha256": "343140da9e1aba34cd56bb400258d18cb0c152b68dc3d25a90d429eb0e7034f6",
+          "singleton_count": 0,
+          "source_round": 0
+        }
+      },
+      "fixpoint_round": 2,
+      "grouped_universe_sha256": "4e9024c4dd0f93e83a47de7b968bf11610ebed164b029c7a20e2a82d1ee45d91",
+      "id": "controlled/family_graph_03/O3S/plain",
+      "inputs": {
+        "fixture": {
+          "git_tracked": true,
+          "path": "fixtures/plain/family_graph_03.O3S.fixture.json",
+          "repository": "experiment",
+          "sha256": "00b48e9e09b4ae6f900c2db1a4cb78b15d4c8594148fa0aed5cca0e40543555e"
+        },
+        "ground_truth": {
+          "git_tracked": true,
+          "path": "ground_truth/plain/family_graph_03.O3S.gt.json",
+          "repository": "experiment",
+          "sha256": "6fefe06e55f9738d310f4571f76b2a71070603d69e4a202ee6e79a1d6b60b131"
+        }
+      },
+      "mode": "full",
+      "profile": "plain",
+      "target_universe_sha256": "4e9024c4dd0f93e83a47de7b968bf11610ebed164b029c7a20e2a82d1ee45d91",
+      "validation": {
+        "all_depths_match_existing_scorer": true,
+        "partition_nesting_monotonic": true,
+        "target_universe_fixed": true
+      }
+    },
+    {
+      "analysis": null,
+      "build": "O3KS",
+      "case": "family_graph_03",
+      "cohort": "controlled",
+      "common_coverage": {
+        "abstained_candidate_count": 0,
+        "decision_pair_count": 136,
+        "grouped_candidate_count": 17,
+        "pair_decision_coverage": 1.0,
+        "same_family_pair_coverage": 1.0,
+        "scored_same_family_pair_count": 15,
+        "target_count": 17,
+        "target_coverage": 1.0,
+        "target_pair_count": 136,
+        "total_same_family_pair_count": 15
+      },
+      "depths": {
+        "fixpoint": {
+          "carried_forward": false,
+          "cluster_count": 6,
+          "collision_cluster_count": 1,
+          "delta_from_seed": {
+            "FN": 0,
+            "FP": -30,
+            "TP": 0
+          },
+          "fragmented_origin_count": 0,
+          "pairwise": {
+            "F1": 0.967741935483871,
+            "FN": 0,
+            "FP": 1,
+            "TN": 120,
+            "TP": 15,
+            "precision": 0.9375,
+            "recall": 1.0
+          },
+          "partition_sha256": "c276b66eadf5cd24e50a4175f4770f3629b014b6be379a89b3c98fb0a8818a64",
+          "singleton_count": 0,
+          "source_round": 2
+        },
+        "r1": {
+          "carried_forward": false,
+          "cluster_count": 6,
+          "collision_cluster_count": 1,
+          "delta_from_seed": {
+            "FN": 0,
+            "FP": -30,
+            "TP": 0
+          },
+          "fragmented_origin_count": 0,
+          "pairwise": {
+            "F1": 0.967741935483871,
+            "FN": 0,
+            "FP": 1,
+            "TN": 120,
+            "TP": 15,
+            "precision": 0.9375,
+            "recall": 1.0
+          },
+          "partition_sha256": "c276b66eadf5cd24e50a4175f4770f3629b014b6be379a89b3c98fb0a8818a64",
+          "singleton_count": 0,
+          "source_round": 1
+        },
+        "r2": {
+          "carried_forward": false,
+          "cluster_count": 6,
+          "collision_cluster_count": 1,
+          "delta_from_seed": {
+            "FN": 0,
+            "FP": -30,
+            "TP": 0
+          },
+          "fragmented_origin_count": 0,
+          "pairwise": {
+            "F1": 0.967741935483871,
+            "FN": 0,
+            "FP": 1,
+            "TN": 120,
+            "TP": 15,
+            "precision": 0.9375,
+            "recall": 1.0
+          },
+          "partition_sha256": "c276b66eadf5cd24e50a4175f4770f3629b014b6be379a89b3c98fb0a8818a64",
+          "singleton_count": 0,
+          "source_round": 2
+        },
+        "seed": {
+          "carried_forward": false,
+          "cluster_count": 3,
+          "collision_cluster_count": 2,
+          "delta_from_seed": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 0
+          },
+          "fragmented_origin_count": 0,
+          "pairwise": {
+            "F1": 0.4918032786885246,
+            "FN": 0,
+            "FP": 31,
+            "TN": 90,
+            "TP": 15,
+            "precision": 0.32608695652173914,
+            "recall": 1.0
+          },
+          "partition_sha256": "5e22bcb207698d91b85d24178df1d72e59e3823bb7b7737a7490bfab253a15df",
+          "singleton_count": 0,
+          "source_round": 0
+        }
+      },
+      "fixpoint_round": 2,
+      "grouped_universe_sha256": "d9a810f6a437de82ce103551ac8000971c7637929a6c6e34b6de05720c848ce0",
+      "id": "controlled/family_graph_03/O3KS/plain",
+      "inputs": {
+        "fixture": {
+          "git_tracked": true,
+          "path": "fixtures/plain/family_graph_03.O3KS.fixture.json",
+          "repository": "experiment",
+          "sha256": "aff2a26e478b37ca8433955c2a6d894ad835a777501f0c5fdeb3802dbd4a8b70"
+        },
+        "ground_truth": {
+          "git_tracked": true,
+          "path": "ground_truth/plain/family_graph_03.O3KS.gt.json",
+          "repository": "experiment",
+          "sha256": "57cf045dea397261169ddf28bee2bc62df25da2f4bb69b11e1e8abece2c3fe1f"
+        }
+      },
+      "mode": "full",
+      "profile": "plain",
+      "target_universe_sha256": "d9a810f6a437de82ce103551ac8000971c7637929a6c6e34b6de05720c848ce0",
+      "validation": {
+        "all_depths_match_existing_scorer": true,
+        "partition_nesting_monotonic": true,
+        "target_universe_fixed": true
+      }
+    },
+    {
+      "analysis": null,
+      "build": "O3S",
+      "case": "family_graph_01",
+      "cohort": "controlled",
+      "common_coverage": {
+        "abstained_candidate_count": 0,
+        "decision_pair_count": 15,
+        "grouped_candidate_count": 6,
+        "pair_decision_coverage": 1.0,
+        "same_family_pair_coverage": 1.0,
+        "scored_same_family_pair_count": 6,
+        "target_count": 6,
+        "target_coverage": 1.0,
+        "target_pair_count": 15,
+        "total_same_family_pair_count": 6
+      },
+      "depths": {
+        "fixpoint": {
+          "carried_forward": false,
+          "cluster_count": 2,
+          "collision_cluster_count": 0,
+          "delta_from_seed": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 0
+          },
+          "fragmented_origin_count": 0,
+          "pairwise": {
+            "F1": 1.0,
+            "FN": 0,
+            "FP": 0,
+            "TN": 9,
+            "TP": 6,
+            "precision": 1.0,
+            "recall": 1.0
+          },
+          "partition_sha256": "891e7609e70ea9e6b7d03aa52b533a5a9a11a6bafde24241bb32fc726b0ffcca",
+          "singleton_count": 0,
+          "source_round": 1
+        },
+        "r1": {
+          "carried_forward": false,
+          "cluster_count": 2,
+          "collision_cluster_count": 0,
+          "delta_from_seed": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 0
+          },
+          "fragmented_origin_count": 0,
+          "pairwise": {
+            "F1": 1.0,
+            "FN": 0,
+            "FP": 0,
+            "TN": 9,
+            "TP": 6,
+            "precision": 1.0,
+            "recall": 1.0
+          },
+          "partition_sha256": "891e7609e70ea9e6b7d03aa52b533a5a9a11a6bafde24241bb32fc726b0ffcca",
+          "singleton_count": 0,
+          "source_round": 1
+        },
+        "r2": {
+          "carried_forward": true,
+          "cluster_count": 2,
+          "collision_cluster_count": 0,
+          "delta_from_seed": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 0
+          },
+          "fragmented_origin_count": 0,
+          "pairwise": {
+            "F1": 1.0,
+            "FN": 0,
+            "FP": 0,
+            "TN": 9,
+            "TP": 6,
+            "precision": 1.0,
+            "recall": 1.0
+          },
+          "partition_sha256": "891e7609e70ea9e6b7d03aa52b533a5a9a11a6bafde24241bb32fc726b0ffcca",
+          "singleton_count": 0,
+          "source_round": 1
+        },
+        "seed": {
+          "carried_forward": false,
+          "cluster_count": 2,
+          "collision_cluster_count": 0,
+          "delta_from_seed": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 0
+          },
+          "fragmented_origin_count": 0,
+          "pairwise": {
+            "F1": 1.0,
+            "FN": 0,
+            "FP": 0,
+            "TN": 9,
+            "TP": 6,
+            "precision": 1.0,
+            "recall": 1.0
+          },
+          "partition_sha256": "891e7609e70ea9e6b7d03aa52b533a5a9a11a6bafde24241bb32fc726b0ffcca",
+          "singleton_count": 0,
+          "source_round": 0
+        }
+      },
+      "fixpoint_round": 1,
+      "grouped_universe_sha256": "2beaeabfcd35727a62130cbca07ff5bbe95f4aba68ad91b74743266b78a1cf3b",
+      "id": "controlled/family_graph_01/O3S/min",
+      "inputs": {
+        "fixture": {
+          "git_tracked": true,
+          "path": "fixtures/min/family_graph_01.O3S.fixture.json",
+          "repository": "experiment",
+          "sha256": "ff9416cf2d003831482f8ff9e36dbb17fbfcdf09ba80f4a7c57d245640c98f43"
+        },
+        "ground_truth": {
+          "git_tracked": true,
+          "path": "ground_truth/min/family_graph_01.O3S.gt.json",
+          "repository": "experiment",
+          "sha256": "2fa4dd47425df359697b4f90ee650075ed98946af2484200018c4cba8b172622"
+        }
+      },
+      "mode": "full",
+      "profile": "min",
+      "target_universe_sha256": "2beaeabfcd35727a62130cbca07ff5bbe95f4aba68ad91b74743266b78a1cf3b",
+      "validation": {
+        "all_depths_match_existing_scorer": true,
+        "partition_nesting_monotonic": true,
+        "target_universe_fixed": true
+      }
+    },
+    {
+      "analysis": null,
+      "build": "O3S",
+      "case": "family_graph_02",
+      "cohort": "controlled",
+      "common_coverage": {
+        "abstained_candidate_count": 0,
+        "decision_pair_count": 66,
+        "grouped_candidate_count": 12,
+        "pair_decision_coverage": 1.0,
+        "same_family_pair_coverage": 1.0,
+        "scored_same_family_pair_count": 4,
+        "target_count": 12,
+        "target_coverage": 1.0,
+        "target_pair_count": 66,
+        "total_same_family_pair_count": 4
+      },
+      "depths": {
+        "fixpoint": {
+          "carried_forward": false,
+          "cluster_count": 4,
+          "collision_cluster_count": 2,
+          "delta_from_seed": {
+            "FN": 0,
+            "FP": -8,
+            "TP": 0
+          },
+          "fragmented_origin_count": 0,
+          "pairwise": {
+            "F1": 0.4444444444444445,
+            "FN": 0,
+            "FP": 10,
+            "TN": 52,
+            "TP": 4,
+            "precision": 0.2857142857142857,
+            "recall": 1.0
+          },
+          "partition_sha256": "fc03b925bf1a04db5bacea4a8f7c0ec6bf5bd9ee865cc8b69368a64fd9a2bbb8",
+          "singleton_count": 0,
+          "source_round": 2
+        },
+        "r1": {
+          "carried_forward": false,
+          "cluster_count": 4,
+          "collision_cluster_count": 2,
+          "delta_from_seed": {
+            "FN": 0,
+            "FP": -8,
+            "TP": 0
+          },
+          "fragmented_origin_count": 0,
+          "pairwise": {
+            "F1": 0.4444444444444445,
+            "FN": 0,
+            "FP": 10,
+            "TN": 52,
+            "TP": 4,
+            "precision": 0.2857142857142857,
+            "recall": 1.0
+          },
+          "partition_sha256": "fc03b925bf1a04db5bacea4a8f7c0ec6bf5bd9ee865cc8b69368a64fd9a2bbb8",
+          "singleton_count": 0,
+          "source_round": 1
+        },
+        "r2": {
+          "carried_forward": false,
+          "cluster_count": 4,
+          "collision_cluster_count": 2,
+          "delta_from_seed": {
+            "FN": 0,
+            "FP": -8,
+            "TP": 0
+          },
+          "fragmented_origin_count": 0,
+          "pairwise": {
+            "F1": 0.4444444444444445,
+            "FN": 0,
+            "FP": 10,
+            "TN": 52,
+            "TP": 4,
+            "precision": 0.2857142857142857,
+            "recall": 1.0
+          },
+          "partition_sha256": "fc03b925bf1a04db5bacea4a8f7c0ec6bf5bd9ee865cc8b69368a64fd9a2bbb8",
+          "singleton_count": 0,
+          "source_round": 2
+        },
+        "seed": {
+          "carried_forward": false,
+          "cluster_count": 3,
+          "collision_cluster_count": 2,
+          "delta_from_seed": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 0
+          },
+          "fragmented_origin_count": 0,
+          "pairwise": {
+            "F1": 0.3076923076923077,
+            "FN": 0,
+            "FP": 18,
+            "TN": 44,
+            "TP": 4,
+            "precision": 0.18181818181818182,
+            "recall": 1.0
+          },
+          "partition_sha256": "a1067381f2057536af37c5ed72bc4c00b4a555ca3dab19b316c1b5be1af668c0",
+          "singleton_count": 0,
+          "source_round": 0
+        }
+      },
+      "fixpoint_round": 2,
+      "grouped_universe_sha256": "a3621113551f019c3e26cd10c70b444d33ce360a0499cd23851786adb367d66e",
+      "id": "controlled/family_graph_02/O3S/min",
+      "inputs": {
+        "fixture": {
+          "git_tracked": true,
+          "path": "fixtures/min/family_graph_02.O3S.fixture.json",
+          "repository": "experiment",
+          "sha256": "6867b611731012d0335051e5a625ec87155660ea1d96aa197663b200b2733df2"
+        },
+        "ground_truth": {
+          "git_tracked": true,
+          "path": "ground_truth/min/family_graph_02.O3S.gt.json",
+          "repository": "experiment",
+          "sha256": "03a481125b643e3f61b925ad3b4fcfd722b57be1b32f0cdc4e6b7bb45fa00315"
+        }
+      },
+      "mode": "full",
+      "profile": "min",
+      "target_universe_sha256": "a3621113551f019c3e26cd10c70b444d33ce360a0499cd23851786adb367d66e",
+      "validation": {
+        "all_depths_match_existing_scorer": true,
+        "partition_nesting_monotonic": true,
+        "target_universe_fixed": true
+      }
+    },
+    {
+      "analysis": null,
+      "build": "O3S",
+      "case": "family_graph_03",
+      "cohort": "controlled",
+      "common_coverage": {
+        "abstained_candidate_count": 0,
+        "decision_pair_count": 78,
+        "grouped_candidate_count": 13,
+        "pair_decision_coverage": 1.0,
+        "same_family_pair_coverage": 1.0,
+        "scored_same_family_pair_count": 10,
+        "target_count": 13,
+        "target_coverage": 1.0,
+        "target_pair_count": 78,
+        "total_same_family_pair_count": 10
+      },
+      "depths": {
+        "fixpoint": {
+          "carried_forward": false,
+          "cluster_count": 8,
+          "collision_cluster_count": 1,
+          "delta_from_seed": {
+            "FN": 4,
+            "FP": -29,
+            "TP": -4
+          },
+          "fragmented_origin_count": 3,
+          "pairwise": {
+            "F1": 0.5333333333333333,
+            "FN": 6,
+            "FP": 1,
+            "TN": 67,
+            "TP": 4,
+            "precision": 0.8,
+            "recall": 0.4
+          },
+          "partition_sha256": "4ad4313c82e2d8a8db4a18806f8c339420cf02a9ab4041b2a1985ca059bb45b0",
+          "singleton_count": 3,
+          "source_round": 2
+        },
+        "r1": {
+          "carried_forward": false,
+          "cluster_count": 8,
+          "collision_cluster_count": 1,
+          "delta_from_seed": {
+            "FN": 4,
+            "FP": -29,
+            "TP": -4
+          },
+          "fragmented_origin_count": 3,
+          "pairwise": {
+            "F1": 0.5333333333333333,
+            "FN": 6,
+            "FP": 1,
+            "TN": 67,
+            "TP": 4,
+            "precision": 0.8,
+            "recall": 0.4
+          },
+          "partition_sha256": "4ad4313c82e2d8a8db4a18806f8c339420cf02a9ab4041b2a1985ca059bb45b0",
+          "singleton_count": 3,
+          "source_round": 1
+        },
+        "r2": {
+          "carried_forward": false,
+          "cluster_count": 8,
+          "collision_cluster_count": 1,
+          "delta_from_seed": {
+            "FN": 4,
+            "FP": -29,
+            "TP": -4
+          },
+          "fragmented_origin_count": 3,
+          "pairwise": {
+            "F1": 0.5333333333333333,
+            "FN": 6,
+            "FP": 1,
+            "TN": 67,
+            "TP": 4,
+            "precision": 0.8,
+            "recall": 0.4
+          },
+          "partition_sha256": "4ad4313c82e2d8a8db4a18806f8c339420cf02a9ab4041b2a1985ca059bb45b0",
+          "singleton_count": 3,
+          "source_round": 2
+        },
+        "seed": {
+          "carried_forward": false,
+          "cluster_count": 2,
+          "collision_cluster_count": 2,
+          "delta_from_seed": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 0
+          },
+          "fragmented_origin_count": 1,
+          "pairwise": {
+            "F1": 0.3333333333333333,
+            "FN": 2,
+            "FP": 30,
+            "TN": 38,
+            "TP": 8,
+            "precision": 0.21052631578947367,
+            "recall": 0.8
+          },
+          "partition_sha256": "9feee9a1e1a8e19f32c271e932321e4a582c1423f751b74add0acf83bf6774cc",
+          "singleton_count": 0,
+          "source_round": 0
+        }
+      },
+      "fixpoint_round": 2,
+      "grouped_universe_sha256": "c4d65587900e66eba47ba75153eed070e93eb03b1ef0fe4ae1b18676eb37bab6",
+      "id": "controlled/family_graph_03/O3S/min",
+      "inputs": {
+        "fixture": {
+          "git_tracked": true,
+          "path": "fixtures/min/family_graph_03.O3S.fixture.json",
+          "repository": "experiment",
+          "sha256": "bc97351e68f49b34916c5ff49b5ff553a34be19d3e01218f1581f75856f8d768"
+        },
+        "ground_truth": {
+          "git_tracked": true,
+          "path": "ground_truth/min/family_graph_03.O3S.gt.json",
+          "repository": "experiment",
+          "sha256": "cfb35ac0425fdd3f31b892a71115c14643ab1cac89ff6301ce5e7a093fac2bc6"
+        }
+      },
+      "mode": "full",
+      "profile": "min",
+      "target_universe_sha256": "c4d65587900e66eba47ba75153eed070e93eb03b1ef0fe4ae1b18676eb37bab6",
+      "validation": {
+        "all_depths_match_existing_scorer": true,
+        "partition_nesting_monotonic": true,
+        "target_universe_fixed": true
+      }
+    },
+    {
+      "analysis": null,
+      "build": "O3KS",
+      "case": "family_graph_03",
+      "cohort": "controlled",
+      "common_coverage": {
+        "abstained_candidate_count": 0,
+        "decision_pair_count": 136,
+        "grouped_candidate_count": 17,
+        "pair_decision_coverage": 1.0,
+        "same_family_pair_coverage": 1.0,
+        "scored_same_family_pair_count": 15,
+        "target_count": 17,
+        "target_coverage": 1.0,
+        "target_pair_count": 136,
+        "total_same_family_pair_count": 15
+      },
+      "depths": {
+        "fixpoint": {
+          "carried_forward": false,
+          "cluster_count": 6,
+          "collision_cluster_count": 1,
+          "delta_from_seed": {
+            "FN": 0,
+            "FP": -30,
+            "TP": 0
+          },
+          "fragmented_origin_count": 0,
+          "pairwise": {
+            "F1": 0.967741935483871,
+            "FN": 0,
+            "FP": 1,
+            "TN": 120,
+            "TP": 15,
+            "precision": 0.9375,
+            "recall": 1.0
+          },
+          "partition_sha256": "6d7a3cac0b9cdfadd620ff8b90453ca3324b368a8ec05947acef056986b9763c",
+          "singleton_count": 0,
+          "source_round": 2
+        },
+        "r1": {
+          "carried_forward": false,
+          "cluster_count": 6,
+          "collision_cluster_count": 1,
+          "delta_from_seed": {
+            "FN": 0,
+            "FP": -30,
+            "TP": 0
+          },
+          "fragmented_origin_count": 0,
+          "pairwise": {
+            "F1": 0.967741935483871,
+            "FN": 0,
+            "FP": 1,
+            "TN": 120,
+            "TP": 15,
+            "precision": 0.9375,
+            "recall": 1.0
+          },
+          "partition_sha256": "6d7a3cac0b9cdfadd620ff8b90453ca3324b368a8ec05947acef056986b9763c",
+          "singleton_count": 0,
+          "source_round": 1
+        },
+        "r2": {
+          "carried_forward": false,
+          "cluster_count": 6,
+          "collision_cluster_count": 1,
+          "delta_from_seed": {
+            "FN": 0,
+            "FP": -30,
+            "TP": 0
+          },
+          "fragmented_origin_count": 0,
+          "pairwise": {
+            "F1": 0.967741935483871,
+            "FN": 0,
+            "FP": 1,
+            "TN": 120,
+            "TP": 15,
+            "precision": 0.9375,
+            "recall": 1.0
+          },
+          "partition_sha256": "6d7a3cac0b9cdfadd620ff8b90453ca3324b368a8ec05947acef056986b9763c",
+          "singleton_count": 0,
+          "source_round": 2
+        },
+        "seed": {
+          "carried_forward": false,
+          "cluster_count": 3,
+          "collision_cluster_count": 2,
+          "delta_from_seed": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 0
+          },
+          "fragmented_origin_count": 0,
+          "pairwise": {
+            "F1": 0.4918032786885246,
+            "FN": 0,
+            "FP": 31,
+            "TN": 90,
+            "TP": 15,
+            "precision": 0.32608695652173914,
+            "recall": 1.0
+          },
+          "partition_sha256": "90d2a1731e3acf23c1254f4f7aeec243c64fd5fefadad5f36ee292649ff70c29",
+          "singleton_count": 0,
+          "source_round": 0
+        }
+      },
+      "fixpoint_round": 2,
+      "grouped_universe_sha256": "0d1f331b6e15ed05a0ea0459b35929e9313c2f2bfb560ac691f5ebfd21f64566",
+      "id": "controlled/family_graph_03/O3KS/min",
+      "inputs": {
+        "fixture": {
+          "git_tracked": true,
+          "path": "fixtures/min/family_graph_03.O3KS.fixture.json",
+          "repository": "experiment",
+          "sha256": "64bb9593e470b3f370e63b0bf1ba581ba880dfcee71eb53dcc7484fe4de2c8e0"
+        },
+        "ground_truth": {
+          "git_tracked": true,
+          "path": "ground_truth/min/family_graph_03.O3KS.gt.json",
+          "repository": "experiment",
+          "sha256": "93f978c3bb4fd72d7d6def25d9f03c793cfe71a48b9a1965ace56bc647558ef7"
+        }
+      },
+      "mode": "full",
+      "profile": "min",
+      "target_universe_sha256": "0d1f331b6e15ed05a0ea0459b35929e9313c2f2bfb560ac691f5ebfd21f64566",
+      "validation": {
+        "all_depths_match_existing_scorer": true,
+        "partition_nesting_monotonic": true,
+        "target_universe_fixed": true
+      }
+    },
+    {
+      "analysis": {
+        "anchor_policy": "role",
+        "backend": "radare2-capstone+angr",
+        "candidate_scope": "rust-nonstd",
+        "candidate_selection_sha256": "25bb7ebafe83de428d2d6b9f1596f0c1297e9e719f59a1b3f8b566331a8218e2",
+        "edge_policy": [
+          "direct-immediate",
+          "direct-tail",
+          "elf-relocation",
+          "angr-cfg"
+        ],
+        "extractor_version": "call-evidence-v6+angr-9.2.165",
+        "oracle_level": "candidate-and-boundary",
+        "projection_config_sha256": "fdfc4732f58ccda0c1fad87c1dbd967458ad151907bbcfc7b6055851024ee5da",
+        "raw_graph_sha256": "634b72d98dc6becdf6e63873bf8ea4d5efe120a20210f9b311482ec776f9cf9a",
+        "track": "angr"
+      },
+      "build": "O3S",
+      "case": "billing-client",
+      "cohort": "real-world",
+      "common_coverage": {
+        "abstained_candidate_count": 6,
+        "decision_pair_count": 49141,
+        "grouped_candidate_count": 314,
+        "pair_decision_coverage": 0.9627938871473354,
+        "same_family_pair_coverage": 1.0,
+        "scored_same_family_pair_count": 400,
+        "target_count": 320,
+        "target_coverage": 0.98125,
+        "target_pair_count": 51040,
+        "total_same_family_pair_count": 400
+      },
+      "depths": {
+        "fixpoint": {
+          "carried_forward": false,
+          "cluster_count": 229,
+          "collision_cluster_count": 22,
+          "delta_from_seed": {
+            "FN": 191,
+            "FP": -5619,
+            "TP": -191
+          },
+          "fragmented_origin_count": 25,
+          "pairwise": {
+            "F1": 0.34567901234567905,
+            "FN": 260,
+            "FP": 270,
+            "TN": 48471,
+            "TP": 140,
+            "precision": 0.34146341463414637,
+            "recall": 0.35
+          },
+          "partition_sha256": "0150431681b4ac3072ee2fbc7ccd45e2d1155f542a76d3c93dbd68b166045aaa",
+          "singleton_count": 190,
+          "source_round": 6
+        },
+        "r1": {
+          "carried_forward": false,
+          "cluster_count": 183,
+          "collision_cluster_count": 25,
+          "delta_from_seed": {
+            "FN": 167,
+            "FP": -5232,
+            "TP": -167
+          },
+          "fragmented_origin_count": 17,
+          "pairwise": {
+            "F1": 0.2686322686322686,
+            "FN": 236,
+            "FP": 657,
+            "TN": 48084,
+            "TP": 164,
+            "precision": 0.1997563946406821,
+            "recall": 0.41
+          },
+          "partition_sha256": "923d15095b7304ca0846bfc91567e1e68d19946795579093f99772071720a30d",
+          "singleton_count": 131,
+          "source_round": 1
+        },
+        "r2": {
+          "carried_forward": false,
+          "cluster_count": 220,
+          "collision_cluster_count": 23,
+          "delta_from_seed": {
+            "FN": 184,
+            "FP": -5575,
+            "TP": -184
+          },
+          "fragmented_origin_count": 23,
+          "pairwise": {
+            "F1": 0.3414634146341463,
+            "FN": 253,
+            "FP": 314,
+            "TN": 48427,
+            "TP": 147,
+            "precision": 0.3188720173535792,
+            "recall": 0.3675
+          },
+          "partition_sha256": "ef1234065785565bd3dea541a78cc871f8a4cf0fe94764c30d58db7d30330fda",
+          "singleton_count": 175,
+          "source_round": 2
+        },
+        "seed": {
+          "carried_forward": false,
+          "cluster_count": 34,
+          "collision_cluster_count": 14,
+          "delta_from_seed": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 0
+          },
+          "fragmented_origin_count": 9,
+          "pairwise": {
+            "F1": 0.09999999999999999,
+            "FN": 69,
+            "FP": 5889,
+            "TN": 42852,
+            "TP": 331,
+            "precision": 0.053215434083601285,
+            "recall": 0.8275
+          },
+          "partition_sha256": "981ef3ca1fc8a4e300d6102d92e9ebe2bdbc9b6a3f46f556faa3b9683ecdd863",
+          "singleton_count": 17,
+          "source_round": 0
+        }
+      },
+      "fixpoint_round": 6,
+      "grouped_universe_sha256": "7eb8129b30d057ea0867f509879266ed146b2d29f7adb13d954eb84ab381f2bd",
+      "id": "real-world/billing-client/O3S/plain",
+      "inputs": {
+        "fixture": {
+          "git_tracked": true,
+          "path": "fixtures/angr/role/rust-nonstd/plain/billing-client.O3S.fixture.json",
+          "repository": "experiment",
+          "sha256": "57bb1e8f25acf59ab376f54bfb2348636e092d1f214ff6c40b61e29f0a497ba2"
+        },
+        "ground_truth": {
+          "git_tracked": true,
+          "path": "ground_truth/rust-nonstd/plain/billing-client.O3S.gt.json",
+          "repository": "experiment",
+          "sha256": "bbb883e777108040946399a3826098a753557b220d40db6a10486ec1199cb027"
+        }
+      },
+      "mode": "out-in",
+      "profile": "plain",
+      "target_universe_sha256": "af803591213ddd0e4b6301c125012a52b69091d036928e11148a8ce9bfb8c2b6",
+      "validation": {
+        "all_depths_match_existing_scorer": true,
+        "partition_nesting_monotonic": true,
+        "target_universe_fixed": true
+      }
+    },
+    {
+      "analysis": {
+        "anchor_policy": "role",
+        "backend": "radare2-capstone+angr",
+        "candidate_scope": "rust-nonstd",
+        "candidate_selection_sha256": "0c880148b80cfb6581290c75d9d5778ec988559c0e6fb240db5d0a5e7ad10703",
+        "edge_policy": [
+          "direct-immediate",
+          "direct-tail",
+          "elf-relocation",
+          "angr-cfg"
+        ],
+        "extractor_version": "call-evidence-v6+angr-9.2.165",
+        "oracle_level": "candidate-and-boundary",
+        "projection_config_sha256": "fdfc4732f58ccda0c1fad87c1dbd967458ad151907bbcfc7b6055851024ee5da",
+        "raw_graph_sha256": "900c1c62bf026c9cc00c6a595ac1d7223f2f74712c7edd980a833f30817115b8",
+        "track": "angr"
+      },
+      "build": "O3S",
+      "case": "zoxide",
+      "cohort": "real-world",
+      "common_coverage": {
+        "abstained_candidate_count": 95,
+        "decision_pair_count": 167331,
+        "grouped_candidate_count": 579,
+        "pair_decision_coverage": 0.737787752258588,
+        "same_family_pair_coverage": 0.6188620420888542,
+        "scored_same_family_pair_count": 794,
+        "target_count": 674,
+        "target_coverage": 0.8590504451038575,
+        "target_pair_count": 226801,
+        "total_same_family_pair_count": 1283
+      },
+      "depths": {
+        "fixpoint": {
+          "carried_forward": false,
+          "cluster_count": 404,
+          "collision_cluster_count": 49,
+          "delta_from_seed": {
+            "FN": 288,
+            "FP": -14610,
+            "TP": -288
+          },
+          "fragmented_origin_count": 34,
+          "pairwise": {
+            "F1": 0.32163265306122446,
+            "FN": 597,
+            "FP": 234,
+            "TN": 166303,
+            "TP": 197,
+            "precision": 0.45707656612529,
+            "recall": 0.24811083123425692
+          },
+          "partition_sha256": "77f8bd344203d7402f98cdd1a45aa536f08904ff94c95d76c5bd566d16167a03",
+          "singleton_count": 318,
+          "source_round": 6
+        },
+        "r1": {
+          "carried_forward": false,
+          "cluster_count": 281,
+          "collision_cluster_count": 61,
+          "delta_from_seed": {
+            "FN": 147,
+            "FP": -12579,
+            "TP": -147
+          },
+          "fragmented_origin_count": 31,
+          "pairwise": {
+            "F1": 0.19899911686782457,
+            "FN": 456,
+            "FP": 2265,
+            "TN": 164272,
+            "TP": 338,
+            "precision": 0.1298501728774491,
+            "recall": 0.4256926952141058
+          },
+          "partition_sha256": "84b57dc5fbbfb8d7357d333cc5af05b2678a1311efd5df4a7c506db126eae72c",
+          "singleton_count": 208,
+          "source_round": 1
+        },
+        "r2": {
+          "carried_forward": false,
+          "cluster_count": 389,
+          "collision_cluster_count": 48,
+          "delta_from_seed": {
+            "FN": 280,
+            "FP": -14465,
+            "TP": -280
+          },
+          "fragmented_origin_count": 34,
+          "pairwise": {
+            "F1": 0.29753265602322204,
+            "FN": 589,
+            "FP": 379,
+            "TN": 166158,
+            "TP": 205,
+            "precision": 0.351027397260274,
+            "recall": 0.25818639798488663
+          },
+          "partition_sha256": "8e6ecaf824107a1feecac85b67d530bb59c6b728919af7d04f660a5162e60e53",
+          "singleton_count": 305,
+          "source_round": 2
+        },
+        "seed": {
+          "carried_forward": false,
+          "cluster_count": 43,
+          "collision_cluster_count": 24,
+          "delta_from_seed": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 0
+          },
+          "fragmented_origin_count": 21,
+          "pairwise": {
+            "F1": 0.060162500775289944,
+            "FN": 309,
+            "FP": 14844,
+            "TN": 151693,
+            "TP": 485,
+            "precision": 0.03163937634548894,
+            "recall": 0.610831234256927
+          },
+          "partition_sha256": "0d36b495c6c69c2c8537ab64a4d655298b2e523cb53ef97c9b6fe95e2906c137",
+          "singleton_count": 19,
+          "source_round": 0
+        }
+      },
+      "fixpoint_round": 6,
+      "grouped_universe_sha256": "b1d6fa36fe8e313847037a8e050a380ccdef78bc352e3d4c916c160d867c10e4",
+      "id": "real-world/zoxide/O3S/plain",
+      "inputs": {
+        "fixture": {
+          "git_tracked": true,
+          "path": "fixtures/angr/role/rust-nonstd/plain/zoxide.O3S.fixture.json",
+          "repository": "experiment",
+          "sha256": "e8fd22ceb63f7a659b8e329ae88278dd7b1bfe348aec23df008568d32ca099bb"
+        },
+        "ground_truth": {
+          "git_tracked": true,
+          "path": "ground_truth/rust-nonstd/plain/zoxide.O3S.gt.json",
+          "repository": "experiment",
+          "sha256": "b5e641338cd098ead94ea299b7dccd3a4ca2b8242743656762cf8f01617d967d"
+        }
+      },
+      "mode": "out-in",
+      "profile": "plain",
+      "target_universe_sha256": "a0bc3509b546f20d7a0500d432636083c5eebb3e3a50e281c9c0d34c3c92ec2f",
+      "validation": {
+        "all_depths_match_existing_scorer": true,
+        "partition_nesting_monotonic": true,
+        "target_universe_fixed": true
+      }
+    },
+    {
+      "analysis": {
+        "anchor_policy": "role",
+        "backend": "radare2-capstone+angr",
+        "candidate_scope": "rust-nonstd",
+        "candidate_selection_sha256": "4183d6edb9caf94695443718eca822d736eb3fbd8867115e5459287b2e6fd288",
+        "edge_policy": [
+          "direct-immediate",
+          "direct-tail",
+          "elf-relocation",
+          "angr-cfg"
+        ],
+        "extractor_version": "call-evidence-v6+angr-9.2.165",
+        "oracle_level": "candidate-and-boundary",
+        "projection_config_sha256": "fdfc4732f58ccda0c1fad87c1dbd967458ad151907bbcfc7b6055851024ee5da",
+        "raw_graph_sha256": "cfe1e5dac73be40791a14a67b1a18341cb919417ec04231b0f299dac9088772d",
+        "track": "angr"
+      },
+      "build": "O3S",
+      "case": "fd",
+      "cohort": "real-world",
+      "common_coverage": {
+        "abstained_candidate_count": 273,
+        "decision_pair_count": 1898326,
+        "grouped_candidate_count": 1949,
+        "pair_decision_coverage": 0.769322047017849,
+        "same_family_pair_coverage": 0.8098901098901099,
+        "scored_same_family_pair_count": 2948,
+        "target_count": 2222,
+        "target_coverage": 0.8771377137713772,
+        "target_pair_count": 2467531,
+        "total_same_family_pair_count": 3640
+      },
+      "depths": {
+        "fixpoint": {
+          "carried_forward": false,
+          "cluster_count": 1203,
+          "collision_cluster_count": 141,
+          "delta_from_seed": {
+            "FN": 493,
+            "FP": -215249,
+            "TP": -493
+          },
+          "fragmented_origin_count": 84,
+          "pairwise": {
+            "F1": 0.4238160243620707,
+            "FN": 930,
+            "FP": 4557,
+            "TN": 1890821,
+            "TP": 2018,
+            "precision": 0.3069201520912547,
+            "recall": 0.6845318860244234
+          },
+          "partition_sha256": "2ca96999f88d471e53816d29e35bb10cde4e8ca77376aa3be3066f61c769992b",
+          "singleton_count": 991,
+          "source_round": 6
+        },
+        "r1": {
+          "carried_forward": false,
+          "cluster_count": 840,
+          "collision_cluster_count": 133,
+          "delta_from_seed": {
+            "FN": 395,
+            "FP": -159455,
+            "TP": -395
+          },
+          "fragmented_origin_count": 72,
+          "pairwise": {
+            "F1": 0.0646946419017045,
+            "FN": 832,
+            "FP": 60351,
+            "TN": 1835027,
+            "TP": 2116,
+            "precision": 0.03387388541149727,
+            "recall": 0.7177747625508819
+          },
+          "partition_sha256": "9400a8a40a7d36fd6ee135fc5acb1af0fca43cd1bba944469fbbda47c44d3fbd",
+          "singleton_count": 662,
+          "source_round": 1
+        },
+        "r2": {
+          "carried_forward": false,
+          "cluster_count": 1157,
+          "collision_cluster_count": 136,
+          "delta_from_seed": {
+            "FN": 488,
+            "FP": -212359,
+            "TP": -488
+          },
+          "fragmented_origin_count": 84,
+          "pairwise": {
+            "F1": 0.32581736189402477,
+            "FN": 925,
+            "FP": 7447,
+            "TN": 1887931,
+            "TP": 2023,
+            "precision": 0.2136219640971489,
+            "recall": 0.6862279511533242
+          },
+          "partition_sha256": "c73dff212df4716d193ffc3445624853c116c1aa62d73909bf61cb31113f1b09",
+          "singleton_count": 951,
+          "source_round": 2
+        },
+        "seed": {
+          "carried_forward": false,
+          "cluster_count": 67,
+          "collision_cluster_count": 36,
+          "delta_from_seed": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 0
+          },
+          "fragmented_origin_count": 54,
+          "pairwise": {
+            "F1": 0.022293742924999443,
+            "FN": 437,
+            "FP": 219806,
+            "TN": 1675572,
+            "TP": 2511,
+            "precision": 0.011294682817778217,
+            "recall": 0.851763907734057
+          },
+          "partition_sha256": "a6a4aa58594bb7f2c370938977c6821e23f6c95ee3862d5ec082b2c3f67dbb17",
+          "singleton_count": 31,
+          "source_round": 0
+        }
+      },
+      "fixpoint_round": 6,
+      "grouped_universe_sha256": "a9671a6bfd04d1f42c202bf53b8578981da5a97acc8a18126cf669c3229e7cb2",
+      "id": "real-world/fd/O3S/plain",
+      "inputs": {
+        "fixture": {
+          "git_tracked": true,
+          "path": "fixtures/angr/role/rust-nonstd/plain/fd.O3S.fixture.json",
+          "repository": "experiment",
+          "sha256": "2fec2b73be1a57f9e7bccee59926fccb35f0d18f2e6c3cf119037b0eda7661d5"
+        },
+        "ground_truth": {
+          "git_tracked": true,
+          "path": "ground_truth/rust-nonstd/plain/fd.O3S.gt.json",
+          "repository": "experiment",
+          "sha256": "ada83ff652f59decbde72328b3d34daa1d0e73b19aa80f96c6dd4a8c578818af"
+        }
+      },
+      "mode": "out-in",
+      "profile": "plain",
+      "target_universe_sha256": "a9650f2bf0c0212fa2d5e3bf21a7028b19e4665844f78642510b4aaeaf62dd28",
+      "validation": {
+        "all_depths_match_existing_scorer": true,
+        "partition_nesting_monotonic": true,
+        "target_universe_fixed": true
+      }
+    },
+    {
+      "analysis": {
+        "anchor_policy": "role",
+        "backend": "radare2-capstone+angr",
+        "candidate_scope": "rust-nonstd",
+        "candidate_selection_sha256": "d9fcd29815686972172f313352af610b85e4c2e84fae63b03e7a7a4584d5fca8",
+        "edge_policy": [
+          "direct-immediate",
+          "direct-tail",
+          "elf-relocation",
+          "angr-cfg"
+        ],
+        "extractor_version": "call-evidence-v6+angr-9.2.165",
+        "oracle_level": "candidate-and-boundary",
+        "projection_config_sha256": "fdfc4732f58ccda0c1fad87c1dbd967458ad151907bbcfc7b6055851024ee5da",
+        "raw_graph_sha256": "f7a199888a0cd52377ef715f47b61afa5d3dedd4a3b4dedcf0b3c34a1a9d473f",
+        "track": "angr"
+      },
+      "build": "O3S",
+      "case": "billing-client",
+      "cohort": "real-world",
+      "common_coverage": {
+        "abstained_candidate_count": 22,
+        "decision_pair_count": 16290,
+        "grouped_candidate_count": 181,
+        "pair_decision_coverage": 0.7945178754328635,
+        "same_family_pair_coverage": 0.6657381615598886,
+        "scored_same_family_pair_count": 239,
+        "target_count": 203,
+        "target_coverage": 0.8916256157635468,
+        "target_pair_count": 20503,
+        "total_same_family_pair_count": 359
+      },
+      "depths": {
+        "fixpoint": {
+          "carried_forward": false,
+          "cluster_count": 157,
+          "collision_cluster_count": 11,
+          "delta_from_seed": {
+            "FN": 72,
+            "FP": -1442,
+            "TP": -72
+          },
+          "fragmented_origin_count": 14,
+          "pairwise": {
+            "F1": 0.10600706713780918,
+            "FN": 224,
+            "FP": 29,
+            "TN": 16022,
+            "TP": 15,
+            "precision": 0.3409090909090909,
+            "recall": 0.06276150627615062
+          },
+          "partition_sha256": "f0eaa72709cc3e4ea294915d9e5a87b28c4b3974a79e181fde02409deb3c311b",
+          "singleton_count": 143,
+          "source_round": 6
+        },
+        "r1": {
+          "carried_forward": false,
+          "cluster_count": 132,
+          "collision_cluster_count": 14,
+          "delta_from_seed": {
+            "FN": 62,
+            "FP": -1398,
+            "TP": -62
+          },
+          "fragmented_origin_count": 11,
+          "pairwise": {
+            "F1": 0.1483679525222552,
+            "FN": 214,
+            "FP": 73,
+            "TN": 15978,
+            "TP": 25,
+            "precision": 0.25510204081632654,
+            "recall": 0.10460251046025104
+          },
+          "partition_sha256": "af20962b9c2b74be5176d2390af5f844c1d670bfad541c10005997913ff36fa7",
+          "singleton_count": 107,
+          "source_round": 1
+        },
+        "r2": {
+          "carried_forward": false,
+          "cluster_count": 152,
+          "collision_cluster_count": 11,
+          "delta_from_seed": {
+            "FN": 68,
+            "FP": -1440,
+            "TP": -68
+          },
+          "fragmented_origin_count": 12,
+          "pairwise": {
+            "F1": 0.1314878892733564,
+            "FN": 220,
+            "FP": 31,
+            "TN": 16020,
+            "TP": 19,
+            "precision": 0.38,
+            "recall": 0.0794979079497908
+          },
+          "partition_sha256": "239e9bb25602867b92758324635737c79d69ff30ae4e585fc3034d14539b16cf",
+          "singleton_count": 134,
+          "source_round": 2
+        },
+        "seed": {
+          "carried_forward": false,
+          "cluster_count": 31,
+          "collision_cluster_count": 12,
+          "delta_from_seed": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 0
+          },
+          "fragmented_origin_count": 6,
+          "pairwise": {
+            "F1": 0.09682804674457429,
+            "FN": 152,
+            "FP": 1471,
+            "TN": 14580,
+            "TP": 87,
+            "precision": 0.0558408215661104,
+            "recall": 0.36401673640167365
+          },
+          "partition_sha256": "d2443048b691113c6bac5c2e4e661e4c3d91aadf487f93ec31b5df3457a793ae",
+          "singleton_count": 19,
+          "source_round": 0
+        }
+      },
+      "fixpoint_round": 6,
+      "grouped_universe_sha256": "7882fd3282d194e4cac7a9f87c93b652852591472268603695cb7b062a6c74fa",
+      "id": "real-world/billing-client/O3S/min",
+      "inputs": {
+        "fixture": {
+          "git_tracked": true,
+          "path": "fixtures/angr/role/rust-nonstd/min/billing-client.O3S.fixture.json",
+          "repository": "experiment",
+          "sha256": "1d9c6e6d551a7fad418ee0e757b8ba2ae037c9d29b4deb3ec14411a3900fae17"
+        },
+        "ground_truth": {
+          "git_tracked": true,
+          "path": "ground_truth/rust-nonstd/min/billing-client.O3S.gt.json",
+          "repository": "experiment",
+          "sha256": "89fd64634f708f7a3cdee6cf09aa7723dcc271cc4a31846375f9da30fe520fa2"
+        }
+      },
+      "mode": "out-in",
+      "profile": "min",
+      "target_universe_sha256": "c9b9f1809b698680c9073566d89d69f73d7613e55a8c8fb2dbff5eded5481342",
+      "validation": {
+        "all_depths_match_existing_scorer": true,
+        "partition_nesting_monotonic": true,
+        "target_universe_fixed": true
+      }
+    },
+    {
+      "analysis": {
+        "anchor_policy": "role",
+        "backend": "radare2-capstone+angr",
+        "candidate_scope": "rust-nonstd",
+        "candidate_selection_sha256": "893b7d30e89a8ef2081fe10e4daf89f6019b40e3bc971d4e0c273a37a02d86d4",
+        "edge_policy": [
+          "direct-immediate",
+          "direct-tail",
+          "elf-relocation",
+          "angr-cfg"
+        ],
+        "extractor_version": "call-evidence-v6+angr-9.2.165",
+        "oracle_level": "candidate-and-boundary",
+        "projection_config_sha256": "fdfc4732f58ccda0c1fad87c1dbd967458ad151907bbcfc7b6055851024ee5da",
+        "raw_graph_sha256": "ea584d9ebe15c04e245baef003fe43ff7753a1b281222f1504dd0271813ceb45",
+        "track": "angr"
+      },
+      "build": "O3S",
+      "case": "zoxide",
+      "cohort": "real-world",
+      "common_coverage": {
+        "abstained_candidate_count": 77,
+        "decision_pair_count": 62128,
+        "grouped_candidate_count": 353,
+        "pair_decision_coverage": 0.6735837805605247,
+        "same_family_pair_coverage": 0.5817757009345794,
+        "scored_same_family_pair_count": 498,
+        "target_count": 430,
+        "target_coverage": 0.8209302325581396,
+        "target_pair_count": 92235,
+        "total_same_family_pair_count": 856
+      },
+      "depths": {
+        "fixpoint": {
+          "carried_forward": false,
+          "cluster_count": 234,
+          "collision_cluster_count": 28,
+          "delta_from_seed": {
+            "FN": 72,
+            "FP": -8478,
+            "TP": -72
+          },
+          "fragmented_origin_count": 15,
+          "pairwise": {
+            "F1": 0.5911740216486262,
+            "FN": 143,
+            "FP": 348,
+            "TN": 61282,
+            "TP": 355,
+            "precision": 0.5049786628733998,
+            "recall": 0.7128514056224899
+          },
+          "partition_sha256": "b697bfa3412f3bc068703e15b9c1b99c1215c6f7cc797771f74de49a6009d954",
+          "singleton_count": 197,
+          "source_round": 6
+        },
+        "r1": {
+          "carried_forward": false,
+          "cluster_count": 179,
+          "collision_cluster_count": 30,
+          "delta_from_seed": {
+            "FN": 70,
+            "FP": -6139,
+            "TP": -70
+          },
+          "fragmented_origin_count": 14,
+          "pairwise": {
+            "F1": 0.2015810276679842,
+            "FN": 141,
+            "FP": 2687,
+            "TN": 58943,
+            "TP": 357,
+            "precision": 0.11727989487516426,
+            "recall": 0.7168674698795181
+          },
+          "partition_sha256": "f0cf01adaf138afab7e6d5d36b17af4d019e613784b35cdafa02b522b378e93e",
+          "singleton_count": 145,
+          "source_round": 1
+        },
+        "r2": {
+          "carried_forward": false,
+          "cluster_count": 227,
+          "collision_cluster_count": 27,
+          "delta_from_seed": {
+            "FN": 72,
+            "FP": -8288,
+            "TP": -72
+          },
+          "fragmented_origin_count": 15,
+          "pairwise": {
+            "F1": 0.5104241552839685,
+            "FN": 143,
+            "FP": 538,
+            "TN": 61092,
+            "TP": 355,
+            "precision": 0.3975363941769317,
+            "recall": 0.7128514056224899
+          },
+          "partition_sha256": "161c1e013c4b1a878b379238bc7b6943f8b0b53dddac9b97ad70be6bd5717aba",
+          "singleton_count": 191,
+          "source_round": 2
+        },
+        "seed": {
+          "carried_forward": false,
+          "cluster_count": 38,
+          "collision_cluster_count": 20,
+          "delta_from_seed": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 0
+          },
+          "fragmented_origin_count": 9,
+          "pairwise": {
+            "F1": 0.08758076094759512,
+            "FN": 71,
+            "FP": 8826,
+            "TN": 52804,
+            "TP": 427,
+            "precision": 0.04614719550416081,
+            "recall": 0.857429718875502
+          },
+          "partition_sha256": "9f18d369fbc91d8f057fdf19a2d01d8c05295bdded9539727c7945a040642a78",
+          "singleton_count": 18,
+          "source_round": 0
+        }
+      },
+      "fixpoint_round": 6,
+      "grouped_universe_sha256": "bae1da5b67f1b434ad44324f3f66e7cbb676c3a1faacc79929d3d082f83f7a95",
+      "id": "real-world/zoxide/O3S/min",
+      "inputs": {
+        "fixture": {
+          "git_tracked": true,
+          "path": "fixtures/angr/role/rust-nonstd/min/zoxide.O3S.fixture.json",
+          "repository": "experiment",
+          "sha256": "f27c53ff6c1662c59f1371817bb9f262060f0488ee5ddbc2f40633180c457846"
+        },
+        "ground_truth": {
+          "git_tracked": true,
+          "path": "ground_truth/rust-nonstd/min/zoxide.O3S.gt.json",
+          "repository": "experiment",
+          "sha256": "c2691feda2d20159c7683775ddf892875f89ab9d7227619085109b533e4fbe7e"
+        }
+      },
+      "mode": "out-in",
+      "profile": "min",
+      "target_universe_sha256": "0710e3d0bee23bacbc816157b8fdf9d295ac296af755f20fe93c28326a86b9d4",
+      "validation": {
+        "all_depths_match_existing_scorer": true,
+        "partition_nesting_monotonic": true,
+        "target_universe_fixed": true
+      }
+    },
+    {
+      "analysis": {
+        "anchor_policy": "role",
+        "backend": "radare2-capstone+angr",
+        "candidate_scope": "rust-nonstd",
+        "candidate_selection_sha256": "36ada5d3d9896c842dc5459a1cfda3ec622f6c40b7ed651a6b35490368901196",
+        "edge_policy": [
+          "direct-immediate",
+          "direct-tail",
+          "elf-relocation",
+          "angr-cfg"
+        ],
+        "extractor_version": "call-evidence-v6+angr-9.2.165",
+        "oracle_level": "candidate-and-boundary",
+        "projection_config_sha256": "fdfc4732f58ccda0c1fad87c1dbd967458ad151907bbcfc7b6055851024ee5da",
+        "raw_graph_sha256": "44c186aee0485a29c851a3d1ff650c164529b8631cc3a04241d00af9579de61f",
+        "track": "angr"
+      },
+      "build": "O3S",
+      "case": "fd",
+      "cohort": "real-world",
+      "common_coverage": {
+        "abstained_candidate_count": 149,
+        "decision_pair_count": 708645,
+        "grouped_candidate_count": 1191,
+        "pair_decision_coverage": 0.7899022438219656,
+        "same_family_pair_coverage": 0.8786127167630058,
+        "scored_same_family_pair_count": 1976,
+        "target_count": 1340,
+        "target_coverage": 0.8888059701492538,
+        "target_pair_count": 897130,
+        "total_same_family_pair_count": 2249
+      },
+      "depths": {
+        "fixpoint": {
+          "carried_forward": false,
+          "cluster_count": 791,
+          "collision_cluster_count": 87,
+          "delta_from_seed": {
+            "FN": 267,
+            "FP": -78932,
+            "TP": -267
+          },
+          "fragmented_origin_count": 40,
+          "pairwise": {
+            "F1": 0.4695652173913044,
+            "FN": 464,
+            "FP": 2952,
+            "TN": 703717,
+            "TP": 1512,
+            "precision": 0.3387096774193548,
+            "recall": 0.7651821862348178
+          },
+          "partition_sha256": "5613d79ccfe99e7dd1b672b3b5198d32e61e8b0163e123de4b9e57a4f7708f35",
+          "singleton_count": 671,
+          "source_round": 6
+        },
+        "r1": {
+          "carried_forward": false,
+          "cluster_count": 544,
+          "collision_cluster_count": 96,
+          "delta_from_seed": {
+            "FN": 237,
+            "FP": -65199,
+            "TP": -237
+          },
+          "fragmented_origin_count": 37,
+          "pairwise": {
+            "F1": 0.15265059644607237,
+            "FN": 434,
+            "FP": 16685,
+            "TN": 689984,
+            "TP": 1542,
+            "precision": 0.08459976957261206,
+            "recall": 0.7803643724696356
+          },
+          "partition_sha256": "80a8876a9d9e008040f3aa8c53e15852b4041303a5cb3d39ae7ed34f910503ac",
+          "singleton_count": 429,
+          "source_round": 1
+        },
+        "r2": {
+          "carried_forward": false,
+          "cluster_count": 764,
+          "collision_cluster_count": 91,
+          "delta_from_seed": {
+            "FN": 267,
+            "FP": -78581,
+            "TP": -267
+          },
+          "fragmented_origin_count": 40,
+          "pairwise": {
+            "F1": 0.44529524370490353,
+            "FN": 464,
+            "FP": 3303,
+            "TN": 703366,
+            "TP": 1512,
+            "precision": 0.31401869158878504,
+            "recall": 0.7651821862348178
+          },
+          "partition_sha256": "ea306bb4111de25970fa6ec2191e2740f05f7b4dfa1f72e7759468be51e9ee94",
+          "singleton_count": 640,
+          "source_round": 2
+        },
+        "seed": {
+          "carried_forward": false,
+          "cluster_count": 63,
+          "collision_cluster_count": 39,
+          "delta_from_seed": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 0
+          },
+          "fragmented_origin_count": 26,
+          "pairwise": {
+            "F1": 0.04154649166851551,
+            "FN": 197,
+            "FP": 81884,
+            "TN": 624785,
+            "TP": 1779,
+            "precision": 0.021263880090362525,
+            "recall": 0.9003036437246964
+          },
+          "partition_sha256": "112228ed20b6c9611d9887f3ec9f202877283f6f1ceeca6dd524b49590ea5536",
+          "singleton_count": 24,
+          "source_round": 0
+        }
+      },
+      "fixpoint_round": 6,
+      "grouped_universe_sha256": "f113d56047050f50443736f2482309f594a5d0f98313743cab629134e12f01aa",
+      "id": "real-world/fd/O3S/min",
+      "inputs": {
+        "fixture": {
+          "git_tracked": true,
+          "path": "fixtures/angr/role/rust-nonstd/min/fd.O3S.fixture.json",
+          "repository": "experiment",
+          "sha256": "e683c39caf238e2fb8dd12291c6885b4ba01a782e89af470bcc0bb59b912c51e"
+        },
+        "ground_truth": {
+          "git_tracked": true,
+          "path": "ground_truth/rust-nonstd/min/fd.O3S.gt.json",
+          "repository": "experiment",
+          "sha256": "10a54b4daf6eae23a3c1619ac4a47c7bed8b15734a5a92fd7f57e1776bee3c09"
+        }
+      },
+      "mode": "out-in",
+      "profile": "min",
+      "target_universe_sha256": "071d8759392c60a5e417fe6f915558a971a2a10e2e4f83ec332a05c455773c53",
+      "validation": {
+        "all_depths_match_existing_scorer": true,
+        "partition_nesting_monotonic": true,
+        "target_universe_fixed": true
+      }
+    },
+    {
+      "analysis": {
+        "anchor_policy": "role",
+        "backend": "radare2-capstone+angr",
+        "candidate_scope": "rust-nonstd",
+        "candidate_selection_sha256": "029bd9c749a9b02836181dfc49a1b2e59b15173153e5e117fa083a4ff42521d3",
+        "edge_policy": [
+          "direct-immediate",
+          "direct-tail",
+          "elf-relocation",
+          "angr-cfg"
+        ],
+        "extractor_version": "call-evidence-v6+angr-9.2.165",
+        "oracle_level": "candidate-and-boundary",
+        "projection_config_sha256": "fdfc4732f58ccda0c1fad87c1dbd967458ad151907bbcfc7b6055851024ee5da",
+        "raw_graph_sha256": "68004e321dc714c4f52eca351926a39f9bddecabdc38ec1736216e4ad27f0f90",
+        "track": "angr"
+      },
+      "build": "O3S",
+      "case": "ripgrep-main",
+      "cohort": "real-world",
+      "common_coverage": {
+        "abstained_candidate_count": 1505,
+        "decision_pair_count": 2566245,
+        "grouped_candidate_count": 2266,
+        "pair_decision_coverage": 0.3610191416133314,
+        "same_family_pair_coverage": 0.7227024166519669,
+        "scored_same_family_pair_count": 4097,
+        "target_count": 3771,
+        "target_coverage": 0.6009016176080615,
+        "target_pair_count": 7108335,
+        "total_same_family_pair_count": 5669
+      },
+      "depths": {
+        "fixpoint": {
+          "carried_forward": false,
+          "cluster_count": 1272,
+          "collision_cluster_count": 117,
+          "delta_from_seed": {
+            "FN": 1553,
+            "FP": -334725,
+            "TP": -1553
+          },
+          "fragmented_origin_count": 122,
+          "pairwise": {
+            "F1": 0.023427429749935554,
+            "FN": 3370,
+            "FP": 57240,
+            "TN": 2504908,
+            "TP": 727,
+            "precision": 0.012541618507081615,
+            "recall": 0.17744691237490848
+          },
+          "partition_sha256": "50097e613359f7e30c4729944bf55efc670800b68ebf74f2517bbd3b2dec7ff7",
+          "singleton_count": 1072,
+          "source_round": 6
+        },
+        "r1": {
+          "carried_forward": false,
+          "cluster_count": 864,
+          "collision_cluster_count": 114,
+          "delta_from_seed": {
+            "FN": 1275,
+            "FP": -205590,
+            "TP": -1275
+          },
+          "fragmented_origin_count": 111,
+          "pairwise": {
+            "F1": 0.010497344328561656,
+            "FN": 3092,
+            "FP": 186375,
+            "TN": 2375773,
+            "TP": 1005,
+            "precision": 0.005363432596861992,
+            "recall": 0.24530144007810592
+          },
+          "partition_sha256": "afc190d215d4de4a74568e647dd60bfec989e75c11ce3f5201ff70decb70afe1",
+          "singleton_count": 654,
+          "source_round": 1
+        },
+        "r2": {
+          "carried_forward": false,
+          "cluster_count": 1194,
+          "collision_cluster_count": 118,
+          "delta_from_seed": {
+            "FN": 1499,
+            "FP": -331691,
+            "TP": -1499
+          },
+          "fragmented_origin_count": 120,
+          "pairwise": {
+            "F1": 0.023974705304518666,
+            "FN": 3316,
+            "FP": 60274,
+            "TN": 2501874,
+            "TP": 781,
+            "precision": 0.012791745147817541,
+            "recall": 0.1906272882597022
+          },
+          "partition_sha256": "d253614ce1c90fee8131cba23a3ff13cb554ff81a2c16386ecf9c7081cac825a",
+          "singleton_count": 975,
+          "source_round": 2
+        },
+        "seed": {
+          "carried_forward": false,
+          "cluster_count": 65,
+          "collision_cluster_count": 33,
+          "delta_from_seed": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 0
+          },
+          "fragmented_origin_count": 73,
+          "pairwise": {
+            "F1": 0.01144744967891912,
+            "FN": 1817,
+            "FP": 391965,
+            "TN": 2170183,
+            "TP": 2280,
+            "precision": 0.005783205874519652,
+            "recall": 0.5565047595801806
+          },
+          "partition_sha256": "37dddc28370b6ff880f1ccd53e2b95938ac280628213917cf4263a8dd0907691",
+          "singleton_count": 31,
+          "source_round": 0
+        }
+      },
+      "fixpoint_round": 6,
+      "grouped_universe_sha256": "b7b02c8962e1e880e03becf160be7ea6aedfadcbc95c6691ce270c24dac0fbe7",
+      "id": "real-world/ripgrep-main/O3S/plain",
+      "inputs": {
+        "fixture": {
+          "git_tracked": false,
+          "path": "fixtures/angr/role/rust-nonstd/plain/ripgrep-main.O3S.fixture.json",
+          "repository": "canonical-ripgrep",
+          "sha256": "cb224f069a413c82a8f2a45029be8d0660ea008a89ff32333fb38d3a5ba7af81"
+        },
+        "ground_truth": {
+          "git_tracked": false,
+          "path": "ground_truth/rust-nonstd/plain/ripgrep-main.O3S.gt.json",
+          "repository": "canonical-ripgrep",
+          "sha256": "e792a9c8442ffb833b5d47f34fbcf5f26395c8369230780f0a46a5903b5bf166"
+        }
+      },
+      "mode": "out-in",
+      "profile": "plain",
+      "target_universe_sha256": "792a8c94c356fa865e25077673efaa513e9095892031be2c0e2e5467e8a926b0",
+      "validation": {
+        "all_depths_match_existing_scorer": true,
+        "partition_nesting_monotonic": true,
+        "target_universe_fixed": true
+      }
+    }
+  ],
+  "protocol": {
+    "commit": "0da3732fb7221e1ea043561d181f44594c528a8a",
+    "path": "30_Experiments/CallKin WL Depth Baseline Protocol.md",
+    "sha256": "7a129d77acd9c3447574ca0fc7d6c53a74da42b12a35778e9d762ce157a38459"
+  },
+  "runtime_metadata": {
+    "separate_path": "results/wl-depth-baseline/plain/wl-depth-baseline.runtime.json"
+  },
+  "schema_version": 1,
+  "validation": {
+    "all_depths_match_existing_scorer": true,
+    "all_partitions_nested_monotonically": true,
+    "all_target_universes_fixed": true,
+    "inputs_unchanged": true,
+    "job_count": 15
+  }
+}

@@ -1,22 +1,37 @@
 # CallKin
 
-CallKin은 Rust monomorphized function family를 stripped binary의 call graph 관계로 다시 묶는 연구용 Python prototype이다.
+CallKin은 최적화된 Rust 바이너리의 함수들을 원본별 집단으로 다시 묶는 조건과 한계를 조사하는 연구용 Python 도구다. 호출 관계 기반 V0, 함수 본문과 변화 구조를 결합한 V1, FLIRT 이름표 전파, WL-depth 실험을 포함한다.
 
-이 저장소는 다음 과정을 재현한다.
+이 저장소의 주 평가는 함수 목록과 경계를 정답 산출물에서 받는 조건이다. 심볼 없는 바이너리에서 직접 함수를 발견하는 실행 경로는 [CallKin-Real](https://github.com/xdfyrj/CallKin-Real)에 있다. 기존 1-WL을 응용하며, 범용 제네릭 탐지기나 구체 타입 복원기를 주장하지 않는다.
 
-```text
-Rust source
--> non-stripped / stripped binary pair
--> compiler-symbol ground truth + candidate addresses/symbol extents
--> stripped raw call evidence
--> track별 projected call-graph fixture
--> Call-Graph Weisfeiler-Lehman grouping
--> PR / RE / F1 / ARI scoring
+## Public release and reproducibility
+
+Use Python 3.12 or later for the default regression suite. Older Python versions
+can differ in the final bit of the frozen floating-point golden scores.
+
+```bash
+python3.12 -m venv .venv
+. .venv/bin/activate
+python -m pip install -r requirements.txt
+python tests/run_all.py
+python experiments/concrete-null/test_concrete_null_test.py
 ```
 
-현재 구현은 통제된 `family_graph_01`, `family_graph_02`, `family_graph_03`
-baseline과 `subjects/` 아래 Cargo project 입력을 지원한다. 일반 Rust binary에서
-generic 함수를 자동 탐지하거나 type을 복원하는 도구는 아니다.
+The default tests use bundled fixtures. Checks requiring additional original
+program caches or PE/PDB data report that requirement explicitly. Extraction
+from new inputs also requires the system tools described below (including
+radare2, GNU binutils and a Rust toolchain when compiling subjects).
+
+- [Concrete Null Test](experiments/concrete-null/README.md): source pair, retained ELF files and static byte checks.
+- [Retained research results](docs/results/README.md): original evaluation JSON and WL-depth result records.
+- [WL-depth protocol](docs/protocols/wl-depth.md): the protocol text pinned by the experiment.
+- [Third-party notices](THIRD_PARTY_NOTICES.md): licenses for bundled subjects and derived fixtures.
+
+The release combines code branches; it does not turn historical measurements
+into measurements of the new commit. Strict V1 reduces false merges on three
+programs, while F1 improves only on ripgrep. Rescue and name propagation have
+limited positive examples. Full body/extraction caches and local LLM evaluation
+sessions are not part of this checkout.
 
 ## Quick Start
 
@@ -454,11 +469,3 @@ family_graph_03 / O3KS
 - body evidence를 V0 CG-WL에 자동으로 주입하는 production pipeline
 
 Example source와 build recipe의 출처는 [rust-loss](https://github.com/xdfyrj/rust-loss) 저장소다.
-
-
-## Local workspace organization (2026-09-07)
-
-Related experiment worktrees are preserved under `worktrees/`. The current
-branch and uncommitted changes were kept; this directory move does not merge
-experiment branches into main. See `../CALLKIN-WORKSPACE.md` for the directory
-map and the WSL wrapper for commands that use historical paths.

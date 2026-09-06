@@ -1,0 +1,22 @@
+{
+  "ripgrep-main.evaluation.json": {
+    "source_path": "CallKin-Real/worktrees/CallKin-Real-relaxed-f7/results/replay-relaxed-v1/ripgrep-main/ripgrep-main.evaluation.json",
+    "sha256": "d2f1083782e74bc50f6e53b0856c23af58a89b089a6b27905ea98b21308a335a"
+  },
+  "fd.evaluation.json": {
+    "source_path": "CallKin-Real/worktrees/CallKin-Real-relaxed-f7/results/replay-relaxed-v1/fd/fd.evaluation.json",
+    "sha256": "25640985d1f2d8d86259da5990e8e3381c1ffd02643b822033c5297bb6c18df2"
+  },
+  "zoxide.evaluation.json": {
+    "source_path": "CallKin-Real/worktrees/CallKin-Real-relaxed-f7/results/replay-relaxed-v1/zoxide/zoxide.evaluation.json",
+    "sha256": "6dd5a6e453ceb017b53b28cab7ab3777954cb6711a8afdae75575221e9d328cf"
+  },
+  "wl-depth-baseline.json": {
+    "source_path": "CallKin/worktrees/v0-engine-py-wl-depth/results/wl-depth-baseline/plain/wl-depth-baseline.json",
+    "sha256": "dc787ae8709c4c7fd16a2796c33e9901bc9adb9058c82fd203e4c0adc80192e1"
+  },
+  "wl-depth-baseline.runtime.json": {
+    "source_path": "CallKin/worktrees/v0-engine-py-wl-depth/results/wl-depth-baseline/plain/wl-depth-baseline.runtime.json",
+    "sha256": "d5427ec50fa70dd363d4c1f8428d9d5e67d65cc3d163f2f95d53e1be4455c65c"
+  }
+}

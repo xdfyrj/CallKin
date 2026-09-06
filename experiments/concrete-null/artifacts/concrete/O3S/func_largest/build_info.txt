@@ -1,0 +1,7 @@
+source=/mnt/e/sumyr/playground/REV/rust-loss/examples/concrete/func_largest.rs
+profile=O3S
+rustc=rustc 1.93.1 (01f6ddf75 2026-02-11)
+derived_from=O3
+binary_strip=GNU strip (GNU Binutils for Ubuntu) 2.42
+role=concrete-concrete-cross-check
+note=llvm-ir/asm copied from O3; binary stripped in place; MIR omitted for optimized profiles
