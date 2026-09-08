@@ -1,0 +1,1714 @@
+[
+  {
+    "sample_id": "zoxide-01",
+    "case": "zoxide",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "anyhow::error::context_drop_rest",
+    "members": [
+      "FUN_0016dee0",
+      "FUN_0016df80",
+      "FUN_0016e030",
+      "FUN_0016e140",
+      "FUN_0016e1c0",
+      "FUN_0016e2b0",
+      "FUN_0016e360"
+    ],
+    "symbols": {
+      "FUN_0016dee0": [
+        "anyhow::error::context_drop_rest"
+      ],
+      "FUN_0016df80": [
+        "anyhow::error::context_drop_rest"
+      ],
+      "FUN_0016e030": [
+        "anyhow::error::context_drop_rest"
+      ],
+      "FUN_0016e140": [
+        "anyhow::error::context_drop_rest"
+      ],
+      "FUN_0016e1c0": [
+        "anyhow::error::context_drop_rest"
+      ],
+      "FUN_0016e2b0": [
+        "anyhow::error::context_drop_rest"
+      ],
+      "FUN_0016e360": [
+        "anyhow::error::context_drop_rest"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "zoxide-02",
+    "case": "zoxide",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "<time::error::try_from_parsed::TryFromParsed as core::fmt::Display>::fmt",
+    "members": [
+      "FUN_0016cb10",
+      "FUN_0016fec0"
+    ],
+    "symbols": {
+      "FUN_0016cb10": [
+        "<time::error::try_from_parsed::TryFromParsed as core::fmt::Display>::fmt"
+      ],
+      "FUN_0016fec0": [
+        "<time::error::try_from_parsed::TryFromParsed as core::fmt::Display>::fmt"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "zoxide-03",
+    "case": "zoxide",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "<clap_builder::builder::value_parser::EnumValueParser<E> as clap_builder::builder::value_parser::TypedValueParser>::parse_ref",
+    "members": [
+      "FUN_00179730",
+      "FUN_0017a2c0"
+    ],
+    "symbols": {
+      "FUN_00179730": [
+        "<clap_builder::builder::value_parser::EnumValueParser<E> as clap_builder::builder::value_parser::TypedValueParser>::parse_ref"
+      ],
+      "FUN_0017a2c0": [
+        "<clap_builder::builder::value_parser::EnumValueParser<E> as clap_builder::builder::value_parser::TypedValueParser>::parse_ref"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "zoxide-04",
+    "case": "zoxide",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "<time::error::try_from_parsed::TryFromParsed as core::error::Error>::source",
+    "members": [
+      "FUN_0016caf0",
+      "FUN_0016fea0"
+    ],
+    "symbols": {
+      "FUN_0016caf0": [
+        "<time::error::try_from_parsed::TryFromParsed as core::error::Error>::source"
+      ],
+      "FUN_0016fea0": [
+        "<time::error::try_from_parsed::TryFromParsed as core::error::Error>::source"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "zoxide-05",
+    "case": "zoxide",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "anyhow::error::context_chain_drop_rest",
+    "members": [
+      "FUN_0016e5d0",
+      "FUN_0016e6a0"
+    ],
+    "symbols": {
+      "FUN_0016e5d0": [
+        "anyhow::error::context_chain_drop_rest"
+      ],
+      "FUN_0016e6a0": [
+        "anyhow::error::context_chain_drop_rest"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "zoxide-06",
+    "case": "zoxide",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "<askama::error::Error as core::error::Error>::source",
+    "members": [
+      "FUN_0016ac90",
+      "FUN_0016d4d0"
+    ],
+    "symbols": {
+      "FUN_0016ac90": [
+        "<askama::error::Error as core::error::Error>::source"
+      ],
+      "FUN_0016d4d0": [
+        "<askama::error::Error as core::error::Error>::source"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "zoxide-07",
+    "case": "zoxide",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "<clap_builder::util::flat_set::FlatSet<T> as core::iter::traits::collect::FromIterator<T>>::from_iter",
+    "members": [
+      "FUN_001defc0",
+      "FUN_001df130"
+    ],
+    "symbols": {
+      "FUN_001defc0": [
+        "<clap_builder::util::flat_set::FlatSet<T> as core::iter::traits::collect::FromIterator<T>>::from_iter"
+      ],
+      "FUN_001df130": [
+        "<clap_builder::util::flat_set::FlatSet<T> as core::iter::traits::collect::FromIterator<T>>::from_iter"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "zoxide-08",
+    "case": "zoxide",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "<time::error::parse::Parse as core::fmt::Display>::fmt",
+    "members": [
+      "FUN_0016b1b0",
+      "FUN_0016d620"
+    ],
+    "symbols": {
+      "FUN_0016b1b0": [
+        "<time::error::parse::Parse as core::fmt::Display>::fmt"
+      ],
+      "FUN_0016d620": [
+        "<time::error::parse::Parse as core::fmt::Display>::fmt"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "zoxide-09",
+    "case": "zoxide",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "bincode::internal::deserialize_seed",
+    "members": [
+      "FUN_0017f2c0",
+      "FUN_0017f3d0"
+    ],
+    "symbols": {
+      "FUN_0017f2c0": [
+        "bincode::internal::deserialize_seed"
+      ],
+      "FUN_0017f3d0": [
+        "bincode::internal::deserialize_seed"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "zoxide-10",
+    "case": "zoxide",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "zoxide::import::autojump::Iter<R>::parse_line::{{closure}}",
+    "members": [
+      "FUN_00191360",
+      "FUN_00191460",
+      "FUN_001915a0"
+    ],
+    "symbols": {
+      "FUN_00191360": [
+        "zoxide::import::autojump::Iter<R>::parse_line::{{closure}}"
+      ],
+      "FUN_00191460": [
+        "zoxide::import::autojump::Iter<R>::parse_line::{{closure}}"
+      ],
+      "FUN_001915a0": [
+        "zoxide::import::autojump::Iter<R>::parse_line::{{closure}}"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "zoxide-11",
+    "case": "zoxide",
+    "stratum": "purposeful",
+    "selection_rule": "shared_address",
+    "origin": "shared-address@FUN_00188200",
+    "members": [
+      "FUN_00188200"
+    ],
+    "symbols": {
+      "FUN_00188200": [
+        "<anyhow::wrapper::DisplayError<M> as core::fmt::Debug>::fmt",
+        "<anyhow::wrapper::DisplayError<M> as core::fmt::Display>::fmt",
+        "<anyhow::wrapper::MessageError<M> as core::fmt::Display>::fmt"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "zoxide-12",
+    "case": "zoxide",
+    "stratum": "purposeful",
+    "selection_rule": "trait_impl",
+    "origin": "<&[u8] as object::read::read_ref::ReadRef>::read_bytes_at_until",
+    "members": [
+      "FUN_00225630"
+    ],
+    "symbols": {
+      "FUN_00225630": [
+        "<&[u8] as object::read::read_ref::ReadRef>::read_bytes_at_until"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "zoxide-13",
+    "case": "zoxide",
+    "stratum": "purposeful",
+    "selection_rule": "closure",
+    "origin": "addr2line::unit::ResUnit<R>::find_function_or_location::{{closure}}",
+    "members": [
+      "FUN_00222e90"
+    ],
+    "symbols": {
+      "FUN_00222e90": [
+        "addr2line::unit::ResUnit<R>::find_function_or_location::{{closure}}"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "zoxide-14",
+    "case": "zoxide",
+    "stratum": "purposeful",
+    "selection_rule": "generated_or_shim_candidate",
+    "origin": "<zoxide::db::ouroboros_impl_database::Database as core::ops::drop::Drop>::drop",
+    "members": [
+      "FUN_001860a0"
+    ],
+    "symbols": {
+      "FUN_001860a0": [
+        "<zoxide::db::ouroboros_impl_database::Database as core::ops::drop::Drop>::drop"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "zoxide-15",
+    "case": "zoxide",
+    "stratum": "purposeful",
+    "selection_rule": "drop_related",
+    "origin": "<aliasable::boxed::AliasableBox<T> as core::ops::drop::Drop>::drop",
+    "members": [
+      "FUN_0017f610"
+    ],
+    "symbols": {
+      "FUN_0017f610": [
+        "<aliasable::boxed::AliasableBox<T> as core::ops::drop::Drop>::drop"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "zoxide-16",
+    "case": "zoxide",
+    "stratum": "purposeful",
+    "selection_rule": "largest_remaining",
+    "origin": "anyhow::error::impl=anyhow::Error::construct",
+    "members": [
+      "FUN_0016b9d0",
+      "FUN_0016baa0",
+      "FUN_0016bb60",
+      "FUN_0016bc20",
+      "FUN_0016bcd0",
+      "FUN_0016bd80",
+      "FUN_0016be50",
+      "FUN_0016bf10",
+      "FUN_0016bfd0",
+      "FUN_0016c090",
+      "FUN_0016c170",
+      "FUN_0016c230",
+      "FUN_0016c2f0",
+      "FUN_0016c3b0",
+      "FUN_0016c480",
+      "FUN_0016c540",
+      "FUN_0016c600",
+      "FUN_0016c6a0",
+      "FUN_0016c740"
+    ],
+    "symbols": {
+      "FUN_0016b9d0": [
+        "anyhow::error::<impl anyhow::Error>::construct"
+      ],
+      "FUN_0016baa0": [
+        "anyhow::error::<impl anyhow::Error>::construct"
+      ],
+      "FUN_0016bb60": [
+        "anyhow::error::<impl anyhow::Error>::construct"
+      ],
+      "FUN_0016bc20": [
+        "anyhow::error::<impl anyhow::Error>::construct"
+      ],
+      "FUN_0016bcd0": [
+        "anyhow::error::<impl anyhow::Error>::construct"
+      ],
+      "FUN_0016bd80": [
+        "anyhow::error::<impl anyhow::Error>::construct"
+      ],
+      "FUN_0016be50": [
+        "anyhow::error::<impl anyhow::Error>::construct"
+      ],
+      "FUN_0016bf10": [
+        "anyhow::error::<impl anyhow::Error>::construct"
+      ],
+      "FUN_0016bfd0": [
+        "anyhow::error::<impl anyhow::Error>::construct"
+      ],
+      "FUN_0016c090": [
+        "anyhow::error::<impl anyhow::Error>::construct"
+      ],
+      "FUN_0016c170": [
+        "anyhow::error::<impl anyhow::Error>::construct"
+      ],
+      "FUN_0016c230": [
+        "anyhow::error::<impl anyhow::Error>::construct"
+      ],
+      "FUN_0016c2f0": [
+        "anyhow::error::<impl anyhow::Error>::construct"
+      ],
+      "FUN_0016c3b0": [
+        "anyhow::error::<impl anyhow::Error>::construct"
+      ],
+      "FUN_0016c480": [
+        "anyhow::error::<impl anyhow::Error>::construct"
+      ],
+      "FUN_0016c540": [
+        "anyhow::error::<impl anyhow::Error>::construct"
+      ],
+      "FUN_0016c600": [
+        "anyhow::error::<impl anyhow::Error>::construct"
+      ],
+      "FUN_0016c6a0": [
+        "anyhow::error::<impl anyhow::Error>::construct"
+      ],
+      "FUN_0016c740": [
+        "anyhow::error::<impl anyhow::Error>::construct"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "fd-01",
+    "case": "fd",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "<aho_corasick::nfa::contiguous::NFA as aho_corasick::automaton::Automaton>::prefilter",
+    "members": [
+      "FUN_002b1850",
+      "FUN_0034ab10",
+      "FUN_003d96f0",
+      "FUN_0041bac0",
+      "FUN_00451580"
+    ],
+    "symbols": {
+      "FUN_002b1850": [
+        "<aho_corasick::nfa::contiguous::NFA as aho_corasick::automaton::Automaton>::prefilter"
+      ],
+      "FUN_0034ab10": [
+        "<aho_corasick::nfa::contiguous::NFA as aho_corasick::automaton::Automaton>::prefilter"
+      ],
+      "FUN_003d96f0": [
+        "<aho_corasick::nfa::contiguous::NFA as aho_corasick::automaton::Automaton>::prefilter"
+      ],
+      "FUN_0041bac0": [
+        "<aho_corasick::nfa::contiguous::NFA as aho_corasick::automaton::Automaton>::prefilter"
+      ],
+      "FUN_00451580": [
+        "<aho_corasick::nfa::contiguous::NFA as aho_corasick::automaton::Automaton>::prefilter"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "fd-02",
+    "case": "fd",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "<aho_corasick::dfa::DFA as aho_corasick::automaton::Automaton>::next_state",
+    "members": [
+      "FUN_002b08c0",
+      "FUN_0034a3c0",
+      "FUN_003d8fa0",
+      "FUN_0041b370",
+      "FUN_00450d40"
+    ],
+    "symbols": {
+      "FUN_002b08c0": [
+        "<aho_corasick::dfa::DFA as aho_corasick::automaton::Automaton>::next_state"
+      ],
+      "FUN_0034a3c0": [
+        "<aho_corasick::dfa::DFA as aho_corasick::automaton::Automaton>::next_state"
+      ],
+      "FUN_003d8fa0": [
+        "<aho_corasick::dfa::DFA as aho_corasick::automaton::Automaton>::next_state"
+      ],
+      "FUN_0041b370": [
+        "<aho_corasick::dfa::DFA as aho_corasick::automaton::Automaton>::next_state"
+      ],
+      "FUN_00450d40": [
+        "<aho_corasick::dfa::DFA as aho_corasick::automaton::Automaton>::next_state"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "fd-03",
+    "case": "fd",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "<aho_corasick::nfa::contiguous::NFA as aho_corasick::automaton::Automaton>::min_pattern_len",
+    "members": [
+      "FUN_002b1770",
+      "FUN_0034aa30",
+      "FUN_003d9610",
+      "FUN_0041b9e0",
+      "FUN_004514a0"
+    ],
+    "symbols": {
+      "FUN_002b1770": [
+        "<aho_corasick::nfa::contiguous::NFA as aho_corasick::automaton::Automaton>::min_pattern_len"
+      ],
+      "FUN_0034aa30": [
+        "<aho_corasick::nfa::contiguous::NFA as aho_corasick::automaton::Automaton>::min_pattern_len"
+      ],
+      "FUN_003d9610": [
+        "<aho_corasick::nfa::contiguous::NFA as aho_corasick::automaton::Automaton>::min_pattern_len"
+      ],
+      "FUN_0041b9e0": [
+        "<aho_corasick::nfa::contiguous::NFA as aho_corasick::automaton::Automaton>::min_pattern_len"
+      ],
+      "FUN_004514a0": [
+        "<aho_corasick::nfa::contiguous::NFA as aho_corasick::automaton::Automaton>::min_pattern_len"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "fd-04",
+    "case": "fd",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "<clap_builder::parser::matches::arg_matches::Values<T> as core::iter::traits::iterator::Iterator>::next",
+    "members": [
+      "FUN_00269f00",
+      "FUN_0026a020",
+      "FUN_0026a140"
+    ],
+    "symbols": {
+      "FUN_00269f00": [
+        "<clap_builder::parser::matches::arg_matches::Values<T> as core::iter::traits::iterator::Iterator>::next"
+      ],
+      "FUN_0026a020": [
+        "<clap_builder::parser::matches::arg_matches::Values<T> as core::iter::traits::iterator::Iterator>::next"
+      ],
+      "FUN_0026a140": [
+        "<clap_builder::parser::matches::arg_matches::Values<T> as core::iter::traits::iterator::Iterator>::next"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "fd-05",
+    "case": "fd",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "clap_builder::error::Error<F>::value_validation",
+    "members": [
+      "FUN_002c3f60",
+      "FUN_004c2480"
+    ],
+    "symbols": {
+      "FUN_002c3f60": [
+        "clap_builder::error::Error<F>::value_validation"
+      ],
+      "FUN_004c2480": [
+        "clap_builder::error::Error<F>::value_validation"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "fd-06",
+    "case": "fd",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "<regex_automata::util::prefilter::memchr::Memchr2 as core::fmt::Debug>::fmt",
+    "members": [
+      "FUN_00396670",
+      "FUN_003b5510"
+    ],
+    "symbols": {
+      "FUN_00396670": [
+        "<regex_automata::util::prefilter::memchr::Memchr2 as core::fmt::Debug>::fmt"
+      ],
+      "FUN_003b5510": [
+        "<regex_automata::util::prefilter::memchr::Memchr2 as core::fmt::Debug>::fmt"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "fd-07",
+    "case": "fd",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "anyhow::error::object_reallocate_boxed",
+    "members": [
+      "FUN_002b0300",
+      "FUN_002b03d0",
+      "FUN_002b0470",
+      "FUN_002b0540",
+      "FUN_002b0620",
+      "FUN_002b0700"
+    ],
+    "symbols": {
+      "FUN_002b0300": [
+        "anyhow::error::object_reallocate_boxed"
+      ],
+      "FUN_002b03d0": [
+        "anyhow::error::object_reallocate_boxed"
+      ],
+      "FUN_002b0470": [
+        "anyhow::error::object_reallocate_boxed"
+      ],
+      "FUN_002b0540": [
+        "anyhow::error::object_reallocate_boxed"
+      ],
+      "FUN_002b0620": [
+        "anyhow::error::object_reallocate_boxed"
+      ],
+      "FUN_002b0700": [
+        "anyhow::error::object_reallocate_boxed"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "fd-08",
+    "case": "fd",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "hashbrown::map::HashMap<K,V,S,A>::insert",
+    "members": [
+      "FUN_00329200",
+      "FUN_0034f5f0",
+      "FUN_003c7090",
+      "FUN_003c7340",
+      "FUN_0041e370",
+      "FUN_0041e580"
+    ],
+    "symbols": {
+      "FUN_00329200": [
+        "hashbrown::map::HashMap<K,V,S,A>::insert"
+      ],
+      "FUN_0034f5f0": [
+        "hashbrown::map::HashMap<K,V,S,A>::insert"
+      ],
+      "FUN_003c7090": [
+        "hashbrown::map::HashMap<K,V,S,A>::insert"
+      ],
+      "FUN_003c7340": [
+        "hashbrown::map::HashMap<K,V,S,A>::insert"
+      ],
+      "FUN_0041e370": [
+        "hashbrown::map::HashMap<K,V,S,A>::insert"
+      ],
+      "FUN_0041e580": [
+        "hashbrown::map::HashMap<K,V,S,A>::insert"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "fd-09",
+    "case": "fd",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "fd::walk::WorkerState::build_overrides::{{closure}}",
+    "members": [
+      "FUN_0027a400",
+      "FUN_0027a470"
+    ],
+    "symbols": {
+      "FUN_0027a400": [
+        "fd::walk::WorkerState::build_overrides::{{closure}}"
+      ],
+      "FUN_0027a470": [
+        "fd::walk::WorkerState::build_overrides::{{closure}}"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "fd-10",
+    "case": "fd",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "clap_builder::error::Error<F>::extend_context_unchecked",
+    "members": [
+      "FUN_004c45d0",
+      "FUN_004c4610",
+      "FUN_004c4650"
+    ],
+    "symbols": {
+      "FUN_004c45d0": [
+        "clap_builder::error::Error<F>::extend_context_unchecked"
+      ],
+      "FUN_004c4610": [
+        "clap_builder::error::Error<F>::extend_context_unchecked"
+      ],
+      "FUN_004c4650": [
+        "clap_builder::error::Error<F>::extend_context_unchecked"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "fd-11",
+    "case": "fd",
+    "stratum": "purposeful",
+    "selection_rule": "shared_address",
+    "origin": "shared-address@FUN_00335b90",
+    "members": [
+      "FUN_00335b90"
+    ],
+    "symbols": {
+      "FUN_00335b90": [
+        "<walkdir::error::Error as core::error::Error>::cause",
+        "<walkdir::error::Error as core::error::Error>::source"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "fd-12",
+    "case": "fd",
+    "stratum": "purposeful",
+    "selection_rule": "trait_impl",
+    "origin": "<&[u8] as object::read::read_ref::ReadRef>::read_bytes_at_until",
+    "members": [
+      "FUN_0050cb20"
+    ],
+    "symbols": {
+      "FUN_0050cb20": [
+        "<&[u8] as object::read::read_ref::ReadRef>::read_bytes_at_until"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "fd-13",
+    "case": "fd",
+    "stratum": "purposeful",
+    "selection_rule": "closure",
+    "origin": "<core::result::Result<T,E> as jiff::error::ErrorContext<T,E>>::context::{{closure}}",
+    "members": [
+      "FUN_002714d0",
+      "FUN_0028a490",
+      "FUN_0028a4e0",
+      "FUN_0028a530",
+      "FUN_0035bca0",
+      "FUN_0035fc50",
+      "FUN_0035fca0",
+      "FUN_0035fcf0",
+      "FUN_003696e0",
+      "FUN_0036d210"
+    ],
+    "symbols": {
+      "FUN_002714d0": [
+        "<core::result::Result<T,E> as jiff::error::ErrorContext<T,E>>::context::{{closure}}"
+      ],
+      "FUN_0028a490": [
+        "<core::result::Result<T,E> as jiff::error::ErrorContext<T,E>>::context::{{closure}}"
+      ],
+      "FUN_0028a4e0": [
+        "<core::result::Result<T,E> as jiff::error::ErrorContext<T,E>>::context::{{closure}}"
+      ],
+      "FUN_0028a530": [
+        "<core::result::Result<T,E> as jiff::error::ErrorContext<T,E>>::context::{{closure}}"
+      ],
+      "FUN_0035bca0": [
+        "<core::result::Result<T,E> as jiff::error::ErrorContext<T,E>>::context::{{closure}}"
+      ],
+      "FUN_0035fc50": [
+        "<core::result::Result<T,E> as jiff::error::ErrorContext<T,E>>::context::{{closure}}"
+      ],
+      "FUN_0035fca0": [
+        "<core::result::Result<T,E> as jiff::error::ErrorContext<T,E>>::context::{{closure}}"
+      ],
+      "FUN_0035fcf0": [
+        "<core::result::Result<T,E> as jiff::error::ErrorContext<T,E>>::context::{{closure}}"
+      ],
+      "FUN_003696e0": [
+        "<core::result::Result<T,E> as jiff::error::ErrorContext<T,E>>::context::{{closure}}"
+      ],
+      "FUN_0036d210": [
+        "<core::result::Result<T,E> as jiff::error::ErrorContext<T,E>>::context::{{closure}}"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "fd-14",
+    "case": "fd",
+    "stratum": "purposeful",
+    "selection_rule": "generated_or_shim_candidate",
+    "origin": "clap_builder::parser::matches::arg_matches::unwrap_downcast_into{{reify.shim}}",
+    "members": [
+      "FUN_0026e6a0",
+      "FUN_0026e730",
+      "FUN_0026e7d0",
+      "FUN_0026e860"
+    ],
+    "symbols": {
+      "FUN_0026e6a0": [
+        "clap_builder::parser::matches::arg_matches::unwrap_downcast_into{{reify.shim}}"
+      ],
+      "FUN_0026e730": [
+        "clap_builder::parser::matches::arg_matches::unwrap_downcast_into{{reify.shim}}"
+      ],
+      "FUN_0026e7d0": [
+        "clap_builder::parser::matches::arg_matches::unwrap_downcast_into{{reify.shim}}"
+      ],
+      "FUN_0026e860": [
+        "clap_builder::parser::matches::arg_matches::unwrap_downcast_into{{reify.shim}}"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "fd-15",
+    "case": "fd",
+    "stratum": "purposeful",
+    "selection_rule": "drop_related",
+    "origin": "<T as crossbeam_epoch::atomic::Pointable>::drop",
+    "members": [
+      "FUN_00336600"
+    ],
+    "symbols": {
+      "FUN_00336600": [
+        "<T as crossbeam_epoch::atomic::Pointable>::drop"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "fd-16",
+    "case": "fd",
+    "stratum": "purposeful",
+    "selection_rule": "largest_remaining",
+    "origin": "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt",
+    "members": [
+      "FUN_00379c60",
+      "FUN_00379cd0",
+      "FUN_00379d40",
+      "FUN_00379db0",
+      "FUN_00379e20",
+      "FUN_00379ea0",
+      "FUN_00379f20",
+      "FUN_00379f90",
+      "FUN_0037a000",
+      "FUN_0037a070",
+      "FUN_0037a0e0",
+      "FUN_0037a160",
+      "FUN_0037a1e0",
+      "FUN_0037a250",
+      "FUN_0037a2c0",
+      "FUN_0037a330",
+      "FUN_0037a3a0",
+      "FUN_0037a410",
+      "FUN_0037a480",
+      "FUN_0037a4f0",
+      "FUN_0037a560",
+      "FUN_0037a5e0",
+      "FUN_0037a660",
+      "FUN_0037a6d0",
+      "FUN_0037a740",
+      "FUN_0037a7b0",
+      "FUN_0037a820",
+      "FUN_0037a890",
+      "FUN_0037a900",
+      "FUN_0037a970",
+      "FUN_0037a9e0",
+      "FUN_0037aa50",
+      "FUN_0037aac0",
+      "FUN_0037ab30",
+      "FUN_0037aba0",
+      "FUN_0037ac10",
+      "FUN_0037ac80",
+      "FUN_0037acf0",
+      "FUN_0037ad60",
+      "FUN_0037add0",
+      "FUN_0037ae40",
+      "FUN_0037aeb0",
+      "FUN_0037af20",
+      "FUN_0037af90",
+      "FUN_0037b000",
+      "FUN_0037b080",
+      "FUN_0037b0f0",
+      "FUN_0037b160",
+      "FUN_0037b1d0",
+      "FUN_0037b240",
+      "FUN_0037b2b0",
+      "FUN_0037b320"
+    ],
+    "symbols": {
+      "FUN_00379c60": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_00379cd0": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_00379d40": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_00379db0": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_00379e20": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_00379ea0": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_00379f20": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_00379f90": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037a000": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037a070": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037a0e0": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037a160": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037a1e0": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037a250": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037a2c0": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037a330": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037a3a0": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037a410": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037a480": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037a4f0": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037a560": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037a5e0": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037a660": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037a6d0": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037a740": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037a7b0": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037a820": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037a890": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037a900": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037a970": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037a9e0": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037aa50": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037aac0": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037ab30": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037aba0": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037ac10": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037ac80": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037acf0": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037ad60": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037add0": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037ae40": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037aeb0": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037af20": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037af90": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037b000": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037b080": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037b0f0": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037b160": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037b1d0": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037b240": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037b2b0": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ],
+      "FUN_0037b320": [
+        "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "ripgrep-main-01",
+    "case": "ripgrep-main",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "<rg::flags::defs::Passthru as core::fmt::Debug>::fmt",
+    "members": [
+      "FUN_00342070",
+      "FUN_00364460",
+      "FUN_0037c820"
+    ],
+    "symbols": {
+      "FUN_00342070": [
+        "<rg::flags::defs::Passthru as core::fmt::Debug>::fmt"
+      ],
+      "FUN_00364460": [
+        "<rg::flags::defs::Passthru as core::fmt::Debug>::fmt"
+      ],
+      "FUN_0037c820": [
+        "<rg::flags::defs::Passthru as core::fmt::Debug>::fmt"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "ripgrep-main-02",
+    "case": "ripgrep-main",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "grep_searcher::searcher::glue::SliceByLine<M,S>::run",
+    "members": [
+      "FUN_00383cf0",
+      "FUN_00383e90",
+      "FUN_00383fe0",
+      "FUN_00384180",
+      "FUN_003842d0",
+      "FUN_00384430"
+    ],
+    "symbols": {
+      "FUN_00383cf0": [
+        "grep_searcher::searcher::glue::SliceByLine<M,S>::run"
+      ],
+      "FUN_00383e90": [
+        "grep_searcher::searcher::glue::SliceByLine<M,S>::run"
+      ],
+      "FUN_00383fe0": [
+        "grep_searcher::searcher::glue::SliceByLine<M,S>::run"
+      ],
+      "FUN_00384180": [
+        "grep_searcher::searcher::glue::SliceByLine<M,S>::run"
+      ],
+      "FUN_003842d0": [
+        "grep_searcher::searcher::glue::SliceByLine<M,S>::run"
+      ],
+      "FUN_00384430": [
+        "grep_searcher::searcher::glue::SliceByLine<M,S>::run"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "ripgrep-main-03",
+    "case": "ripgrep-main",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "ignore::Error::with_path",
+    "members": [
+      "FUN_0039b470",
+      "FUN_003eb470",
+      "FUN_003eb550",
+      "FUN_003eb630"
+    ],
+    "symbols": {
+      "FUN_0039b470": [
+        "ignore::Error::with_path"
+      ],
+      "FUN_003eb470": [
+        "ignore::Error::with_path"
+      ],
+      "FUN_003eb550": [
+        "ignore::Error::with_path"
+      ],
+      "FUN_003eb630": [
+        "ignore::Error::with_path"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "ripgrep-main-04",
+    "case": "ripgrep-main",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "<rg::flags::defs::DfaSizeLimit as rg::flags::Flag>::doc_long",
+    "members": [
+      "FUN_00342770",
+      "FUN_00364b90",
+      "FUN_0037cf20"
+    ],
+    "symbols": {
+      "FUN_00342770": [
+        "<rg::flags::defs::DfaSizeLimit as rg::flags::Flag>::doc_long"
+      ],
+      "FUN_00364b90": [
+        "<rg::flags::defs::DfaSizeLimit as rg::flags::Flag>::doc_long"
+      ],
+      "FUN_0037cf20": [
+        "<rg::flags::defs::DfaSizeLimit as rg::flags::Flag>::doc_long"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "ripgrep-main-05",
+    "case": "ripgrep-main",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "<rg::flags::defs::ContextSeparator as core::fmt::Debug>::fmt",
+    "members": [
+      "FUN_00343350",
+      "FUN_003674b0",
+      "FUN_0037dd60"
+    ],
+    "symbols": {
+      "FUN_00343350": [
+        "<rg::flags::defs::ContextSeparator as core::fmt::Debug>::fmt"
+      ],
+      "FUN_003674b0": [
+        "<rg::flags::defs::ContextSeparator as core::fmt::Debug>::fmt"
+      ],
+      "FUN_0037dd60": [
+        "<rg::flags::defs::ContextSeparator as core::fmt::Debug>::fmt"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "ripgrep-main-06",
+    "case": "ripgrep-main",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "<rg::flags::defs::IncludeZero as rg::flags::Flag>::name_negated",
+    "members": [
+      "FUN_00342510",
+      "FUN_00364900",
+      "FUN_0037ccc0"
+    ],
+    "symbols": {
+      "FUN_00342510": [
+        "<rg::flags::defs::IncludeZero as rg::flags::Flag>::name_negated"
+      ],
+      "FUN_00364900": [
+        "<rg::flags::defs::IncludeZero as rg::flags::Flag>::name_negated"
+      ],
+      "FUN_0037ccc0": [
+        "<rg::flags::defs::IncludeZero as rg::flags::Flag>::name_negated"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "ripgrep-main-07",
+    "case": "ripgrep-main",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "<rg::flags::defs::DfaSizeLimit as rg::flags::Flag>::doc_short",
+    "members": [
+      "FUN_00342780",
+      "FUN_00364ba0",
+      "FUN_0037cf30"
+    ],
+    "symbols": {
+      "FUN_00342780": [
+        "<rg::flags::defs::DfaSizeLimit as rg::flags::Flag>::doc_short"
+      ],
+      "FUN_00364ba0": [
+        "<rg::flags::defs::DfaSizeLimit as rg::flags::Flag>::doc_short"
+      ],
+      "FUN_0037cf30": [
+        "<rg::flags::defs::DfaSizeLimit as rg::flags::Flag>::doc_short"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "ripgrep-main-08",
+    "case": "ripgrep-main",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "<rg::flags::defs::PreGlob as rg::flags::Flag>::doc_long",
+    "members": [
+      "FUN_00341950",
+      "FUN_00363d80",
+      "FUN_0037c140"
+    ],
+    "symbols": {
+      "FUN_00341950": [
+        "<rg::flags::defs::PreGlob as rg::flags::Flag>::doc_long"
+      ],
+      "FUN_00363d80": [
+        "<rg::flags::defs::PreGlob as rg::flags::Flag>::doc_long"
+      ],
+      "FUN_0037c140": [
+        "<rg::flags::defs::PreGlob as rg::flags::Flag>::doc_long"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "ripgrep-main-09",
+    "case": "ripgrep-main",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "<aho_corasick::nfa::noncontiguous::NFA as aho_corasick::automaton::Automaton>::patterns_len",
+    "members": [
+      "FUN_00414d90",
+      "FUN_004ef8e0"
+    ],
+    "symbols": {
+      "FUN_00414d90": [
+        "<aho_corasick::nfa::noncontiguous::NFA as aho_corasick::automaton::Automaton>::patterns_len"
+      ],
+      "FUN_004ef8e0": [
+        "<aho_corasick::nfa::noncontiguous::NFA as aho_corasick::automaton::Automaton>::patterns_len"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "ripgrep-main-10",
+    "case": "ripgrep-main",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "<rg::flags::defs::NoUnicode as rg::flags::Flag>::doc_short",
+    "members": [
+      "FUN_00342030",
+      "FUN_00364420",
+      "FUN_0037c7e0"
+    ],
+    "symbols": {
+      "FUN_00342030": [
+        "<rg::flags::defs::NoUnicode as rg::flags::Flag>::doc_short"
+      ],
+      "FUN_00364420": [
+        "<rg::flags::defs::NoUnicode as rg::flags::Flag>::doc_short"
+      ],
+      "FUN_0037c7e0": [
+        "<rg::flags::defs::NoUnicode as rg::flags::Flag>::doc_short"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "ripgrep-main-11",
+    "case": "ripgrep-main",
+    "stratum": "purposeful",
+    "selection_rule": "shared_address",
+    "origin": "shared-address@FUN_00306c40",
+    "members": [
+      "FUN_00306c40"
+    ],
+    "symbols": {
+      "FUN_00306c40": [
+        "<grep_printer::jsont::Match as serde_core::ser::Serialize>::serialize",
+        "<grep_printer::jsont::Context as serde_core::ser::Serialize>::serialize"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "ripgrep-main-12",
+    "case": "ripgrep-main",
+    "stratum": "purposeful",
+    "selection_rule": "trait_impl",
+    "origin": "<&A as regex_automata::dfa::automaton::Automaton>::accelerator",
+    "members": [
+      "FUN_004907a0"
+    ],
+    "symbols": {
+      "FUN_004907a0": [
+        "<&A as regex_automata::dfa::automaton::Automaton>::accelerator"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "ripgrep-main-13",
+    "case": "ripgrep-main",
+    "stratum": "purposeful",
+    "selection_rule": "closure",
+    "origin": "<walkdir::DirList as core::iter::traits::iterator::Iterator>::next::{{closure}}",
+    "members": [
+      "FUN_003fbd00"
+    ],
+    "symbols": {
+      "FUN_003fbd00": [
+        "<walkdir::DirList as core::iter::traits::iterator::Iterator>::next::{{closure}}"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "ripgrep-main-14",
+    "case": "ripgrep-main",
+    "stratum": "purposeful",
+    "selection_rule": "generated_or_shim_candidate:fallback_lexical_multimember",
+    "origin": "<&A as regex_automata::dfa::automaton::Automaton>::match_pattern",
+    "members": [
+      "FUN_00420e30",
+      "FUN_00490880"
+    ],
+    "symbols": {
+      "FUN_00420e30": [
+        "<&A as regex_automata::dfa::automaton::Automaton>::match_pattern"
+      ],
+      "FUN_00490880": [
+        "<&A as regex_automata::dfa::automaton::Automaton>::match_pattern"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "ripgrep-main-15",
+    "case": "ripgrep-main",
+    "stratum": "purposeful",
+    "selection_rule": "drop_related",
+    "origin": "<T as crossbeam_epoch::atomic::Pointable>::drop",
+    "members": [
+      "FUN_003ffc00"
+    ],
+    "symbols": {
+      "FUN_003ffc00": [
+        "<T as crossbeam_epoch::atomic::Pointable>::drop"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  },
+  {
+    "sample_id": "ripgrep-main-16",
+    "case": "ripgrep-main",
+    "stratum": "purposeful",
+    "selection_rule": "largest_remaining",
+    "origin": "serde_core::ser::SerializeMap::serialize_entry",
+    "members": [
+      "FUN_003683e0",
+      "FUN_003684c0",
+      "FUN_003685d0",
+      "FUN_00368730",
+      "FUN_003687d0",
+      "FUN_003688b0",
+      "FUN_00368ac0",
+      "FUN_00368b60",
+      "FUN_00368c00",
+      "FUN_003691a0",
+      "FUN_00369270",
+      "FUN_00369480",
+      "FUN_00369660",
+      "FUN_00369700",
+      "FUN_00369910",
+      "FUN_00369a20",
+      "FUN_00369ad0",
+      "FUN_00369d70",
+      "FUN_00369e10",
+      "FUN_0036a020",
+      "FUN_0036a130",
+      "FUN_0036a2a0",
+      "FUN_0036a390",
+      "FUN_0036a620",
+      "FUN_0036a710",
+      "FUN_0036a820",
+      "FUN_0036aa30",
+      "FUN_0036ab20",
+      "FUN_0036abd0",
+      "FUN_0036ae60",
+      "FUN_0036af80",
+      "FUN_0036b1a0",
+      "FUN_0036b290",
+      "FUN_0036b3a0",
+      "FUN_0036b4c0",
+      "FUN_0036b630",
+      "FUN_0036b740",
+      "FUN_0036b890",
+      "FUN_0036bb00",
+      "FUN_0036bbb0",
+      "FUN_0036bc50",
+      "FUN_0036bee0",
+      "FUN_0036bfe0",
+      "FUN_0036c200",
+      "FUN_0036c340",
+      "FUN_0036c480",
+      "FUN_0036c520",
+      "FUN_0036c640",
+      "FUN_0036c740",
+      "FUN_0036c830",
+      "FUN_0036c930",
+      "FUN_0036ca20",
+      "FUN_0036cb90",
+      "FUN_0036ccd0",
+      "FUN_0036cef0",
+      "FUN_0036d100",
+      "FUN_0036d1f0",
+      "FUN_0036d2c0",
+      "FUN_0036d3d0",
+      "FUN_0036d4d0",
+      "FUN_0036d570",
+      "FUN_0036d870"
+    ],
+    "symbols": {
+      "FUN_003683e0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_003684c0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_003685d0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_00368730": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_003687d0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_003688b0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_00368ac0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_00368b60": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_00368c00": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_003691a0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_00369270": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_00369480": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_00369660": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_00369700": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_00369910": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_00369a20": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_00369ad0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_00369d70": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_00369e10": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036a020": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036a130": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036a2a0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036a390": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036a620": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036a710": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036a820": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036aa30": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036ab20": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036abd0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036ae60": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036af80": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036b1a0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036b290": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036b3a0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036b4c0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036b630": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036b740": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036b890": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036bb00": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036bbb0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036bc50": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036bee0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036bfe0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036c200": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036c340": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036c480": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036c520": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036c640": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036c740": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036c830": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036c930": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036ca20": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036cb90": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036ccd0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036cef0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036d100": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036d1f0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036d2c0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036d3d0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036d4d0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036d570": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036d870": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ]
+    },
+    "source_evidence": [],
+    "assessment": "unreviewed",
+    "review_scope": "source-level consistency; not compiler-ID or external-human validation"
+  }
+]

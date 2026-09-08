@@ -1,0 +1,131 @@
+{
+  "input_root": "/mnt/c/Users/sumyr/playground/REV/CallKin",
+  "cases": {
+    "zoxide": {
+      "body": {
+        "path": "worktrees/v0-engine-py-frozen/body_evidence/plain/zoxide.O3S.body.json",
+        "sha256": "e1776d94199d13d2f995097f191ac78f5de3a5f5c00df80bd7dd78dd42a182cd",
+        "bytes": 71163797
+      },
+      "fixture": {
+        "path": "fixtures/angr/role/rust-nonstd/plain/zoxide.O3S.fixture.json",
+        "sha256": "e8fd22ceb63f7a659b8e329ae88278dd7b1bfe348aec23df008568d32ca099bb",
+        "bytes": 1025626
+      },
+      "ground_truth": {
+        "path": "ground_truth/rust-nonstd/plain/zoxide.O3S.gt.json",
+        "sha256": "b5e641338cd098ead94ea299b7dccd3a4ca2b8242743656762cf8f01617d967d",
+        "bytes": 136975
+      },
+      "linkage": {
+        "path": "worktrees/v0-engine-py-frozen/results/zoxide/plain/zoxide.O3S.gt-mangled-audit.json",
+        "sha256": "aea76c11cb78074695ea2ac4acc8f08026f61d81fa747d9d42948bf82f3da579",
+        "bytes": 489756
+      },
+      "reference_candidates": {
+        "path": "worktrees/v0-engine-py-frozen/results/zoxide/plain/zoxide.O3S.v1.multi.k16.candidates.json",
+        "sha256": "f9e5f485a2d8c1ef3744641a334b7d691456c84de619d85f19d79d232d838c91",
+        "bytes": 10045076
+      },
+      "reference_strict": {
+        "path": "worktrees/v0-engine-py-frozen/results/zoxide/plain/zoxide.O3S.v1.consensus3.k16.formal.families.json",
+        "sha256": "9cf218e2a04965ab3e4c1924464da841ebfcab9df1580595af0546d008e91264",
+        "bytes": 656074
+      },
+      "raw_graph": {
+        "path": "extractions/angr/plain/zoxide.O3S.raw.json",
+        "sha256": "900c1c62bf026c9cc00c6a595ac1d7223f2f74712c7edd980a833f30817115b8",
+        "bytes": 6771567
+      },
+      "build_manifest": {
+        "path": "build_info/plain/zoxide.O3S.json",
+        "sha256": "0a316f47b8b7e0c5721c645783043b13c2dc4a8afb3e5adff37370f27b8022a0",
+        "bytes": 4385
+      }
+    },
+    "fd": {
+      "body": {
+        "path": "worktrees/v0-engine-py-f1/body_evidence/rust-nonstd/plain/fd.O3S.body.json",
+        "sha256": "ebed20a449a0d758a3e134b985ffb8764455d75d56682415fe5b393d57ec0743",
+        "bytes": 242759756
+      },
+      "fixture": {
+        "path": "fixtures/angr/role/rust-nonstd/plain/fd.O3S.fixture.json",
+        "sha256": "2fec2b73be1a57f9e7bccee59926fccb35f0d18f2e6c3cf119037b0eda7661d5",
+        "bytes": 3337809
+      },
+      "ground_truth": {
+        "path": "ground_truth/rust-nonstd/plain/fd.O3S.gt.json",
+        "sha256": "ada83ff652f59decbde72328b3d34daa1d0e73b19aa80f96c6dd4a8c578818af",
+        "bytes": 460791
+      },
+      "linkage": {
+        "path": "worktrees/v0-engine-py-f1/results/fd/plain/fd.O3S.gt-mangled-audit.json",
+        "sha256": "d30d5389c7f09c830962f26110f2f65ca1d46f429005c37e7357d1784331aaf6",
+        "bytes": 1528454
+      },
+      "reference_candidates": {
+        "path": "worktrees/v0-engine-py-f1/results/fd/plain/fd.O3S.v1.multi.k16.candidates.json",
+        "sha256": "07b157ba8e2a54d4e84b8a9b0cee4c0b1a9e2ac0c3d1d401fe5e3376833d8a01",
+        "bytes": 33095503
+      },
+      "reference_strict": {
+        "path": "worktrees/v0-engine-py-f1/results/fd/plain/fd.O3S.v1.consensus3.k16.formal.families.json",
+        "sha256": "7cd92784e734b3fcfc67455010af92c1cbf0e252774afbfa1a570007612c5320",
+        "bytes": 2593469
+      },
+      "raw_graph": {
+        "path": "extractions/angr/plain/fd.O3S.raw.json",
+        "sha256": "cfe1e5dac73be40791a14a67b1a18341cb919417ec04231b0f299dac9088772d",
+        "bytes": 21613862
+      },
+      "build_manifest": {
+        "path": "build_info/plain/fd.O3S.json",
+        "sha256": "2db1ddb9aae25c2c59badedc0773b5f03e3f7748c2ed2a74ee9d2aa285c7b643",
+        "bytes": 4312
+      }
+    },
+    "ripgrep-main": {
+      "body": {
+        "path": "worktrees/v0-engine-py-f1/body_evidence/rust-nonstd/plain/ripgrep-main.O3S.body.json",
+        "sha256": "4bcc861d59b8e28064184d69b471314e6486e6ce5d23f04cfbcef84eac79d8db",
+        "bytes": 266959163
+      },
+      "fixture": {
+        "path": "fixtures/angr/role/rust-nonstd/plain/ripgrep-main.O3S.fixture.json",
+        "sha256": "cb224f069a413c82a8f2a45029be8d0660ea008a89ff32333fb38d3a5ba7af81",
+        "bytes": 3715190
+      },
+      "ground_truth": {
+        "path": "ground_truth/rust-nonstd/plain/ripgrep-main.O3S.gt.json",
+        "sha256": "e792a9c8442ffb833b5d47f34fbcf5f26395c8369230780f0a46a5903b5bf166",
+        "bytes": 695405
+      },
+      "linkage": {
+        "path": "worktrees/v0-engine-py-f1/results/ripgrep-main/plain/ripgrep-main.O3S.gt-mangled-audit.json",
+        "sha256": "fb939a2e6120514a8b67cdff2b5236ee31f3fa4752fb520722b7d7a8a7fd314e",
+        "bytes": 3282179
+      },
+      "reference_candidates": {
+        "path": "worktrees/v0-engine-py-f1/results/ripgrep-main/plain/ripgrep-main.O3S.v1.multi.k16.candidates.json",
+        "sha256": "276c87034ba82c44036d0c27b52585f76b4ac54a06e7d5d8e30fc591d19de0ed",
+        "bytes": 52276014
+      },
+      "reference_strict": {
+        "path": "worktrees/v0-engine-py-f1/results/ripgrep-main/plain/ripgrep-main.O3S.v1.consensus3.k16.formal.families.json",
+        "sha256": "fcf9ab00f55d7df01e8aa6afc3b84b52b5688519a61f3bd06c8d758f7fd0218e",
+        "bytes": 7077971
+      },
+      "raw_graph": {
+        "path": "extractions/angr/plain/ripgrep-main.O3S.raw.json",
+        "sha256": "68004e321dc714c4f52eca351926a39f9bddecabdc38ec1736216e4ad27f0f90",
+        "bytes": 21159178
+      },
+      "build_manifest": {
+        "path": "build_info/plain/ripgrep-main.O3S.json",
+        "sha256": "7599607f1a64173cde1493d10aecd863e2bd1432c7b5fef1ee430c182be000f3",
+        "bytes": 4442
+      }
+    }
+  }
+}
