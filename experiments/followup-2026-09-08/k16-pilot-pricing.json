@@ -1,0 +1,47 @@
+{
+  "kind": "pricing of retained k16 candidates, no quality scores",
+  "cases": {
+    "zoxide": {
+      "body2": {
+        "candidate_pairs": 2323,
+        "comparisons": 1660,
+        "alignment_cells": 103728329,
+        "fits": true
+      },
+      "combined3": {
+        "candidate_pairs": 656,
+        "comparisons": 471,
+        "alignment_cells": 33679941,
+        "fits": true
+      }
+    },
+    "fd": {
+      "body2": {
+        "candidate_pairs": 6634,
+        "comparisons": 5230,
+        "alignment_cells": 400208141,
+        "fits": true
+      },
+      "combined3": {
+        "candidate_pairs": 2736,
+        "comparisons": 2328,
+        "alignment_cells": 69293391,
+        "fits": true
+      }
+    },
+    "ripgrep-main": {
+      "body2": {
+        "candidate_pairs": 21277,
+        "comparisons": 15552,
+        "alignment_cells": 1263244132,
+        "fits": false
+      },
+      "combined3": {
+        "candidate_pairs": 8084,
+        "comparisons": 2978,
+        "alignment_cells": 294037037,
+        "fits": true
+      }
+    }
+  }
+}

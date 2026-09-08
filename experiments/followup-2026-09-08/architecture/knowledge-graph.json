@@ -1,0 +1,77 @@
+{
+  "version": "1.0.0",
+  "project": {
+    "name": "CallKin offline retrieval-intersection comparison",
+    "languages": ["python"],
+    "frameworks": [],
+    "description": "Understand-Anything runtime이 없어 지정된 13개 모듈만 수동 분석한 scoped fallback graph. 전체 저장소 분석이 아니다.",
+    "analyzedAt": "2026-09-08T00:00:00+09:00",
+    "gitCommitHash": "3c20fff2796199071d888c39438d79e270112a02"
+  },
+  "metadata": {
+    "analysisMode": "manual-scoped-fallback",
+    "completePluginAnalysis": false,
+    "scope": "offline k8/k16/k32 token+CFG versus token+CFG+relation comparison",
+    "autoHooks": false,
+    "server": false,
+    "dashboard": false
+  },
+  "nodes": [
+    {"id":"file:body_evidence.py","type":"file","name":"body_evidence.py","filePath":"body_evidence.py","summary":"명령을 주소 독립 skeleton과 CFG로 정규화해 body evidence를 만든다.","tags":["evidence","normalization","manual-scoped-fallback"],"complexity":"complex"},
+    {"id":"file:body_similarity.py","type":"file","name":"body_similarity.py","filePath":"body_similarity.py","summary":"body artifact를 FunctionBody로 읽고 block/sequence 기반 상세 비교를 계산한다.","tags":["evidence","alignment","f4","manual-scoped-fallback"],"complexity":"complex"},
+    {"id":"file:loader.py","type":"file","name":"loader.py","filePath":"loader.py","summary":"fixture schema, graph, 분석 provenance를 검증하고 Case를 구성한다.","tags":["fixture","validation","provenance","manual-scoped-fallback"],"complexity":"moderate"},
+    {"id":"file:engine.py","type":"file","name":"engine.py","filePath":"engine.py","summary":"directed weighted call graph에서 CG-WL partition과 round trace를 계산한다.","tags":["relation","cg-wl","manual-scoped-fallback"],"complexity":"complex"},
+    {"id":"file:v1_retrieval_views.py","type":"file","name":"v1_retrieval_views.py","filePath":"v1_retrieval_views.py","summary":"token, CFG, relation의 독립 profile과 similarity를 정의한다.","tags":["retrieval","multiview","ranking","manual-scoped-fallback"],"complexity":"complex"},
+    {"id":"file:v1_candidates.py","type":"file","name":"v1_candidates.py","filePath":"v1_candidates.py","summary":"view별 deterministic symmetric top-k를 합쳐 schema-2 candidate artifact를 만든다.","tags":["f5","retrieval","candidate-artifact","manual-scoped-fallback"],"complexity":"complex"},
+    {"id":"file:analysis/v1_consensus_candidates.py","type":"file","name":"v1_consensus_candidates.py","filePath":"analysis/v1_consensus_candidates.py","summary":"multiview artifact를 최소 선택-view 수로 줄이고 사전 alignment-cell 비용을 요약한다.","tags":["offline-derivation","consensus","cost","manual-scoped-fallback"],"complexity":"moderate"},
+    {"id":"file:v1_engine.py","type":"file","name":"v1_engine.py","filePath":"v1_engine.py","summary":"후보를 상세 비교하고 budgeted complete-link로 strict F6 family를 만든다.","tags":["f6","classification","complete-link","budget","manual-scoped-fallback"],"complexity":"complex"},
+    {"id":"file:slot_overlay.py","type":"file","name":"slot_overlay.py","filePath":"slot_overlay.py","summary":"raw transfer와 normalized body를 call/data/constant slot observation으로 결합한다.","tags":["f7","slot-overlay","manual-scoped-fallback"],"complexity":"moderate"},
+    {"id":"file:family_template.py","type":"file","name":"family_template.py","filePath":"family_template.py","summary":"medoid 정렬에서 variation axis와 Cartesian basis를 추론한다.","tags":["f7","template","variation-axis","manual-scoped-fallback"],"complexity":"complex"},
+    {"id":"file:family_rescue.py","type":"file","name":"family_rescue.py","filePath":"family_rescue.py","summary":"strict fragment를 relation bridge, axis basis, budget 조건으로 선택적으로 rescue한다.","tags":["f7","rescue","provenance","budget","manual-scoped-fallback"],"complexity":"complex"},
+    {"id":"file:linkage_overlay.py","type":"file","name":"linkage_overlay.py","filePath":"linkage_overlay.py","summary":"duplicate/folded/ambiguous address pair를 neutral 처리하는 평가 overlay를 제공한다.","tags":["evaluation","linkage","manual-scoped-fallback"],"complexity":"moderate"},
+    {"id":"file:analysis/v1_pair_eval.py","type":"file","name":"v1_pair_eval.py","filePath":"analysis/v1_pair_eval.py","summary":"strict/rescued family를 GT와 pairwise 평가하고 development F6 threshold를 고른다.","tags":["evaluation","metrics","ground-truth","manual-scoped-fallback"],"complexity":"complex"}
+  ],
+  "edges": [
+    {"source":"file:body_similarity.py","target":"file:body_evidence.py","type":"reads_from","weight":0.5,"description":"load_body_evidence가 body_evidence schema의 normalized instructions, blocks, CFG edges를 읽는다."},
+    {"source":"file:engine.py","target":"file:loader.py","type":"imports","weight":0.7,"description":"run_fixture_path가 load_case를 사용한다."},
+    {"source":"file:v1_retrieval_views.py","target":"file:body_similarity.py","type":"imports","weight":0.7,"description":"FunctionBody에서 view profile을 만든다."},
+    {"source":"file:v1_candidates.py","target":"file:body_similarity.py","type":"imports","weight":0.7,"description":"body artifact를 읽어 retrieval universe를 구성한다."},
+    {"source":"file:v1_candidates.py","target":"file:engine.py","type":"imports","weight":0.7,"description":"run_cg_wl 결과를 relation context로 바꾼다."},
+    {"source":"file:v1_candidates.py","target":"file:loader.py","type":"imports","weight":0.7,"description":"fixture를 검증·로드한다."},
+    {"source":"file:v1_candidates.py","target":"file:v1_retrieval_views.py","type":"imports","weight":0.7,"description":"독립 view profile과 similarity를 호출한다."},
+    {"source":"file:v1_candidates.py","target":"file:v1_retrieval_views.py","type":"transforms","weight":0.5,"description":"view별 profile score를 deterministic symmetric top-k rank와 union pair record로 변환한다."},
+    {"source":"file:analysis/v1_consensus_candidates.py","target":"file:v1_candidates.py","type":"transforms","weight":0.5,"description":"multiview candidate union을 더 작은 derived candidate queue로 필터링한다."},
+    {"source":"file:analysis/v1_consensus_candidates.py","target":"file:body_similarity.py","type":"imports","weight":0.7,"description":"body instruction count로 alignment-cell proxy를 계산한다."},
+    {"source":"file:v1_engine.py","target":"file:v1_candidates.py","type":"imports","weight":0.7,"description":"candidate schema와 canonical pair를 재사용한다."},
+    {"source":"file:v1_engine.py","target":"file:v1_candidates.py","type":"reads_from","weight":0.5,"description":"derived candidate artifact의 pair queue와 provenance를 소비한다."},
+    {"source":"file:v1_engine.py","target":"file:body_similarity.py","type":"imports","weight":0.7,"description":"상세 body comparison을 호출한다."},
+    {"source":"file:v1_engine.py","target":"file:body_similarity.py","type":"transforms","weight":0.5,"description":"body comparison evidence를 PairFeatures와 tri-state decision으로 변환한다."},
+    {"source":"file:slot_overlay.py","target":"file:body_similarity.py","type":"imports","weight":0.7,"description":"FunctionBody의 normalized instruction에서 slot을 수집한다."},
+    {"source":"file:family_template.py","target":"file:body_similarity.py","type":"imports","weight":0.7,"description":"medoid 선택과 member alignment에 상세 비교를 재사용한다."},
+    {"source":"file:family_template.py","target":"file:slot_overlay.py","type":"imports","weight":0.7,"description":"SlotObservation을 medoid-anchored template slot으로 변환한다."},
+    {"source":"file:family_rescue.py","target":"file:body_similarity.py","type":"imports","weight":0.7,"description":"component의 body와 비용을 다룬다."},
+    {"source":"file:family_rescue.py","target":"file:family_template.py","type":"imports","weight":0.7,"description":"medoid, template, axis report를 호출한다."},
+    {"source":"file:family_rescue.py","target":"file:slot_overlay.py","type":"imports","weight":0.7,"description":"component member별 slot observation을 수집한다."},
+    {"source":"file:family_rescue.py","target":"file:v1_engine.py","type":"reads_from","weight":0.5,"description":"strict accepted fragment와 provenance를 읽는다."},
+    {"source":"file:family_rescue.py","target":"file:v1_candidates.py","type":"reads_from","weight":0.5,"description":"candidate crossing과 same_prior_color bridge를 읽는다."},
+    {"source":"file:analysis/v1_pair_eval.py","target":"file:v1_engine.py","type":"imports","weight":0.7,"description":"PairFeatures와 classify_pair를 재사용하고 family artifact를 평가한다."},
+    {"source":"file:analysis/v1_pair_eval.py","target":"file:v1_engine.py","type":"reads_from","weight":0.5,"description":"clusters, statuses, pair decisions와 F6 metrics를 읽는다."},
+    {"source":"file:analysis/v1_pair_eval.py","target":"file:family_rescue.py","type":"imports","weight":0.7,"description":"검증된 rescued partition을 선택적으로 평가한다."},
+    {"source":"file:analysis/v1_pair_eval.py","target":"file:linkage_overlay.py","type":"imports","weight":0.7,"description":"관측 불가능 pair를 제외한 linkage metric을 계산한다."},
+    {"source":"file:analysis/v1_pair_eval.py","target":"file:v1_candidates.py","type":"imports","weight":0.7,"description":"PairKey canonicalization을 공유한다."}
+  ],
+  "layers": [
+    {"id":"layer:evidence","name":"증거 정규화와 관계 컨텍스트","description":"body skeleton/CFG, fixture 검증, CG-WL 관계 증거를 만든다.","nodeIds":["file:body_evidence.py","file:body_similarity.py","file:loader.py","file:engine.py"]},
+    {"id":"layer:retrieval","name":"독립 retrieval과 오프라인 파생","description":"view별 top-k를 만들고 k/view 교집합 queue를 파생한다.","nodeIds":["file:v1_retrieval_views.py","file:v1_candidates.py","file:analysis/v1_consensus_candidates.py"]},
+    {"id":"layer:decision","name":"Strict F6 결정","description":"동일 policy와 budget으로 body pair를 분류하고 complete-link family를 만든다.","nodeIds":["file:v1_engine.py"]},
+    {"id":"layer:rescue","name":"선택적 F7 rescue","description":"slot overlay와 variation axis로 strict fragment를 별도 재결합한다.","nodeIds":["file:slot_overlay.py","file:family_template.py","file:family_rescue.py"]},
+    {"id":"layer:evaluation","name":"평가와 linkage 보정","description":"GT pair metric, family coverage, linkage-neutral metric을 만든다.","nodeIds":["file:linkage_overlay.py","file:analysis/v1_pair_eval.py"]}
+  ],
+  "tour": [
+    {"order":1,"title":"입력 증거","description":"정규화된 body와 검증된 fixture가 어떤 정보를 보존하고 지우는지 확인한다.","nodeIds":["file:body_evidence.py","file:body_similarity.py","file:loader.py"]},
+    {"order":2,"title":"Relation 생성","description":"CG-WL trace가 relation profile의 history와 call context로 바뀌는 경로를 읽는다.","nodeIds":["file:engine.py","file:v1_candidates.py","file:v1_retrieval_views.py"]},
+    {"order":3,"title":"k32 재사용과 named intersection","description":"view별 rank가 저장되는 방식, C3(k) subset C2(k) 불변식과 minimum-view helper의 한계를 확인한다.","nodeIds":["file:v1_candidates.py","file:analysis/v1_consensus_candidates.py"]},
+    {"order":4,"title":"Unchanged F6","description":"provenance, 전역 queue budget, tri-state classifier, ordered complete-link merge를 따라간다.","nodeIds":["file:v1_engine.py","file:body_similarity.py"]},
+    {"order":5,"title":"평가와 선택적 rescue","description":"pairwise metric의 denominator, linkage neutral 처리와 F7의 별도 의미를 확인한다.","nodeIds":["file:analysis/v1_pair_eval.py","file:linkage_overlay.py","file:family_rescue.py","file:family_template.py","file:slot_overlay.py"]}
+  ]
+}
