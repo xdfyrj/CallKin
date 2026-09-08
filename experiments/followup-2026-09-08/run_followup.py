@@ -202,7 +202,25 @@ def retrieve(case, manifest, config, root):
                                            'old_pair_count': len(old['pairs']),
                                            'new_pair_count': len(fresh16['pairs'])})
         if not reference_equal:
-            raise ValueError('regenerated k16 candidate IDs/ranks differ from retained reference')
+            if old['provenance'] != base['provenance'] or old['universe'] != fresh16['universe']:
+                raise ValueError('historical candidate inputs differ; rank drift is not comparable')
+            differences = {}
+            for view in ('token', 'cfg', 'relation'):
+                old_view = {tuple(p['pair']): p['views'][view] for p in old['pairs'] if p['views'][view]}
+                new_view = {tuple(p['pair']): p['views'][view] for p in fresh16['pairs'] if p['views'][view]}
+                common = old_view.keys() & new_view.keys()
+                differences[view] = {
+                    'reference_only': sorted(old_view.keys() - new_view.keys()),
+                    'regenerated_only': sorted(new_view.keys() - old_view.keys()),
+                    'rank_changes': [
+                        {'pair': list(pair), 'reference': old_view[pair], 'regenerated': new_view[pair]}
+                        for pair in sorted(common) if old_view[pair]['rank'] != new_view[pair]['rank']
+                    ],
+                }
+            dump(dest / 'reference-drift.json', {
+                'status': 'historical-candidates-not-reproduced',
+                'input_provenance_equal': True, 'views': differences,
+            })
         bodies = load_body_evidence(body)
         policy = PairPolicyConfig.from_dict(config['policy'])
         prices = {}
