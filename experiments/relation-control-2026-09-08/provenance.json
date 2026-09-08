@@ -1,0 +1,292 @@
+{
+  "config": {
+    "bytes": 12349,
+    "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/relation-control-2026-09-08/config.json",
+    "sha256": "4de776f611c807b0021e356b668d4e1bcd1f19d01504f6fe7b5d1562a29f0cb1"
+  },
+  "evaluator_sha256": "e418d9e22553b4c0d486f3ea86a54ab50e711aa37e071906154b4102949e8506",
+  "labels": {
+    "fd": {
+      "primary": {
+        "expected_ground_truth_sha256": "06deeee7f149e13e794cca8a35f8ff3cb332a7b864dfa1a1f551ff8342cda8ce",
+        "expected_linkage_sha256": "18d43ea7380e641d5bcd7e15084203efc90f4461d04c9ff97589562241f7fe01",
+        "ground_truth": {
+          "bytes": 462547,
+          "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/audit-corrections/fd.gt.v1.json",
+          "sha256": "06deeee7f149e13e794cca8a35f8ff3cb332a7b864dfa1a1f551ff8342cda8ce"
+        },
+        "ground_truth_source": "config",
+        "linkage": {
+          "bytes": 903035,
+          "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/audit-corrections/fd.linkage.v1.json",
+          "sha256": "18d43ea7380e641d5bcd7e15084203efc90f4461d04c9ff97589562241f7fe01"
+        },
+        "linkage_source": "config",
+        "load_error": null,
+        "load_errors": [],
+        "role": "primary",
+        "spec": {
+          "ground_truth": "../followup-2026-09-08/audit-corrections/fd.gt.v1.json",
+          "ground_truth_sha256": "06deeee7f149e13e794cca8a35f8ff3cb332a7b864dfa1a1f551ff8342cda8ce",
+          "kind": "source-audit corrected",
+          "linkage": "../followup-2026-09-08/audit-corrections/fd.linkage.v1.json",
+          "linkage_sha256": "18d43ea7380e641d5bcd7e15084203efc90f4461d04c9ff97589562241f7fe01"
+        }
+      },
+      "secondary_original": {
+        "expected_ground_truth_sha256": "ada83ff652f59decbde72328b3d34daa1d0e73b19aa80f96c6dd4a8c578818af",
+        "expected_linkage_sha256": "d30d5389c7f09c830962f26110f2f65ca1d46f429005c37e7357d1784331aaf6",
+        "ground_truth": {
+          "bytes": 460791,
+          "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/ground_truth/rust-nonstd/plain/fd.O3S.gt.json",
+          "sha256": "ada83ff652f59decbde72328b3d34daa1d0e73b19aa80f96c6dd4a8c578818af"
+        },
+        "ground_truth_source": "ground_truth_from_source_manifest",
+        "linkage": {
+          "bytes": 1528454,
+          "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/v0-engine-py-f1/results/fd/plain/fd.O3S.gt-mangled-audit.json",
+          "sha256": "d30d5389c7f09c830962f26110f2f65ca1d46f429005c37e7357d1784331aaf6"
+        },
+        "linkage_source": "linkage_from_source_manifest",
+        "load_error": null,
+        "load_errors": [],
+        "role": "secondary_original",
+        "spec": {
+          "ground_truth_from_source_manifest": "ground_truth/rust-nonstd/plain/fd.O3S.gt.json",
+          "linkage_from_source_manifest": "worktrees/v0-engine-py-f1/results/fd/plain/fd.O3S.gt-mangled-audit.json"
+        }
+      }
+    },
+    "ripgrep-main": {
+      "primary": {
+        "expected_ground_truth_sha256": "e792a9c8442ffb833b5d47f34fbcf5f26395c8369230780f0a46a5903b5bf166",
+        "expected_linkage_sha256": "fb939a2e6120514a8b67cdff2b5236ee31f3fa4752fb520722b7d7a8a7fd314e",
+        "ground_truth": {
+          "bytes": 695405,
+          "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/ground_truth/rust-nonstd/plain/ripgrep-main.O3S.gt.json",
+          "sha256": "e792a9c8442ffb833b5d47f34fbcf5f26395c8369230780f0a46a5903b5bf166"
+        },
+        "ground_truth_source": "ground_truth_from_source_manifest",
+        "linkage": {
+          "bytes": 3282179,
+          "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/v0-engine-py-f1/results/ripgrep-main/plain/ripgrep-main.O3S.gt-mangled-audit.json",
+          "sha256": "fb939a2e6120514a8b67cdff2b5236ee31f3fa4752fb520722b7d7a8a7fd314e"
+        },
+        "linkage_source": "linkage_from_source_manifest",
+        "load_error": null,
+        "load_errors": [],
+        "role": "primary",
+        "spec": {
+          "ground_truth_from_source_manifest": "ground_truth/rust-nonstd/plain/ripgrep-main.O3S.gt.json",
+          "kind": "original; no corrected audit pair",
+          "linkage_from_source_manifest": "worktrees/v0-engine-py-f1/results/ripgrep-main/plain/ripgrep-main.O3S.gt-mangled-audit.json"
+        }
+      },
+      "secondary_original": {
+        "expected_ground_truth_sha256": "e792a9c8442ffb833b5d47f34fbcf5f26395c8369230780f0a46a5903b5bf166",
+        "expected_linkage_sha256": "fb939a2e6120514a8b67cdff2b5236ee31f3fa4752fb520722b7d7a8a7fd314e",
+        "ground_truth": {
+          "bytes": 695405,
+          "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/ground_truth/rust-nonstd/plain/ripgrep-main.O3S.gt.json",
+          "sha256": "e792a9c8442ffb833b5d47f34fbcf5f26395c8369230780f0a46a5903b5bf166"
+        },
+        "ground_truth_source": "ground_truth_from_source_manifest",
+        "linkage": {
+          "bytes": 3282179,
+          "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/v0-engine-py-f1/results/ripgrep-main/plain/ripgrep-main.O3S.gt-mangled-audit.json",
+          "sha256": "fb939a2e6120514a8b67cdff2b5236ee31f3fa4752fb520722b7d7a8a7fd314e"
+        },
+        "linkage_source": "linkage_from_source_manifest",
+        "load_error": null,
+        "load_errors": [],
+        "role": "secondary_original",
+        "same_as_primary": true,
+        "spec": {
+          "ground_truth_from_source_manifest": "ground_truth/rust-nonstd/plain/ripgrep-main.O3S.gt.json",
+          "kind": "original; no corrected audit pair",
+          "linkage_from_source_manifest": "worktrees/v0-engine-py-f1/results/ripgrep-main/plain/ripgrep-main.O3S.gt-mangled-audit.json"
+        }
+      }
+    },
+    "zoxide": {
+      "primary": {
+        "expected_ground_truth_sha256": "93f84e1b4dd8775731b87d7502d47ea5b7e5ff48451eaf9a47e641eba05c8f5a",
+        "expected_linkage_sha256": "14805b8efdb789bbe307da2fa9e7e2a8b412ec31e7f849a18a675decaa470a8f",
+        "ground_truth": {
+          "bytes": 139901,
+          "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/audit-corrections/zoxide.gt.v1.json",
+          "sha256": "93f84e1b4dd8775731b87d7502d47ea5b7e5ff48451eaf9a47e641eba05c8f5a"
+        },
+        "ground_truth_source": "config",
+        "linkage": {
+          "bytes": 270657,
+          "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/audit-corrections/zoxide.linkage.v1.json",
+          "sha256": "14805b8efdb789bbe307da2fa9e7e2a8b412ec31e7f849a18a675decaa470a8f"
+        },
+        "linkage_source": "config",
+        "load_error": null,
+        "load_errors": [],
+        "role": "primary",
+        "spec": {
+          "ground_truth": "../followup-2026-09-08/audit-corrections/zoxide.gt.v1.json",
+          "ground_truth_sha256": "93f84e1b4dd8775731b87d7502d47ea5b7e5ff48451eaf9a47e641eba05c8f5a",
+          "kind": "source-audit corrected",
+          "linkage": "../followup-2026-09-08/audit-corrections/zoxide.linkage.v1.json",
+          "linkage_sha256": "14805b8efdb789bbe307da2fa9e7e2a8b412ec31e7f849a18a675decaa470a8f"
+        }
+      },
+      "secondary_original": {
+        "expected_ground_truth_sha256": "b5e641338cd098ead94ea299b7dccd3a4ca2b8242743656762cf8f01617d967d",
+        "expected_linkage_sha256": "aea76c11cb78074695ea2ac4acc8f08026f61d81fa747d9d42948bf82f3da579",
+        "ground_truth": {
+          "bytes": 136975,
+          "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/ground_truth/rust-nonstd/plain/zoxide.O3S.gt.json",
+          "sha256": "b5e641338cd098ead94ea299b7dccd3a4ca2b8242743656762cf8f01617d967d"
+        },
+        "ground_truth_source": "ground_truth_from_source_manifest",
+        "linkage": {
+          "bytes": 489756,
+          "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/v0-engine-py-frozen/results/zoxide/plain/zoxide.O3S.gt-mangled-audit.json",
+          "sha256": "aea76c11cb78074695ea2ac4acc8f08026f61d81fa747d9d42948bf82f3da579"
+        },
+        "linkage_source": "linkage_from_source_manifest",
+        "load_error": null,
+        "load_errors": [],
+        "role": "secondary_original",
+        "spec": {
+          "ground_truth_from_source_manifest": "ground_truth/rust-nonstd/plain/zoxide.O3S.gt.json",
+          "linkage_from_source_manifest": "worktrees/v0-engine-py-frozen/results/zoxide/plain/zoxide.O3S.gt-mangled-audit.json"
+        }
+      }
+    }
+  },
+  "protocol": {
+    "bytes": 18438,
+    "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/relation-control-2026-09-08/protocol.md",
+    "sha256": "40b976a652a639c28bdd1705ebbe4230ad2877d7fcaaef159b6e4a09190fb53e"
+  },
+  "reference_inputs": {
+    "bytes": 5652,
+    "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/inputs.json",
+    "sha256": "4dca828168b64167ab7aa3b594b132821fc4171ccf3d034d9fd64db52dbf78b3"
+  },
+  "runs": {
+    "fd": {
+      "B2-body-score": {
+        "candidate_sha256": "484135fba48f6d2dee03e14a6e079686442d92d1e0b70fef782319d7861e3bf6",
+        "prediction_sha256": "b73ef467fe750528a1033b653743d97cb1fe6455662e6e84cc6653c4417ebf8a",
+        "status": "completed"
+      },
+      "C3-k16": {
+        "candidate_sha256": "ab6d70c83d6fc7a83719b8f90b6e731b51ac04b228127bebccbe986f982a6b35",
+        "prediction_sha256": "7f4a02d833e3053d33159a4a7a318b06f2aba9ca5bf2896cf8c36b36934676cc",
+        "status": "completed"
+      },
+      "random-0": {
+        "candidate_sha256": "bdfaeb1c782915c3ea8939ca3ffaeabd3c6a11c44f94e349761b279c805443d5",
+        "prediction_sha256": "c4c4be5d2ece0cba4a89cfcc0d51ffbcbdc9ea25ecec134cc8e6924103902aed",
+        "status": "completed"
+      },
+      "random-1": {
+        "candidate_sha256": "d7f1b2d94e9cba4a5e081cac36ccdc3b3b1c98a14961fc0c6f25c53241e8f711",
+        "prediction_sha256": "e3a3ef941468226116840138b66e6611698b953737c6edd55f9cbe111dab9766",
+        "status": "completed"
+      },
+      "random-2": {
+        "candidate_sha256": "1bd97a5bee1e42361ff7cb30c62312cf440f06e3445fa7f343ec80020cad1480",
+        "prediction_sha256": "abc190e7a9f5bc2af331d6b1c586abe5a9a41688e10e139c950e7b4cbbfb95ca",
+        "status": "completed"
+      },
+      "random-3": {
+        "candidate_sha256": "51d441710f8e49ed16fade86593f118211fa62d591151d954d84a814c69bf924",
+        "prediction_sha256": "8d8e33882f73caa4ba77b56e6657b01fdfe586713558b83efaef2248593bdcb1",
+        "status": "completed"
+      },
+      "random-4": {
+        "candidate_sha256": "bb79584a3a8c666894e0d9450275025522a21e276337896f44d1d563ebc36a69",
+        "prediction_sha256": "e9e365d4c47df96b5db89f6000c94c3d36f77ac04c2c7824d5bc6d5f1d85d45a",
+        "status": "completed"
+      }
+    },
+    "ripgrep-main": {
+      "B2-body-score": {
+        "candidate_sha256": "34e32b333e2c0c5775180dddcd6336802264fded958977147e6b60761b9d78ba",
+        "prediction_sha256": "967b5a42748b4a0cfee9c8ff455893121388f10eed359cfc2e8f5ad8d3237a4e",
+        "status": "completed"
+      },
+      "C3-k16": {
+        "candidate_sha256": "65b3cad4fcb97a8ec3675f142bbf0d18afdbf3bb83ab8fd3e52e5c2a13aeb5f0",
+        "prediction_sha256": "0a0e94476b6a077b41180f88921187b47f8e1ce0435eee3eb1ee5d2747ee954a",
+        "status": "completed"
+      },
+      "random-0": {
+        "candidate_sha256": "7069b460cfbd67dd7290d5b49733232dc295e098645074c7f5b205523f98bb09",
+        "prediction_sha256": "62e5bac2db2d99f2ea03c41439cf96ee878ab3ad10b2ba8a8b221216c764cdde",
+        "status": "completed"
+      },
+      "random-1": {
+        "candidate_sha256": "379a9f5d93196145254a8323f91a882b102808d1021e4db425d8d515897cd849",
+        "prediction_sha256": "8bd76eeee9b0ef7b193f9d465a0547e5331a9995d04b4b85a3c6a31c536d3731",
+        "status": "completed"
+      },
+      "random-2": {
+        "candidate_sha256": "558019e9d6625997b573aefbbf7e52d29616339f22213edcb13c1a7b5adbc72d",
+        "prediction_sha256": "bca7caa155ebcfa6d7e754445e40e544052fcb7284d039998733b617ed1576cb",
+        "status": "completed"
+      },
+      "random-3": {
+        "candidate_sha256": "14e2b0441566978165eb12e3747cc8b655e63c8045d298979913f64905646868",
+        "prediction_sha256": "624bfeb9e92d9189c4f931f3eda1c3e041ee9e86c9dbbcfae475ea84eeb1b932",
+        "status": "completed"
+      },
+      "random-4": {
+        "candidate_sha256": "55af18a6c499ad7544193259df6a1dfd6a0bef9654cd1bca2bee37cdb4c8d95b",
+        "prediction_sha256": "7cdd26d749bd85d28966236379a0fb535feb6ebb43979989a18b77c5c54d9e92",
+        "status": "completed"
+      }
+    },
+    "zoxide": {
+      "B2-body-score": {
+        "candidate_sha256": "44d881cfb0614f5ff66f6cd3475d3afb7c2cd861f3375d9d5c958a0e03588c32",
+        "prediction_sha256": "655500806f7d91cdc10ea404d521849f733aa2b2656049e102bc7cd1b3676b33",
+        "status": "completed"
+      },
+      "C3-k16": {
+        "candidate_sha256": "e84a336012f42a75f63f19ae0d211ad5f3923c62747541ecc0a3414010d5c240",
+        "prediction_sha256": "d2c6ccdde1cdd484b132d34c932365836d05293981462c6ae3fd98db64a5ff3c",
+        "status": "completed"
+      },
+      "random-0": {
+        "candidate_sha256": "ff3963adefbd5bf83f86ee0337d41a33a03152a11ae9634ffa74021efada22e2",
+        "prediction_sha256": "e06bf500db5dace24e9248f5ff2da18bd3df6e3a537c78e70ba730503d8dcb52",
+        "status": "completed"
+      },
+      "random-1": {
+        "candidate_sha256": "4a88330ab0b98214d56dbfb902630ddb549bb65aa4cd4024820b8a26f7fe2828",
+        "prediction_sha256": "6228ca71b9801035728f3a8293379e7a4b9958ed1dd17b5e0119566e208e27e6",
+        "status": "completed"
+      },
+      "random-2": {
+        "candidate_sha256": "d07835c39a65a2999f52a0b9f98b7a05001016841b63e210612de0afe3640342",
+        "prediction_sha256": "7c168b442d37457ccf5547f953e4bc3528ce666bc019b7325b146ea661e9527d",
+        "status": "completed"
+      },
+      "random-3": {
+        "candidate_sha256": "41e1a0dbcddfcbbab47196530e42a861b4ff7429461884dfa08d6c128910aee5",
+        "prediction_sha256": "cbed64d73f1036aa4350db404b4ce0e04b46805132d6e84ede384ebe1069e4f9",
+        "status": "completed"
+      },
+      "random-4": {
+        "candidate_sha256": "23acf045a0b821d7bab8e2f09e2bd342af13b97e8c353efe0dd2d8efc67f2576",
+        "prediction_sha256": "17b3dbe117c6ca3684651aa571b65b9f8fa2cf43e8edd1eb91213acbc9b1de35",
+        "status": "completed"
+      }
+    }
+  },
+  "snapshot": {
+    "bytes": 6906,
+    "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/relation-control-2026-09-08/snapshot.json",
+    "sha256": "4259d27b6ca7c6fe0413c68dda1f379513f75c54a9e9c8e8555691c6ec2a97ca"
+  },
+  "study": "callkin-relation-control-2026-09-08"
+}

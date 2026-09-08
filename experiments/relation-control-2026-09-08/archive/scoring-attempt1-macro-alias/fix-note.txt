@@ -1,0 +1,1 @@
+First scoring attempt projected legacy macro_origin_recall as null under the macro_R sensitivity key. The authorized fix aliases macro_R to macro_origin_recall; underlying counts and quality metrics are rechecked unchanged.

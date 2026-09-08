@@ -1,0 +1,42 @@
+{
+  "study": "callkin-relation-control-2026-09-08",
+  "verified_at": "2026-09-08 KST",
+  "scope": "same-environment agent verification of retained outputs",
+  "scope_note": "The 21 new F6 predictions are experiment outputs; this summary records retained-output checks and rescoring only.",
+  "checks": {
+    "primary_arithmetic": {
+      "status": "PASS",
+      "scope": "all 21 completed arms; primary precision, recall, F1, macro_R, and exact_group_rate"
+    },
+    "clean_zip_recheck": {
+      "status": "PASS",
+      "scope": "retained prediction rescoring under primary and original labels",
+      "bundle_bytes": 6070830,
+      "bundle_sha256": "90e20f77e8d20d10da54629b18c3f00b9b2dfdc03c2ce7c15f77643e91728b69"
+    },
+    "c3_historical_partition_and_cost": {
+      "status": "PASS",
+      "scope": "zoxide, fd, and ripgrep-main"
+    },
+    "initial_nominal_cost_difference": {
+      "status": "PASS",
+      "maximum_percent": 0.62
+    },
+    "macro_r_projection": {
+      "status": "PASS",
+      "scope": "alias restored after scorer rerun; all 378 metric comparisons unchanged"
+    }
+  },
+  "source_evaluator_sha256": "e418d9e22553b4c0d486f3ea86a54ab50e711aa37e071906154b4102949e8506",
+  "not_verified": [
+    "external researcher reproduction",
+    "full uncached F4 feature regeneration and independent prediction regeneration from raw inputs",
+    "full source-to-observation rebuild",
+    "new-source observation and evaluation"
+  ],
+  "no_additional_test_claims": true,
+  "notes": [
+    "This file records the listed checks only.",
+    "It is not a human validation, fresh-prediction claim, or full-source reproduction."
+  ]
+}

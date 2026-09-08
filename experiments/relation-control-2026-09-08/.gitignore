@@ -4,4 +4,14 @@ runs/
 physical-cache/
 logs/
 staging/
+selection/*.json
+fd-results.json
+zoxide-results.json
+ripgrep-main-results.json
+candidate-diagnostics.json
+source-corrected-sensitivity.json
+archive/**
+!archive/scoring-attempt1-macro-alias/
+!archive/scoring-attempt1-macro-alias/fix-note.txt
+!archive/scoring-attempt1-macro-alias/scorer-sha256.txt
 *.pyc

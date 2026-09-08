@@ -1,0 +1,43 @@
+{
+  "case": "zoxide",
+  "reference_study": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08",
+  "sources": [
+    {
+      "metadata_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/runs/zoxide/body2-k16/metadata.json",
+      "metadata_sha256": "0dc66bacee2c82b751ef9596e05a75b467d3397cd8ee1dd33ca9ba1696a41f90",
+      "prediction_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/runs/zoxide/body2-k16/prediction.json",
+      "prediction_sha256": "1e5ff8f62f936603ef53d8a4499ca48fdf9f1952c7ee61d0cc8a270a231efd99"
+    },
+    {
+      "metadata_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/runs/zoxide/body2-k32/metadata.json",
+      "metadata_sha256": "eea940ae9faac384fa666f13fbbf908137b7c9b86a639536254ad023644ac22f",
+      "prediction_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/runs/zoxide/body2-k32/prediction.json",
+      "prediction_sha256": "dbd70600ca1a489450a93e0f30fcc40f2218c50104803e5a9a721008106c4c19"
+    },
+    {
+      "metadata_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/runs/zoxide/body2-k8/metadata.json",
+      "metadata_sha256": "d2e2e40af8dff8170ba8f4b73a2c8f5365ba5f790fae6a1640dad6afb187d21f",
+      "prediction_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/runs/zoxide/body2-k8/prediction.json",
+      "prediction_sha256": "b928e6e889ce7a545d112fba06562fdc2547839b811d763f23cc6da517a40d7e"
+    },
+    {
+      "metadata_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/runs/zoxide/combined3-k16/metadata.json",
+      "metadata_sha256": "3ffa5ef8b5342acf35159b287726f2de446ff3783d959592d5fe55109eac1711",
+      "prediction_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/runs/zoxide/combined3-k16/prediction.json",
+      "prediction_sha256": "d2c6ccdde1cdd484b132d34c932365836d05293981462c6ae3fd98db64a5ff3c"
+    },
+    {
+      "metadata_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/runs/zoxide/combined3-k32/metadata.json",
+      "metadata_sha256": "7062e8259550d34df3a300bf16d46f61fb48447ffd4ba71afc53b17ef4925f60",
+      "prediction_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/runs/zoxide/combined3-k32/prediction.json",
+      "prediction_sha256": "a75592e9ec41ddd72512c4d03c55ce5e1d767a5af56967e839265d861a88f9d8"
+    },
+    {
+      "metadata_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/runs/zoxide/combined3-k8/metadata.json",
+      "metadata_sha256": "cbd8f7d14711ee3a688c6d95828859df1fed2f199a1aa44cd78f5ef2b182ac7c",
+      "prediction_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/runs/zoxide/combined3-k8/prediction.json",
+      "prediction_sha256": "6aa98b3f90d3c54c9fef8f954c667294725dc4f52790b45f93de334b8179e71e"
+    }
+  ],
+  "status": "validated-before-f4-cache-open"
+}

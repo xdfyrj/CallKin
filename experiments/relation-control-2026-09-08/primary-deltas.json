@@ -1,0 +1,72 @@
+{
+  "cases": {
+    "fd": {
+      "case": "fd",
+      "control_arm": "B2-body-score",
+      "control_status": "completed",
+      "deltas": {
+        "candidate_alignment_cells": -96981,
+        "candidate_comparisons": 0,
+        "candidate_positive_recall": -0.004403900597672206,
+        "exact_group_rate": 0.0,
+        "f1": -0.007759454197330921,
+        "macro_R": 0.00692584726198172,
+        "on_demand_alignment_cells": 2636,
+        "on_demand_comparisons": 19,
+        "precision": -0.07215972433363738,
+        "recall": -0.004089336269267066,
+        "total_alignment_cells": -94345,
+        "total_comparisons": 19
+      },
+      "treatment_arm": "C3-k16",
+      "treatment_status": "completed"
+    },
+    "ripgrep-main": {
+      "case": "ripgrep-main",
+      "control_arm": "B2-body-score",
+      "control_status": "completed",
+      "deltas": {
+        "candidate_alignment_cells": 80970,
+        "candidate_comparisons": 0,
+        "candidate_positive_recall": 0.010111485610578175,
+        "exact_group_rate": 0.012195121951219523,
+        "f1": 0.0054930659077562505,
+        "macro_R": 0.012267711962833966,
+        "on_demand_alignment_cells": 724857,
+        "on_demand_comparisons": -31,
+        "precision": 0.020186933563627885,
+        "recall": 0.0031112263417163583,
+        "total_alignment_cells": 805827,
+        "total_comparisons": -31
+      },
+      "treatment_arm": "C3-k16",
+      "treatment_status": "completed"
+    },
+    "zoxide": {
+      "case": "zoxide",
+      "control_arm": "B2-body-score",
+      "control_status": "completed",
+      "deltas": {
+        "candidate_alignment_cells": 158577,
+        "candidate_comparisons": 0,
+        "candidate_positive_recall": 0.020177562550443895,
+        "exact_group_rate": 0.0,
+        "f1": 0.0,
+        "macro_R": 0.0,
+        "on_demand_alignment_cells": 0,
+        "on_demand_comparisons": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "total_alignment_cells": 158577,
+        "total_comparisons": 0
+      },
+      "treatment_arm": "C3-k16",
+      "treatment_status": "completed"
+    }
+  },
+  "direction": "control_minus_C3",
+  "generalization_claim": false,
+  "inferential_tests": false,
+  "primary_endpoint": "f1",
+  "study": "callkin-relation-control-2026-09-08"
+}

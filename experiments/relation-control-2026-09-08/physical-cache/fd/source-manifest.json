@@ -1,0 +1,37 @@
+{
+  "case": "fd",
+  "reference_study": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08",
+  "sources": [
+    {
+      "metadata_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/runs/fd/body2-k16/metadata.json",
+      "metadata_sha256": "ff944b826dd4bd475d1aa0142557b2241f5063b3decb6a69afa16b2367d84b83",
+      "prediction_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/runs/fd/body2-k16/prediction.json",
+      "prediction_sha256": "e101eb7eb41267b248262325514170e543cad5a10b667efc05ed23ba886a6ac1"
+    },
+    {
+      "metadata_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/runs/fd/body2-k8/metadata.json",
+      "metadata_sha256": "5ed4fbf8822357c83c773ab4256c54e9923dbaae5fcda7e804da6b83951df5a4",
+      "prediction_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/runs/fd/body2-k8/prediction.json",
+      "prediction_sha256": "02f1806db8bb0b62b91daaa11cc0677874b0dbd6a8dd59033131c61efc1f4af6"
+    },
+    {
+      "metadata_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/runs/fd/combined3-k16/metadata.json",
+      "metadata_sha256": "4617c821328362e13d879896c9d604ea5a556ddbb0242834291f1e17fec83327",
+      "prediction_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/runs/fd/combined3-k16/prediction.json",
+      "prediction_sha256": "7f4a02d833e3053d33159a4a7a318b06f2aba9ca5bf2896cf8c36b36934676cc"
+    },
+    {
+      "metadata_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/runs/fd/combined3-k32/metadata.json",
+      "metadata_sha256": "503e82b33f4599962376aa023015a71478a84c1ee4274d610b0c6e6d673d383c",
+      "prediction_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/runs/fd/combined3-k32/prediction.json",
+      "prediction_sha256": "4ff0ba1b1e3c076da18da1d4fdce77faf160681d3b9ec105c011248f1c00b93d"
+    },
+    {
+      "metadata_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/runs/fd/combined3-k8/metadata.json",
+      "metadata_sha256": "cec714f42b6425b7f88dc5306b04f7a9380aa0d27bda9bcc51ee24dc18552544",
+      "prediction_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/runs/fd/combined3-k8/prediction.json",
+      "prediction_sha256": "ed4195601c93ffdb4941daddef130746d21f47ce1f6e21ae35670aedbdd78d54"
+    }
+  ],
+  "status": "validated-before-f4-cache-open"
+}
