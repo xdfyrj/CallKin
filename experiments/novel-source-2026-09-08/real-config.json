@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "artifact": "callkin-real-prototype-config",
+  "status": "FROZEN",
+  "freeze_hashes": "real-freeze-hashes.json",
+  "study": "callkin-novel-source-real-2026-09-08",
+  "case": "hexyl-v0170",
+  "checkout": {
+    "path": "/mnt/c/Users/sumyr/playground/REV/CallKin-Real/worktrees/novel-source-2026-09-08",
+    "head": "68ffa8dc1285546a1db52096a905a36fec094bd6",
+    "clean": true
+  },
+  "input": {
+    "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/novel-source-2026-09-08/build/hexyl-v0170/hexyl-v0170.O3S.fixture.bin",
+    "sha256": "b067e03a3c6911409d64eff3027b11a05f5364c33f08e1bbb777b343b142594a",
+    "format": "ELF64 x86-64 PIE ET_DYN",
+    "address_model": "static link-time p_vaddr; no runtime module-base offset"
+  },
+  "environment": {
+    "python": "3.12.3",
+    "interpreter": "/mnt/c/Users/sumyr/playground/REV/CallKin/workspace/novel-source-real-venv/bin/python",
+    "lockfile": "real-environment-lock.txt",
+    "lock_sha256": "7aff9404b3b870e65c36c604a47be031778ed5fe737b1bccdfecbcfbf5445e3f",
+    "radare2": "5.5.0",
+    "primary": {
+      "r2pipe": "1.9.8",
+      "angr": "9.2.165",
+      "capstone": "5.0.3",
+      "pyelftools": "0.31",
+      "pefile": "2024.8.26",
+      "pycparser": "2.22"
+    },
+    "controlled_extraction_python": "3.10.14",
+    "controlled_inference_python": "3.12.3",
+    "runtime_condition": "separate condition; no cross-condition quality claim"
+  },
+  "command": {
+    "case": "hexyl-v0170",
+    "top_k": 16,
+    "no_flirt": true,
+    "component_budgeted_v1": true,
+    "output_dir": "experiments/novel-source-2026-09-08/real/hexyl-v0170"
+  },
+  "resources": {
+    "address_space_limit_bytes": 12884901888,
+    "wall_time_limit_seconds": 3600,
+    "enforcement": "external prlimit and timeout around complete analyzer"
+  },
+  "budgets": {
+    "f6": {
+      "max_comparison_count": 10000,
+      "max_alignment_cell_budget": 500000000,
+      "component_budgeting": "whole F5 candidate components"
+    },
+    "f7": {
+      "max_component_members": 64,
+      "max_comparisons": 4096,
+      "max_alignment_cells": 500000000
+    }
+  },
+  "identity": {
+    "id_bias": 1048576,
+    "gt_member_count": 568,
+    "linkage_member_count": 568,
+    "gt_linkage_set_rule": "sets must agree exactly on all 568 IDs before scoring",
+    "join": "exact FUN IDs after named run completes; Real may miss IDs; report intersection and misses, check only, never feed back",
+    "post_run_bias_check": "for every produced function, verify id == FUN_{actual_static_elf_va + 1048576}; no runtime PIE base",
+    "gt_path": "experiments/novel-source-2026-09-08/observations/hexyl-v0170/hexyl-v0170.O3S.gt.json",
+    "linkage_path": "experiments/novel-source-2026-09-08/observations/hexyl-v0170/hexyl-v0170.O3S.linkage.json",
+    "catalog_scope": "standard evaluate.py GT overlap; F10 all-rust catalog deferred"
+  },
+  "metrics": {
+    "primary": "standard evaluator metrics over GT-labelled IDs overlapping Real grouping members",
+    "supplementary": "full 568-ID GT denominator with missing targets counted unresolved; posthoc diagnostic only and never an analysis input",
+    "diagnostics": [
+      "full Real discovery and grouping universe",
+      "GT misses counted unresolved/missed",
+      "body coverage and incomplete bodies",
+      "component selections, deferred components, and deferred functions",
+      "known-symbol boundary agreement if available after the run"
+    ],
+    "outside_gt_policy": "outside-GT Real members are diagnostic and not automatic false positives"
+  },
+  "freeze_note": "Protocol/config are frozen; do not start analysis until the root ACK commit."
+}

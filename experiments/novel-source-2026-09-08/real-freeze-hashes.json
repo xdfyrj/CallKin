@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "artifact": "callkin-real-prototype-freeze-hashes",
+  "status": "FROZEN",
+  "protocol": "real-protocol.md",
+  "config": "real-config.json",
+  "environment_lock": "real-environment-lock.txt",
+  "protocol_sha256": "8c114bdc535532096b6bb28378a62a0df297b09d2d765cbbe4ed0e964d7c5b14",
+  "config_sha256": "aa8549563fd26184edca09472f15fcdcfff801e11e30824b9780571b01a8bb97",
+  "environment_lock_sha256": "7aff9404b3b870e65c36c604a47be031778ed5fe737b1bccdfecbcfbf5445e3f",
+  "checkout_head": "68ffa8dc1285546a1db52096a905a36fec094bd6",
+  "target_sha256": "b067e03a3c6911409d64eff3027b11a05f5364c33f08e1bbb777b343b142594a",
+  "gt_linkage_id_set": {
+    "count": 568,
+    "canonical_sorted_id_set_sha256": "3ce5f3874265700743fd22ba1bc2b42ee2079007656b3d40f2b0fee68e7eb83d",
+    "gt_sha256": "ad1edcc7bb20afe3175bf8e8f6c70120e2edc2f834e6ffa27a283e88d100c4b0",
+    "linkage_sha256": "ef5ca656b05660bdd77a1fd1ff6e59e9a9a78af08fcea05dadf5e1fda6976fa4",
+    "must_agree_exactly": true,
+    "real_misses_are_outcomes": true
+  },
+  "note": "This sidecar is excluded from its own hash set to avoid a circular digest."
+}
