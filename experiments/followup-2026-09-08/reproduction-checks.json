@@ -1,0 +1,340 @@
+{
+  "candidate_checks": {
+    "zoxide": {
+      "k16_reference_match": true
+    },
+    "fd": {
+      "k16_reference_match": false,
+      "input_provenance_equal": true,
+      "views": {
+        "cfg": {
+          "reference_only_count": 1,
+          "regenerated_only_count": 0,
+          "rank_changes_count": 10,
+          "examples": [
+            {
+              "pair": [
+                "FUN_00269f00",
+                "FUN_003ed290"
+              ],
+              "reference": {
+                "rank": 6,
+                "score": 0.5797508818342151
+              },
+              "regenerated": {
+                "rank": 5,
+                "score": 0.5797508818342152
+              }
+            },
+            {
+              "pair": [
+                "FUN_0026a020",
+                "FUN_003ed290"
+              ],
+              "reference": {
+                "rank": 7,
+                "score": 0.5797508818342151
+              },
+              "regenerated": {
+                "rank": 6,
+                "score": 0.5797508818342152
+              }
+            },
+            {
+              "pair": [
+                "FUN_002ad550",
+                "FUN_00398cb0"
+              ],
+              "reference": {
+                "rank": 15,
+                "score": 0.553968253968254
+              },
+              "regenerated": {
+                "rank": 16,
+                "score": 0.5539682539682539
+              }
+            }
+          ]
+        },
+        "relation": {
+          "reference_only_count": 1,
+          "regenerated_only_count": 1,
+          "rank_changes_count": 27,
+          "examples": [
+            {
+              "pair": [
+                "FUN_002792c0",
+                "FUN_002c0220"
+              ],
+              "reference": {
+                "rank": 13,
+                "score": 0.2952380952380952
+              },
+              "regenerated": {
+                "rank": 12,
+                "score": 0.29523809523809524
+              }
+            },
+            {
+              "pair": [
+                "FUN_002792c0",
+                "FUN_002c0980"
+              ],
+              "reference": {
+                "rank": 14,
+                "score": 0.2952380952380952
+              },
+              "regenerated": {
+                "rank": 13,
+                "score": 0.29523809523809524
+              }
+            },
+            {
+              "pair": [
+                "FUN_002792c0",
+                "FUN_002c0dd0"
+              ],
+              "reference": {
+                "rank": 15,
+                "score": 0.2952380952380952
+              },
+              "regenerated": {
+                "rank": 14,
+                "score": 0.29523809523809524
+              }
+            }
+          ]
+        },
+        "token": {
+          "reference_only_count": 0,
+          "regenerated_only_count": 21,
+          "rank_changes_count": 36,
+          "examples": [
+            {
+              "pair": [
+                "FUN_002844d0",
+                "FUN_00385430"
+              ],
+              "reference": {
+                "rank": 3,
+                "score": 0.5833333333333333
+              },
+              "regenerated": {
+                "rank": 7,
+                "score": 0.5833333333333333
+              }
+            },
+            {
+              "pair": [
+                "FUN_002844d0",
+                "FUN_00385450"
+              ],
+              "reference": {
+                "rank": 3,
+                "score": 0.5833333333333333
+              },
+              "regenerated": {
+                "rank": 8,
+                "score": 0.5833333333333333
+              }
+            },
+            {
+              "pair": [
+                "FUN_002844d0",
+                "FUN_00385460"
+              ],
+              "reference": {
+                "rank": 3,
+                "score": 0.5833333333333333
+              },
+              "regenerated": {
+                "rank": 9,
+                "score": 0.5833333333333333
+              }
+            }
+          ]
+        }
+      }
+    },
+    "ripgrep-main": {
+      "k16_reference_match": false,
+      "input_provenance_equal": true,
+      "views": {
+        "cfg": {
+          "reference_only_count": 2,
+          "regenerated_only_count": 1,
+          "rank_changes_count": 34,
+          "examples": [
+            {
+              "pair": [
+                "FUN_00309b10",
+                "FUN_00450690"
+              ],
+              "reference": {
+                "rank": 10,
+                "score": 0.5634920634920635
+              },
+              "regenerated": {
+                "rank": 9,
+                "score": 0.5634920634920635
+              }
+            },
+            {
+              "pair": [
+                "FUN_0030b0d0",
+                "FUN_0032c400"
+              ],
+              "reference": {
+                "rank": 16,
+                "score": 0.5782828282828282
+              },
+              "regenerated": {
+                "rank": 13,
+                "score": 0.5782828282828283
+              }
+            },
+            {
+              "pair": [
+                "FUN_0030b0d0",
+                "FUN_00490a00"
+              ],
+              "reference": {
+                "rank": 14,
+                "score": 0.5991161616161615
+              },
+              "regenerated": {
+                "rank": 10,
+                "score": 0.5991161616161617
+              }
+            }
+          ]
+        },
+        "relation": {
+          "reference_only_count": 0,
+          "regenerated_only_count": 1,
+          "rank_changes_count": 10,
+          "examples": [
+            {
+              "pair": [
+                "FUN_002c9c50",
+                "FUN_003f9a80"
+              ],
+              "reference": {
+                "rank": 14,
+                "score": 0.3214285714285714
+              },
+              "regenerated": {
+                "rank": 13,
+                "score": 0.32142857142857145
+              }
+            },
+            {
+              "pair": [
+                "FUN_00377cc0",
+                "FUN_0048f3b0"
+              ],
+              "reference": {
+                "rank": 3,
+                "score": 0.2714285714285714
+              },
+              "regenerated": {
+                "rank": 2,
+                "score": 0.27142857142857146
+              }
+            },
+            {
+              "pair": [
+                "FUN_003a16b0",
+                "FUN_003eaab0"
+              ],
+              "reference": {
+                "rank": 3,
+                "score": 0.3928571428571429
+              },
+              "regenerated": {
+                "rank": 4,
+                "score": 0.39285714285714285
+              }
+            }
+          ]
+        },
+        "token": {
+          "reference_only_count": 42,
+          "regenerated_only_count": 42,
+          "rank_changes_count": 0,
+          "examples": []
+        }
+      }
+    }
+  },
+  "strict_partition_checks": {
+    "zoxide": {
+      "historical_reproduction_claim": "partition-reproduced",
+      "partition_delta": {
+        "reference_only": [],
+        "regenerated_only": []
+      },
+      "partition_match": true,
+      "reference_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/v0-engine-py-frozen/results/zoxide/plain/zoxide.O3S.v1.consensus3.k16.formal.families.json",
+      "reference_sha256": "9cf218e2a04965ab3e4c1924464da841ebfcab9df1580595af0546d008e91264"
+    },
+    "fd": {
+      "historical_reproduction_claim": "partition-reproduced",
+      "partition_delta": {
+        "reference_only": [],
+        "regenerated_only": []
+      },
+      "partition_match": true,
+      "reference_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/v0-engine-py-f1/results/fd/plain/fd.O3S.v1.consensus3.k16.formal.families.json",
+      "reference_sha256": "7cd92784e734b3fcfc67455010af92c1cbf0e252774afbfa1a570007612c5320"
+    },
+    "ripgrep-main": {
+      "historical_reproduction_claim": "partition-reproduced",
+      "partition_delta": {
+        "reference_only": [],
+        "regenerated_only": []
+      },
+      "partition_match": true,
+      "reference_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/v0-engine-py-f1/results/ripgrep-main/plain/ripgrep-main.O3S.v1.consensus3.k16.formal.families.json",
+      "reference_sha256": "fcf9ab00f55d7df01e8aa6afc3b84b52b5688519a61f3bd06c8d758f7fd0218e"
+    }
+  },
+  "zoxide_repeat_hashes": {
+    "combined3-k16": {
+      "first_sha256": "d2c6ccdde1cdd484b132d34c932365836d05293981462c6ae3fd98db64a5ff3c",
+      "second_sha256": "d2c6ccdde1cdd484b132d34c932365836d05293981462c6ae3fd98db64a5ff3c",
+      "match": true
+    },
+    "body2-k16": {
+      "first_sha256": "1e5ff8f62f936603ef53d8a4499ca48fdf9f1952c7ee61d0cc8a270a231efd99",
+      "second_sha256": "1e5ff8f62f936603ef53d8a4499ca48fdf9f1952c7ee61d0cc8a270a231efd99",
+      "match": true
+    },
+    "exact": {
+      "first_sha256": "5baffb76a904f5a73f8a3e5977c3930377d308adc5d581d084dc057032edac23",
+      "second_sha256": "5baffb76a904f5a73f8a3e5977c3930377d308adc5d581d084dc057032edac23",
+      "match": true
+    },
+    "v0": {
+      "first_sha256": "169f4368e01bca6146cdc3ea455eb538922e37643911ba23aeaab1b4c2f17505",
+      "second_sha256": "169f4368e01bca6146cdc3ea455eb538922e37643911ba23aeaab1b4c2f17505",
+      "match": true
+    },
+    "rescue-k16": {
+      "first_sha256": "309a98167af3751b8ea9139c0a7d535296d08ee1e41a6ceb602bbfebfbd3d255",
+      "second_sha256": "309a98167af3751b8ea9139c0a7d535296d08ee1e41a6ceb602bbfebfbd3d255",
+      "match": true
+    }
+  },
+  "fd_sum_probe": {
+    "pair": [
+      "FUN_002b1680",
+      "FUN_00385430"
+    ],
+    "python": "3.12.3",
+    "builtin_sum_score": 0.5833333333333334,
+    "left_to_right_score": 0.5833333333333333,
+    "retained_score": 0.5833333333333333,
+    "original_runtime_not_inferred": true
+  }
+}

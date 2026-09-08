@@ -1,0 +1,9 @@
+# These retained inputs are byte-pinned by replay.py.
+/source.rs -text
+/build.json -text
+/body.json -text
+/fixture.json -text
+/ground-truth.json -text
+/linkage.json -text
+/policy.json -text
+/LICENSE -text

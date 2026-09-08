@@ -1,0 +1,146 @@
+{
+  "case": "family_axis_03",
+  "build": "O3S",
+  "profile": "plain",
+  "schema_version": 5,
+  "provenance": {
+    "build_id": "75517874e82e4ca29e5ae3e85f603405",
+    "source_sha256": "22ef7aa42dc8d5b784bee9d60bf142225253fec9ff044c53ee5bb1ecf44b0221",
+    "non_stripped_sha256": "fe9dda21a8393a59a05dc7fe6d9b1823de47c03e7dd2b6a302c0475a90f874d3",
+    "stripped_sha256": "0db0a2394c248625e4e776920395cf8e809080205a2113ac2d0965a8c2993ec8"
+  },
+  "origins": [
+    {
+      "origin": "incomplete",
+      "members": [
+        "FUN_00114360",
+        "FUN_00114380",
+        "FUN_001143a0",
+        "FUN_001143c0",
+        "FUN_001143e0"
+      ]
+    },
+    {
+      "origin": "complete",
+      "members": [
+        "FUN_00114510",
+        "FUN_00114530",
+        "FUN_00114550",
+        "FUN_00114570",
+        "FUN_00114590",
+        "FUN_001145b0"
+      ]
+    },
+    {
+      "origin": "same_axis",
+      "members": [
+        "FUN_001145d0",
+        "FUN_001145f0"
+      ]
+    },
+    {
+      "origin": "<family_axis_03::A0 as family_axis_03::AxisA>::step",
+      "members": [
+        "FUN_00114610"
+      ]
+    },
+    {
+      "origin": "<family_axis_03::A0 as family_axis_03::AxisA>::other",
+      "members": [
+        "FUN_00114620"
+      ]
+    },
+    {
+      "origin": "<family_axis_03::A1 as family_axis_03::AxisA>::step",
+      "members": [
+        "FUN_00114630"
+      ]
+    },
+    {
+      "origin": "<family_axis_03::A1 as family_axis_03::AxisA>::other",
+      "members": [
+        "FUN_00114640"
+      ]
+    },
+    {
+      "origin": "<family_axis_03::B0 as family_axis_03::AxisB>::step",
+      "members": [
+        "FUN_00114650"
+      ]
+    },
+    {
+      "origin": "<family_axis_03::B1 as family_axis_03::AxisB>::step",
+      "members": [
+        "FUN_00114660"
+      ]
+    },
+    {
+      "origin": "<family_axis_03::B2 as family_axis_03::AxisB>::step",
+      "members": [
+        "FUN_00114670"
+      ]
+    }
+  ],
+  "symbols": {
+    "FUN_00114360": [
+      "family_axis_03::incomplete"
+    ],
+    "FUN_00114380": [
+      "family_axis_03::incomplete"
+    ],
+    "FUN_001143a0": [
+      "family_axis_03::incomplete"
+    ],
+    "FUN_001143c0": [
+      "family_axis_03::incomplete"
+    ],
+    "FUN_001143e0": [
+      "family_axis_03::incomplete"
+    ],
+    "FUN_00114510": [
+      "family_axis_03::complete"
+    ],
+    "FUN_00114530": [
+      "family_axis_03::complete"
+    ],
+    "FUN_00114550": [
+      "family_axis_03::complete"
+    ],
+    "FUN_00114570": [
+      "family_axis_03::complete"
+    ],
+    "FUN_00114590": [
+      "family_axis_03::complete"
+    ],
+    "FUN_001145b0": [
+      "family_axis_03::complete"
+    ],
+    "FUN_001145d0": [
+      "family_axis_03::same_axis"
+    ],
+    "FUN_001145f0": [
+      "family_axis_03::same_axis"
+    ],
+    "FUN_00114610": [
+      "<family_axis_03::A0 as family_axis_03::AxisA>::step"
+    ],
+    "FUN_00114620": [
+      "<family_axis_03::A0 as family_axis_03::AxisA>::other"
+    ],
+    "FUN_00114630": [
+      "<family_axis_03::A1 as family_axis_03::AxisA>::step"
+    ],
+    "FUN_00114640": [
+      "<family_axis_03::A1 as family_axis_03::AxisA>::other"
+    ],
+    "FUN_00114650": [
+      "<family_axis_03::B0 as family_axis_03::AxisB>::step"
+    ],
+    "FUN_00114660": [
+      "<family_axis_03::B1 as family_axis_03::AxisB>::step"
+    ],
+    "FUN_00114670": [
+      "<family_axis_03::B2 as family_axis_03::AxisB>::step"
+    ]
+  }
+}

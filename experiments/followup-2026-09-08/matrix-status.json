@@ -1,0 +1,14 @@
+[
+  {
+    "case": "zoxide",
+    "status": "finished"
+  },
+  {
+    "case": "fd",
+    "status": "finished"
+  },
+  {
+    "case": "ripgrep-main",
+    "status": "finished"
+  }
+]

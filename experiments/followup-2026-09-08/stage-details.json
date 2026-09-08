@@ -1,0 +1,278 @@
+{
+  "zoxide/body2-k16": {
+    "positive_first_outcome": {
+      "not_retrieved_or_requested": 460,
+      "observation_ineligible": 186,
+      "recovered": 19,
+      "slot_policy_failed": 336,
+      "structure_failed": 241
+    },
+    "slot_failure_all_compared_pairs": {
+      "no_informative_channel": 16,
+      "data_channel_differs": 408,
+      "both_channels_differ": 32,
+      "constant_channel_differs": 12
+    },
+    "slot_failure_positive_pairs": {
+      "data_channel_differs": 294,
+      "both_channels_differ": 31,
+      "constant_channel_differs": 8,
+      "no_informative_channel": 3
+    },
+    "note": "slot counts include positive and negative pairs; the separate first-outcome table uses only non-neutral positives"
+  },
+  "zoxide/body2-k32": {
+    "positive_first_outcome": {
+      "not_retrieved_or_requested": 253,
+      "observation_ineligible": 186,
+      "recovered": 19,
+      "slot_policy_failed": 492,
+      "structure_failed": 292
+    },
+    "slot_failure_all_compared_pairs": {
+      "no_informative_channel": 16,
+      "data_channel_differs": 592,
+      "both_channels_differ": 32,
+      "constant_channel_differs": 12
+    },
+    "slot_failure_positive_pairs": {
+      "data_channel_differs": 450,
+      "both_channels_differ": 31,
+      "constant_channel_differs": 8,
+      "no_informative_channel": 3
+    },
+    "note": "slot counts include positive and negative pairs; the separate first-outcome table uses only non-neutral positives"
+  },
+  "zoxide/body2-k8": {
+    "positive_first_outcome": {
+      "not_retrieved_or_requested": 610,
+      "observation_ineligible": 186,
+      "recovered": 18,
+      "slot_policy_failed": 276,
+      "structure_failed": 152
+    },
+    "slot_failure_all_compared_pairs": {
+      "no_informative_channel": 16,
+      "data_channel_differs": 295,
+      "both_channels_differ": 32,
+      "constant_channel_differs": 12
+    },
+    "slot_failure_positive_pairs": {
+      "data_channel_differs": 234,
+      "both_channels_differ": 31,
+      "constant_channel_differs": 8,
+      "no_informative_channel": 3
+    },
+    "note": "slot counts include positive and negative pairs; the separate first-outcome table uses only non-neutral positives"
+  },
+  "zoxide/combined3-k16": {
+    "positive_first_outcome": {
+      "not_retrieved_or_requested": 801,
+      "observation_ineligible": 186,
+      "recovered": 18,
+      "slot_policy_failed": 76,
+      "structure_failed": 161
+    },
+    "slot_failure_all_compared_pairs": {
+      "data_channel_differs": 59,
+      "both_channels_differ": 21,
+      "constant_channel_differs": 9
+    },
+    "slot_failure_positive_pairs": {
+      "data_channel_differs": 50,
+      "both_channels_differ": 20,
+      "constant_channel_differs": 6
+    },
+    "note": "slot counts include positive and negative pairs; the separate first-outcome table uses only non-neutral positives"
+  },
+  "zoxide/combined3-k32": {
+    "positive_first_outcome": {
+      "not_retrieved_or_requested": 766,
+      "observation_ineligible": 186,
+      "recovered": 18,
+      "slot_policy_failed": 78,
+      "structure_failed": 194
+    },
+    "slot_failure_all_compared_pairs": {
+      "data_channel_differs": 61,
+      "both_channels_differ": 21,
+      "constant_channel_differs": 9
+    },
+    "slot_failure_positive_pairs": {
+      "data_channel_differs": 52,
+      "both_channels_differ": 20,
+      "constant_channel_differs": 6
+    },
+    "note": "slot counts include positive and negative pairs; the separate first-outcome table uses only non-neutral positives"
+  },
+  "zoxide/combined3-k8": {
+    "positive_first_outcome": {
+      "not_retrieved_or_requested": 858,
+      "observation_ineligible": 186,
+      "recovered": 18,
+      "slot_policy_failed": 72,
+      "structure_failed": 108
+    },
+    "slot_failure_all_compared_pairs": {
+      "data_channel_differs": 55,
+      "both_channels_differ": 21,
+      "constant_channel_differs": 9
+    },
+    "slot_failure_positive_pairs": {
+      "data_channel_differs": 46,
+      "both_channels_differ": 20,
+      "constant_channel_differs": 6
+    },
+    "note": "slot counts include positive and negative pairs; the separate first-outcome table uses only non-neutral positives"
+  },
+  "fd/body2-k16": {
+    "positive_first_outcome": {
+      "not_retrieved_or_requested": 1674,
+      "observation_ineligible": 229,
+      "recovered": 93,
+      "slot_policy_failed": 702,
+      "structure_failed": 482
+    },
+    "slot_failure_all_compared_pairs": {
+      "constant_channel_differs": 146,
+      "data_channel_differs": 764,
+      "both_channels_differ": 891,
+      "no_informative_channel": 672
+    },
+    "slot_failure_positive_pairs": {
+      "constant_channel_differs": 48,
+      "data_channel_differs": 496,
+      "both_channels_differ": 148,
+      "no_informative_channel": 10
+    },
+    "note": "slot counts include positive and negative pairs; the separate first-outcome table uses only non-neutral positives"
+  },
+  "fd/body2-k8": {
+    "positive_first_outcome": {
+      "not_retrieved_or_requested": 2043,
+      "observation_ineligible": 229,
+      "recovered": 91,
+      "slot_policy_failed": 506,
+      "structure_failed": 311
+    },
+    "slot_failure_all_compared_pairs": {
+      "constant_channel_differs": 117,
+      "data_channel_differs": 599,
+      "both_channels_differ": 548,
+      "no_informative_channel": 347
+    },
+    "slot_failure_positive_pairs": {
+      "constant_channel_differs": 47,
+      "data_channel_differs": 367,
+      "both_channels_differ": 84,
+      "no_informative_channel": 8
+    },
+    "note": "slot counts include positive and negative pairs; the separate first-outcome table uses only non-neutral positives"
+  },
+  "fd/combined3-k16": {
+    "positive_first_outcome": {
+      "not_retrieved_or_requested": 2182,
+      "observation_ineligible": 229,
+      "recovered": 87,
+      "slot_policy_failed": 323,
+      "structure_failed": 359
+    },
+    "slot_failure_all_compared_pairs": {
+      "constant_channel_differs": 133,
+      "data_channel_differs": 390,
+      "both_channels_differ": 823,
+      "no_informative_channel": 4
+    },
+    "slot_failure_positive_pairs": {
+      "constant_channel_differs": 47,
+      "data_channel_differs": 154,
+      "both_channels_differ": 122
+    },
+    "note": "slot counts include positive and negative pairs; the separate first-outcome table uses only non-neutral positives"
+  },
+  "fd/combined3-k32": {
+    "positive_first_outcome": {
+      "not_retrieved_or_requested": 1666,
+      "observation_ineligible": 229,
+      "recovered": 87,
+      "slot_policy_failed": 443,
+      "structure_failed": 755
+    },
+    "slot_failure_all_compared_pairs": {
+      "constant_channel_differs": 161,
+      "data_channel_differs": 476,
+      "both_channels_differ": 1091,
+      "no_informative_channel": 7
+    },
+    "slot_failure_positive_pairs": {
+      "constant_channel_differs": 47,
+      "data_channel_differs": 199,
+      "both_channels_differ": 197
+    },
+    "note": "slot counts include positive and negative pairs; the separate first-outcome table uses only non-neutral positives"
+  },
+  "fd/combined3-k8": {
+    "positive_first_outcome": {
+      "not_retrieved_or_requested": 2402,
+      "observation_ineligible": 229,
+      "recovered": 87,
+      "slot_policy_failed": 242,
+      "structure_failed": 220
+    },
+    "slot_failure_all_compared_pairs": {
+      "constant_channel_differs": 81,
+      "data_channel_differs": 303,
+      "both_channels_differ": 472,
+      "no_informative_channel": 1
+    },
+    "slot_failure_positive_pairs": {
+      "constant_channel_differs": 44,
+      "data_channel_differs": 127,
+      "both_channels_differ": 71
+    },
+    "note": "slot counts include positive and negative pairs; the separate first-outcome table uses only non-neutral positives"
+  },
+  "ripgrep-main/combined3-k16": {
+    "positive_first_outcome": {
+      "complete_link_not_retained": 1,
+      "not_retrieved_or_requested": 1360,
+      "observation_ineligible": 1658,
+      "recovered": 428,
+      "slot_policy_failed": 143,
+      "structure_failed": 267
+    },
+    "slot_failure_all_compared_pairs": {
+      "constant_channel_differs": 78,
+      "data_channel_differs": 214,
+      "both_channels_differ": 1138,
+      "no_informative_channel": 5
+    },
+    "slot_failure_positive_pairs": {
+      "constant_channel_differs": 51,
+      "data_channel_differs": 74,
+      "both_channels_differ": 18
+    },
+    "note": "slot counts include positive and negative pairs; the separate first-outcome table uses only non-neutral positives"
+  },
+  "ripgrep-main/combined3-k8": {
+    "positive_first_outcome": {
+      "not_retrieved_or_requested": 1502,
+      "observation_ineligible": 1658,
+      "recovered": 421,
+      "slot_policy_failed": 121,
+      "structure_failed": 155
+    },
+    "slot_failure_all_compared_pairs": {
+      "constant_channel_differs": 74,
+      "data_channel_differs": 149,
+      "both_channels_differ": 569,
+      "no_informative_channel": 5
+    },
+    "slot_failure_positive_pairs": {
+      "constant_channel_differs": 47,
+      "data_channel_differs": 56,
+      "both_channels_differ": 18
+    },
+    "note": "slot counts include positive and negative pairs; the separate first-outcome table uses only non-neutral positives"
+  }
+}

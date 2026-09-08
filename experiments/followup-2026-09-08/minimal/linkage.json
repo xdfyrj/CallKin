@@ -1,0 +1,484 @@
+{
+  "addresses": {
+    "FUN_00114360": {
+      "identities": [
+        "_ZN14family_axis_0310incomplete17h4e6f81efc0186188E"
+      ],
+      "origins": [
+        "incomplete"
+      ],
+      "raw_symbols": [
+        "_ZN14family_axis_0310incomplete17h4e6f81efc0186188E"
+      ]
+    },
+    "FUN_00114380": {
+      "identities": [
+        "_ZN14family_axis_0310incomplete17h8c6b70771ee3c125E"
+      ],
+      "origins": [
+        "incomplete"
+      ],
+      "raw_symbols": [
+        "_ZN14family_axis_0310incomplete17h8c6b70771ee3c125E"
+      ]
+    },
+    "FUN_001143a0": {
+      "identities": [
+        "_ZN14family_axis_0310incomplete17hbb3dc476fe92f09aE"
+      ],
+      "origins": [
+        "incomplete"
+      ],
+      "raw_symbols": [
+        "_ZN14family_axis_0310incomplete17hbb3dc476fe92f09aE"
+      ]
+    },
+    "FUN_001143c0": {
+      "identities": [
+        "_ZN14family_axis_0310incomplete17he37c557deac23dd6E"
+      ],
+      "origins": [
+        "incomplete"
+      ],
+      "raw_symbols": [
+        "_ZN14family_axis_0310incomplete17he37c557deac23dd6E"
+      ]
+    },
+    "FUN_001143e0": {
+      "identities": [
+        "_ZN14family_axis_0310incomplete17hf7f0116c9f8f2d83E"
+      ],
+      "origins": [
+        "incomplete"
+      ],
+      "raw_symbols": [
+        "_ZN14family_axis_0310incomplete17hf7f0116c9f8f2d83E"
+      ]
+    },
+    "FUN_00114510": {
+      "identities": [
+        "_ZN14family_axis_038complete17h0bcc4638f87f589bE"
+      ],
+      "origins": [
+        "complete"
+      ],
+      "raw_symbols": [
+        "_ZN14family_axis_038complete17h0bcc4638f87f589bE"
+      ]
+    },
+    "FUN_00114530": {
+      "identities": [
+        "_ZN14family_axis_038complete17h0eae47e386d896c7E"
+      ],
+      "origins": [
+        "complete"
+      ],
+      "raw_symbols": [
+        "_ZN14family_axis_038complete17h0eae47e386d896c7E"
+      ]
+    },
+    "FUN_00114550": {
+      "identities": [
+        "_ZN14family_axis_038complete17h509d93922772f71cE"
+      ],
+      "origins": [
+        "complete"
+      ],
+      "raw_symbols": [
+        "_ZN14family_axis_038complete17h509d93922772f71cE"
+      ]
+    },
+    "FUN_00114570": {
+      "identities": [
+        "_ZN14family_axis_038complete17h7a32e7cb6492d76fE"
+      ],
+      "origins": [
+        "complete"
+      ],
+      "raw_symbols": [
+        "_ZN14family_axis_038complete17h7a32e7cb6492d76fE"
+      ]
+    },
+    "FUN_00114590": {
+      "identities": [
+        "_ZN14family_axis_038complete17h83d386e82f656adcE"
+      ],
+      "origins": [
+        "complete"
+      ],
+      "raw_symbols": [
+        "_ZN14family_axis_038complete17h83d386e82f656adcE"
+      ]
+    },
+    "FUN_001145b0": {
+      "identities": [
+        "_ZN14family_axis_038complete17h9e42ebac486b7a19E"
+      ],
+      "origins": [
+        "complete"
+      ],
+      "raw_symbols": [
+        "_ZN14family_axis_038complete17h9e42ebac486b7a19E"
+      ]
+    },
+    "FUN_001145d0": {
+      "identities": [
+        "_ZN14family_axis_039same_axis17h03a8eb7f0d512b48E"
+      ],
+      "origins": [
+        "same_axis"
+      ],
+      "raw_symbols": [
+        "_ZN14family_axis_039same_axis17h03a8eb7f0d512b48E"
+      ]
+    },
+    "FUN_001145f0": {
+      "identities": [
+        "_ZN14family_axis_039same_axis17hcdeedc09e887030eE"
+      ],
+      "origins": [
+        "same_axis"
+      ],
+      "raw_symbols": [
+        "_ZN14family_axis_039same_axis17hcdeedc09e887030eE"
+      ]
+    },
+    "FUN_00114610": {
+      "identities": [
+        "_ZN60_$LT$family_axis_03..A0$u20$as$u20$family_axis_03..AxisA$GT$4step17h3e77292d3478d10fE"
+      ],
+      "origins": [
+        "<family_axis_03::A0 as family_axis_03::AxisA>::step"
+      ],
+      "raw_symbols": [
+        "_ZN60_$LT$family_axis_03..A0$u20$as$u20$family_axis_03..AxisA$GT$4step17h3e77292d3478d10fE"
+      ]
+    },
+    "FUN_00114620": {
+      "identities": [
+        "_ZN60_$LT$family_axis_03..A0$u20$as$u20$family_axis_03..AxisA$GT$5other17h005baf74542bc77bE"
+      ],
+      "origins": [
+        "<family_axis_03::A0 as family_axis_03::AxisA>::other"
+      ],
+      "raw_symbols": [
+        "_ZN60_$LT$family_axis_03..A0$u20$as$u20$family_axis_03..AxisA$GT$5other17h005baf74542bc77bE"
+      ]
+    },
+    "FUN_00114630": {
+      "identities": [
+        "_ZN60_$LT$family_axis_03..A1$u20$as$u20$family_axis_03..AxisA$GT$4step17hb5a086e8eed4a9b2E"
+      ],
+      "origins": [
+        "<family_axis_03::A1 as family_axis_03::AxisA>::step"
+      ],
+      "raw_symbols": [
+        "_ZN60_$LT$family_axis_03..A1$u20$as$u20$family_axis_03..AxisA$GT$4step17hb5a086e8eed4a9b2E"
+      ]
+    },
+    "FUN_00114640": {
+      "identities": [
+        "_ZN60_$LT$family_axis_03..A1$u20$as$u20$family_axis_03..AxisA$GT$5other17h2dd267a61081e085E"
+      ],
+      "origins": [
+        "<family_axis_03::A1 as family_axis_03::AxisA>::other"
+      ],
+      "raw_symbols": [
+        "_ZN60_$LT$family_axis_03..A1$u20$as$u20$family_axis_03..AxisA$GT$5other17h2dd267a61081e085E"
+      ]
+    },
+    "FUN_00114650": {
+      "identities": [
+        "_ZN60_$LT$family_axis_03..B0$u20$as$u20$family_axis_03..AxisB$GT$4step17hfc496e7e8de516ecE"
+      ],
+      "origins": [
+        "<family_axis_03::B0 as family_axis_03::AxisB>::step"
+      ],
+      "raw_symbols": [
+        "_ZN60_$LT$family_axis_03..B0$u20$as$u20$family_axis_03..AxisB$GT$4step17hfc496e7e8de516ecE"
+      ]
+    },
+    "FUN_00114660": {
+      "identities": [
+        "_ZN60_$LT$family_axis_03..B1$u20$as$u20$family_axis_03..AxisB$GT$4step17h1c4dd625303fdd80E"
+      ],
+      "origins": [
+        "<family_axis_03::B1 as family_axis_03::AxisB>::step"
+      ],
+      "raw_symbols": [
+        "_ZN60_$LT$family_axis_03..B1$u20$as$u20$family_axis_03..AxisB$GT$4step17h1c4dd625303fdd80E"
+      ]
+    },
+    "FUN_00114670": {
+      "identities": [
+        "_ZN60_$LT$family_axis_03..B2$u20$as$u20$family_axis_03..AxisB$GT$4step17hed71b15756fa9972E"
+      ],
+      "origins": [
+        "<family_axis_03::B2 as family_axis_03::AxisB>::step"
+      ],
+      "raw_symbols": [
+        "_ZN60_$LT$family_axis_03..B2$u20$as$u20$family_axis_03..AxisB$GT$4step17hed71b15756fa9972E"
+      ]
+    }
+  },
+  "artifact": "v1-gt-mangled-audit",
+  "build": "O3S",
+  "case": "family_axis_03",
+  "linkage": [
+    {
+      "address_count": 6,
+      "addresses_by_identity": {
+        "_ZN14family_axis_038complete17h0bcc4638f87f589bE": [
+          "FUN_00114510"
+        ],
+        "_ZN14family_axis_038complete17h0eae47e386d896c7E": [
+          "FUN_00114530"
+        ],
+        "_ZN14family_axis_038complete17h509d93922772f71cE": [
+          "FUN_00114550"
+        ],
+        "_ZN14family_axis_038complete17h7a32e7cb6492d76fE": [
+          "FUN_00114570"
+        ],
+        "_ZN14family_axis_038complete17h83d386e82f656adcE": [
+          "FUN_00114590"
+        ],
+        "_ZN14family_axis_038complete17h9e42ebac486b7a19E": [
+          "FUN_001145b0"
+        ]
+      },
+      "has_duplication": false,
+      "has_folding": false,
+      "identities_by_address": {
+        "FUN_00114510": [
+          "_ZN14family_axis_038complete17h0bcc4638f87f589bE"
+        ],
+        "FUN_00114530": [
+          "_ZN14family_axis_038complete17h0eae47e386d896c7E"
+        ],
+        "FUN_00114550": [
+          "_ZN14family_axis_038complete17h509d93922772f71cE"
+        ],
+        "FUN_00114570": [
+          "_ZN14family_axis_038complete17h7a32e7cb6492d76fE"
+        ],
+        "FUN_00114590": [
+          "_ZN14family_axis_038complete17h83d386e82f656adcE"
+        ],
+        "FUN_001145b0": [
+          "_ZN14family_axis_038complete17h9e42ebac486b7a19E"
+        ]
+      },
+      "identity_count": 6,
+      "origin": "complete",
+      "shape": "clean",
+      "unobservable_identity_pairs": 0
+    },
+    {
+      "address_count": 5,
+      "addresses_by_identity": {
+        "_ZN14family_axis_0310incomplete17h4e6f81efc0186188E": [
+          "FUN_00114360"
+        ],
+        "_ZN14family_axis_0310incomplete17h8c6b70771ee3c125E": [
+          "FUN_00114380"
+        ],
+        "_ZN14family_axis_0310incomplete17hbb3dc476fe92f09aE": [
+          "FUN_001143a0"
+        ],
+        "_ZN14family_axis_0310incomplete17he37c557deac23dd6E": [
+          "FUN_001143c0"
+        ],
+        "_ZN14family_axis_0310incomplete17hf7f0116c9f8f2d83E": [
+          "FUN_001143e0"
+        ]
+      },
+      "has_duplication": false,
+      "has_folding": false,
+      "identities_by_address": {
+        "FUN_00114360": [
+          "_ZN14family_axis_0310incomplete17h4e6f81efc0186188E"
+        ],
+        "FUN_00114380": [
+          "_ZN14family_axis_0310incomplete17h8c6b70771ee3c125E"
+        ],
+        "FUN_001143a0": [
+          "_ZN14family_axis_0310incomplete17hbb3dc476fe92f09aE"
+        ],
+        "FUN_001143c0": [
+          "_ZN14family_axis_0310incomplete17he37c557deac23dd6E"
+        ],
+        "FUN_001143e0": [
+          "_ZN14family_axis_0310incomplete17hf7f0116c9f8f2d83E"
+        ]
+      },
+      "identity_count": 5,
+      "origin": "incomplete",
+      "shape": "clean",
+      "unobservable_identity_pairs": 0
+    },
+    {
+      "address_count": 2,
+      "addresses_by_identity": {
+        "_ZN14family_axis_039same_axis17h03a8eb7f0d512b48E": [
+          "FUN_001145d0"
+        ],
+        "_ZN14family_axis_039same_axis17hcdeedc09e887030eE": [
+          "FUN_001145f0"
+        ]
+      },
+      "has_duplication": false,
+      "has_folding": false,
+      "identities_by_address": {
+        "FUN_001145d0": [
+          "_ZN14family_axis_039same_axis17h03a8eb7f0d512b48E"
+        ],
+        "FUN_001145f0": [
+          "_ZN14family_axis_039same_axis17hcdeedc09e887030eE"
+        ]
+      },
+      "identity_count": 2,
+      "origin": "same_axis",
+      "shape": "clean",
+      "unobservable_identity_pairs": 0
+    }
+  ],
+  "origins": [
+    {
+      "classification": "distinct_linkage_identities",
+      "identity_count": 6,
+      "members": [
+        "FUN_00114510",
+        "FUN_00114530",
+        "FUN_00114550",
+        "FUN_00114570",
+        "FUN_00114590",
+        "FUN_001145b0"
+      ],
+      "origin": "complete",
+      "raw_symbols": [
+        "_ZN14family_axis_038complete17h0bcc4638f87f589bE",
+        "_ZN14family_axis_038complete17h0eae47e386d896c7E",
+        "_ZN14family_axis_038complete17h509d93922772f71cE",
+        "_ZN14family_axis_038complete17h7a32e7cb6492d76fE",
+        "_ZN14family_axis_038complete17h83d386e82f656adcE",
+        "_ZN14family_axis_038complete17h9e42ebac486b7a19E"
+      ],
+      "raw_symbols_by_member": {
+        "FUN_00114510": [
+          "_ZN14family_axis_038complete17h0bcc4638f87f589bE"
+        ],
+        "FUN_00114530": [
+          "_ZN14family_axis_038complete17h0eae47e386d896c7E"
+        ],
+        "FUN_00114550": [
+          "_ZN14family_axis_038complete17h509d93922772f71cE"
+        ],
+        "FUN_00114570": [
+          "_ZN14family_axis_038complete17h7a32e7cb6492d76fE"
+        ],
+        "FUN_00114590": [
+          "_ZN14family_axis_038complete17h83d386e82f656adcE"
+        ],
+        "FUN_001145b0": [
+          "_ZN14family_axis_038complete17h9e42ebac486b7a19E"
+        ]
+      },
+      "shape": "clean"
+    },
+    {
+      "classification": "distinct_linkage_identities",
+      "identity_count": 5,
+      "members": [
+        "FUN_00114360",
+        "FUN_00114380",
+        "FUN_001143a0",
+        "FUN_001143c0",
+        "FUN_001143e0"
+      ],
+      "origin": "incomplete",
+      "raw_symbols": [
+        "_ZN14family_axis_0310incomplete17h4e6f81efc0186188E",
+        "_ZN14family_axis_0310incomplete17h8c6b70771ee3c125E",
+        "_ZN14family_axis_0310incomplete17hbb3dc476fe92f09aE",
+        "_ZN14family_axis_0310incomplete17he37c557deac23dd6E",
+        "_ZN14family_axis_0310incomplete17hf7f0116c9f8f2d83E"
+      ],
+      "raw_symbols_by_member": {
+        "FUN_00114360": [
+          "_ZN14family_axis_0310incomplete17h4e6f81efc0186188E"
+        ],
+        "FUN_00114380": [
+          "_ZN14family_axis_0310incomplete17h8c6b70771ee3c125E"
+        ],
+        "FUN_001143a0": [
+          "_ZN14family_axis_0310incomplete17hbb3dc476fe92f09aE"
+        ],
+        "FUN_001143c0": [
+          "_ZN14family_axis_0310incomplete17he37c557deac23dd6E"
+        ],
+        "FUN_001143e0": [
+          "_ZN14family_axis_0310incomplete17hf7f0116c9f8f2d83E"
+        ]
+      },
+      "shape": "clean"
+    },
+    {
+      "classification": "distinct_linkage_identities",
+      "identity_count": 2,
+      "members": [
+        "FUN_001145d0",
+        "FUN_001145f0"
+      ],
+      "origin": "same_axis",
+      "raw_symbols": [
+        "_ZN14family_axis_039same_axis17h03a8eb7f0d512b48E",
+        "_ZN14family_axis_039same_axis17hcdeedc09e887030eE"
+      ],
+      "raw_symbols_by_member": {
+        "FUN_001145d0": [
+          "_ZN14family_axis_039same_axis17h03a8eb7f0d512b48E"
+        ],
+        "FUN_001145f0": [
+          "_ZN14family_axis_039same_axis17hcdeedc09e887030eE"
+        ]
+      },
+      "shape": "clean"
+    }
+  ],
+  "profile": "plain",
+  "provenance": {
+    "ground_truth_sha256": "c8611d94ff28b8eddbc7fb977594944dfc0487a472319d48dd4350dd26b3801e",
+    "id_bias": 1048576,
+    "non_stripped_sha256": "fe9dda21a8393a59a05dc7fe6d9b1823de47c03e7dd2b6a302c0475a90f874d3"
+  },
+  "schema_version": 1,
+  "summary": {
+    "cross_origin_address_count": 0,
+    "cross_origin_addresses": [],
+    "family_counts": {
+      "distinct_linkage_identities": 3,
+      "repeated_linkage_identity": 0,
+      "unresolved": 0
+    },
+    "folded": {
+      "address_count": 0,
+      "identity_count": 0,
+      "origin_count": 0,
+      "unobservable_identity_pair_count": 0
+    },
+    "member_counts": {
+      "distinct_linkage_identities": 13,
+      "repeated_linkage_identity": 0,
+      "unresolved": 0
+    },
+    "multimember_origin_count": 3,
+    "shape_counts": {
+      "clean": 3,
+      "duplicated": 0,
+      "folded": 0,
+      "mixed": 0,
+      "unresolved": 0
+    }
+  }
+}

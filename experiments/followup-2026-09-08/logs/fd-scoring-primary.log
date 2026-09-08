@@ -1,0 +1,5 @@
+fd body2-k16 completed {'TP': 93, 'FP': 81, 'FN': 3087, 'f1': 0.055456171735241505}
+fd combined3-k16 completed {'TP': 87, 'FP': 56, 'FN': 3093, 'f1': 0.05236232320192597}
+fd exact completed {'TP': 803, 'FP': 2816, 'FN': 2377, 'f1': 0.2362112075305192}
+fd rescue-k16 completed {'TP': 87, 'FP': 56, 'FN': 3093, 'f1': 0.05236232320192597}
+fd v0 completed {'TP': 1843, 'FP': 4554, 'FN': 1337, 'f1': 0.38488044272736766}

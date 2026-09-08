@@ -1,0 +1,5 @@
+zoxide body2-k16 completed {'TP': 19, 'FP': 19, 'FN': 1223, 'f1': 0.0296875}
+zoxide combined3-k16 completed {'TP': 18, 'FP': 15, 'FN': 1224, 'f1': 0.02823529411764706}
+zoxide exact completed {'TP': 562, 'FP': 167, 'FN': 680, 'f1': 0.5702688990360223}
+zoxide rescue-k16 completed {'TP': 18, 'FP': 15, 'FN': 1224, 'f1': 0.02823529411764706}
+zoxide v0 completed {'TP': 161, 'FP': 221, 'FN': 1081, 'f1': 0.19827586206896552}

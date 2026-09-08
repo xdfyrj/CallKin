@@ -1,0 +1,4514 @@
+{
+  "build": "O3S",
+  "case": "family_axis_03",
+  "functions": [
+    {
+      "address": "0x14360",
+      "blocks": [
+        {
+          "end_offset": 28,
+          "instruction_offsets": [
+            0,
+            1,
+            6,
+            9,
+            12,
+            17,
+            20,
+            26,
+            27
+          ],
+          "label": "B0",
+          "start_offset": 0
+        }
+      ],
+      "byte_sha256": "b11010d53bf4c93f65314b01a9ebf10855360bcde3ae380633789092422b5837",
+      "cfg_edges": [],
+      "id": "FUN_00114360",
+      "instructions": [
+        {
+          "groups": [
+            "mode64"
+          ],
+          "mnemonic": "push",
+          "offset": 0,
+          "operand_kinds": [
+            "register"
+          ],
+          "operand_text": "rbx",
+          "size": 1
+        },
+        {
+          "groups": [
+            "call",
+            "branch_relative",
+            "mode64"
+          ],
+          "mnemonic": "call",
+          "offset": 1,
+          "operand_kinds": [
+            "immediate"
+          ],
+          "operand_text": "0x14610",
+          "size": 5
+        },
+        {
+          "groups": [],
+          "mnemonic": "mov",
+          "offset": 6,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rbx, rax",
+          "size": 3
+        },
+        {
+          "groups": [],
+          "mnemonic": "mov",
+          "offset": 9,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rdi, rax",
+          "size": 3
+        },
+        {
+          "groups": [
+            "call",
+            "branch_relative",
+            "mode64"
+          ],
+          "mnemonic": "call",
+          "offset": 12,
+          "operand_kinds": [
+            "immediate"
+          ],
+          "operand_text": "0x14660",
+          "size": 5
+        },
+        {
+          "groups": [],
+          "mnemonic": "add",
+          "offset": 17,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rax, rbx",
+          "size": 3
+        },
+        {
+          "groups": [],
+          "mnemonic": "xor",
+          "offset": 20,
+          "operand_kinds": [
+            "register",
+            "immediate"
+          ],
+          "operand_text": "rax, 0x11111111",
+          "size": 6
+        },
+        {
+          "groups": [
+            "mode64"
+          ],
+          "mnemonic": "pop",
+          "offset": 26,
+          "operand_kinds": [
+            "register"
+          ],
+          "operand_text": "rbx",
+          "size": 1
+        },
+        {
+          "groups": [
+            "ret",
+            "mode64"
+          ],
+          "mnemonic": "ret",
+          "offset": 27,
+          "operand_kinds": [],
+          "operand_text": "",
+          "size": 1
+        }
+      ],
+      "normalized_instructions": [
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "PUSH",
+          "offset": 0,
+          "operands": [
+            "reg64"
+          ],
+          "size": 1,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "call",
+          "mnemonic_class": "CALL",
+          "offset": 1,
+          "operands": [
+            "call_target"
+          ],
+          "size": 5,
+          "slots": [
+            {
+              "kind": "call",
+              "resolver": null,
+              "status": "address-only",
+              "value": null
+            }
+          ]
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "MOV",
+          "offset": 6,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "MOV",
+          "offset": 9,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "call",
+          "mnemonic_class": "CALL",
+          "offset": 12,
+          "operands": [
+            "call_target"
+          ],
+          "size": 5,
+          "slots": [
+            {
+              "kind": "call",
+              "resolver": null,
+              "status": "address-only",
+              "value": null
+            }
+          ]
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "ADD",
+          "offset": 17,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [
+            286331153
+          ],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "XOR",
+          "offset": 20,
+          "operands": [
+            "reg64",
+            "imm_address_like"
+          ],
+          "size": 6,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "POP",
+          "offset": 26,
+          "operands": [
+            "reg64"
+          ],
+          "size": 1,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "return",
+          "mnemonic_class": "RET",
+          "offset": 27,
+          "operands": [],
+          "size": 1,
+          "slots": []
+        }
+      ],
+      "quality": {
+        "complete_decode": true,
+        "opaque_indirect_jumps": 0
+      },
+      "size": 28,
+      "summary": {
+        "block_count": 1,
+        "branch_count": 0,
+        "byte_size": 28,
+        "callsite_count": 2,
+        "cfg_edge_count": 0,
+        "decoded_byte_count": 28,
+        "instruction_count": 9,
+        "load_count": 0,
+        "store_count": 0,
+        "unresolved_callsite_count": 0
+      }
+    },
+    {
+      "address": "0x14380",
+      "blocks": [
+        {
+          "end_offset": 28,
+          "instruction_offsets": [
+            0,
+            1,
+            6,
+            9,
+            12,
+            17,
+            20,
+            26,
+            27
+          ],
+          "label": "B0",
+          "start_offset": 0
+        }
+      ],
+      "byte_sha256": "afbfa419906ca5fdc1705028f5fb09f511a3426806165d706a422ba188f686fa",
+      "cfg_edges": [],
+      "id": "FUN_00114380",
+      "instructions": [
+        {
+          "groups": [
+            "mode64"
+          ],
+          "mnemonic": "push",
+          "offset": 0,
+          "operand_kinds": [
+            "register"
+          ],
+          "operand_text": "rbx",
+          "size": 1
+        },
+        {
+          "groups": [
+            "call",
+            "branch_relative",
+            "mode64"
+          ],
+          "mnemonic": "call",
+          "offset": 1,
+          "operand_kinds": [
+            "immediate"
+          ],
+          "operand_text": "0x14630",
+          "size": 5
+        },
+        {
+          "groups": [],
+          "mnemonic": "mov",
+          "offset": 6,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rbx, rax",
+          "size": 3
+        },
+        {
+          "groups": [],
+          "mnemonic": "mov",
+          "offset": 9,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rdi, rax",
+          "size": 3
+        },
+        {
+          "groups": [
+            "call",
+            "branch_relative",
+            "mode64"
+          ],
+          "mnemonic": "call",
+          "offset": 12,
+          "operand_kinds": [
+            "immediate"
+          ],
+          "operand_text": "0x14660",
+          "size": 5
+        },
+        {
+          "groups": [],
+          "mnemonic": "add",
+          "offset": 17,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rax, rbx",
+          "size": 3
+        },
+        {
+          "groups": [],
+          "mnemonic": "xor",
+          "offset": 20,
+          "operand_kinds": [
+            "register",
+            "immediate"
+          ],
+          "operand_text": "rax, 0x11111111",
+          "size": 6
+        },
+        {
+          "groups": [
+            "mode64"
+          ],
+          "mnemonic": "pop",
+          "offset": 26,
+          "operand_kinds": [
+            "register"
+          ],
+          "operand_text": "rbx",
+          "size": 1
+        },
+        {
+          "groups": [
+            "ret",
+            "mode64"
+          ],
+          "mnemonic": "ret",
+          "offset": 27,
+          "operand_kinds": [],
+          "operand_text": "",
+          "size": 1
+        }
+      ],
+      "normalized_instructions": [
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "PUSH",
+          "offset": 0,
+          "operands": [
+            "reg64"
+          ],
+          "size": 1,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "call",
+          "mnemonic_class": "CALL",
+          "offset": 1,
+          "operands": [
+            "call_target"
+          ],
+          "size": 5,
+          "slots": [
+            {
+              "kind": "call",
+              "resolver": null,
+              "status": "address-only",
+              "value": null
+            }
+          ]
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "MOV",
+          "offset": 6,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "MOV",
+          "offset": 9,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "call",
+          "mnemonic_class": "CALL",
+          "offset": 12,
+          "operands": [
+            "call_target"
+          ],
+          "size": 5,
+          "slots": [
+            {
+              "kind": "call",
+              "resolver": null,
+              "status": "address-only",
+              "value": null
+            }
+          ]
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "ADD",
+          "offset": 17,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [
+            286331153
+          ],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "XOR",
+          "offset": 20,
+          "operands": [
+            "reg64",
+            "imm_address_like"
+          ],
+          "size": 6,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "POP",
+          "offset": 26,
+          "operands": [
+            "reg64"
+          ],
+          "size": 1,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "return",
+          "mnemonic_class": "RET",
+          "offset": 27,
+          "operands": [],
+          "size": 1,
+          "slots": []
+        }
+      ],
+      "quality": {
+        "complete_decode": true,
+        "opaque_indirect_jumps": 0
+      },
+      "size": 28,
+      "summary": {
+        "block_count": 1,
+        "branch_count": 0,
+        "byte_size": 28,
+        "callsite_count": 2,
+        "cfg_edge_count": 0,
+        "decoded_byte_count": 28,
+        "instruction_count": 9,
+        "load_count": 0,
+        "store_count": 0,
+        "unresolved_callsite_count": 0
+      }
+    },
+    {
+      "address": "0x143a0",
+      "blocks": [
+        {
+          "end_offset": 28,
+          "instruction_offsets": [
+            0,
+            1,
+            6,
+            9,
+            12,
+            17,
+            20,
+            26,
+            27
+          ],
+          "label": "B0",
+          "start_offset": 0
+        }
+      ],
+      "byte_sha256": "8688930e6e753827b186b5b507007e50fada01ad349aa2246e5d92b717ca2d99",
+      "cfg_edges": [],
+      "id": "FUN_001143a0",
+      "instructions": [
+        {
+          "groups": [
+            "mode64"
+          ],
+          "mnemonic": "push",
+          "offset": 0,
+          "operand_kinds": [
+            "register"
+          ],
+          "operand_text": "rbx",
+          "size": 1
+        },
+        {
+          "groups": [
+            "call",
+            "branch_relative",
+            "mode64"
+          ],
+          "mnemonic": "call",
+          "offset": 1,
+          "operand_kinds": [
+            "immediate"
+          ],
+          "operand_text": "0x14610",
+          "size": 5
+        },
+        {
+          "groups": [],
+          "mnemonic": "mov",
+          "offset": 6,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rbx, rax",
+          "size": 3
+        },
+        {
+          "groups": [],
+          "mnemonic": "mov",
+          "offset": 9,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rdi, rax",
+          "size": 3
+        },
+        {
+          "groups": [
+            "call",
+            "branch_relative",
+            "mode64"
+          ],
+          "mnemonic": "call",
+          "offset": 12,
+          "operand_kinds": [
+            "immediate"
+          ],
+          "operand_text": "0x14650",
+          "size": 5
+        },
+        {
+          "groups": [],
+          "mnemonic": "add",
+          "offset": 17,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rax, rbx",
+          "size": 3
+        },
+        {
+          "groups": [],
+          "mnemonic": "xor",
+          "offset": 20,
+          "operand_kinds": [
+            "register",
+            "immediate"
+          ],
+          "operand_text": "rax, 0x11111111",
+          "size": 6
+        },
+        {
+          "groups": [
+            "mode64"
+          ],
+          "mnemonic": "pop",
+          "offset": 26,
+          "operand_kinds": [
+            "register"
+          ],
+          "operand_text": "rbx",
+          "size": 1
+        },
+        {
+          "groups": [
+            "ret",
+            "mode64"
+          ],
+          "mnemonic": "ret",
+          "offset": 27,
+          "operand_kinds": [],
+          "operand_text": "",
+          "size": 1
+        }
+      ],
+      "normalized_instructions": [
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "PUSH",
+          "offset": 0,
+          "operands": [
+            "reg64"
+          ],
+          "size": 1,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "call",
+          "mnemonic_class": "CALL",
+          "offset": 1,
+          "operands": [
+            "call_target"
+          ],
+          "size": 5,
+          "slots": [
+            {
+              "kind": "call",
+              "resolver": null,
+              "status": "address-only",
+              "value": null
+            }
+          ]
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "MOV",
+          "offset": 6,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "MOV",
+          "offset": 9,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "call",
+          "mnemonic_class": "CALL",
+          "offset": 12,
+          "operands": [
+            "call_target"
+          ],
+          "size": 5,
+          "slots": [
+            {
+              "kind": "call",
+              "resolver": null,
+              "status": "address-only",
+              "value": null
+            }
+          ]
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "ADD",
+          "offset": 17,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [
+            286331153
+          ],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "XOR",
+          "offset": 20,
+          "operands": [
+            "reg64",
+            "imm_address_like"
+          ],
+          "size": 6,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "POP",
+          "offset": 26,
+          "operands": [
+            "reg64"
+          ],
+          "size": 1,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "return",
+          "mnemonic_class": "RET",
+          "offset": 27,
+          "operands": [],
+          "size": 1,
+          "slots": []
+        }
+      ],
+      "quality": {
+        "complete_decode": true,
+        "opaque_indirect_jumps": 0
+      },
+      "size": 28,
+      "summary": {
+        "block_count": 1,
+        "branch_count": 0,
+        "byte_size": 28,
+        "callsite_count": 2,
+        "cfg_edge_count": 0,
+        "decoded_byte_count": 28,
+        "instruction_count": 9,
+        "load_count": 0,
+        "store_count": 0,
+        "unresolved_callsite_count": 0
+      }
+    },
+    {
+      "address": "0x143c0",
+      "blocks": [
+        {
+          "end_offset": 28,
+          "instruction_offsets": [
+            0,
+            1,
+            6,
+            9,
+            12,
+            17,
+            20,
+            26,
+            27
+          ],
+          "label": "B0",
+          "start_offset": 0
+        }
+      ],
+      "byte_sha256": "57829d6a890811102be35ef7d5d6f930028c1eabbeeea2902e1c12fb696305d5",
+      "cfg_edges": [],
+      "id": "FUN_001143c0",
+      "instructions": [
+        {
+          "groups": [
+            "mode64"
+          ],
+          "mnemonic": "push",
+          "offset": 0,
+          "operand_kinds": [
+            "register"
+          ],
+          "operand_text": "rbx",
+          "size": 1
+        },
+        {
+          "groups": [
+            "call",
+            "branch_relative",
+            "mode64"
+          ],
+          "mnemonic": "call",
+          "offset": 1,
+          "operand_kinds": [
+            "immediate"
+          ],
+          "operand_text": "0x14610",
+          "size": 5
+        },
+        {
+          "groups": [],
+          "mnemonic": "mov",
+          "offset": 6,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rbx, rax",
+          "size": 3
+        },
+        {
+          "groups": [],
+          "mnemonic": "mov",
+          "offset": 9,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rdi, rax",
+          "size": 3
+        },
+        {
+          "groups": [
+            "call",
+            "branch_relative",
+            "mode64"
+          ],
+          "mnemonic": "call",
+          "offset": 12,
+          "operand_kinds": [
+            "immediate"
+          ],
+          "operand_text": "0x14670",
+          "size": 5
+        },
+        {
+          "groups": [],
+          "mnemonic": "add",
+          "offset": 17,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rax, rbx",
+          "size": 3
+        },
+        {
+          "groups": [],
+          "mnemonic": "xor",
+          "offset": 20,
+          "operand_kinds": [
+            "register",
+            "immediate"
+          ],
+          "operand_text": "rax, 0x11111111",
+          "size": 6
+        },
+        {
+          "groups": [
+            "mode64"
+          ],
+          "mnemonic": "pop",
+          "offset": 26,
+          "operand_kinds": [
+            "register"
+          ],
+          "operand_text": "rbx",
+          "size": 1
+        },
+        {
+          "groups": [
+            "ret",
+            "mode64"
+          ],
+          "mnemonic": "ret",
+          "offset": 27,
+          "operand_kinds": [],
+          "operand_text": "",
+          "size": 1
+        }
+      ],
+      "normalized_instructions": [
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "PUSH",
+          "offset": 0,
+          "operands": [
+            "reg64"
+          ],
+          "size": 1,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "call",
+          "mnemonic_class": "CALL",
+          "offset": 1,
+          "operands": [
+            "call_target"
+          ],
+          "size": 5,
+          "slots": [
+            {
+              "kind": "call",
+              "resolver": null,
+              "status": "address-only",
+              "value": null
+            }
+          ]
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "MOV",
+          "offset": 6,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "MOV",
+          "offset": 9,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "call",
+          "mnemonic_class": "CALL",
+          "offset": 12,
+          "operands": [
+            "call_target"
+          ],
+          "size": 5,
+          "slots": [
+            {
+              "kind": "call",
+              "resolver": null,
+              "status": "address-only",
+              "value": null
+            }
+          ]
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "ADD",
+          "offset": 17,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [
+            286331153
+          ],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "XOR",
+          "offset": 20,
+          "operands": [
+            "reg64",
+            "imm_address_like"
+          ],
+          "size": 6,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "POP",
+          "offset": 26,
+          "operands": [
+            "reg64"
+          ],
+          "size": 1,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "return",
+          "mnemonic_class": "RET",
+          "offset": 27,
+          "operands": [],
+          "size": 1,
+          "slots": []
+        }
+      ],
+      "quality": {
+        "complete_decode": true,
+        "opaque_indirect_jumps": 0
+      },
+      "size": 28,
+      "summary": {
+        "block_count": 1,
+        "branch_count": 0,
+        "byte_size": 28,
+        "callsite_count": 2,
+        "cfg_edge_count": 0,
+        "decoded_byte_count": 28,
+        "instruction_count": 9,
+        "load_count": 0,
+        "store_count": 0,
+        "unresolved_callsite_count": 0
+      }
+    },
+    {
+      "address": "0x143e0",
+      "blocks": [
+        {
+          "end_offset": 28,
+          "instruction_offsets": [
+            0,
+            1,
+            6,
+            9,
+            12,
+            17,
+            20,
+            26,
+            27
+          ],
+          "label": "B0",
+          "start_offset": 0
+        }
+      ],
+      "byte_sha256": "622648b6d4502a249c3bbb1231e8e219248150d9e53872189ec1999b59085cd0",
+      "cfg_edges": [],
+      "id": "FUN_001143e0",
+      "instructions": [
+        {
+          "groups": [
+            "mode64"
+          ],
+          "mnemonic": "push",
+          "offset": 0,
+          "operand_kinds": [
+            "register"
+          ],
+          "operand_text": "rbx",
+          "size": 1
+        },
+        {
+          "groups": [
+            "call",
+            "branch_relative",
+            "mode64"
+          ],
+          "mnemonic": "call",
+          "offset": 1,
+          "operand_kinds": [
+            "immediate"
+          ],
+          "operand_text": "0x14630",
+          "size": 5
+        },
+        {
+          "groups": [],
+          "mnemonic": "mov",
+          "offset": 6,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rbx, rax",
+          "size": 3
+        },
+        {
+          "groups": [],
+          "mnemonic": "mov",
+          "offset": 9,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rdi, rax",
+          "size": 3
+        },
+        {
+          "groups": [
+            "call",
+            "branch_relative",
+            "mode64"
+          ],
+          "mnemonic": "call",
+          "offset": 12,
+          "operand_kinds": [
+            "immediate"
+          ],
+          "operand_text": "0x14650",
+          "size": 5
+        },
+        {
+          "groups": [],
+          "mnemonic": "add",
+          "offset": 17,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rax, rbx",
+          "size": 3
+        },
+        {
+          "groups": [],
+          "mnemonic": "xor",
+          "offset": 20,
+          "operand_kinds": [
+            "register",
+            "immediate"
+          ],
+          "operand_text": "rax, 0x11111111",
+          "size": 6
+        },
+        {
+          "groups": [
+            "mode64"
+          ],
+          "mnemonic": "pop",
+          "offset": 26,
+          "operand_kinds": [
+            "register"
+          ],
+          "operand_text": "rbx",
+          "size": 1
+        },
+        {
+          "groups": [
+            "ret",
+            "mode64"
+          ],
+          "mnemonic": "ret",
+          "offset": 27,
+          "operand_kinds": [],
+          "operand_text": "",
+          "size": 1
+        }
+      ],
+      "normalized_instructions": [
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "PUSH",
+          "offset": 0,
+          "operands": [
+            "reg64"
+          ],
+          "size": 1,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "call",
+          "mnemonic_class": "CALL",
+          "offset": 1,
+          "operands": [
+            "call_target"
+          ],
+          "size": 5,
+          "slots": [
+            {
+              "kind": "call",
+              "resolver": null,
+              "status": "address-only",
+              "value": null
+            }
+          ]
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "MOV",
+          "offset": 6,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "MOV",
+          "offset": 9,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "call",
+          "mnemonic_class": "CALL",
+          "offset": 12,
+          "operands": [
+            "call_target"
+          ],
+          "size": 5,
+          "slots": [
+            {
+              "kind": "call",
+              "resolver": null,
+              "status": "address-only",
+              "value": null
+            }
+          ]
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "ADD",
+          "offset": 17,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [
+            286331153
+          ],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "XOR",
+          "offset": 20,
+          "operands": [
+            "reg64",
+            "imm_address_like"
+          ],
+          "size": 6,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "POP",
+          "offset": 26,
+          "operands": [
+            "reg64"
+          ],
+          "size": 1,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "return",
+          "mnemonic_class": "RET",
+          "offset": 27,
+          "operands": [],
+          "size": 1,
+          "slots": []
+        }
+      ],
+      "quality": {
+        "complete_decode": true,
+        "opaque_indirect_jumps": 0
+      },
+      "size": 28,
+      "summary": {
+        "block_count": 1,
+        "branch_count": 0,
+        "byte_size": 28,
+        "callsite_count": 2,
+        "cfg_edge_count": 0,
+        "decoded_byte_count": 28,
+        "instruction_count": 9,
+        "load_count": 0,
+        "store_count": 0,
+        "unresolved_callsite_count": 0
+      }
+    },
+    {
+      "address": "0x14510",
+      "blocks": [
+        {
+          "end_offset": 28,
+          "instruction_offsets": [
+            0,
+            1,
+            6,
+            9,
+            12,
+            17,
+            20,
+            26,
+            27
+          ],
+          "label": "B0",
+          "start_offset": 0
+        }
+      ],
+      "byte_sha256": "774e67ade7825bc2fb9dd4309a2eeaadbc1f2c94bd5c6a248406ecd46601c6c9",
+      "cfg_edges": [],
+      "id": "FUN_00114510",
+      "instructions": [
+        {
+          "groups": [
+            "mode64"
+          ],
+          "mnemonic": "push",
+          "offset": 0,
+          "operand_kinds": [
+            "register"
+          ],
+          "operand_text": "rbx",
+          "size": 1
+        },
+        {
+          "groups": [
+            "call",
+            "branch_relative",
+            "mode64"
+          ],
+          "mnemonic": "call",
+          "offset": 1,
+          "operand_kinds": [
+            "immediate"
+          ],
+          "operand_text": "0x14630",
+          "size": 5
+        },
+        {
+          "groups": [],
+          "mnemonic": "mov",
+          "offset": 6,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rbx, rax",
+          "size": 3
+        },
+        {
+          "groups": [],
+          "mnemonic": "mov",
+          "offset": 9,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rdi, rax",
+          "size": 3
+        },
+        {
+          "groups": [
+            "call",
+            "branch_relative",
+            "mode64"
+          ],
+          "mnemonic": "call",
+          "offset": 12,
+          "operand_kinds": [
+            "immediate"
+          ],
+          "operand_text": "0x14650",
+          "size": 5
+        },
+        {
+          "groups": [],
+          "mnemonic": "xor",
+          "offset": 17,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rax, rbx",
+          "size": 3
+        },
+        {
+          "groups": [],
+          "mnemonic": "add",
+          "offset": 20,
+          "operand_kinds": [
+            "register",
+            "immediate"
+          ],
+          "operand_text": "rax, 0xc0c0c0c",
+          "size": 6
+        },
+        {
+          "groups": [
+            "mode64"
+          ],
+          "mnemonic": "pop",
+          "offset": 26,
+          "operand_kinds": [
+            "register"
+          ],
+          "operand_text": "rbx",
+          "size": 1
+        },
+        {
+          "groups": [
+            "ret",
+            "mode64"
+          ],
+          "mnemonic": "ret",
+          "offset": 27,
+          "operand_kinds": [],
+          "operand_text": "",
+          "size": 1
+        }
+      ],
+      "normalized_instructions": [
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "PUSH",
+          "offset": 0,
+          "operands": [
+            "reg64"
+          ],
+          "size": 1,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "call",
+          "mnemonic_class": "CALL",
+          "offset": 1,
+          "operands": [
+            "call_target"
+          ],
+          "size": 5,
+          "slots": [
+            {
+              "kind": "call",
+              "resolver": null,
+              "status": "address-only",
+              "value": null
+            }
+          ]
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "MOV",
+          "offset": 6,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "MOV",
+          "offset": 9,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "call",
+          "mnemonic_class": "CALL",
+          "offset": 12,
+          "operands": [
+            "call_target"
+          ],
+          "size": 5,
+          "slots": [
+            {
+              "kind": "call",
+              "resolver": null,
+              "status": "address-only",
+              "value": null
+            }
+          ]
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "XOR",
+          "offset": 17,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [
+            202116108
+          ],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "ADD",
+          "offset": 20,
+          "operands": [
+            "reg64",
+            "imm_address_like"
+          ],
+          "size": 6,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "POP",
+          "offset": 26,
+          "operands": [
+            "reg64"
+          ],
+          "size": 1,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "return",
+          "mnemonic_class": "RET",
+          "offset": 27,
+          "operands": [],
+          "size": 1,
+          "slots": []
+        }
+      ],
+      "quality": {
+        "complete_decode": true,
+        "opaque_indirect_jumps": 0
+      },
+      "size": 28,
+      "summary": {
+        "block_count": 1,
+        "branch_count": 0,
+        "byte_size": 28,
+        "callsite_count": 2,
+        "cfg_edge_count": 0,
+        "decoded_byte_count": 28,
+        "instruction_count": 9,
+        "load_count": 0,
+        "store_count": 0,
+        "unresolved_callsite_count": 0
+      }
+    },
+    {
+      "address": "0x14530",
+      "blocks": [
+        {
+          "end_offset": 28,
+          "instruction_offsets": [
+            0,
+            1,
+            6,
+            9,
+            12,
+            17,
+            20,
+            26,
+            27
+          ],
+          "label": "B0",
+          "start_offset": 0
+        }
+      ],
+      "byte_sha256": "5a76012daa6b8cf7d6d9b1b90aef96742dcc5ee57917ae616db07bf63d9f1d23",
+      "cfg_edges": [],
+      "id": "FUN_00114530",
+      "instructions": [
+        {
+          "groups": [
+            "mode64"
+          ],
+          "mnemonic": "push",
+          "offset": 0,
+          "operand_kinds": [
+            "register"
+          ],
+          "operand_text": "rbx",
+          "size": 1
+        },
+        {
+          "groups": [
+            "call",
+            "branch_relative",
+            "mode64"
+          ],
+          "mnemonic": "call",
+          "offset": 1,
+          "operand_kinds": [
+            "immediate"
+          ],
+          "operand_text": "0x14630",
+          "size": 5
+        },
+        {
+          "groups": [],
+          "mnemonic": "mov",
+          "offset": 6,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rbx, rax",
+          "size": 3
+        },
+        {
+          "groups": [],
+          "mnemonic": "mov",
+          "offset": 9,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rdi, rax",
+          "size": 3
+        },
+        {
+          "groups": [
+            "call",
+            "branch_relative",
+            "mode64"
+          ],
+          "mnemonic": "call",
+          "offset": 12,
+          "operand_kinds": [
+            "immediate"
+          ],
+          "operand_text": "0x14670",
+          "size": 5
+        },
+        {
+          "groups": [],
+          "mnemonic": "xor",
+          "offset": 17,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rax, rbx",
+          "size": 3
+        },
+        {
+          "groups": [],
+          "mnemonic": "add",
+          "offset": 20,
+          "operand_kinds": [
+            "register",
+            "immediate"
+          ],
+          "operand_text": "rax, 0xc0c0c0c",
+          "size": 6
+        },
+        {
+          "groups": [
+            "mode64"
+          ],
+          "mnemonic": "pop",
+          "offset": 26,
+          "operand_kinds": [
+            "register"
+          ],
+          "operand_text": "rbx",
+          "size": 1
+        },
+        {
+          "groups": [
+            "ret",
+            "mode64"
+          ],
+          "mnemonic": "ret",
+          "offset": 27,
+          "operand_kinds": [],
+          "operand_text": "",
+          "size": 1
+        }
+      ],
+      "normalized_instructions": [
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "PUSH",
+          "offset": 0,
+          "operands": [
+            "reg64"
+          ],
+          "size": 1,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "call",
+          "mnemonic_class": "CALL",
+          "offset": 1,
+          "operands": [
+            "call_target"
+          ],
+          "size": 5,
+          "slots": [
+            {
+              "kind": "call",
+              "resolver": null,
+              "status": "address-only",
+              "value": null
+            }
+          ]
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "MOV",
+          "offset": 6,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "MOV",
+          "offset": 9,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "call",
+          "mnemonic_class": "CALL",
+          "offset": 12,
+          "operands": [
+            "call_target"
+          ],
+          "size": 5,
+          "slots": [
+            {
+              "kind": "call",
+              "resolver": null,
+              "status": "address-only",
+              "value": null
+            }
+          ]
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "XOR",
+          "offset": 17,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [
+            202116108
+          ],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "ADD",
+          "offset": 20,
+          "operands": [
+            "reg64",
+            "imm_address_like"
+          ],
+          "size": 6,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "POP",
+          "offset": 26,
+          "operands": [
+            "reg64"
+          ],
+          "size": 1,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "return",
+          "mnemonic_class": "RET",
+          "offset": 27,
+          "operands": [],
+          "size": 1,
+          "slots": []
+        }
+      ],
+      "quality": {
+        "complete_decode": true,
+        "opaque_indirect_jumps": 0
+      },
+      "size": 28,
+      "summary": {
+        "block_count": 1,
+        "branch_count": 0,
+        "byte_size": 28,
+        "callsite_count": 2,
+        "cfg_edge_count": 0,
+        "decoded_byte_count": 28,
+        "instruction_count": 9,
+        "load_count": 0,
+        "store_count": 0,
+        "unresolved_callsite_count": 0
+      }
+    },
+    {
+      "address": "0x14550",
+      "blocks": [
+        {
+          "end_offset": 28,
+          "instruction_offsets": [
+            0,
+            1,
+            6,
+            9,
+            12,
+            17,
+            20,
+            26,
+            27
+          ],
+          "label": "B0",
+          "start_offset": 0
+        }
+      ],
+      "byte_sha256": "2fe02f2ca1a02af62592b7cf6c2cb10fc662356537e266652df352172afec9d6",
+      "cfg_edges": [],
+      "id": "FUN_00114550",
+      "instructions": [
+        {
+          "groups": [
+            "mode64"
+          ],
+          "mnemonic": "push",
+          "offset": 0,
+          "operand_kinds": [
+            "register"
+          ],
+          "operand_text": "rbx",
+          "size": 1
+        },
+        {
+          "groups": [
+            "call",
+            "branch_relative",
+            "mode64"
+          ],
+          "mnemonic": "call",
+          "offset": 1,
+          "operand_kinds": [
+            "immediate"
+          ],
+          "operand_text": "0x14610",
+          "size": 5
+        },
+        {
+          "groups": [],
+          "mnemonic": "mov",
+          "offset": 6,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rbx, rax",
+          "size": 3
+        },
+        {
+          "groups": [],
+          "mnemonic": "mov",
+          "offset": 9,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rdi, rax",
+          "size": 3
+        },
+        {
+          "groups": [
+            "call",
+            "branch_relative",
+            "mode64"
+          ],
+          "mnemonic": "call",
+          "offset": 12,
+          "operand_kinds": [
+            "immediate"
+          ],
+          "operand_text": "0x14650",
+          "size": 5
+        },
+        {
+          "groups": [],
+          "mnemonic": "xor",
+          "offset": 17,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rax, rbx",
+          "size": 3
+        },
+        {
+          "groups": [],
+          "mnemonic": "add",
+          "offset": 20,
+          "operand_kinds": [
+            "register",
+            "immediate"
+          ],
+          "operand_text": "rax, 0xc0c0c0c",
+          "size": 6
+        },
+        {
+          "groups": [
+            "mode64"
+          ],
+          "mnemonic": "pop",
+          "offset": 26,
+          "operand_kinds": [
+            "register"
+          ],
+          "operand_text": "rbx",
+          "size": 1
+        },
+        {
+          "groups": [
+            "ret",
+            "mode64"
+          ],
+          "mnemonic": "ret",
+          "offset": 27,
+          "operand_kinds": [],
+          "operand_text": "",
+          "size": 1
+        }
+      ],
+      "normalized_instructions": [
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "PUSH",
+          "offset": 0,
+          "operands": [
+            "reg64"
+          ],
+          "size": 1,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "call",
+          "mnemonic_class": "CALL",
+          "offset": 1,
+          "operands": [
+            "call_target"
+          ],
+          "size": 5,
+          "slots": [
+            {
+              "kind": "call",
+              "resolver": null,
+              "status": "address-only",
+              "value": null
+            }
+          ]
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "MOV",
+          "offset": 6,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "MOV",
+          "offset": 9,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "call",
+          "mnemonic_class": "CALL",
+          "offset": 12,
+          "operands": [
+            "call_target"
+          ],
+          "size": 5,
+          "slots": [
+            {
+              "kind": "call",
+              "resolver": null,
+              "status": "address-only",
+              "value": null
+            }
+          ]
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "XOR",
+          "offset": 17,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [
+            202116108
+          ],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "ADD",
+          "offset": 20,
+          "operands": [
+            "reg64",
+            "imm_address_like"
+          ],
+          "size": 6,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "POP",
+          "offset": 26,
+          "operands": [
+            "reg64"
+          ],
+          "size": 1,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "return",
+          "mnemonic_class": "RET",
+          "offset": 27,
+          "operands": [],
+          "size": 1,
+          "slots": []
+        }
+      ],
+      "quality": {
+        "complete_decode": true,
+        "opaque_indirect_jumps": 0
+      },
+      "size": 28,
+      "summary": {
+        "block_count": 1,
+        "branch_count": 0,
+        "byte_size": 28,
+        "callsite_count": 2,
+        "cfg_edge_count": 0,
+        "decoded_byte_count": 28,
+        "instruction_count": 9,
+        "load_count": 0,
+        "store_count": 0,
+        "unresolved_callsite_count": 0
+      }
+    },
+    {
+      "address": "0x14570",
+      "blocks": [
+        {
+          "end_offset": 28,
+          "instruction_offsets": [
+            0,
+            1,
+            6,
+            9,
+            12,
+            17,
+            20,
+            26,
+            27
+          ],
+          "label": "B0",
+          "start_offset": 0
+        }
+      ],
+      "byte_sha256": "fa13eadb4cfeae8a85269164e62283df97fb318dd5ef4e5a82bb2b0e991f12d7",
+      "cfg_edges": [],
+      "id": "FUN_00114570",
+      "instructions": [
+        {
+          "groups": [
+            "mode64"
+          ],
+          "mnemonic": "push",
+          "offset": 0,
+          "operand_kinds": [
+            "register"
+          ],
+          "operand_text": "rbx",
+          "size": 1
+        },
+        {
+          "groups": [
+            "call",
+            "branch_relative",
+            "mode64"
+          ],
+          "mnemonic": "call",
+          "offset": 1,
+          "operand_kinds": [
+            "immediate"
+          ],
+          "operand_text": "0x14630",
+          "size": 5
+        },
+        {
+          "groups": [],
+          "mnemonic": "mov",
+          "offset": 6,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rbx, rax",
+          "size": 3
+        },
+        {
+          "groups": [],
+          "mnemonic": "mov",
+          "offset": 9,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rdi, rax",
+          "size": 3
+        },
+        {
+          "groups": [
+            "call",
+            "branch_relative",
+            "mode64"
+          ],
+          "mnemonic": "call",
+          "offset": 12,
+          "operand_kinds": [
+            "immediate"
+          ],
+          "operand_text": "0x14660",
+          "size": 5
+        },
+        {
+          "groups": [],
+          "mnemonic": "xor",
+          "offset": 17,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rax, rbx",
+          "size": 3
+        },
+        {
+          "groups": [],
+          "mnemonic": "add",
+          "offset": 20,
+          "operand_kinds": [
+            "register",
+            "immediate"
+          ],
+          "operand_text": "rax, 0xc0c0c0c",
+          "size": 6
+        },
+        {
+          "groups": [
+            "mode64"
+          ],
+          "mnemonic": "pop",
+          "offset": 26,
+          "operand_kinds": [
+            "register"
+          ],
+          "operand_text": "rbx",
+          "size": 1
+        },
+        {
+          "groups": [
+            "ret",
+            "mode64"
+          ],
+          "mnemonic": "ret",
+          "offset": 27,
+          "operand_kinds": [],
+          "operand_text": "",
+          "size": 1
+        }
+      ],
+      "normalized_instructions": [
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "PUSH",
+          "offset": 0,
+          "operands": [
+            "reg64"
+          ],
+          "size": 1,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "call",
+          "mnemonic_class": "CALL",
+          "offset": 1,
+          "operands": [
+            "call_target"
+          ],
+          "size": 5,
+          "slots": [
+            {
+              "kind": "call",
+              "resolver": null,
+              "status": "address-only",
+              "value": null
+            }
+          ]
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "MOV",
+          "offset": 6,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "MOV",
+          "offset": 9,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "call",
+          "mnemonic_class": "CALL",
+          "offset": 12,
+          "operands": [
+            "call_target"
+          ],
+          "size": 5,
+          "slots": [
+            {
+              "kind": "call",
+              "resolver": null,
+              "status": "address-only",
+              "value": null
+            }
+          ]
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "XOR",
+          "offset": 17,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [
+            202116108
+          ],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "ADD",
+          "offset": 20,
+          "operands": [
+            "reg64",
+            "imm_address_like"
+          ],
+          "size": 6,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "POP",
+          "offset": 26,
+          "operands": [
+            "reg64"
+          ],
+          "size": 1,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "return",
+          "mnemonic_class": "RET",
+          "offset": 27,
+          "operands": [],
+          "size": 1,
+          "slots": []
+        }
+      ],
+      "quality": {
+        "complete_decode": true,
+        "opaque_indirect_jumps": 0
+      },
+      "size": 28,
+      "summary": {
+        "block_count": 1,
+        "branch_count": 0,
+        "byte_size": 28,
+        "callsite_count": 2,
+        "cfg_edge_count": 0,
+        "decoded_byte_count": 28,
+        "instruction_count": 9,
+        "load_count": 0,
+        "store_count": 0,
+        "unresolved_callsite_count": 0
+      }
+    },
+    {
+      "address": "0x14590",
+      "blocks": [
+        {
+          "end_offset": 28,
+          "instruction_offsets": [
+            0,
+            1,
+            6,
+            9,
+            12,
+            17,
+            20,
+            26,
+            27
+          ],
+          "label": "B0",
+          "start_offset": 0
+        }
+      ],
+      "byte_sha256": "4e33f04193322d0aef1d12b098bb627f9492caecc54aae15d5cbdc4a8e74d510",
+      "cfg_edges": [],
+      "id": "FUN_00114590",
+      "instructions": [
+        {
+          "groups": [
+            "mode64"
+          ],
+          "mnemonic": "push",
+          "offset": 0,
+          "operand_kinds": [
+            "register"
+          ],
+          "operand_text": "rbx",
+          "size": 1
+        },
+        {
+          "groups": [
+            "call",
+            "branch_relative",
+            "mode64"
+          ],
+          "mnemonic": "call",
+          "offset": 1,
+          "operand_kinds": [
+            "immediate"
+          ],
+          "operand_text": "0x14610",
+          "size": 5
+        },
+        {
+          "groups": [],
+          "mnemonic": "mov",
+          "offset": 6,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rbx, rax",
+          "size": 3
+        },
+        {
+          "groups": [],
+          "mnemonic": "mov",
+          "offset": 9,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rdi, rax",
+          "size": 3
+        },
+        {
+          "groups": [
+            "call",
+            "branch_relative",
+            "mode64"
+          ],
+          "mnemonic": "call",
+          "offset": 12,
+          "operand_kinds": [
+            "immediate"
+          ],
+          "operand_text": "0x14670",
+          "size": 5
+        },
+        {
+          "groups": [],
+          "mnemonic": "xor",
+          "offset": 17,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rax, rbx",
+          "size": 3
+        },
+        {
+          "groups": [],
+          "mnemonic": "add",
+          "offset": 20,
+          "operand_kinds": [
+            "register",
+            "immediate"
+          ],
+          "operand_text": "rax, 0xc0c0c0c",
+          "size": 6
+        },
+        {
+          "groups": [
+            "mode64"
+          ],
+          "mnemonic": "pop",
+          "offset": 26,
+          "operand_kinds": [
+            "register"
+          ],
+          "operand_text": "rbx",
+          "size": 1
+        },
+        {
+          "groups": [
+            "ret",
+            "mode64"
+          ],
+          "mnemonic": "ret",
+          "offset": 27,
+          "operand_kinds": [],
+          "operand_text": "",
+          "size": 1
+        }
+      ],
+      "normalized_instructions": [
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "PUSH",
+          "offset": 0,
+          "operands": [
+            "reg64"
+          ],
+          "size": 1,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "call",
+          "mnemonic_class": "CALL",
+          "offset": 1,
+          "operands": [
+            "call_target"
+          ],
+          "size": 5,
+          "slots": [
+            {
+              "kind": "call",
+              "resolver": null,
+              "status": "address-only",
+              "value": null
+            }
+          ]
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "MOV",
+          "offset": 6,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "MOV",
+          "offset": 9,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "call",
+          "mnemonic_class": "CALL",
+          "offset": 12,
+          "operands": [
+            "call_target"
+          ],
+          "size": 5,
+          "slots": [
+            {
+              "kind": "call",
+              "resolver": null,
+              "status": "address-only",
+              "value": null
+            }
+          ]
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "XOR",
+          "offset": 17,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [
+            202116108
+          ],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "ADD",
+          "offset": 20,
+          "operands": [
+            "reg64",
+            "imm_address_like"
+          ],
+          "size": 6,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "POP",
+          "offset": 26,
+          "operands": [
+            "reg64"
+          ],
+          "size": 1,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "return",
+          "mnemonic_class": "RET",
+          "offset": 27,
+          "operands": [],
+          "size": 1,
+          "slots": []
+        }
+      ],
+      "quality": {
+        "complete_decode": true,
+        "opaque_indirect_jumps": 0
+      },
+      "size": 28,
+      "summary": {
+        "block_count": 1,
+        "branch_count": 0,
+        "byte_size": 28,
+        "callsite_count": 2,
+        "cfg_edge_count": 0,
+        "decoded_byte_count": 28,
+        "instruction_count": 9,
+        "load_count": 0,
+        "store_count": 0,
+        "unresolved_callsite_count": 0
+      }
+    },
+    {
+      "address": "0x145b0",
+      "blocks": [
+        {
+          "end_offset": 28,
+          "instruction_offsets": [
+            0,
+            1,
+            6,
+            9,
+            12,
+            17,
+            20,
+            26,
+            27
+          ],
+          "label": "B0",
+          "start_offset": 0
+        }
+      ],
+      "byte_sha256": "63ad0158fb470c7036e8050dc406efdff5970ac9b6f09a36efea8d092cc01866",
+      "cfg_edges": [],
+      "id": "FUN_001145b0",
+      "instructions": [
+        {
+          "groups": [
+            "mode64"
+          ],
+          "mnemonic": "push",
+          "offset": 0,
+          "operand_kinds": [
+            "register"
+          ],
+          "operand_text": "rbx",
+          "size": 1
+        },
+        {
+          "groups": [
+            "call",
+            "branch_relative",
+            "mode64"
+          ],
+          "mnemonic": "call",
+          "offset": 1,
+          "operand_kinds": [
+            "immediate"
+          ],
+          "operand_text": "0x14610",
+          "size": 5
+        },
+        {
+          "groups": [],
+          "mnemonic": "mov",
+          "offset": 6,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rbx, rax",
+          "size": 3
+        },
+        {
+          "groups": [],
+          "mnemonic": "mov",
+          "offset": 9,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rdi, rax",
+          "size": 3
+        },
+        {
+          "groups": [
+            "call",
+            "branch_relative",
+            "mode64"
+          ],
+          "mnemonic": "call",
+          "offset": 12,
+          "operand_kinds": [
+            "immediate"
+          ],
+          "operand_text": "0x14660",
+          "size": 5
+        },
+        {
+          "groups": [],
+          "mnemonic": "xor",
+          "offset": 17,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rax, rbx",
+          "size": 3
+        },
+        {
+          "groups": [],
+          "mnemonic": "add",
+          "offset": 20,
+          "operand_kinds": [
+            "register",
+            "immediate"
+          ],
+          "operand_text": "rax, 0xc0c0c0c",
+          "size": 6
+        },
+        {
+          "groups": [
+            "mode64"
+          ],
+          "mnemonic": "pop",
+          "offset": 26,
+          "operand_kinds": [
+            "register"
+          ],
+          "operand_text": "rbx",
+          "size": 1
+        },
+        {
+          "groups": [
+            "ret",
+            "mode64"
+          ],
+          "mnemonic": "ret",
+          "offset": 27,
+          "operand_kinds": [],
+          "operand_text": "",
+          "size": 1
+        }
+      ],
+      "normalized_instructions": [
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "PUSH",
+          "offset": 0,
+          "operands": [
+            "reg64"
+          ],
+          "size": 1,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "call",
+          "mnemonic_class": "CALL",
+          "offset": 1,
+          "operands": [
+            "call_target"
+          ],
+          "size": 5,
+          "slots": [
+            {
+              "kind": "call",
+              "resolver": null,
+              "status": "address-only",
+              "value": null
+            }
+          ]
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "MOV",
+          "offset": 6,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "MOV",
+          "offset": 9,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "call",
+          "mnemonic_class": "CALL",
+          "offset": 12,
+          "operands": [
+            "call_target"
+          ],
+          "size": 5,
+          "slots": [
+            {
+              "kind": "call",
+              "resolver": null,
+              "status": "address-only",
+              "value": null
+            }
+          ]
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "XOR",
+          "offset": 17,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [
+            202116108
+          ],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "ADD",
+          "offset": 20,
+          "operands": [
+            "reg64",
+            "imm_address_like"
+          ],
+          "size": 6,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "POP",
+          "offset": 26,
+          "operands": [
+            "reg64"
+          ],
+          "size": 1,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "return",
+          "mnemonic_class": "RET",
+          "offset": 27,
+          "operands": [],
+          "size": 1,
+          "slots": []
+        }
+      ],
+      "quality": {
+        "complete_decode": true,
+        "opaque_indirect_jumps": 0
+      },
+      "size": 28,
+      "summary": {
+        "block_count": 1,
+        "branch_count": 0,
+        "byte_size": 28,
+        "callsite_count": 2,
+        "cfg_edge_count": 0,
+        "decoded_byte_count": 28,
+        "instruction_count": 9,
+        "load_count": 0,
+        "store_count": 0,
+        "unresolved_callsite_count": 0
+      }
+    },
+    {
+      "address": "0x145d0",
+      "blocks": [
+        {
+          "end_offset": 29,
+          "instruction_offsets": [
+            0,
+            1,
+            6,
+            9,
+            12,
+            17,
+            20,
+            27,
+            28
+          ],
+          "label": "B0",
+          "start_offset": 0
+        }
+      ],
+      "byte_sha256": "73a8b1706d2aa53a8212d98ec83efce617b78cf98afbb1328d4510eff9e1e28d",
+      "cfg_edges": [],
+      "id": "FUN_001145d0",
+      "instructions": [
+        {
+          "groups": [
+            "mode64"
+          ],
+          "mnemonic": "push",
+          "offset": 0,
+          "operand_kinds": [
+            "register"
+          ],
+          "operand_text": "rbx",
+          "size": 1
+        },
+        {
+          "groups": [
+            "call",
+            "branch_relative",
+            "mode64"
+          ],
+          "mnemonic": "call",
+          "offset": 1,
+          "operand_kinds": [
+            "immediate"
+          ],
+          "operand_text": "0x14630",
+          "size": 5
+        },
+        {
+          "groups": [],
+          "mnemonic": "mov",
+          "offset": 6,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rbx, rax",
+          "size": 3
+        },
+        {
+          "groups": [],
+          "mnemonic": "mov",
+          "offset": 9,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rdi, rax",
+          "size": 3
+        },
+        {
+          "groups": [
+            "call",
+            "branch_relative",
+            "mode64"
+          ],
+          "mnemonic": "call",
+          "offset": 12,
+          "operand_kinds": [
+            "immediate"
+          ],
+          "operand_text": "0x14640",
+          "size": 5
+        },
+        {
+          "groups": [],
+          "mnemonic": "xor",
+          "offset": 17,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rax, rbx",
+          "size": 3
+        },
+        {
+          "groups": [],
+          "mnemonic": "imul",
+          "offset": 20,
+          "operand_kinds": [
+            "register",
+            "register",
+            "immediate"
+          ],
+          "operand_text": "rax, rax, 0x22222223",
+          "size": 7
+        },
+        {
+          "groups": [
+            "mode64"
+          ],
+          "mnemonic": "pop",
+          "offset": 27,
+          "operand_kinds": [
+            "register"
+          ],
+          "operand_text": "rbx",
+          "size": 1
+        },
+        {
+          "groups": [
+            "ret",
+            "mode64"
+          ],
+          "mnemonic": "ret",
+          "offset": 28,
+          "operand_kinds": [],
+          "operand_text": "",
+          "size": 1
+        }
+      ],
+      "normalized_instructions": [
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "PUSH",
+          "offset": 0,
+          "operands": [
+            "reg64"
+          ],
+          "size": 1,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "call",
+          "mnemonic_class": "CALL",
+          "offset": 1,
+          "operands": [
+            "call_target"
+          ],
+          "size": 5,
+          "slots": [
+            {
+              "kind": "call",
+              "resolver": null,
+              "status": "address-only",
+              "value": null
+            }
+          ]
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "MOV",
+          "offset": 6,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "MOV",
+          "offset": 9,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "call",
+          "mnemonic_class": "CALL",
+          "offset": 12,
+          "operands": [
+            "call_target"
+          ],
+          "size": 5,
+          "slots": [
+            {
+              "kind": "call",
+              "resolver": null,
+              "status": "address-only",
+              "value": null
+            }
+          ]
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "XOR",
+          "offset": 17,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [
+            572662307
+          ],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "IMUL",
+          "offset": 20,
+          "operands": [
+            "reg64",
+            "reg64",
+            "imm_address_like"
+          ],
+          "size": 7,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "POP",
+          "offset": 27,
+          "operands": [
+            "reg64"
+          ],
+          "size": 1,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "return",
+          "mnemonic_class": "RET",
+          "offset": 28,
+          "operands": [],
+          "size": 1,
+          "slots": []
+        }
+      ],
+      "quality": {
+        "complete_decode": true,
+        "opaque_indirect_jumps": 0
+      },
+      "size": 29,
+      "summary": {
+        "block_count": 1,
+        "branch_count": 0,
+        "byte_size": 29,
+        "callsite_count": 2,
+        "cfg_edge_count": 0,
+        "decoded_byte_count": 29,
+        "instruction_count": 9,
+        "load_count": 0,
+        "store_count": 0,
+        "unresolved_callsite_count": 0
+      }
+    },
+    {
+      "address": "0x145f0",
+      "blocks": [
+        {
+          "end_offset": 29,
+          "instruction_offsets": [
+            0,
+            1,
+            6,
+            9,
+            12,
+            17,
+            20,
+            27,
+            28
+          ],
+          "label": "B0",
+          "start_offset": 0
+        }
+      ],
+      "byte_sha256": "d11f0ffcf1ecd824d7f53a14b161b809a9ecd9d3f8b8bf8c693ebc6b73e0ccf3",
+      "cfg_edges": [],
+      "id": "FUN_001145f0",
+      "instructions": [
+        {
+          "groups": [
+            "mode64"
+          ],
+          "mnemonic": "push",
+          "offset": 0,
+          "operand_kinds": [
+            "register"
+          ],
+          "operand_text": "rbx",
+          "size": 1
+        },
+        {
+          "groups": [
+            "call",
+            "branch_relative",
+            "mode64"
+          ],
+          "mnemonic": "call",
+          "offset": 1,
+          "operand_kinds": [
+            "immediate"
+          ],
+          "operand_text": "0x14610",
+          "size": 5
+        },
+        {
+          "groups": [],
+          "mnemonic": "mov",
+          "offset": 6,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rbx, rax",
+          "size": 3
+        },
+        {
+          "groups": [],
+          "mnemonic": "mov",
+          "offset": 9,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rdi, rax",
+          "size": 3
+        },
+        {
+          "groups": [
+            "call",
+            "branch_relative",
+            "mode64"
+          ],
+          "mnemonic": "call",
+          "offset": 12,
+          "operand_kinds": [
+            "immediate"
+          ],
+          "operand_text": "0x14620",
+          "size": 5
+        },
+        {
+          "groups": [],
+          "mnemonic": "xor",
+          "offset": 17,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rax, rbx",
+          "size": 3
+        },
+        {
+          "groups": [],
+          "mnemonic": "imul",
+          "offset": 20,
+          "operand_kinds": [
+            "register",
+            "register",
+            "immediate"
+          ],
+          "operand_text": "rax, rax, 0x22222223",
+          "size": 7
+        },
+        {
+          "groups": [
+            "mode64"
+          ],
+          "mnemonic": "pop",
+          "offset": 27,
+          "operand_kinds": [
+            "register"
+          ],
+          "operand_text": "rbx",
+          "size": 1
+        },
+        {
+          "groups": [
+            "ret",
+            "mode64"
+          ],
+          "mnemonic": "ret",
+          "offset": 28,
+          "operand_kinds": [],
+          "operand_text": "",
+          "size": 1
+        }
+      ],
+      "normalized_instructions": [
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "PUSH",
+          "offset": 0,
+          "operands": [
+            "reg64"
+          ],
+          "size": 1,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "call",
+          "mnemonic_class": "CALL",
+          "offset": 1,
+          "operands": [
+            "call_target"
+          ],
+          "size": 5,
+          "slots": [
+            {
+              "kind": "call",
+              "resolver": null,
+              "status": "address-only",
+              "value": null
+            }
+          ]
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "MOV",
+          "offset": 6,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "MOV",
+          "offset": 9,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "call",
+          "mnemonic_class": "CALL",
+          "offset": 12,
+          "operands": [
+            "call_target"
+          ],
+          "size": 5,
+          "slots": [
+            {
+              "kind": "call",
+              "resolver": null,
+              "status": "address-only",
+              "value": null
+            }
+          ]
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "XOR",
+          "offset": 17,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [
+            572662307
+          ],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "IMUL",
+          "offset": 20,
+          "operands": [
+            "reg64",
+            "reg64",
+            "imm_address_like"
+          ],
+          "size": 7,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "POP",
+          "offset": 27,
+          "operands": [
+            "reg64"
+          ],
+          "size": 1,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "return",
+          "mnemonic_class": "RET",
+          "offset": 28,
+          "operands": [],
+          "size": 1,
+          "slots": []
+        }
+      ],
+      "quality": {
+        "complete_decode": true,
+        "opaque_indirect_jumps": 0
+      },
+      "size": 29,
+      "summary": {
+        "block_count": 1,
+        "branch_count": 0,
+        "byte_size": 29,
+        "callsite_count": 2,
+        "cfg_edge_count": 0,
+        "decoded_byte_count": 29,
+        "instruction_count": 9,
+        "load_count": 0,
+        "store_count": 0,
+        "unresolved_callsite_count": 0
+      }
+    },
+    {
+      "address": "0x14610",
+      "blocks": [
+        {
+          "end_offset": 16,
+          "instruction_offsets": [
+            0,
+            5,
+            9,
+            15
+          ],
+          "label": "B0",
+          "start_offset": 0
+        }
+      ],
+      "byte_sha256": "503ff577279add27de7182fb41fe7e4be166add200ff23f600394aef7cdde59c",
+      "cfg_edges": [],
+      "id": "FUN_00114610",
+      "instructions": [
+        {
+          "groups": [],
+          "mnemonic": "mov",
+          "offset": 0,
+          "operand_kinds": [
+            "register",
+            "immediate"
+          ],
+          "operand_text": "eax, 0x9e3779b9",
+          "size": 5
+        },
+        {
+          "groups": [],
+          "mnemonic": "imul",
+          "offset": 5,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rax, rdi",
+          "size": 4
+        },
+        {
+          "groups": [],
+          "mnemonic": "add",
+          "offset": 9,
+          "operand_kinds": [
+            "register",
+            "immediate"
+          ],
+          "operand_text": "rax, 0xa00001",
+          "size": 6
+        },
+        {
+          "groups": [
+            "ret",
+            "mode64"
+          ],
+          "mnemonic": "ret",
+          "offset": 15,
+          "operand_kinds": [],
+          "operand_text": "",
+          "size": 1
+        }
+      ],
+      "normalized_instructions": [
+        {
+          "branch_target_offset": null,
+          "constants": [
+            2654435769
+          ],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "MOV",
+          "offset": 0,
+          "operands": [
+            "reg32",
+            "imm_address_like"
+          ],
+          "size": 5,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "IMUL",
+          "offset": 5,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 4,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [
+            10485761
+          ],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "ADD",
+          "offset": 9,
+          "operands": [
+            "reg64",
+            "imm_address_like"
+          ],
+          "size": 6,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "return",
+          "mnemonic_class": "RET",
+          "offset": 15,
+          "operands": [],
+          "size": 1,
+          "slots": []
+        }
+      ],
+      "quality": {
+        "complete_decode": true,
+        "opaque_indirect_jumps": 0
+      },
+      "size": 16,
+      "summary": {
+        "block_count": 1,
+        "branch_count": 0,
+        "byte_size": 16,
+        "callsite_count": 0,
+        "cfg_edge_count": 0,
+        "decoded_byte_count": 16,
+        "instruction_count": 4,
+        "load_count": 0,
+        "store_count": 0,
+        "unresolved_callsite_count": 0
+      }
+    },
+    {
+      "address": "0x14620",
+      "blocks": [
+        {
+          "end_offset": 14,
+          "instruction_offsets": [
+            0,
+            3,
+            7,
+            13
+          ],
+          "label": "B0",
+          "start_offset": 0
+        }
+      ],
+      "byte_sha256": "6712882c62ea37e57c78fe7795c42f19c45b5630ab25a601b3723a76d3655430",
+      "cfg_edges": [],
+      "id": "FUN_00114620",
+      "instructions": [
+        {
+          "groups": [],
+          "mnemonic": "mov",
+          "offset": 0,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rax, rdi",
+          "size": 3
+        },
+        {
+          "groups": [],
+          "mnemonic": "rol",
+          "offset": 3,
+          "operand_kinds": [
+            "register",
+            "immediate"
+          ],
+          "operand_text": "rax, 7",
+          "size": 4
+        },
+        {
+          "groups": [],
+          "mnemonic": "xor",
+          "offset": 7,
+          "operand_kinds": [
+            "register",
+            "immediate"
+          ],
+          "operand_text": "rax, 0xa00002",
+          "size": 6
+        },
+        {
+          "groups": [
+            "ret",
+            "mode64"
+          ],
+          "mnemonic": "ret",
+          "offset": 13,
+          "operand_kinds": [],
+          "operand_text": "",
+          "size": 1
+        }
+      ],
+      "normalized_instructions": [
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "MOV",
+          "offset": 0,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [
+            7
+          ],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "ROL",
+          "offset": 3,
+          "operands": [
+            "reg64",
+            "imm_small"
+          ],
+          "size": 4,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [
+            10485762
+          ],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "XOR",
+          "offset": 7,
+          "operands": [
+            "reg64",
+            "imm_address_like"
+          ],
+          "size": 6,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "return",
+          "mnemonic_class": "RET",
+          "offset": 13,
+          "operands": [],
+          "size": 1,
+          "slots": []
+        }
+      ],
+      "quality": {
+        "complete_decode": true,
+        "opaque_indirect_jumps": 0
+      },
+      "size": 14,
+      "summary": {
+        "block_count": 1,
+        "branch_count": 0,
+        "byte_size": 14,
+        "callsite_count": 0,
+        "cfg_edge_count": 0,
+        "decoded_byte_count": 14,
+        "instruction_count": 4,
+        "load_count": 0,
+        "store_count": 0,
+        "unresolved_callsite_count": 0
+      }
+    },
+    {
+      "address": "0x14630",
+      "blocks": [
+        {
+          "end_offset": 16,
+          "instruction_offsets": [
+            0,
+            5,
+            9,
+            15
+          ],
+          "label": "B0",
+          "start_offset": 0
+        }
+      ],
+      "byte_sha256": "8f8f028c672cdb2cb81862c658314a93fd0f6758e4ab22f75076a85c261fe07a",
+      "cfg_edges": [],
+      "id": "FUN_00114630",
+      "instructions": [
+        {
+          "groups": [],
+          "mnemonic": "mov",
+          "offset": 0,
+          "operand_kinds": [
+            "register",
+            "immediate"
+          ],
+          "operand_text": "eax, 0x85ebca6b",
+          "size": 5
+        },
+        {
+          "groups": [],
+          "mnemonic": "imul",
+          "offset": 5,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rax, rdi",
+          "size": 4
+        },
+        {
+          "groups": [],
+          "mnemonic": "add",
+          "offset": 9,
+          "operand_kinds": [
+            "register",
+            "immediate"
+          ],
+          "operand_text": "rax, -0xa10001",
+          "size": 6
+        },
+        {
+          "groups": [
+            "ret",
+            "mode64"
+          ],
+          "mnemonic": "ret",
+          "offset": 15,
+          "operand_kinds": [],
+          "operand_text": "",
+          "size": 1
+        }
+      ],
+      "normalized_instructions": [
+        {
+          "branch_target_offset": null,
+          "constants": [
+            2246822507
+          ],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "MOV",
+          "offset": 0,
+          "operands": [
+            "reg32",
+            "imm_address_like"
+          ],
+          "size": 5,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "IMUL",
+          "offset": 5,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 4,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [
+            -10551297
+          ],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "ADD",
+          "offset": 9,
+          "operands": [
+            "reg64",
+            "imm_address_like"
+          ],
+          "size": 6,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "return",
+          "mnemonic_class": "RET",
+          "offset": 15,
+          "operands": [],
+          "size": 1,
+          "slots": []
+        }
+      ],
+      "quality": {
+        "complete_decode": true,
+        "opaque_indirect_jumps": 0
+      },
+      "size": 16,
+      "summary": {
+        "block_count": 1,
+        "branch_count": 0,
+        "byte_size": 16,
+        "callsite_count": 0,
+        "cfg_edge_count": 0,
+        "decoded_byte_count": 16,
+        "instruction_count": 4,
+        "load_count": 0,
+        "store_count": 0,
+        "unresolved_callsite_count": 0
+      }
+    },
+    {
+      "address": "0x14640",
+      "blocks": [
+        {
+          "end_offset": 14,
+          "instruction_offsets": [
+            0,
+            3,
+            7,
+            13
+          ],
+          "label": "B0",
+          "start_offset": 0
+        }
+      ],
+      "byte_sha256": "aa3b57b549ba3ca94ffb9383f96782757b0891a4fb1ff25819464c39bb8ad04a",
+      "cfg_edges": [],
+      "id": "FUN_00114640",
+      "instructions": [
+        {
+          "groups": [],
+          "mnemonic": "mov",
+          "offset": 0,
+          "operand_kinds": [
+            "register",
+            "register"
+          ],
+          "operand_text": "rax, rdi",
+          "size": 3
+        },
+        {
+          "groups": [],
+          "mnemonic": "rol",
+          "offset": 3,
+          "operand_kinds": [
+            "register",
+            "immediate"
+          ],
+          "operand_text": "rax, 0x35",
+          "size": 4
+        },
+        {
+          "groups": [],
+          "mnemonic": "xor",
+          "offset": 7,
+          "operand_kinds": [
+            "register",
+            "immediate"
+          ],
+          "operand_text": "rax, 0xa10002",
+          "size": 6
+        },
+        {
+          "groups": [
+            "ret",
+            "mode64"
+          ],
+          "mnemonic": "ret",
+          "offset": 13,
+          "operand_kinds": [],
+          "operand_text": "",
+          "size": 1
+        }
+      ],
+      "normalized_instructions": [
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "MOV",
+          "offset": 0,
+          "operands": [
+            "reg64",
+            "reg64"
+          ],
+          "size": 3,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [
+            53
+          ],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "ROL",
+          "offset": 3,
+          "operands": [
+            "reg64",
+            "imm_small"
+          ],
+          "size": 4,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [
+            10551298
+          ],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "XOR",
+          "offset": 7,
+          "operands": [
+            "reg64",
+            "imm_address_like"
+          ],
+          "size": 6,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "return",
+          "mnemonic_class": "RET",
+          "offset": 13,
+          "operands": [],
+          "size": 1,
+          "slots": []
+        }
+      ],
+      "quality": {
+        "complete_decode": true,
+        "opaque_indirect_jumps": 0
+      },
+      "size": 14,
+      "summary": {
+        "block_count": 1,
+        "branch_count": 0,
+        "byte_size": 14,
+        "callsite_count": 0,
+        "cfg_edge_count": 0,
+        "decoded_byte_count": 14,
+        "instruction_count": 4,
+        "load_count": 0,
+        "store_count": 0,
+        "unresolved_callsite_count": 0
+      }
+    },
+    {
+      "address": "0x14650",
+      "blocks": [
+        {
+          "end_offset": 12,
+          "instruction_offsets": [
+            0,
+            7,
+            11
+          ],
+          "label": "B0",
+          "start_offset": 0
+        }
+      ],
+      "byte_sha256": "c8561d294720403d8fbe5066f44a99e58415385339cdf573eb0bde817cd9d7d4",
+      "cfg_edges": [],
+      "id": "FUN_00114650",
+      "instructions": [
+        {
+          "groups": [],
+          "mnemonic": "lea",
+          "offset": 0,
+          "operand_kinds": [
+            "register",
+            "memory"
+          ],
+          "operand_text": "rax, [rdi + 0xb00001]",
+          "size": 7
+        },
+        {
+          "groups": [],
+          "mnemonic": "rol",
+          "offset": 7,
+          "operand_kinds": [
+            "register",
+            "immediate"
+          ],
+          "operand_text": "rax, 3",
+          "size": 4
+        },
+        {
+          "groups": [
+            "ret",
+            "mode64"
+          ],
+          "mnemonic": "ret",
+          "offset": 11,
+          "operand_kinds": [],
+          "operand_text": "",
+          "size": 1
+        }
+      ],
+      "normalized_instructions": [
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "LEA",
+          "offset": 0,
+          "operands": [
+            "reg64",
+            "general_pointer64"
+          ],
+          "size": 7,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [
+            3
+          ],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "ROL",
+          "offset": 7,
+          "operands": [
+            "reg64",
+            "imm_small"
+          ],
+          "size": 4,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "return",
+          "mnemonic_class": "RET",
+          "offset": 11,
+          "operands": [],
+          "size": 1,
+          "slots": []
+        }
+      ],
+      "quality": {
+        "complete_decode": true,
+        "opaque_indirect_jumps": 0
+      },
+      "size": 12,
+      "summary": {
+        "block_count": 1,
+        "branch_count": 0,
+        "byte_size": 12,
+        "callsite_count": 0,
+        "cfg_edge_count": 0,
+        "decoded_byte_count": 12,
+        "instruction_count": 3,
+        "load_count": 0,
+        "store_count": 0,
+        "unresolved_callsite_count": 0
+      }
+    },
+    {
+      "address": "0x14660",
+      "blocks": [
+        {
+          "end_offset": 12,
+          "instruction_offsets": [
+            0,
+            7,
+            11
+          ],
+          "label": "B0",
+          "start_offset": 0
+        }
+      ],
+      "byte_sha256": "a9736e98fad9f65c3b1a97d6d745f845e0df190f13828954be7d186c0fe8a4ca",
+      "cfg_edges": [],
+      "id": "FUN_00114660",
+      "instructions": [
+        {
+          "groups": [],
+          "mnemonic": "lea",
+          "offset": 0,
+          "operand_kinds": [
+            "register",
+            "memory"
+          ],
+          "operand_text": "rax, [rdi - 0xb10001]",
+          "size": 7
+        },
+        {
+          "groups": [],
+          "mnemonic": "rol",
+          "offset": 7,
+          "operand_kinds": [
+            "register",
+            "immediate"
+          ],
+          "operand_text": "rax, 0xd",
+          "size": 4
+        },
+        {
+          "groups": [
+            "ret",
+            "mode64"
+          ],
+          "mnemonic": "ret",
+          "offset": 11,
+          "operand_kinds": [],
+          "operand_text": "",
+          "size": 1
+        }
+      ],
+      "normalized_instructions": [
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "LEA",
+          "offset": 0,
+          "operands": [
+            "reg64",
+            "general_pointer64"
+          ],
+          "size": 7,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [
+            13
+          ],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "ROL",
+          "offset": 7,
+          "operands": [
+            "reg64",
+            "imm_small"
+          ],
+          "size": 4,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "return",
+          "mnemonic_class": "RET",
+          "offset": 11,
+          "operands": [],
+          "size": 1,
+          "slots": []
+        }
+      ],
+      "quality": {
+        "complete_decode": true,
+        "opaque_indirect_jumps": 0
+      },
+      "size": 12,
+      "summary": {
+        "block_count": 1,
+        "branch_count": 0,
+        "byte_size": 12,
+        "callsite_count": 0,
+        "cfg_edge_count": 0,
+        "decoded_byte_count": 12,
+        "instruction_count": 3,
+        "load_count": 0,
+        "store_count": 0,
+        "unresolved_callsite_count": 0
+      }
+    },
+    {
+      "address": "0x14670",
+      "blocks": [
+        {
+          "end_offset": 12,
+          "instruction_offsets": [
+            0,
+            7,
+            11
+          ],
+          "label": "B0",
+          "start_offset": 0
+        }
+      ],
+      "byte_sha256": "b070eb9b1cf41317d5f06a17d93fc5d7c360573b8fda36d7e5d918fb69b9a947",
+      "cfg_edges": [],
+      "id": "FUN_00114670",
+      "instructions": [
+        {
+          "groups": [],
+          "mnemonic": "imul",
+          "offset": 0,
+          "operand_kinds": [
+            "register",
+            "register",
+            "immediate"
+          ],
+          "operand_text": "rax, rdi, 0xb20001",
+          "size": 7
+        },
+        {
+          "groups": [],
+          "mnemonic": "rol",
+          "offset": 7,
+          "operand_kinds": [
+            "register",
+            "immediate"
+          ],
+          "operand_text": "rax, 0x3b",
+          "size": 4
+        },
+        {
+          "groups": [
+            "ret",
+            "mode64"
+          ],
+          "mnemonic": "ret",
+          "offset": 11,
+          "operand_kinds": [],
+          "operand_text": "",
+          "size": 1
+        }
+      ],
+      "normalized_instructions": [
+        {
+          "branch_target_offset": null,
+          "constants": [
+            11665409
+          ],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "IMUL",
+          "offset": 0,
+          "operands": [
+            "reg64",
+            "reg64",
+            "imm_address_like"
+          ],
+          "size": 7,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [
+            59
+          ],
+          "control_flow": "fallthrough",
+          "mnemonic_class": "ROL",
+          "offset": 7,
+          "operands": [
+            "reg64",
+            "imm_small"
+          ],
+          "size": 4,
+          "slots": []
+        },
+        {
+          "branch_target_offset": null,
+          "constants": [],
+          "control_flow": "return",
+          "mnemonic_class": "RET",
+          "offset": 11,
+          "operands": [],
+          "size": 1,
+          "slots": []
+        }
+      ],
+      "quality": {
+        "complete_decode": true,
+        "opaque_indirect_jumps": 0
+      },
+      "size": 12,
+      "summary": {
+        "block_count": 1,
+        "branch_count": 0,
+        "byte_size": 12,
+        "callsite_count": 0,
+        "cfg_edge_count": 0,
+        "decoded_byte_count": 12,
+        "instruction_count": 3,
+        "load_count": 0,
+        "store_count": 0,
+        "unresolved_callsite_count": 0
+      }
+    }
+  ],
+  "profile": "plain",
+  "provenance": {
+    "candidate_selection_sha256": "8fed5ffe3e69bfbfae316adfad6a119dcb69f33664c0ff6c1f6b7a595620f8d0",
+    "raw_graph_sha256": "deeff0a7da5283340bc45bc2c51153accad56f3414de9fed628d9b8cb172286a",
+    "stripped_sha256": "0db0a2394c248625e4e776920395cf8e809080205a2113ac2d0965a8c2993ec8"
+  },
+  "schema_version": 2,
+  "scope": "subject"
+}

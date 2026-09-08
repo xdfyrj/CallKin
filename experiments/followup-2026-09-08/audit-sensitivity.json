@@ -1,0 +1,679 @@
+{
+  "fd": {
+    "overrides": [
+      {
+        "evidence": {
+          "elf_address": "0x17a400",
+          "expected_message": "Malformed exclude pattern",
+          "member": "FUN_0027a400",
+          "message_references": [
+            {
+              "address": "0x857ac",
+              "via": "direct-rip"
+            }
+          ],
+          "raw_symbols": [
+            "_ZN2fd4walk11WorkerState15build_overrides28_$u7b$$u7b$closure$u7d$$u7d$17h3cecadc898b595f3E"
+          ],
+          "size": 104,
+          "source_line": 339
+        },
+        "line": 339,
+        "member": "FUN_0027a400",
+        "new_origin": "fd::walk::WorkerState::build_overrides::{{closure}}@src/walk.rs:339",
+        "old_origin": "fd::walk::WorkerState::build_overrides::{{closure}}",
+        "source": "src/walk.rs"
+      },
+      {
+        "evidence": {
+          "elf_address": "0x17a470",
+          "expected_message": "Mismatch in exclude patterns",
+          "member": "FUN_0027a470",
+          "message_references": [
+            {
+              "address": "0x918d1",
+              "via": "direct-rip"
+            }
+          ],
+          "raw_symbols": [
+            "_ZN2fd4walk11WorkerState15build_overrides28_$u7b$$u7b$closure$u7d$$u7d$17h8b14bbfbb7203613E"
+          ],
+          "size": 71,
+          "source_line": 344
+        },
+        "line": 344,
+        "member": "FUN_0027a470",
+        "new_origin": "fd::walk::WorkerState::build_overrides::{{closure}}@src/walk.rs:344",
+        "old_origin": "fd::walk::WorkerState::build_overrides::{{closure}}",
+        "source": "src/walk.rs"
+      }
+    ],
+    "rows": [
+      {
+        "corrected": {
+          "FN": 3086,
+          "FP": 81,
+          "TN": 2446071,
+          "TP": 93,
+          "exact_group_rate": 0.05042016806722689,
+          "f1": 0.055472711005070084,
+          "macro_origin_recall": 0.07817140159833334,
+          "positive_pairs": 3179,
+          "precision": 0.5344827586206896,
+          "recall": 0.029254482541679772,
+          "scored_pairs": 2449331
+        },
+        "method": "body2-k16",
+        "new_positive_origin_count": 119,
+        "old_positive_origin_count": 120,
+        "original": {
+          "FN": 3087,
+          "FP": 81,
+          "TN": 2446070,
+          "TP": 93,
+          "exact_group_rate": 0.05,
+          "f1": 0.055456171735241505,
+          "macro_origin_recall": 0.07751997325168056,
+          "positive_pairs": 3180,
+          "precision": 0.5344827586206896,
+          "recall": 0.029245283018867925,
+          "scored_pairs": 2449331
+        },
+        "prediction_sha256": "e101eb7eb41267b248262325514170e543cad5a10b667efc05ed23ba886a6ac1"
+      },
+      {
+        "corrected": {
+          "FN": 3088,
+          "FP": 80,
+          "TN": 2446072,
+          "TP": 91,
+          "exact_group_rate": 0.05042016806722689,
+          "f1": 0.05432835820895522,
+          "macro_origin_recall": 0.0780894175852159,
+          "positive_pairs": 3179,
+          "precision": 0.5321637426900585,
+          "recall": 0.028625353884869455,
+          "scored_pairs": 2449331
+        },
+        "method": "body2-k8",
+        "new_positive_origin_count": 119,
+        "old_positive_origin_count": 120,
+        "original": {
+          "FN": 3089,
+          "FP": 80,
+          "TN": 2446071,
+          "TP": 91,
+          "exact_group_rate": 0.05,
+          "f1": 0.054312145628170695,
+          "macro_origin_recall": 0.07743867243867243,
+          "positive_pairs": 3180,
+          "precision": 0.5321637426900585,
+          "recall": 0.028616352201257862,
+          "scored_pairs": 2449331
+        },
+        "prediction_sha256": "02f1806db8bb0b62b91daaa11cc0677874b0dbd6a8dd59033131c61efc1f4af6"
+      },
+      {
+        "corrected": {
+          "FN": 3092,
+          "FP": 56,
+          "TN": 2446096,
+          "TP": 87,
+          "exact_group_rate": 0.04201680672268908,
+          "f1": 0.052378085490668275,
+          "macro_origin_recall": 0.06128269489614028,
+          "positive_pairs": 3179,
+          "precision": 0.6083916083916084,
+          "recall": 0.02736709657124882,
+          "scored_pairs": 2449331
+        },
+        "method": "combined3-k16",
+        "new_positive_origin_count": 119,
+        "old_positive_origin_count": 120,
+        "original": {
+          "FN": 3093,
+          "FP": 56,
+          "TN": 2446095,
+          "TP": 87,
+          "exact_group_rate": 0.041666666666666664,
+          "f1": 0.05236232320192597,
+          "macro_origin_recall": 0.060772005772005776,
+          "positive_pairs": 3180,
+          "precision": 0.6083916083916084,
+          "recall": 0.027358490566037737,
+          "scored_pairs": 2449331
+        },
+        "prediction_sha256": "7f4a02d833e3053d33159a4a7a318b06f2aba9ca5bf2896cf8c36b36934676cc"
+      },
+      {
+        "corrected": {
+          "FN": 3092,
+          "FP": 59,
+          "TN": 2446093,
+          "TP": 87,
+          "exact_group_rate": 0.03361344537815126,
+          "f1": 0.05233082706766917,
+          "macro_origin_recall": 0.06128269489614028,
+          "positive_pairs": 3179,
+          "precision": 0.5958904109589042,
+          "recall": 0.02736709657124882,
+          "scored_pairs": 2449331
+        },
+        "method": "combined3-k32",
+        "new_positive_origin_count": 119,
+        "old_positive_origin_count": 120,
+        "original": {
+          "FN": 3093,
+          "FP": 59,
+          "TN": 2446092,
+          "TP": 87,
+          "exact_group_rate": 0.03333333333333333,
+          "f1": 0.052315093205051115,
+          "macro_origin_recall": 0.060772005772005776,
+          "positive_pairs": 3180,
+          "precision": 0.5958904109589042,
+          "recall": 0.027358490566037737,
+          "scored_pairs": 2449331
+        },
+        "prediction_sha256": "4ff0ba1b1e3c076da18da1d4fdce77faf160681d3b9ec105c011248f1c00b93d"
+      },
+      {
+        "corrected": {
+          "FN": 3092,
+          "FP": 55,
+          "TN": 2446097,
+          "TP": 87,
+          "exact_group_rate": 0.04201680672268908,
+          "f1": 0.052393857271906055,
+          "macro_origin_recall": 0.06128269489614028,
+          "positive_pairs": 3179,
+          "precision": 0.6126760563380281,
+          "recall": 0.02736709657124882,
+          "scored_pairs": 2449331
+        },
+        "method": "combined3-k8",
+        "new_positive_origin_count": 119,
+        "old_positive_origin_count": 120,
+        "original": {
+          "FN": 3093,
+          "FP": 55,
+          "TN": 2446096,
+          "TP": 87,
+          "exact_group_rate": 0.041666666666666664,
+          "f1": 0.052378085490668275,
+          "macro_origin_recall": 0.060772005772005776,
+          "positive_pairs": 3180,
+          "precision": 0.6126760563380281,
+          "recall": 0.027358490566037737,
+          "scored_pairs": 2449331
+        },
+        "prediction_sha256": "ed4195601c93ffdb4941daddef130746d21f47ce1f6e21ae35670aedbdd78d54"
+      },
+      {
+        "corrected": {
+          "FN": 2376,
+          "FP": 2816,
+          "TN": 2443336,
+          "TP": 803,
+          "exact_group_rate": 0.13445378151260504,
+          "f1": 0.23624595469255663,
+          "macro_origin_recall": 0.26112866098036636,
+          "positive_pairs": 3179,
+          "precision": 0.22188449848024316,
+          "recall": 0.25259515570934254,
+          "scored_pairs": 2449331
+        },
+        "method": "exact",
+        "new_positive_origin_count": 119,
+        "old_positive_origin_count": 120,
+        "original": {
+          "FN": 2377,
+          "FP": 2816,
+          "TN": 2443335,
+          "TP": 803,
+          "exact_group_rate": 0.13333333333333333,
+          "f1": 0.2362112075305192,
+          "macro_origin_recall": 0.25895258880553,
+          "positive_pairs": 3180,
+          "precision": 0.22188449848024316,
+          "recall": 0.25251572327044025,
+          "scored_pairs": 2449331
+        },
+        "prediction_sha256": "72c795e54b0b8f77cc29e0fb25cf8ae73aff46757249500ae912017cc138d4cd"
+      },
+      {
+        "corrected": {
+          "FN": 3092,
+          "FP": 56,
+          "TN": 2446096,
+          "TP": 87,
+          "exact_group_rate": 0.04201680672268908,
+          "f1": 0.052378085490668275,
+          "macro_origin_recall": 0.06128269489614028,
+          "positive_pairs": 3179,
+          "precision": 0.6083916083916084,
+          "recall": 0.02736709657124882,
+          "scored_pairs": 2449331
+        },
+        "method": "rescue-k16",
+        "new_positive_origin_count": 119,
+        "old_positive_origin_count": 120,
+        "original": {
+          "FN": 3093,
+          "FP": 56,
+          "TN": 2446095,
+          "TP": 87,
+          "exact_group_rate": 0.041666666666666664,
+          "f1": 0.05236232320192597,
+          "macro_origin_recall": 0.060772005772005776,
+          "positive_pairs": 3180,
+          "precision": 0.6083916083916084,
+          "recall": 0.027358490566037737,
+          "scored_pairs": 2449331
+        },
+        "prediction_sha256": "b48be4d4a408b58ffa8437f34d02cd67d5ab63ab987b12a6cfa5769feaa7176b"
+      },
+      {
+        "corrected": {
+          "FN": 1336,
+          "FP": 4554,
+          "TN": 2441598,
+          "TP": 1843,
+          "exact_group_rate": 0.13445378151260504,
+          "f1": 0.38492063492063494,
+          "macro_origin_recall": 0.3649722359806393,
+          "positive_pairs": 3179,
+          "precision": 0.2881037986556198,
+          "recall": 0.5797420572507078,
+          "scored_pairs": 2449331
+        },
+        "method": "v0",
+        "new_positive_origin_count": 119,
+        "old_positive_origin_count": 120,
+        "original": {
+          "FN": 1337,
+          "FP": 4554,
+          "TN": 2441597,
+          "TP": 1843,
+          "exact_group_rate": 0.13333333333333333,
+          "f1": 0.38488044272736766,
+          "macro_origin_recall": 0.3619308006808007,
+          "positive_pairs": 3180,
+          "precision": 0.2881037986556198,
+          "recall": 0.579559748427673,
+          "scored_pairs": 2449331
+        },
+        "prediction_sha256": "e2e1dcedc0ce2af41236d5146fe71b005ddd466f4e683eb914bacdd3b1bff13f"
+      }
+    ]
+  },
+  "zoxide": {
+    "overrides": [
+      {
+        "evidence": {
+          "elf_address": "0x91360",
+          "expected_message": "invalid utf-8",
+          "member": "FUN_00191360",
+          "message_references": [
+            {
+              "address": "0x1cd97",
+              "via": "direct-rip"
+            }
+          ],
+          "raw_symbols": [
+            "_ZN6zoxide6import8autojump13Iter$LT$R$GT$10parse_line28_$u7b$$u7b$closure$u7d$$u7d$17h2429bb82563ad62eE"
+          ],
+          "size": 247,
+          "source_line": 42
+        },
+        "line": 42,
+        "member": "FUN_00191360",
+        "new_origin": "zoxide::import::autojump::Iter<R>::parse_line::{{closure}}@src/import/autojump.rs:42",
+        "old_origin": "zoxide::import::autojump::Iter<R>::parse_line::{{closure}}",
+        "source": "src/import/autojump.rs"
+      },
+      {
+        "evidence": {
+          "elf_address": "0x91460",
+          "expected_message": "invalid rank",
+          "member": "FUN_00191460",
+          "message_references": [
+            {
+              "address": "0x10d1d",
+              "via": "direct-rip"
+            }
+          ],
+          "raw_symbols": [
+            "_ZN6zoxide6import8autojump13Iter$LT$R$GT$10parse_line28_$u7b$$u7b$closure$u7d$$u7d$17h3bc09c508947c4e3E"
+          ],
+          "size": 316,
+          "source_line": 48
+        },
+        "line": 48,
+        "member": "FUN_00191460",
+        "new_origin": "zoxide::import::autojump::Iter<R>::parse_line::{{closure}}@src/import/autojump.rs:48",
+        "old_origin": "zoxide::import::autojump::Iter<R>::parse_line::{{closure}}",
+        "source": "src/import/autojump.rs"
+      },
+      {
+        "evidence": {
+          "elf_address": "0x915a0",
+          "expected_message": "invalid entry",
+          "member": "FUN_001915a0",
+          "message_references": [
+            {
+              "address": "0x120a6",
+              "helper": "0x91310",
+              "via": "direct-helper-rip"
+            },
+            {
+              "address": "0x120a6",
+              "helper": "0x91310",
+              "via": "direct-helper-rip"
+            }
+          ],
+          "raw_symbols": [
+            "_ZN6zoxide6import8autojump13Iter$LT$R$GT$10parse_line28_$u7b$$u7b$closure$u7d$$u7d$17hd1c51497fea92d1eE"
+          ],
+          "size": 210,
+          "source_line": 45
+        },
+        "line": 45,
+        "member": "FUN_001915a0",
+        "new_origin": "zoxide::import::autojump::Iter<R>::parse_line::{{closure}}@src/import/autojump.rs:45",
+        "old_origin": "zoxide::import::autojump::Iter<R>::parse_line::{{closure}}",
+        "source": "src/import/autojump.rs"
+      }
+    ],
+    "rows": [
+      {
+        "corrected": {
+          "FN": 1220,
+          "FP": 19,
+          "TN": 222816,
+          "TP": 19,
+          "exact_group_rate": 0.057692307692307696,
+          "f1": 0.02975724353954581,
+          "macro_origin_recall": 0.0858058608058608,
+          "positive_pairs": 1239,
+          "precision": 0.5,
+          "recall": 0.01533494753833737,
+          "scored_pairs": 224074
+        },
+        "method": "body2-k16",
+        "new_positive_origin_count": 52,
+        "old_positive_origin_count": 53,
+        "original": {
+          "FN": 1223,
+          "FP": 19,
+          "TN": 222813,
+          "TP": 19,
+          "exact_group_rate": 0.05660377358490566,
+          "f1": 0.0296875,
+          "macro_origin_recall": 0.08418688230008985,
+          "positive_pairs": 1242,
+          "precision": 0.5,
+          "recall": 0.015297906602254429,
+          "scored_pairs": 224074
+        },
+        "prediction_sha256": "1e5ff8f62f936603ef53d8a4499ca48fdf9f1952c7ee61d0cc8a270a231efd99"
+      },
+      {
+        "corrected": {
+          "FN": 1220,
+          "FP": 19,
+          "TN": 222816,
+          "TP": 19,
+          "exact_group_rate": 0.057692307692307696,
+          "f1": 0.02975724353954581,
+          "macro_origin_recall": 0.0858058608058608,
+          "positive_pairs": 1239,
+          "precision": 0.5,
+          "recall": 0.01533494753833737,
+          "scored_pairs": 224074
+        },
+        "method": "body2-k32",
+        "new_positive_origin_count": 52,
+        "old_positive_origin_count": 53,
+        "original": {
+          "FN": 1223,
+          "FP": 19,
+          "TN": 222813,
+          "TP": 19,
+          "exact_group_rate": 0.05660377358490566,
+          "f1": 0.0296875,
+          "macro_origin_recall": 0.08418688230008985,
+          "positive_pairs": 1242,
+          "precision": 0.5,
+          "recall": 0.015297906602254429,
+          "scored_pairs": 224074
+        },
+        "prediction_sha256": "dbd70600ca1a489450a93e0f30fcc40f2218c50104803e5a9a721008106c4c19"
+      },
+      {
+        "corrected": {
+          "FN": 1221,
+          "FP": 16,
+          "TN": 222819,
+          "TP": 18,
+          "exact_group_rate": 0.057692307692307696,
+          "f1": 0.028279654359780047,
+          "macro_origin_recall": 0.0848901098901099,
+          "positive_pairs": 1239,
+          "precision": 0.5294117647058824,
+          "recall": 0.014527845036319613,
+          "scored_pairs": 224074
+        },
+        "method": "body2-k8",
+        "new_positive_origin_count": 52,
+        "old_positive_origin_count": 53,
+        "original": {
+          "FN": 1224,
+          "FP": 16,
+          "TN": 222816,
+          "TP": 18,
+          "exact_group_rate": 0.05660377358490566,
+          "f1": 0.02821316614420063,
+          "macro_origin_recall": 0.08328840970350405,
+          "positive_pairs": 1242,
+          "precision": 0.5294117647058824,
+          "recall": 0.014492753623188406,
+          "scored_pairs": 224074
+        },
+        "prediction_sha256": "b928e6e889ce7a545d112fba06562fdc2547839b811d763f23cc6da517a40d7e"
+      },
+      {
+        "corrected": {
+          "FN": 1221,
+          "FP": 15,
+          "TN": 222820,
+          "TP": 18,
+          "exact_group_rate": 0.057692307692307696,
+          "f1": 0.02830188679245283,
+          "macro_origin_recall": 0.0848901098901099,
+          "positive_pairs": 1239,
+          "precision": 0.5454545454545454,
+          "recall": 0.014527845036319613,
+          "scored_pairs": 224074
+        },
+        "method": "combined3-k16",
+        "new_positive_origin_count": 52,
+        "old_positive_origin_count": 53,
+        "original": {
+          "FN": 1224,
+          "FP": 15,
+          "TN": 222817,
+          "TP": 18,
+          "exact_group_rate": 0.05660377358490566,
+          "f1": 0.02823529411764706,
+          "macro_origin_recall": 0.08328840970350405,
+          "positive_pairs": 1242,
+          "precision": 0.5454545454545454,
+          "recall": 0.014492753623188406,
+          "scored_pairs": 224074
+        },
+        "prediction_sha256": "d2c6ccdde1cdd484b132d34c932365836d05293981462c6ae3fd98db64a5ff3c"
+      },
+      {
+        "corrected": {
+          "FN": 1221,
+          "FP": 15,
+          "TN": 222820,
+          "TP": 18,
+          "exact_group_rate": 0.057692307692307696,
+          "f1": 0.02830188679245283,
+          "macro_origin_recall": 0.0848901098901099,
+          "positive_pairs": 1239,
+          "precision": 0.5454545454545454,
+          "recall": 0.014527845036319613,
+          "scored_pairs": 224074
+        },
+        "method": "combined3-k32",
+        "new_positive_origin_count": 52,
+        "old_positive_origin_count": 53,
+        "original": {
+          "FN": 1224,
+          "FP": 15,
+          "TN": 222817,
+          "TP": 18,
+          "exact_group_rate": 0.05660377358490566,
+          "f1": 0.02823529411764706,
+          "macro_origin_recall": 0.08328840970350405,
+          "positive_pairs": 1242,
+          "precision": 0.5454545454545454,
+          "recall": 0.014492753623188406,
+          "scored_pairs": 224074
+        },
+        "prediction_sha256": "a75592e9ec41ddd72512c4d03c55ce5e1d767a5af56967e839265d861a88f9d8"
+      },
+      {
+        "corrected": {
+          "FN": 1221,
+          "FP": 15,
+          "TN": 222820,
+          "TP": 18,
+          "exact_group_rate": 0.057692307692307696,
+          "f1": 0.02830188679245283,
+          "macro_origin_recall": 0.0848901098901099,
+          "positive_pairs": 1239,
+          "precision": 0.5454545454545454,
+          "recall": 0.014527845036319613,
+          "scored_pairs": 224074
+        },
+        "method": "combined3-k8",
+        "new_positive_origin_count": 52,
+        "old_positive_origin_count": 53,
+        "original": {
+          "FN": 1224,
+          "FP": 15,
+          "TN": 222817,
+          "TP": 18,
+          "exact_group_rate": 0.05660377358490566,
+          "f1": 0.02823529411764706,
+          "macro_origin_recall": 0.08328840970350405,
+          "positive_pairs": 1242,
+          "precision": 0.5454545454545454,
+          "recall": 0.014492753623188406,
+          "scored_pairs": 224074
+        },
+        "prediction_sha256": "6aa98b3f90d3c54c9fef8f954c667294725dc4f52790b45f93de334b8179e71e"
+      },
+      {
+        "corrected": {
+          "FN": 677,
+          "FP": 167,
+          "TN": 222668,
+          "TP": 562,
+          "exact_group_rate": 0.15384615384615385,
+          "f1": 0.5711382113821138,
+          "macro_origin_recall": 0.2732149036298834,
+          "positive_pairs": 1239,
+          "precision": 0.7709190672153635,
+          "recall": 0.45359160613397903,
+          "scored_pairs": 224074
+        },
+        "method": "exact",
+        "new_positive_origin_count": 52,
+        "old_positive_origin_count": 53,
+        "original": {
+          "FN": 680,
+          "FP": 167,
+          "TN": 222665,
+          "TP": 562,
+          "exact_group_rate": 0.1509433962264151,
+          "f1": 0.5702688990360223,
+          "macro_origin_recall": 0.2680599054481875,
+          "positive_pairs": 1242,
+          "precision": 0.7709190672153635,
+          "recall": 0.4524959742351047,
+          "scored_pairs": 224074
+        },
+        "prediction_sha256": "5baffb76a904f5a73f8a3e5977c3930377d308adc5d581d084dc057032edac23"
+      },
+      {
+        "corrected": {
+          "FN": 1221,
+          "FP": 15,
+          "TN": 222820,
+          "TP": 18,
+          "exact_group_rate": 0.057692307692307696,
+          "f1": 0.02830188679245283,
+          "macro_origin_recall": 0.0848901098901099,
+          "positive_pairs": 1239,
+          "precision": 0.5454545454545454,
+          "recall": 0.014527845036319613,
+          "scored_pairs": 224074
+        },
+        "method": "rescue-k16",
+        "new_positive_origin_count": 52,
+        "old_positive_origin_count": 53,
+        "original": {
+          "FN": 1224,
+          "FP": 15,
+          "TN": 222817,
+          "TP": 18,
+          "exact_group_rate": 0.05660377358490566,
+          "f1": 0.02823529411764706,
+          "macro_origin_recall": 0.08328840970350405,
+          "positive_pairs": 1242,
+          "precision": 0.5454545454545454,
+          "recall": 0.014492753623188406,
+          "scored_pairs": 224074
+        },
+        "prediction_sha256": "309a98167af3751b8ea9139c0a7d535296d08ee1e41a6ceb602bbfebfbd3d255"
+      },
+      {
+        "corrected": {
+          "FN": 1078,
+          "FP": 221,
+          "TN": 222614,
+          "TP": 161,
+          "exact_group_rate": 0.11538461538461539,
+          "f1": 0.1986428130783467,
+          "macro_origin_recall": 0.29224756912003874,
+          "positive_pairs": 1239,
+          "precision": 0.4214659685863874,
+          "recall": 0.12994350282485875,
+          "scored_pairs": 224074
+        },
+        "method": "v0",
+        "new_positive_origin_count": 52,
+        "old_positive_origin_count": 53,
+        "original": {
+          "FN": 1081,
+          "FP": 221,
+          "TN": 222611,
+          "TP": 161,
+          "exact_group_rate": 0.11320754716981132,
+          "f1": 0.19827586206896552,
+          "macro_origin_recall": 0.28673346404230216,
+          "positive_pairs": 1242,
+          "precision": 0.4214659685863874,
+          "recall": 0.12962962962962962,
+          "scored_pairs": 224074
+        },
+        "prediction_sha256": "169f4368e01bca6146cdc3ea455eb538922e37643911ba23aeaab1b4c2f17505"
+      }
+    ]
+  }
+}

@@ -1,0 +1,4 @@
+{
+  "maximum_concurrent_case_processes": 2,
+  "timing_scope": "single-run process observations under up to two concurrent independent cases; not isolated timing benchmarks"
+}

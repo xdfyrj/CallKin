@@ -1,0 +1,363 @@
+{
+  "schema_version": 1,
+  "audit_id": "fd-source-preliminary-2026-09-08",
+  "scope": "Source-level consistency audit of the 16 fd records in audit-sample.json",
+  "reviewer": "LLM agent; not an independent human auditor",
+  "inputs": {
+    "sample": "experiments/followup-2026-09-08/audit-sample.json",
+    "protocol": "experiments/followup-2026-09-08/protocol.md",
+    "source_repo": "subjects/fd",
+    "cargo_lock": "subjects/fd/Cargo.lock",
+    "build_info": "build_info/plain/fd.O3S.json",
+    "binary": "gt_bin/plain/fd.O3S.gt.bin"
+  },
+  "provenance": {
+    "fd_version": "10.4.2",
+    "fd_git_commit": "3c20fff2796199071d888c39438d79e270112a02",
+    "fd_source_sha256_from_build_info": "a01ffcf11c3e42ddcbade0a5453b25b676aa8b3cb410f044eae7a175a461c542",
+    "cargo_lock_sha256": "ad1600fe99a6978ebd58ea8ac643896e6a8f1143da30e9aa4dff2e0753606736",
+    "manifest_sha256": "dcf000dd16375a089d6d829354ac1d5d953bc49451cc5f002bdbd6373763e86c",
+    "binary_sha256": "61d845af2b2f394c7439603f198e8439efdfdfcb80b189a40c55b754e3ee8fa9",
+    "rustc": "1.93.1 (01f6ddf75 2026-02-11)",
+    "address_mapping": "Every sampled FUN address is the corresponding ELF symbol address plus the analysis image base 0x100000. The mapping was checked against the non-stripped binary symbol table; stripping does not change these virtual addresses."
+  },
+  "dependency_verification": {
+    "aho-corasick 1.1.4": {
+      "cargo_lock_checksum": "ddd31a130427c27518df266943a5308ed92d4b226cc639f5a8f1002816174301",
+      "cached_crate_sha256": "ddd31a130427c27518df266943a5308ed92d4b226cc639f5a8f1002816174301",
+      "registry_vcs_sha1": "17f8b32e3b7c845ef3c5429b823804f552f14ec9"
+    },
+    "anyhow 1.0.102": {
+      "cargo_lock_checksum": "7f202df86484c868dbad7eaa557ef785d5c66295e41b460ef922eca0723b842c",
+      "cached_crate_sha256": "7f202df86484c868dbad7eaa557ef785d5c66295e41b460ef922eca0723b842c",
+      "registry_vcs_sha1": "5c657b32522023a9f7ef883fb08582fd8e656b1a"
+    },
+    "clap_builder 4.5.60": {
+      "cargo_lock_checksum": "24a241312cea5059b13574bb9b3861cabf758b879c15190b37b6d6fd63ab6876",
+      "cached_crate_sha256": "24a241312cea5059b13574bb9b3861cabf758b879c15190b37b6d6fd63ab6876",
+      "registry_vcs_sha1": "20aac9d46e0852292bd43d845b6d9cb69c598c9e"
+    },
+    "crossbeam-epoch 0.9.18": {
+      "cargo_lock_checksum": "5b82ac4a3c2ca9c3460964f020e1402edd5753411d7737aa39c3714ad1b5420e",
+      "cached_crate_sha256": "5b82ac4a3c2ca9c3460964f020e1402edd5753411d7737aa39c3714ad1b5420e",
+      "registry_vcs_sha1": "9c3182abebb36bdc9446d75d4644190fef70fa01"
+    },
+    "hashbrown 0.16.1": {
+      "cargo_lock_checksum": "841d1cc9bed7f9236f321df977030373f4a4163ae1a7dbfe1a51a2c1a51d9100",
+      "cached_crate_sha256": "841d1cc9bed7f9236f321df977030373f4a4163ae1a7dbfe1a51a2c1a51d9100",
+      "registry_vcs_sha1": "1876e4f02708b93903d55ef598f68e82a826518f",
+      "qualification": "The binary contains /rust/deps/hashbrown-0.16.1 paths, so the observed copies can be compiler-vendored rather than the Cargo package despite the matching locked version."
+    },
+    "jiff 0.2.23": {
+      "cargo_lock_checksum": "1a3546dc96b6d42c5f24902af9e2538e82e39ad350b0c766eb3fbf2d8f3d8359",
+      "cached_crate_sha256": "1a3546dc96b6d42c5f24902af9e2538e82e39ad350b0c766eb3fbf2d8f3d8359",
+      "registry_vcs_sha1": "e5b7f0d061e4da9598aed73f6171e78baa8b007f"
+    },
+    "regex-automata 0.4.14": {
+      "cargo_lock_checksum": "6e1dd4122fc1595e8162618945476892eefca7b88c52820e74af6262213cae8f",
+      "cached_crate_sha256": "6e1dd4122fc1595e8162618945476892eefca7b88c52820e74af6262213cae8f",
+      "registry_vcs_sha1": "5e195de266e203441b2c8001d6ebefab1161a59e"
+    },
+    "walkdir 2.5.0": {
+      "cargo_lock_checksum": "29790946404f91d9c5d06f9874efddea1dc06c5efe94541a7d6863108e3a5e4b",
+      "cached_crate_sha256": "29790946404f91d9c5d06f9874efddea1dc06c5efe94541a7d6863108e3a5e4b",
+      "registry_vcs_sha1": "4f26be4d450910916ea11533b2efc52b9a6483bc"
+    },
+    "object 0.37.3": {
+      "cargo_lock_checksum": null,
+      "cached_crate_sha256": "ff76201f031d8863c38aa7f905eca4f53abbfa15f609db4277d44cd8938f33fe",
+      "registry_vcs_sha1": "916c47b90e5c0bea139ca4bdfc53811f7d2c3383",
+      "qualification": "object is absent from fd Cargo.lock. The version comes from /rust/deps/object-0.37.3 embedded in the binary and is part of the compiler/sysroot dependency set."
+    }
+  },
+  "checksum_note": "The extracted registry trees contain .cargo-ok and .cargo_vcs_info.json but no .cargo-checksum.json. Where Cargo.lock applies, the cached .crate SHA-256 was compared with the lock checksum and matched.",
+  "summary": {
+    "records": 16,
+    "members": 108,
+    "source-consistent": 15,
+    "source-conflict": 1,
+    "unresolved": 0,
+    "clear_label_problems": [
+      "fd-09 combines two different closure expressions in fd::walk::WorkerState::build_overrides"
+    ],
+    "neutral_boundary_cases": [
+      "fd-11 is one shared machine address carrying two distinct walkdir Error method symbols and must remain neutral"
+    ]
+  },
+  "records": [
+    {
+      "sample_id": "fd-01",
+      "stratum": "random",
+      "origin": "<aho_corasick::nfa::contiguous::NFA as aho_corasick::automaton::Automaton>::prefilter",
+      "members": ["FUN_002b1850", "FUN_0034ab10", "FUN_003d96f0", "FUN_0041bac0", "FUN_00451580"],
+      "source": {
+        "crate": "aho-corasick",
+        "version": "1.1.4",
+        "file": "aho-corasick-1.1.4/src/nfa/contiguous.rs",
+        "lines": "319-321",
+        "excerpt": "fn prefilter(&self) -> Option<&Prefilter> { self.prefilter.as_ref() }"
+      },
+      "member_evidence": "All five addresses map, after subtracting 0x100000, to separate ELF-local symbols for this same method. The sole source definition is inside unsafe impl Automaton for NFA at lines 176-322.",
+      "reasoning": "The concrete receiver type and method body resolve to one source definition. The five emitted copies are compatible with code-generation duplication or use-site instantiation; source review cannot recover their compiler origin IDs.",
+      "assessment": "source-consistent"
+    },
+    {
+      "sample_id": "fd-02",
+      "stratum": "random",
+      "origin": "<aho_corasick::dfa::DFA as aho_corasick::automaton::Automaton>::next_state",
+      "members": ["FUN_002b08c0", "FUN_0034a3c0", "FUN_003d8fa0", "FUN_0041b370", "FUN_00450d40"],
+      "source": {
+        "crate": "aho-corasick",
+        "version": "1.1.4",
+        "file": "aho-corasick-1.1.4/src/dfa.rs",
+        "lines": "218-226",
+        "excerpt": "fn next_state(...) -> StateID { let class = self.byte_classes.get(byte); self.trans[(sid.as_u32() + u32::from(class)).as_usize()] }"
+      },
+      "member_evidence": "All five rebased addresses resolve to ELF-local symbols for the DFA Automaton next_state method.",
+      "reasoning": "The source has one concrete DFA implementation with this body. Multiple emitted copies remain source-consistent, although compiler-level identity is not proved.",
+      "assessment": "source-consistent"
+    },
+    {
+      "sample_id": "fd-03",
+      "stratum": "random",
+      "origin": "<aho_corasick::nfa::contiguous::NFA as aho_corasick::automaton::Automaton>::min_pattern_len",
+      "members": ["FUN_002b1770", "FUN_0034aa30", "FUN_003d9610", "FUN_0041b9e0", "FUN_004514a0"],
+      "source": {
+        "crate": "aho-corasick",
+        "version": "1.1.4",
+        "file": "aho-corasick-1.1.4/src/nfa/contiguous.rs",
+        "lines": "286-288",
+        "excerpt": "fn min_pattern_len(&self) -> usize { self.min_pattern_len }"
+      },
+      "member_evidence": "All five rebased addresses resolve to separate local symbols with this exact concrete trait method name.",
+      "reasoning": "Only one matching source method exists in the NFA Automaton implementation. The multiplicity is emitted-code multiplicity, not evidence of multiple source definitions.",
+      "assessment": "source-consistent"
+    },
+    {
+      "sample_id": "fd-04",
+      "stratum": "random",
+      "origin": "<clap_builder::parser::matches::arg_matches::Values<T> as core::iter::traits::iterator::Iterator>::next",
+      "members": ["FUN_00269f00", "FUN_0026a020", "FUN_0026a140"],
+      "source": {
+        "crate": "clap_builder",
+        "version": "4.5.60",
+        "file": "clap_builder-4.5.60/src/parser/matches/arg_matches.rs",
+        "lines": "1434-1448",
+        "excerpt": "fn next(&mut self) -> Option<Self::Item> { if let Some(next) = self.iter.next() { self.len -= 1; Some(next) } else { None } }"
+      },
+      "member_evidence": "The three rebased addresses resolve to Values<T>::next. The symbol table also has two distinct symbol hashes aliased at ELF address 0x16a140, both anchored to the same method.",
+      "reasoning": "Values<T> is generic, so several monomorphizations and a same-address alias are expected from one explicit source definition.",
+      "assessment": "source-consistent"
+    },
+    {
+      "sample_id": "fd-05",
+      "stratum": "random",
+      "origin": "clap_builder::error::Error<F>::value_validation",
+      "members": ["FUN_002c3f60", "FUN_004c2480"],
+      "source": {
+        "crate": "clap_builder",
+        "version": "4.5.60",
+        "file": "clap_builder-4.5.60/src/error/mod.rs",
+        "lines": "668-684",
+        "excerpt": "pub(crate) fn value_validation(...) -> Self { let mut err = Self::new(ErrorKind::ValueValidation).set_source(err); ... err }"
+      },
+      "member_evidence": "Both rebased addresses resolve to this generic Error<F> method; addr2line attributes one emitted copy to an fd codegen unit and one to a clap_builder codegen unit.",
+      "reasoning": "The distinct codegen-unit placement does not create a second source definition. Both copies are consistent with the one generic method.",
+      "assessment": "source-consistent"
+    },
+    {
+      "sample_id": "fd-06",
+      "stratum": "random",
+      "origin": "<regex_automata::util::prefilter::memchr::Memchr2 as core::fmt::Debug>::fmt",
+      "members": ["FUN_00396670", "FUN_003b5510"],
+      "source": {
+        "crate": "regex-automata",
+        "version": "0.4.14",
+        "file": "regex-automata-0.4.14/src/util/prefilter/memchr.rs",
+        "lines": "65-66",
+        "excerpt": "#[derive(Clone, Debug)] pub(crate) struct Memchr2(u8, u8);"
+      },
+      "member_evidence": "Both rebased addresses resolve to Debug::fmt for Memchr2, while Cargo.lock and embedded source paths identify regex-automata 0.4.14.",
+      "reasoning": "There is one Debug derive site for Memchr2. The fmt body is macro-generated and has no explicit source span, so this is source-consistent with macro-expansion uncertainty rather than independent proof of generated-item identity.",
+      "assessment": "source-consistent"
+    },
+    {
+      "sample_id": "fd-07",
+      "stratum": "random",
+      "origin": "anyhow::error::object_reallocate_boxed",
+      "members": ["FUN_002b0300", "FUN_002b03d0", "FUN_002b0470", "FUN_002b0540", "FUN_002b0620", "FUN_002b0700"],
+      "source": {
+        "crate": "anyhow",
+        "version": "1.0.102",
+        "file": "anyhow-1.0.102/src/error.rs",
+        "lines": "778-785",
+        "excerpt": "unsafe fn object_reallocate_boxed<E>(e: Own<ErrorImpl>) -> Box<dyn StdError + Send + Sync + 'static> { let unerased_own = e.cast::<ErrorImpl<E>>(); Box::new(unsafe { unerased_own.boxed() }._object) }"
+      },
+      "member_evidence": "All six rebased addresses resolve to local symbols for object_reallocate_boxed with distinct symbol hashes.",
+      "reasoning": "The function is generic over E, and all six emitted bodies point to the same explicit source definition. The concrete E types are not recoverable from the demangled names used here.",
+      "assessment": "source-consistent"
+    },
+    {
+      "sample_id": "fd-08",
+      "stratum": "random",
+      "origin": "hashbrown::map::HashMap<K,V,S,A>::insert",
+      "members": ["FUN_00329200", "FUN_0034f5f0", "FUN_003c7090", "FUN_003c7340", "FUN_0041e370", "FUN_0041e580"],
+      "source": {
+        "crate": "hashbrown",
+        "version": "0.16.1",
+        "file": "hashbrown-0.16.1/src/map.rs",
+        "lines": "1841-1852",
+        "excerpt": "pub fn insert(&mut self, k: K, v: V) -> Option<V> { let hash = make_hash::<K, S>(&self.hash_builder, &k); match self.find_or_find_insert_index(hash, &k) { ... } }"
+      },
+      "member_evidence": "All six rebased addresses resolve to HashMap::insert in ignore, globset, regex_automata, or lscolors codegen units. The binary contains /rust/deps/hashbrown-0.16.1 source paths; the six symbol hashes are distinct.",
+      "reasoning": "The source and binary version evidence support one generic 0.16.1 method instantiated for several types. Cargo.lock also contains hashbrown 0.15.5, but no sampled member was tied to that version; exact compiler-vendored revision identity remains unproved.",
+      "assessment": "source-consistent"
+    },
+    {
+      "sample_id": "fd-09",
+      "stratum": "random",
+      "origin": "fd::walk::WorkerState::build_overrides::{{closure}}",
+      "members": ["FUN_0027a400", "FUN_0027a470"],
+      "source": {
+        "crate": "fd-find",
+        "version": "10.4.2",
+        "file": "subjects/fd/src/walk.rs",
+        "lines": "336-344",
+        "excerpt": "builder.add(pattern).map_err(|e| anyhow!(\"Malformed exclude pattern: {}\", e))?; ... builder.build().map_err(|_| anyhow!(\"Mismatch in exclude patterns\"))"
+      },
+      "member_findings": {
+        "FUN_0027a400": "ELF 0x17a400 is a 104-byte closure that performs formatting before constructing anyhow::Error; this matches the line-339 |e| closure with a formatted error value.",
+        "FUN_0027a470": "ELF 0x17a470 is a 71-byte closure that loads a fixed 28-byte message before constructing anyhow::Error; this matches the line-344 |_| closure with the literal Mismatch in exclude patterns."
+      },
+      "reasoning": "The two members are not monomorphizations of one closure. They correspond to two syntactically and behaviorally different closure expressions whose normalized symbols collapse to the same parent-function closure name.",
+      "assessment": "source-conflict"
+    },
+    {
+      "sample_id": "fd-10",
+      "stratum": "random",
+      "origin": "clap_builder::error::Error<F>::extend_context_unchecked",
+      "members": ["FUN_004c45d0", "FUN_004c4610", "FUN_004c4650"],
+      "source": {
+        "crate": "clap_builder",
+        "version": "4.5.60",
+        "file": "clap_builder-4.5.60/src/error/mod.rs",
+        "lines": "354-360",
+        "excerpt": "pub(crate) fn extend_context_unchecked<const N: usize>(mut self, context: [(ContextKind, ContextValue); N]) -> Self { self.inner.context.extend_unchecked(context); self }"
+      },
+      "member_evidence": "All three rebased addresses resolve to this method with different symbol hashes.",
+      "reasoning": "The method is const-generic over N and belongs to generic Error<F>; three emitted specializations still share one source definition.",
+      "assessment": "source-consistent"
+    },
+    {
+      "sample_id": "fd-11",
+      "stratum": "purposeful",
+      "origin": "shared-address@FUN_00335b90",
+      "members": ["FUN_00335b90"],
+      "source": {
+        "crate": "walkdir",
+        "version": "2.5.0",
+        "file": "walkdir-2.5.0/src/error.rs",
+        "lines": "199-217",
+        "excerpt": "fn cause(&self) -> Option<&dyn error::Error> { self.source() } ... fn source(&self) -> Option<&(dyn error::Error + 'static)> { match self.inner { ... } }"
+      },
+      "member_evidence": "ELF address 0x235b90 has two symbols at exactly the same address: Error::cause and Error::source. The source contains two distinct methods, with cause delegating to source.",
+      "reasoning": "This is source-consistent as a purposeful shared-address record and supports the neutral policy. It does not establish one source-definition family; treating the two symbols as a positive same-definition pair would be wrong.",
+      "assessment": "source-consistent"
+    },
+    {
+      "sample_id": "fd-12",
+      "stratum": "purposeful",
+      "origin": "<&[u8] as object::read::read_ref::ReadRef>::read_bytes_at_until",
+      "members": ["FUN_0050cb20"],
+      "source": {
+        "crate": "object",
+        "version": "0.37.3 (compiler-vendored)",
+        "file": "object-0.37.3/src/read/read_ref.rs",
+        "lines": "141-152",
+        "excerpt": "fn read_bytes_at_until(...) { let bytes = self.get(start..end).ok_or(())?; match memchr::memchr(delimiter, bytes) { Some(len) => bytes.get(..len).ok_or(()), None => Err(()) } }"
+      },
+      "member_evidence": "The rebased address 0x40cb20 resolves to this concrete &[u8] ReadRef method. The binary embeds /rust/deps/object-0.37.3; object is not present in fd Cargo.lock.",
+      "reasoning": "The source body and compiler-vendored version are consistent with the singleton record. The crates.io source is a reference copy, not proof of the exact sysroot source revision.",
+      "assessment": "source-consistent"
+    },
+    {
+      "sample_id": "fd-13",
+      "stratum": "purposeful",
+      "origin": "<core::result::Result<T,E> as jiff::error::ErrorContext<T,E>>::context::{{closure}}",
+      "members": ["FUN_002714d0", "FUN_0028a490", "FUN_0028a4e0", "FUN_0028a530", "FUN_0035bca0", "FUN_0035fc50", "FUN_0035fca0", "FUN_0035fcf0", "FUN_003696e0", "FUN_0036d210"],
+      "source": {
+        "crate": "jiff",
+        "version": "0.2.23",
+        "file": "jiff-0.2.23/src/error/mod.rs",
+        "lines": "740-749",
+        "excerpt": "fn context(self, consequent: impl IntoError) -> Result<T, Error> { self.map_err(|err| { err.into_error().context_impl(consequent.into_error()) }) }"
+      },
+      "member_evidence": "All ten rebased addresses resolve to the closure nested in Result<T,E>::context and carry distinct symbol hashes.",
+      "reasoning": "This method contains exactly one closure expression. Generic T, E, and consequent types explain multiple emitted instances; source text does not identify the concrete instantiation behind each address.",
+      "assessment": "source-consistent"
+    },
+    {
+      "sample_id": "fd-14",
+      "stratum": "purposeful",
+      "origin": "clap_builder::parser::matches::arg_matches::unwrap_downcast_into{{reify.shim}}",
+      "members": ["FUN_0026e6a0", "FUN_0026e730", "FUN_0026e7d0", "FUN_0026e860"],
+      "source": {
+        "crate": "clap_builder",
+        "version": "4.5.60",
+        "file": "clap_builder-4.5.60/src/parser/matches/arg_matches.rs",
+        "lines": "1893-1896",
+        "excerpt": "fn unwrap_downcast_into<T: Any + Clone + Send + Sync + 'static>(value: AnyValue) -> T { value.downcast_into().expect(INTERNAL_ERROR_MSG) }"
+      },
+      "member_evidence": "All four rebased addresses resolve to reify.shim symbols associated with the one generic function, each with a distinct compiler symbol hash.",
+      "reasoning": "The explicit source function is unique, but reify shims are compiler-generated callable wrappers and have no independent source span. The group is source-consistent only at the underlying-definition level.",
+      "assessment": "source-consistent"
+    },
+    {
+      "sample_id": "fd-15",
+      "stratum": "purposeful",
+      "origin": "<T as crossbeam_epoch::atomic::Pointable>::drop",
+      "members": ["FUN_00336600"],
+      "source": {
+        "crate": "crossbeam-epoch",
+        "version": "0.9.18",
+        "file": "crossbeam-epoch-0.9.18/src/atomic.rs",
+        "lines": "194-214",
+        "excerpt": "impl<T> Pointable for T { ... unsafe fn drop(ptr: usize) { drop(Box::from_raw(ptr as *mut T)); } }"
+      },
+      "member_evidence": "The rebased address 0x236600 resolves to the blanket Pointable::drop implementation.",
+      "reasoning": "The source provides one generic blanket implementation. The singleton is consistent, but the concrete T and compiler item identity are not recoverable from the normalized symbol alone.",
+      "assessment": "source-consistent"
+    },
+    {
+      "sample_id": "fd-16",
+      "stratum": "purposeful",
+      "origin": "<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt",
+      "members": [
+        "FUN_00379c60", "FUN_00379cd0", "FUN_00379d40", "FUN_00379db0", "FUN_00379e20", "FUN_00379ea0", "FUN_00379f20", "FUN_00379f90",
+        "FUN_0037a000", "FUN_0037a070", "FUN_0037a0e0", "FUN_0037a160", "FUN_0037a1e0", "FUN_0037a250", "FUN_0037a2c0", "FUN_0037a330",
+        "FUN_0037a3a0", "FUN_0037a410", "FUN_0037a480", "FUN_0037a4f0", "FUN_0037a560", "FUN_0037a5e0", "FUN_0037a660", "FUN_0037a6d0",
+        "FUN_0037a740", "FUN_0037a7b0", "FUN_0037a820", "FUN_0037a890", "FUN_0037a900", "FUN_0037a970", "FUN_0037a9e0", "FUN_0037aa50",
+        "FUN_0037aac0", "FUN_0037ab30", "FUN_0037aba0", "FUN_0037ac10", "FUN_0037ac80", "FUN_0037acf0", "FUN_0037ad60", "FUN_0037add0",
+        "FUN_0037ae40", "FUN_0037aeb0", "FUN_0037af20", "FUN_0037af90", "FUN_0037b000", "FUN_0037b080", "FUN_0037b0f0", "FUN_0037b160",
+        "FUN_0037b1d0", "FUN_0037b240", "FUN_0037b2b0", "FUN_0037b320"
+      ],
+      "source": {
+        "crate": "jiff",
+        "version": "0.2.23",
+        "file": "jiff-0.2.23/src/util/b.rs",
+        "lines": "689-703",
+        "excerpt": "impl<B, P> core::fmt::Display for RawBoundsError<B> where B: Bounds<Primitive = P>, P: core::fmt::Display { fn fmt(...) { write!(f, \"parameter '{what}' is not in the required range of {min}..={max}\", ...) } }"
+      },
+      "member_evidence": "All 52 rebased addresses form a contiguous set of ELF-local symbols for this Display::fmt item, each with its own symbol hash and specialization-specific constants or formatting references.",
+      "reasoning": "The generic B/P implementation is a single explicit source definition; the many bound-marker specializations explain the large group. Exact B-to-address assignments and compiler origin IDs were not established.",
+      "assessment": "source-consistent"
+    }
+  ],
+  "limitations": [
+    "This review establishes source-level consistency, not rustc DefId or mono-item identity.",
+    "Trait implementations, derive output, closures, reify shims, and generic monomorphizations can share normalized names while representing distinct compiler items.",
+    "No compiler-internal origin map was available.",
+    "The review was performed by an LLM agent and is not independent human verification.",
+    "No prediction, result, or other audit-judgment file was read."
+  ]
+}

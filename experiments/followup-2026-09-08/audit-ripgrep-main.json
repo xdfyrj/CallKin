@@ -1,0 +1,1127 @@
+[
+  {
+    "sample_id": "ripgrep-main-01",
+    "case": "ripgrep-main",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "<rg::flags::defs::Passthru as core::fmt::Debug>::fmt",
+    "members": [
+      "FUN_00342070",
+      "FUN_00364460",
+      "FUN_0037c820"
+    ],
+    "symbols": {
+      "FUN_00342070": [
+        "<rg::flags::defs::Passthru as core::fmt::Debug>::fmt"
+      ],
+      "FUN_00364460": [
+        "<rg::flags::defs::Passthru as core::fmt::Debug>::fmt"
+      ],
+      "FUN_0037c820": [
+        "<rg::flags::defs::Passthru as core::fmt::Debug>::fmt"
+      ]
+    },
+    "source_evidence": [
+      {
+        "package": "ripgrep",
+        "version": "15.2.0",
+        "source_kind": "workspace-current-checkout",
+        "revision": "fc3dd04b7ca18ec8be97704dc098bbd062bad244",
+        "file": "crates/core/flags/defs.rs",
+        "line_spans": [
+          "5274-5275"
+        ],
+        "file_sha256": "6f63d96fcb519a8d2ea80c43362e5a1e453a383094e2258be4fe8400d54ed63e",
+        "git_blob_sha1": "87ac91047836ee74a2284367b5896ecf0e94a759",
+        "definition_kind": "derive-generated method",
+        "excerpt": "#[derive(Debug)]\nstruct Passthru;",
+        "checksum_verification": "Clean current checkout fc3dd04b7ca18ec8be97704dc098bbd062bad244; file SHA-256 and Git blob verified. Build source digest reproduces but omits crates/**, so it does not pin this workspace file to the exact build."
+      }
+    ],
+    "assessment": "source-consistent",
+    "review_scope": "LLM-agent source review; not compiler-ID proof or external-human verification",
+    "confidence": "medium",
+    "assessment_reason": "All three addresses map to the same exact mangled Debug::fmt hash and one local derive invocation.",
+    "uncertainties": [
+      "Generated body is not handwritten source.",
+      "Workspace file is not exact-build-pinned."
+    ],
+    "member_verification": {
+      "member_count": 3,
+      "listed_symbol_match_count": 3,
+      "result": "all-listed-members-matched",
+      "method": "Subtract fixed 0x100000 image rebase; match listed demangled symbols using nm -n -C on verified non-stripped O3S binary."
+    },
+    "review_date": "2026-09-08"
+  },
+  {
+    "sample_id": "ripgrep-main-02",
+    "case": "ripgrep-main",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "grep_searcher::searcher::glue::SliceByLine<M,S>::run",
+    "members": [
+      "FUN_00383cf0",
+      "FUN_00383e90",
+      "FUN_00383fe0",
+      "FUN_00384180",
+      "FUN_003842d0",
+      "FUN_00384430"
+    ],
+    "symbols": {
+      "FUN_00383cf0": [
+        "grep_searcher::searcher::glue::SliceByLine<M,S>::run"
+      ],
+      "FUN_00383e90": [
+        "grep_searcher::searcher::glue::SliceByLine<M,S>::run"
+      ],
+      "FUN_00383fe0": [
+        "grep_searcher::searcher::glue::SliceByLine<M,S>::run"
+      ],
+      "FUN_00384180": [
+        "grep_searcher::searcher::glue::SliceByLine<M,S>::run"
+      ],
+      "FUN_003842d0": [
+        "grep_searcher::searcher::glue::SliceByLine<M,S>::run"
+      ],
+      "FUN_00384430": [
+        "grep_searcher::searcher::glue::SliceByLine<M,S>::run"
+      ]
+    },
+    "source_evidence": [
+      {
+        "package": "grep-searcher",
+        "version": "0.1.17",
+        "source_kind": "workspace-current-checkout",
+        "revision": "fc3dd04b7ca18ec8be97704dc098bbd062bad244",
+        "file": "crates/searcher/src/searcher/glue.rs",
+        "line_spans": [
+          "102-102",
+          "117-131"
+        ],
+        "file_sha256": "c2a6d3055a7a2e69a7208113e837eec247d30a43e0c96029aad307f83632fb02",
+        "git_blob_sha1": "defb9c4caa3b36caf9edb8d77d66b210f92cccbb",
+        "definition_kind": "generic inherent method",
+        "excerpt": "pub(crate) fn run(mut self) -> Result<(), S::Error> { ... self.core.finish(byte_count, binary_byte_offset) }",
+        "checksum_verification": "Clean current checkout fc3dd04b7ca18ec8be97704dc098bbd062bad244; file SHA-256 and Git blob verified. Build source digest reproduces but omits crates/**, so it does not pin this workspace file to the exact build."
+      }
+    ],
+    "assessment": "source-consistent",
+    "review_scope": "LLM-agent source review; not compiler-ID proof or external-human verification",
+    "confidence": "medium",
+    "assessment_reason": "Six raw symbol hashes map to one generic SliceByLine<M,S>::run definition, consistent with monomorphization.",
+    "uncertainties": [
+      "Concrete M/S are erased.",
+      "Workspace file is not exact-build-pinned."
+    ],
+    "member_verification": {
+      "member_count": 6,
+      "listed_symbol_match_count": 6,
+      "result": "all-listed-members-matched",
+      "method": "Subtract fixed 0x100000 image rebase; match listed demangled symbols using nm -n -C on verified non-stripped O3S binary."
+    },
+    "review_date": "2026-09-08"
+  },
+  {
+    "sample_id": "ripgrep-main-03",
+    "case": "ripgrep-main",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "ignore::Error::with_path",
+    "members": [
+      "FUN_0039b470",
+      "FUN_003eb470",
+      "FUN_003eb550",
+      "FUN_003eb630"
+    ],
+    "symbols": {
+      "FUN_0039b470": [
+        "ignore::Error::with_path"
+      ],
+      "FUN_003eb470": [
+        "ignore::Error::with_path"
+      ],
+      "FUN_003eb550": [
+        "ignore::Error::with_path"
+      ],
+      "FUN_003eb630": [
+        "ignore::Error::with_path"
+      ]
+    },
+    "source_evidence": [
+      {
+        "package": "ignore",
+        "version": "0.4.29",
+        "source_kind": "workspace-current-checkout",
+        "revision": "fc3dd04b7ca18ec8be97704dc098bbd062bad244",
+        "file": "crates/ignore/src/lib.rs",
+        "line_spans": [
+          "261-266"
+        ],
+        "file_sha256": "ffd28ee1f7da906b3e6fb0a3b07af754844851f20ccb7766eee9b6231f5bfdf9",
+        "git_blob_sha1": "0ed4a49dc9e4934cd206b2ab0afe035ba77da720",
+        "definition_kind": "generic inherent method",
+        "excerpt": "fn with_path<P: AsRef<Path>>(self, path: P) -> Error { Error::WithPath { path: path.as_ref().to_path_buf(), err: Box::new(self) } }",
+        "checksum_verification": "Clean current checkout fc3dd04b7ca18ec8be97704dc098bbd062bad244; file SHA-256 and Git blob verified. Build source digest reproduces but omits crates/**, so it does not pin this workspace file to the exact build."
+      }
+    ],
+    "assessment": "source-consistent",
+    "review_scope": "LLM-agent source review; not compiler-ID proof or external-human verification",
+    "confidence": "medium",
+    "assessment_reason": "Four addresses map to generic Error::with_path; FUN_003eb470 aliases two raw instantiations.",
+    "uncertainties": [
+      "Address members can collapse raw instantiations.",
+      "Workspace file is not exact-build-pinned."
+    ],
+    "member_verification": {
+      "member_count": 4,
+      "listed_symbol_match_count": 4,
+      "result": "all-listed-members-matched",
+      "method": "Subtract fixed 0x100000 image rebase; match listed demangled symbols using nm -n -C on verified non-stripped O3S binary."
+    },
+    "review_date": "2026-09-08"
+  },
+  {
+    "sample_id": "ripgrep-main-04",
+    "case": "ripgrep-main",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "<rg::flags::defs::DfaSizeLimit as rg::flags::Flag>::doc_long",
+    "members": [
+      "FUN_00342770",
+      "FUN_00364b90",
+      "FUN_0037cf20"
+    ],
+    "symbols": {
+      "FUN_00342770": [
+        "<rg::flags::defs::DfaSizeLimit as rg::flags::Flag>::doc_long"
+      ],
+      "FUN_00364b90": [
+        "<rg::flags::defs::DfaSizeLimit as rg::flags::Flag>::doc_long"
+      ],
+      "FUN_0037cf20": [
+        "<rg::flags::defs::DfaSizeLimit as rg::flags::Flag>::doc_long"
+      ]
+    },
+    "source_evidence": [
+      {
+        "package": "ripgrep",
+        "version": "15.2.0",
+        "source_kind": "workspace-current-checkout",
+        "revision": "fc3dd04b7ca18ec8be97704dc098bbd062bad244",
+        "file": "crates/core/flags/defs.rs",
+        "line_spans": [
+          "1508-1508",
+          "1524-1535"
+        ],
+        "file_sha256": "6f63d96fcb519a8d2ea80c43362e5a1e453a383094e2258be4fe8400d54ed63e",
+        "git_blob_sha1": "87ac91047836ee74a2284367b5896ecf0e94a759",
+        "definition_kind": "trait implementation method",
+        "excerpt": "fn doc_long(&self) -> &'static str { r\"The upper size limit of the regex DFA. ...\" }",
+        "checksum_verification": "Clean current checkout fc3dd04b7ca18ec8be97704dc098bbd062bad244; file SHA-256 and Git blob verified. Build source digest reproduces but omits crates/**, so it does not pin this workspace file to the exact build."
+      }
+    ],
+    "assessment": "source-consistent",
+    "review_scope": "LLM-agent source review; not compiler-ID proof or external-human verification",
+    "confidence": "medium",
+    "assessment_reason": "Three local copies carry one exact DfaSizeLimit::doc_long identity.",
+    "uncertainties": [
+      "Copies are not independent source definitions.",
+      "Workspace file is not exact-build-pinned."
+    ],
+    "member_verification": {
+      "member_count": 3,
+      "listed_symbol_match_count": 3,
+      "result": "all-listed-members-matched",
+      "method": "Subtract fixed 0x100000 image rebase; match listed demangled symbols using nm -n -C on verified non-stripped O3S binary."
+    },
+    "review_date": "2026-09-08"
+  },
+  {
+    "sample_id": "ripgrep-main-05",
+    "case": "ripgrep-main",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "<rg::flags::defs::ContextSeparator as core::fmt::Debug>::fmt",
+    "members": [
+      "FUN_00343350",
+      "FUN_003674b0",
+      "FUN_0037dd60"
+    ],
+    "symbols": {
+      "FUN_00343350": [
+        "<rg::flags::defs::ContextSeparator as core::fmt::Debug>::fmt"
+      ],
+      "FUN_003674b0": [
+        "<rg::flags::defs::ContextSeparator as core::fmt::Debug>::fmt"
+      ],
+      "FUN_0037dd60": [
+        "<rg::flags::defs::ContextSeparator as core::fmt::Debug>::fmt"
+      ]
+    },
+    "source_evidence": [
+      {
+        "package": "ripgrep",
+        "version": "15.2.0",
+        "source_kind": "workspace-current-checkout",
+        "revision": "fc3dd04b7ca18ec8be97704dc098bbd062bad244",
+        "file": "crates/core/flags/defs.rs",
+        "line_spans": [
+          "1137-1138"
+        ],
+        "file_sha256": "6f63d96fcb519a8d2ea80c43362e5a1e453a383094e2258be4fe8400d54ed63e",
+        "git_blob_sha1": "87ac91047836ee74a2284367b5896ecf0e94a759",
+        "definition_kind": "derive-generated method",
+        "excerpt": "#[derive(Debug)]\nstruct ContextSeparator;",
+        "checksum_verification": "Clean current checkout fc3dd04b7ca18ec8be97704dc098bbd062bad244; file SHA-256 and Git blob verified. Build source digest reproduces but omits crates/**, so it does not pin this workspace file to the exact build."
+      }
+    ],
+    "assessment": "source-consistent",
+    "review_scope": "LLM-agent source review; not compiler-ID proof or external-human verification",
+    "confidence": "medium",
+    "assessment_reason": "Three addresses map to one ContextSeparator Debug::fmt derive invocation.",
+    "uncertainties": [
+      "Generated body is not handwritten source.",
+      "Workspace file is not exact-build-pinned."
+    ],
+    "member_verification": {
+      "member_count": 3,
+      "listed_symbol_match_count": 3,
+      "result": "all-listed-members-matched",
+      "method": "Subtract fixed 0x100000 image rebase; match listed demangled symbols using nm -n -C on verified non-stripped O3S binary."
+    },
+    "review_date": "2026-09-08"
+  },
+  {
+    "sample_id": "ripgrep-main-06",
+    "case": "ripgrep-main",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "<rg::flags::defs::IncludeZero as rg::flags::Flag>::name_negated",
+    "members": [
+      "FUN_00342510",
+      "FUN_00364900",
+      "FUN_0037ccc0"
+    ],
+    "symbols": {
+      "FUN_00342510": [
+        "<rg::flags::defs::IncludeZero as rg::flags::Flag>::name_negated"
+      ],
+      "FUN_00364900": [
+        "<rg::flags::defs::IncludeZero as rg::flags::Flag>::name_negated"
+      ],
+      "FUN_0037ccc0": [
+        "<rg::flags::defs::IncludeZero as rg::flags::Flag>::name_negated"
+      ]
+    },
+    "source_evidence": [
+      {
+        "package": "ripgrep",
+        "version": "15.2.0",
+        "source_kind": "workspace-current-checkout",
+        "revision": "fc3dd04b7ca18ec8be97704dc098bbd062bad244",
+        "file": "crates/core/flags/defs.rs",
+        "line_spans": [
+          "3332-3332",
+          "3339-3341"
+        ],
+        "file_sha256": "6f63d96fcb519a8d2ea80c43362e5a1e453a383094e2258be4fe8400d54ed63e",
+        "git_blob_sha1": "87ac91047836ee74a2284367b5896ecf0e94a759",
+        "definition_kind": "trait implementation method",
+        "excerpt": "fn name_negated(&self) -> Option<&'static str> { Some(\"no-include-zero\") }",
+        "checksum_verification": "Clean current checkout fc3dd04b7ca18ec8be97704dc098bbd062bad244; file SHA-256 and Git blob verified. Build source digest reproduces but omits crates/**, so it does not pin this workspace file to the exact build."
+      }
+    ],
+    "assessment": "source-consistent",
+    "review_scope": "LLM-agent source review; not compiler-ID proof or external-human verification",
+    "confidence": "medium",
+    "assessment_reason": "Three addresses map to the sole IncludeZero::name_negated definition.",
+    "uncertainties": [
+      "Copies are not independent source definitions.",
+      "Workspace file is not exact-build-pinned."
+    ],
+    "member_verification": {
+      "member_count": 3,
+      "listed_symbol_match_count": 3,
+      "result": "all-listed-members-matched",
+      "method": "Subtract fixed 0x100000 image rebase; match listed demangled symbols using nm -n -C on verified non-stripped O3S binary."
+    },
+    "review_date": "2026-09-08"
+  },
+  {
+    "sample_id": "ripgrep-main-07",
+    "case": "ripgrep-main",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "<rg::flags::defs::DfaSizeLimit as rg::flags::Flag>::doc_short",
+    "members": [
+      "FUN_00342780",
+      "FUN_00364ba0",
+      "FUN_0037cf30"
+    ],
+    "symbols": {
+      "FUN_00342780": [
+        "<rg::flags::defs::DfaSizeLimit as rg::flags::Flag>::doc_short"
+      ],
+      "FUN_00364ba0": [
+        "<rg::flags::defs::DfaSizeLimit as rg::flags::Flag>::doc_short"
+      ],
+      "FUN_0037cf30": [
+        "<rg::flags::defs::DfaSizeLimit as rg::flags::Flag>::doc_short"
+      ]
+    },
+    "source_evidence": [
+      {
+        "package": "ripgrep",
+        "version": "15.2.0",
+        "source_kind": "workspace-current-checkout",
+        "revision": "fc3dd04b7ca18ec8be97704dc098bbd062bad244",
+        "file": "crates/core/flags/defs.rs",
+        "line_spans": [
+          "1508-1508",
+          "1521-1523"
+        ],
+        "file_sha256": "6f63d96fcb519a8d2ea80c43362e5a1e453a383094e2258be4fe8400d54ed63e",
+        "git_blob_sha1": "87ac91047836ee74a2284367b5896ecf0e94a759",
+        "definition_kind": "trait implementation method",
+        "excerpt": "fn doc_short(&self) -> &'static str { r\"The upper size limit of the regex DFA.\" }",
+        "checksum_verification": "Clean current checkout fc3dd04b7ca18ec8be97704dc098bbd062bad244; file SHA-256 and Git blob verified. Build source digest reproduces but omits crates/**, so it does not pin this workspace file to the exact build."
+      }
+    ],
+    "assessment": "source-consistent",
+    "review_scope": "LLM-agent source review; not compiler-ID proof or external-human verification",
+    "confidence": "medium",
+    "assessment_reason": "Three addresses map to the sole DfaSizeLimit::doc_short definition.",
+    "uncertainties": [
+      "Copies are not independent source definitions.",
+      "Workspace file is not exact-build-pinned."
+    ],
+    "member_verification": {
+      "member_count": 3,
+      "listed_symbol_match_count": 3,
+      "result": "all-listed-members-matched",
+      "method": "Subtract fixed 0x100000 image rebase; match listed demangled symbols using nm -n -C on verified non-stripped O3S binary."
+    },
+    "review_date": "2026-09-08"
+  },
+  {
+    "sample_id": "ripgrep-main-08",
+    "case": "ripgrep-main",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "<rg::flags::defs::PreGlob as rg::flags::Flag>::doc_long",
+    "members": [
+      "FUN_00341950",
+      "FUN_00363d80",
+      "FUN_0037c140"
+    ],
+    "symbols": {
+      "FUN_00341950": [
+        "<rg::flags::defs::PreGlob as rg::flags::Flag>::doc_long"
+      ],
+      "FUN_00363d80": [
+        "<rg::flags::defs::PreGlob as rg::flags::Flag>::doc_long"
+      ],
+      "FUN_0037c140": [
+        "<rg::flags::defs::PreGlob as rg::flags::Flag>::doc_long"
+      ]
+    },
+    "source_evidence": [
+      {
+        "package": "ripgrep",
+        "version": "15.2.0",
+        "source_kind": "workspace-current-checkout",
+        "revision": "fc3dd04b7ca18ec8be97704dc098bbd062bad244",
+        "file": "crates/core/flags/defs.rs",
+        "line_spans": [
+          "5573-5573",
+          "5589-5615"
+        ],
+        "file_sha256": "6f63d96fcb519a8d2ea80c43362e5a1e453a383094e2258be4fe8400d54ed63e",
+        "git_blob_sha1": "87ac91047836ee74a2284367b5896ecf0e94a759",
+        "definition_kind": "trait implementation method",
+        "excerpt": "fn doc_long(&self) -> &'static str { r#\"This flag works in conjunction with the pre flag. ...\"# }",
+        "checksum_verification": "Clean current checkout fc3dd04b7ca18ec8be97704dc098bbd062bad244; file SHA-256 and Git blob verified. Build source digest reproduces but omits crates/**, so it does not pin this workspace file to the exact build."
+      }
+    ],
+    "assessment": "source-consistent",
+    "review_scope": "LLM-agent source review; not compiler-ID proof or external-human verification",
+    "confidence": "medium",
+    "assessment_reason": "Three addresses map to the sole PreGlob::doc_long definition.",
+    "uncertainties": [
+      "Copies are not independent source definitions.",
+      "Workspace file is not exact-build-pinned."
+    ],
+    "member_verification": {
+      "member_count": 3,
+      "listed_symbol_match_count": 3,
+      "result": "all-listed-members-matched",
+      "method": "Subtract fixed 0x100000 image rebase; match listed demangled symbols using nm -n -C on verified non-stripped O3S binary."
+    },
+    "review_date": "2026-09-08"
+  },
+  {
+    "sample_id": "ripgrep-main-09",
+    "case": "ripgrep-main",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "<aho_corasick::nfa::noncontiguous::NFA as aho_corasick::automaton::Automaton>::patterns_len",
+    "members": [
+      "FUN_00414d90",
+      "FUN_004ef8e0"
+    ],
+    "symbols": {
+      "FUN_00414d90": [
+        "<aho_corasick::nfa::noncontiguous::NFA as aho_corasick::automaton::Automaton>::patterns_len"
+      ],
+      "FUN_004ef8e0": [
+        "<aho_corasick::nfa::noncontiguous::NFA as aho_corasick::automaton::Automaton>::patterns_len"
+      ]
+    },
+    "source_evidence": [
+      {
+        "package": "aho-corasick",
+        "version": "1.1.4",
+        "source_kind": "cargo-registry",
+        "file": "aho-corasick-1.1.4/src/nfa/noncontiguous.rs",
+        "line_spans": [
+          "591-591",
+          "658-661"
+        ],
+        "file_sha256": "de94f02b04efd8744fb096759a8897c22012b0e0ca3ace161fd87c71befefe04",
+        "cargo_lock_checksum": "ddd31a130427c27518df266943a5308ed92d4b226cc639f5a8f1002816174301",
+        "cached_crate_sha256": "ddd31a130427c27518df266943a5308ed92d4b226cc639f5a8f1002816174301",
+        "definition_kind": "concrete trait implementation method",
+        "excerpt": "unsafe impl Automaton for NFA { ... fn patterns_len(&self) -> usize { self.pattern_lens.len() } }",
+        "checksum_verification": "Cargo.lock checksum equals cached .crate SHA-256; archive extraction reproduced this file SHA-256."
+      }
+    ],
+    "assessment": "source-consistent",
+    "review_scope": "LLM-agent source review; not compiler-ID proof or external-human verification",
+    "confidence": "high",
+    "assessment_reason": "Both addresses expose the same exact concrete NFA::patterns_len identity in the pinned crate.",
+    "uncertainties": [
+      "Two local copies are not independent definitions."
+    ],
+    "member_verification": {
+      "member_count": 2,
+      "listed_symbol_match_count": 2,
+      "result": "all-listed-members-matched",
+      "method": "Subtract fixed 0x100000 image rebase; match listed demangled symbols using nm -n -C on verified non-stripped O3S binary."
+    },
+    "review_date": "2026-09-08"
+  },
+  {
+    "sample_id": "ripgrep-main-10",
+    "case": "ripgrep-main",
+    "stratum": "random",
+    "selection_rule": "sha256_uniform_order",
+    "origin": "<rg::flags::defs::NoUnicode as rg::flags::Flag>::doc_short",
+    "members": [
+      "FUN_00342030",
+      "FUN_00364420",
+      "FUN_0037c7e0"
+    ],
+    "symbols": {
+      "FUN_00342030": [
+        "<rg::flags::defs::NoUnicode as rg::flags::Flag>::doc_short"
+      ],
+      "FUN_00364420": [
+        "<rg::flags::defs::NoUnicode as rg::flags::Flag>::doc_short"
+      ],
+      "FUN_0037c7e0": [
+        "<rg::flags::defs::NoUnicode as rg::flags::Flag>::doc_short"
+      ]
+    },
+    "source_evidence": [
+      {
+        "package": "ripgrep",
+        "version": "15.2.0",
+        "source_kind": "workspace-current-checkout",
+        "revision": "fc3dd04b7ca18ec8be97704dc098bbd062bad244",
+        "file": "crates/core/flags/defs.rs",
+        "line_spans": [
+          "4888-4888",
+          "4901-4903"
+        ],
+        "file_sha256": "6f63d96fcb519a8d2ea80c43362e5a1e453a383094e2258be4fe8400d54ed63e",
+        "git_blob_sha1": "87ac91047836ee74a2284367b5896ecf0e94a759",
+        "definition_kind": "trait implementation method",
+        "excerpt": "fn doc_short(&self) -> &'static str { r\"Disable Unicode mode.\" }",
+        "checksum_verification": "Clean current checkout fc3dd04b7ca18ec8be97704dc098bbd062bad244; file SHA-256 and Git blob verified. Build source digest reproduces but omits crates/**, so it does not pin this workspace file to the exact build."
+      }
+    ],
+    "assessment": "source-consistent",
+    "review_scope": "LLM-agent source review; not compiler-ID proof or external-human verification",
+    "confidence": "medium",
+    "assessment_reason": "Three addresses map to the sole NoUnicode::doc_short definition.",
+    "uncertainties": [
+      "Copies are not independent source definitions.",
+      "Workspace file is not exact-build-pinned."
+    ],
+    "member_verification": {
+      "member_count": 3,
+      "listed_symbol_match_count": 3,
+      "result": "all-listed-members-matched",
+      "method": "Subtract fixed 0x100000 image rebase; match listed demangled symbols using nm -n -C on verified non-stripped O3S binary."
+    },
+    "review_date": "2026-09-08"
+  },
+  {
+    "sample_id": "ripgrep-main-11",
+    "case": "ripgrep-main",
+    "stratum": "purposeful",
+    "selection_rule": "shared_address",
+    "origin": "shared-address@FUN_00306c40",
+    "members": [
+      "FUN_00306c40"
+    ],
+    "symbols": {
+      "FUN_00306c40": [
+        "<grep_printer::jsont::Match as serde_core::ser::Serialize>::serialize",
+        "<grep_printer::jsont::Context as serde_core::ser::Serialize>::serialize"
+      ]
+    },
+    "source_evidence": [
+      {
+        "package": "grep-printer",
+        "version": "0.3.1",
+        "source_kind": "workspace-current-checkout",
+        "revision": "fc3dd04b7ca18ec8be97704dc098bbd062bad244",
+        "file": "crates/printer/src/jsont.rs",
+        "line_spans": [
+          "94-109"
+        ],
+        "file_sha256": "bf5de4c4a28b53cf66b8a2d5f30eb5878abe120b4a72a4465633821d7635379e",
+        "git_blob_sha1": "837692906be09a7c2111e2d3c594cbf5c9a6d9b7",
+        "definition_kind": "handwritten trait method",
+        "excerpt": "impl Serialize for Match { ... serialize_struct(\"Match\", 5)?; ... }",
+        "checksum_verification": "Clean current checkout fc3dd04b7ca18ec8be97704dc098bbd062bad244; file SHA-256 and Git blob verified. Build source digest reproduces but omits crates/**, so it does not pin this workspace file to the exact build."
+      },
+      {
+        "package": "grep-printer",
+        "version": "0.3.1",
+        "source_kind": "workspace-current-checkout",
+        "revision": "fc3dd04b7ca18ec8be97704dc098bbd062bad244",
+        "file": "crates/printer/src/jsont.rs",
+        "line_spans": [
+          "119-134"
+        ],
+        "file_sha256": "bf5de4c4a28b53cf66b8a2d5f30eb5878abe120b4a72a4465633821d7635379e",
+        "git_blob_sha1": "837692906be09a7c2111e2d3c594cbf5c9a6d9b7",
+        "definition_kind": "handwritten trait method",
+        "excerpt": "impl Serialize for Context { ... serialize_struct(\"Context\", 5)?; ... }",
+        "checksum_verification": "Clean current checkout fc3dd04b7ca18ec8be97704dc098bbd062bad244; file SHA-256 and Git blob verified. Build source digest reproduces but omits crates/**, so it does not pin this workspace file to the exact build."
+      }
+    ],
+    "assessment": "source-consistent",
+    "review_scope": "LLM-agent source review; not compiler-ID proof or external-human verification",
+    "confidence": "high",
+    "assessment_reason": "The source multiplicity is real, and the ground truth represents it correctly: FUN_00306c40 is a singleton shared-address placeholder, both source origins are preserved in cross_origin_aliases, and linkage labels every pair touching it ambiguous-neutral. This is expected ambiguity, not an incorrectly merged source group or algorithm error.",
+    "assessment_detail": "source-consistent-with-neutral-policy",
+    "assessment_change": {
+      "date": "2026-09-08",
+      "previous_assessment": "source-conflict",
+      "previous_conclusion_preserved": "One machine address maps to two distinct handwritten source methods.",
+      "adjudication": "Changed after checking schema-6 ground truth and linkage policy: the singleton placeholder and cross-origin alias overlay correctly neutralize the ambiguity."
+    },
+    "uncertainties": [
+      "Coalescing cause is unproved.",
+      "Workspace file is not exact-build-pinned."
+    ],
+    "member_verification": {
+      "member_count": 1,
+      "listed_symbol_match_count": 1,
+      "result": "all-listed-members-matched",
+      "method": "Subtract fixed 0x100000 image rebase; match listed demangled symbols using nm -n -C on verified non-stripped O3S binary."
+    },
+    "review_date": "2026-09-08"
+  },
+  {
+    "sample_id": "ripgrep-main-12",
+    "case": "ripgrep-main",
+    "stratum": "purposeful",
+    "selection_rule": "trait_impl",
+    "origin": "<&A as regex_automata::dfa::automaton::Automaton>::accelerator",
+    "members": [
+      "FUN_004907a0"
+    ],
+    "symbols": {
+      "FUN_004907a0": [
+        "<&A as regex_automata::dfa::automaton::Automaton>::accelerator"
+      ]
+    },
+    "source_evidence": [
+      {
+        "package": "regex-automata",
+        "version": "0.4.15",
+        "source_kind": "cargo-registry",
+        "file": "regex-automata-0.4.15/src/dfa/automaton.rs",
+        "line_spans": [
+          "1829-1829",
+          "1938-1941"
+        ],
+        "file_sha256": "a2af61cdfb7f16a8419a25ccb3ae250afe736ff397c7a3101c8a77781d096a9b",
+        "cargo_lock_checksum": "1f388202e4b80542a0921078cc23b6333bcf1409c1e3f86404cae4766a6131db",
+        "cached_crate_sha256": "1f388202e4b80542a0921078cc23b6333bcf1409c1e3f86404cae4766a6131db",
+        "definition_kind": "generic forwarding trait method",
+        "excerpt": "fn accelerator(&self, id: StateID) -> &[u8] { (**self).accelerator(id) }",
+        "checksum_verification": "Cargo.lock checksum equals cached .crate SHA-256; archive extraction reproduced this file SHA-256."
+      }
+    ],
+    "assessment": "source-consistent",
+    "review_scope": "LLM-agent source review; not compiler-ID proof or external-human verification",
+    "confidence": "high",
+    "assessment_reason": "Singleton maps to pinned Automaton-for-&A forwarding method.",
+    "uncertainties": [
+      "No within-group pair.",
+      "Concrete A is erased."
+    ],
+    "member_verification": {
+      "member_count": 1,
+      "listed_symbol_match_count": 1,
+      "result": "all-listed-members-matched",
+      "method": "Subtract fixed 0x100000 image rebase; match listed demangled symbols using nm -n -C on verified non-stripped O3S binary."
+    },
+    "review_date": "2026-09-08"
+  },
+  {
+    "sample_id": "ripgrep-main-13",
+    "case": "ripgrep-main",
+    "stratum": "purposeful",
+    "selection_rule": "closure",
+    "origin": "<walkdir::DirList as core::iter::traits::iterator::Iterator>::next::{{closure}}",
+    "members": [
+      "FUN_003fbd00"
+    ],
+    "symbols": {
+      "FUN_003fbd00": [
+        "<walkdir::DirList as core::iter::traits::iterator::Iterator>::next::{{closure}}"
+      ]
+    },
+    "source_evidence": [
+      {
+        "package": "walkdir",
+        "version": "2.5.0",
+        "source_kind": "cargo-registry",
+        "file": "walkdir-2.5.0/src/lib.rs",
+        "line_spans": [
+          "1015-1031",
+          "1024-1027"
+        ],
+        "file_sha256": "3f7d673f9e278a71de2cb5f90353a44ea7803a98d49c2f72a68cb26dce8c966a",
+        "cargo_lock_checksum": "29790946404f91d9c5d06f9874efddea1dc06c5efe94541a7d6863108e3a5e4b",
+        "cached_crate_sha256": "29790946404f91d9c5d06f9874efddea1dc06c5efe94541a7d6863108e3a5e4b",
+        "definition_kind": "closure expression",
+        "excerpt": "rd.next().map(|r| match r { Ok(r) => DirEntry::from_entry(...), Err(err) => Err(...) })",
+        "checksum_verification": "Cargo.lock checksum equals cached .crate SHA-256; archive extraction reproduced this file SHA-256."
+      }
+    ],
+    "assessment": "source-consistent",
+    "review_scope": "LLM-agent source review; not compiler-ID proof or external-human verification",
+    "confidence": "medium",
+    "assessment_reason": "Symbol identifies the sole closure expression in DirList::next.",
+    "uncertainties": [
+      "No standalone source declaration or stable closure name.",
+      "No within-group pair."
+    ],
+    "member_verification": {
+      "member_count": 1,
+      "listed_symbol_match_count": 1,
+      "result": "all-listed-members-matched",
+      "method": "Subtract fixed 0x100000 image rebase; match listed demangled symbols using nm -n -C on verified non-stripped O3S binary."
+    },
+    "review_date": "2026-09-08"
+  },
+  {
+    "sample_id": "ripgrep-main-14",
+    "case": "ripgrep-main",
+    "stratum": "purposeful",
+    "selection_rule": "generated_or_shim_candidate:fallback_lexical_multimember",
+    "origin": "<&A as regex_automata::dfa::automaton::Automaton>::match_pattern",
+    "members": [
+      "FUN_00420e30",
+      "FUN_00490880"
+    ],
+    "symbols": {
+      "FUN_00420e30": [
+        "<&A as regex_automata::dfa::automaton::Automaton>::match_pattern"
+      ],
+      "FUN_00490880": [
+        "<&A as regex_automata::dfa::automaton::Automaton>::match_pattern"
+      ]
+    },
+    "source_evidence": [
+      {
+        "package": "regex-automata",
+        "version": "0.4.15",
+        "source_kind": "cargo-registry",
+        "file": "regex-automata-0.4.15/src/dfa/automaton.rs",
+        "line_spans": [
+          "1829-1829",
+          "1918-1921"
+        ],
+        "file_sha256": "a2af61cdfb7f16a8419a25ccb3ae250afe736ff397c7a3101c8a77781d096a9b",
+        "cargo_lock_checksum": "1f388202e4b80542a0921078cc23b6333bcf1409c1e3f86404cae4766a6131db",
+        "cached_crate_sha256": "1f388202e4b80542a0921078cc23b6333bcf1409c1e3f86404cae4766a6131db",
+        "definition_kind": "generic forwarding trait method",
+        "excerpt": "fn match_pattern(&self, id: StateID, index: usize) -> PatternID { (**self).match_pattern(id, index) }",
+        "checksum_verification": "Cargo.lock checksum equals cached .crate SHA-256; archive extraction reproduced this file SHA-256."
+      }
+    ],
+    "assessment": "source-consistent",
+    "review_scope": "LLM-agent source review; not compiler-ID proof or external-human verification",
+    "confidence": "high",
+    "assessment_reason": "Two raw hashes fit two A monomorphizations of one pinned forwarding method.",
+    "uncertainties": [
+      "Concrete A substitutions are erased."
+    ],
+    "member_verification": {
+      "member_count": 2,
+      "listed_symbol_match_count": 2,
+      "result": "all-listed-members-matched",
+      "method": "Subtract fixed 0x100000 image rebase; match listed demangled symbols using nm -n -C on verified non-stripped O3S binary."
+    },
+    "review_date": "2026-09-08"
+  },
+  {
+    "sample_id": "ripgrep-main-15",
+    "case": "ripgrep-main",
+    "stratum": "purposeful",
+    "selection_rule": "drop_related",
+    "origin": "<T as crossbeam_epoch::atomic::Pointable>::drop",
+    "members": [
+      "FUN_003ffc00"
+    ],
+    "symbols": {
+      "FUN_003ffc00": [
+        "<T as crossbeam_epoch::atomic::Pointable>::drop"
+      ]
+    },
+    "source_evidence": [
+      {
+        "package": "crossbeam-epoch",
+        "version": "0.9.20",
+        "source_kind": "cargo-registry",
+        "file": "crossbeam-epoch-0.9.20/src/atomic.rs",
+        "line_spans": [
+          "194-214",
+          "211-213"
+        ],
+        "file_sha256": "d738c357e6cc2ddc0b744117e98c21362097ffa5cab1e268df090b7c09c7534d",
+        "cargo_lock_checksum": "2d6914041f254d6e9176c01941b21115dcfb7089e55135a35411081bd106ef3f",
+        "cached_crate_sha256": "2d6914041f254d6e9176c01941b21115dcfb7089e55135a35411081bd106ef3f",
+        "definition_kind": "blanket generic trait method",
+        "excerpt": "impl<T> Pointable for T { ... unsafe fn drop(ptr: usize) { drop(Box::from_raw(ptr as *mut T)); } }",
+        "checksum_verification": "Cargo.lock checksum equals cached .crate SHA-256; archive extraction reproduced this file SHA-256."
+      }
+    ],
+    "assessment": "source-consistent",
+    "review_scope": "LLM-agent source review; not compiler-ID proof or external-human verification",
+    "confidence": "high",
+    "assessment_reason": "Singleton maps exactly to pinned blanket Pointable-for-T drop.",
+    "uncertainties": [
+      "No within-group pair.",
+      "Concrete T is erased."
+    ],
+    "member_verification": {
+      "member_count": 1,
+      "listed_symbol_match_count": 1,
+      "result": "all-listed-members-matched",
+      "method": "Subtract fixed 0x100000 image rebase; match listed demangled symbols using nm -n -C on verified non-stripped O3S binary."
+    },
+    "review_date": "2026-09-08"
+  },
+  {
+    "sample_id": "ripgrep-main-16",
+    "case": "ripgrep-main",
+    "stratum": "purposeful",
+    "selection_rule": "largest_remaining",
+    "origin": "serde_core::ser::SerializeMap::serialize_entry",
+    "members": [
+      "FUN_003683e0",
+      "FUN_003684c0",
+      "FUN_003685d0",
+      "FUN_00368730",
+      "FUN_003687d0",
+      "FUN_003688b0",
+      "FUN_00368ac0",
+      "FUN_00368b60",
+      "FUN_00368c00",
+      "FUN_003691a0",
+      "FUN_00369270",
+      "FUN_00369480",
+      "FUN_00369660",
+      "FUN_00369700",
+      "FUN_00369910",
+      "FUN_00369a20",
+      "FUN_00369ad0",
+      "FUN_00369d70",
+      "FUN_00369e10",
+      "FUN_0036a020",
+      "FUN_0036a130",
+      "FUN_0036a2a0",
+      "FUN_0036a390",
+      "FUN_0036a620",
+      "FUN_0036a710",
+      "FUN_0036a820",
+      "FUN_0036aa30",
+      "FUN_0036ab20",
+      "FUN_0036abd0",
+      "FUN_0036ae60",
+      "FUN_0036af80",
+      "FUN_0036b1a0",
+      "FUN_0036b290",
+      "FUN_0036b3a0",
+      "FUN_0036b4c0",
+      "FUN_0036b630",
+      "FUN_0036b740",
+      "FUN_0036b890",
+      "FUN_0036bb00",
+      "FUN_0036bbb0",
+      "FUN_0036bc50",
+      "FUN_0036bee0",
+      "FUN_0036bfe0",
+      "FUN_0036c200",
+      "FUN_0036c340",
+      "FUN_0036c480",
+      "FUN_0036c520",
+      "FUN_0036c640",
+      "FUN_0036c740",
+      "FUN_0036c830",
+      "FUN_0036c930",
+      "FUN_0036ca20",
+      "FUN_0036cb90",
+      "FUN_0036ccd0",
+      "FUN_0036cef0",
+      "FUN_0036d100",
+      "FUN_0036d1f0",
+      "FUN_0036d2c0",
+      "FUN_0036d3d0",
+      "FUN_0036d4d0",
+      "FUN_0036d570",
+      "FUN_0036d870"
+    ],
+    "symbols": {
+      "FUN_003683e0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_003684c0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_003685d0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_00368730": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_003687d0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_003688b0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_00368ac0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_00368b60": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_00368c00": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_003691a0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_00369270": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_00369480": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_00369660": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_00369700": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_00369910": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_00369a20": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_00369ad0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_00369d70": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_00369e10": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036a020": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036a130": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036a2a0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036a390": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036a620": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036a710": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036a820": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036aa30": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036ab20": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036abd0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036ae60": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036af80": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036b1a0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036b290": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036b3a0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036b4c0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036b630": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036b740": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036b890": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036bb00": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036bbb0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036bc50": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036bee0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036bfe0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036c200": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036c340": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036c480": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036c520": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036c640": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036c740": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036c830": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036c930": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036ca20": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036cb90": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036ccd0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036cef0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036d100": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036d1f0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036d2c0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036d3d0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036d4d0": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036d570": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ],
+      "FUN_0036d870": [
+        "serde_core::ser::SerializeMap::serialize_entry"
+      ]
+    },
+    "source_evidence": [
+      {
+        "package": "serde_core",
+        "version": "1.0.228",
+        "source_kind": "cargo-registry",
+        "file": "serde_core-1.0.228/src/ser/mod.rs",
+        "line_spans": [
+          "1811-1811",
+          "1855-1862"
+        ],
+        "file_sha256": "ec097d92c8545356961e977a4c9650361cadd1d3a243d805ae7b0e0e589ae803",
+        "cargo_lock_checksum": "41d385c7d4ca58e59fc732af25c3983b67ac852c1a25000afe1175de458b67ad",
+        "cached_crate_sha256": "41d385c7d4ca58e59fc732af25c3983b67ac852c1a25000afe1175de458b67ad",
+        "definition_kind": "generic default trait method",
+        "excerpt": "fn serialize_entry<K, V>(...) { tri!(self.serialize_key(key)); self.serialize_value(value) }",
+        "checksum_verification": "Cargo.lock checksum equals cached .crate SHA-256; archive extraction reproduced this file SHA-256."
+      }
+    ],
+    "assessment": "source-consistent",
+    "review_scope": "LLM-agent source review; not compiler-ID proof or external-human verification",
+    "confidence": "high",
+    "assessment_reason": "All 62 addresses map to one default SerializeMap::serialize_entry definition, consistent with Self/K/V monomorphization and aliases.",
+    "uncertainties": [
+      "Displayed symbols erase implementer and K/V.",
+      "Definition consistency is not compiler-ID proof."
+    ],
+    "member_verification": {
+      "member_count": 62,
+      "listed_symbol_match_count": 62,
+      "result": "all-listed-members-matched",
+      "method": "Subtract fixed 0x100000 image rebase; match listed demangled symbols using nm -n -C on verified non-stripped O3S binary."
+    },
+    "review_date": "2026-09-08"
+  }
+]

@@ -1,0 +1,9 @@
+fd body2-k16 completed {'TP': 93, 'FP': 81, 'FN': 3087, 'f1': 0.055456171735241505}
+fd body2-k32 budget-refused {'TP': None, 'FP': None, 'FN': None, 'f1': None}
+fd body2-k8 completed {'TP': 91, 'FP': 80, 'FN': 3089, 'f1': 0.054312145628170695}
+fd combined3-k16 completed {'TP': 87, 'FP': 56, 'FN': 3093, 'f1': 0.05236232320192597}
+fd combined3-k32 completed {'TP': 87, 'FP': 59, 'FN': 3093, 'f1': 0.052315093205051115}
+fd combined3-k8 completed {'TP': 87, 'FP': 55, 'FN': 3093, 'f1': 0.052378085490668275}
+fd exact completed {'TP': 803, 'FP': 2816, 'FN': 2377, 'f1': 0.2362112075305192}
+fd rescue-k16 completed {'TP': 87, 'FP': 56, 'FN': 3093, 'f1': 0.05236232320192597}
+fd v0 completed {'TP': 1843, 'FP': 4554, 'FN': 1337, 'f1': 0.38488044272736766}

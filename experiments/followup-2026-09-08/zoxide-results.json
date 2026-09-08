@@ -1,0 +1,4649 @@
+[
+  {
+    "case": "zoxide",
+    "evaluator_sha256": "4cb96c09aee6f060d4fbea4003253273e0e5e098fd20de458743ac78a5ced5d7",
+    "metadata": {
+      "address_space_limit_bytes": 12884901888,
+      "base_commit": "3c20fff2796199071d888c39438d79e270112a02",
+      "body_evidence_sha256": "e1776d94199d13d2f995097f191ac78f5de3a5f5c00df80bd7dd78dd42a182cd",
+      "candidate_sha256": "28bb267c4cb4636e624346497ac3401f2f2020984018f0433267b1f9e185e373",
+      "case": "zoxide",
+      "code_commit": "8d5375c19578cd67aa8abfdcf0d46c9cec897a83",
+      "comparison_cost": {
+        "abstain_comparison_count": 663,
+        "budget_blocked_merge_count": 0,
+        "budget_limited": false,
+        "cache_hit_count": 62,
+        "candidate_alignment_cells": 103728329,
+        "candidate_detailed_comparison_count": 1660,
+        "on_demand_alignment_cells": 9,
+        "on_demand_comparison_count": 1,
+        "remaining_alignment_cells": 396271662,
+        "remaining_comparisons": 8339,
+        "total_alignment_cells": 103728338,
+        "total_detailed_comparisons": 1661
+      },
+      "config_sha256": "01c6148c0c8dbb8955300d5579bbd3b62a081f13c0958af0f5dd3cb63786d70f",
+      "demand": {
+        "alignment_cells": 103728329,
+        "candidate_pairs": 2323,
+        "comparisons": 1660,
+        "fits": true
+      },
+      "inference_seconds": 170.72937626599924,
+      "input_manifest_sha256": "4dca828168b64167ab7aa3b594b132821fc4171ccf3d034d9fd64db52dbf78b3",
+      "k": 16,
+      "load_seconds": 1.669549559999723,
+      "max_rss": 267056,
+      "max_rss_unit": "KiB",
+      "method": "body2",
+      "prediction_sha256": "1e5ff8f62f936603ef53d8a4499ca48fdf9f1952c7ee61d0cc8a270a231efd99",
+      "protocol_sha256": "093cd266119162ced2dd54cc374208a5d8080275c72e5465f5de676d8c58092e",
+      "python": "3.12.3",
+      "resource_limit_kind": "virtual-address-space",
+      "runner_sha256": "666573fb408a65e893d404856d6905c7de195d011fc0b4752e8737e449d8717a",
+      "started_at": "2026-09-08T01:18:10.966863+00:00",
+      "status": "completed",
+      "wall_seconds": 172.48162377799963,
+      "wall_time_limit_seconds": 1800
+    },
+    "metrics": {
+      "FN": 1223,
+      "FP": 19,
+      "TN": 222813,
+      "TP": 19,
+      "audit_purposeful": {
+        "macro_origin_recall": 0.0,
+        "positive_groups": 1,
+        "sampled_groups": 6
+      },
+      "audit_random": {
+        "macro_origin_recall": 0.0,
+        "positive_groups": 6,
+        "sampled_groups": 10
+      },
+      "candidate_positive_pairs": 654,
+      "candidate_positive_recall": 0.5265700483091788,
+      "comparison_cost": {
+        "abstain_comparison_count": 663,
+        "budget_blocked_merge_count": 0,
+        "budget_limited": false,
+        "cache_hit_count": 62,
+        "candidate_alignment_cells": 103728329,
+        "candidate_detailed_comparison_count": 1660,
+        "on_demand_alignment_cells": 9,
+        "on_demand_comparison_count": 1,
+        "remaining_alignment_cells": 396271662,
+        "remaining_comparisons": 8339,
+        "total_alignment_cells": 103728338,
+        "total_detailed_comparisons": 1661
+      },
+      "exact_group_rate": 0.05660377358490566,
+      "f1": 0.0296875,
+      "macro_origin_recall": 0.08418688230008985,
+      "neutral_pairs": {
+        "ambiguous-neutral": 2686,
+        "duplicate-neutral": 41,
+        "unresolved-neutral": 0
+      },
+      "on_demand_positive_compared": 1,
+      "per_origin": [
+        {
+          "exact_group": false,
+          "origin": "<E as anyhow::context::ext::StdError>::ext_context",
+          "positive_pairs": 21,
+          "recall": 0.047619047619047616,
+          "recovered_pairs": 1,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::clone_any",
+          "positive_pairs": 28,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref",
+          "positive_pairs": 28,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref_",
+          "positive_pairs": 28,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::possible_values",
+          "positive_pairs": 15,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 6
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::type_id",
+          "positive_pairs": 35,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 9
+        },
+        {
+          "exact_group": false,
+          "origin": "<anyhow::context::Quoted<C> as core::fmt::Debug>::fmt",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "<anyhow::wrapper::MessageError<M> as core::fmt::Debug>::fmt",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "<clap_builder::builder::value_parser::EnumValueParser<E> as clap_builder::builder::value_parser::TypedValueParser>::parse_ref",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "<clap_builder::util::flat_set::FlatSet<T> as core::iter::traits::collect::FromIterator<T>>::from_iter",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anstream::auto::AutoStream<S>::new",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::context::impl_for=anyhow::error::ContextError<C,E>::fmt",
+          "positive_pairs": 91,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 14
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::context::impl_for=anyhow::error::ContextError<C,E>::source",
+          "positive_pairs": 21,
+          "recall": 0.047619047619047616,
+          "recovered_pairs": 1,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::context::impl_for=anyhow::error::ContextError<C,anyhow::Error>::source",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_backtrace",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_chain_downcast",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_chain_drop_rest",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_downcast",
+          "positive_pairs": 21,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_drop_rest",
+          "positive_pairs": 21,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl=anyhow::Error::construct",
+          "positive_pairs": 171,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 19
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl=anyhow::Error::msg",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl_for=anyhow::Error::fmt",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl_for=anyhow::Error::from",
+          "positive_pairs": 10,
+          "recall": 0.2,
+          "recovered_pairs": 2,
+          "target_members": 5
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_boxed",
+          "positive_pairs": 171,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 19
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_downcast",
+          "positive_pairs": 28,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_drop",
+          "positive_pairs": 91,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 14
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_drop_front",
+          "positive_pairs": 6,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 4
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_reallocate_boxed",
+          "positive_pairs": 171,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 19
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_ref",
+          "positive_pairs": 171,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 19
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::kind::Adhoc::new",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "bincode::internal::deserialize_seed",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": true,
+          "origin": "clap_builder::builder::arg::Arg::value_names",
+          "positive_pairs": 1,
+          "recall": 1.0,
+          "recovered_pairs": 1,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::builder::arg::Arg::value_parser",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::builder::arg_group::ArgGroup::args",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::builder::command::Command::unroll_arg_requires",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::error::Error<F>::extend_context_unchecked",
+          "positive_pairs": 3,
+          "recall": 0.3333333333333333,
+          "recovered_pairs": 1,
+          "target_members": 3
+        },
+        {
+          "exact_group": true,
+          "origin": "clap_builder::error::Error<F>::invalid_value",
+          "positive_pairs": 1,
+          "recall": 1.0,
+          "recovered_pairs": 1,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::error::Error<F>::raw",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::error::Error<F>::with_cmd",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::mkeymap::MKeyMap::get",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::parser::error::MatchesError::unwrap",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::parser::features::suggestions::did_you_mean",
+          "positive_pairs": 6,
+          "recall": 0.16666666666666666,
+          "recovered_pairs": 1,
+          "target_members": 4
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::parser::matches::arg_matches::ArgMatches::try_remove_one",
+          "positive_pairs": 10,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 5
+        },
+        {
+          "exact_group": true,
+          "origin": "clap_builder::parser::matches::arg_matches::unwrap_downcast_into{{reify.shim}}",
+          "positive_pairs": 1,
+          "recall": 1.0,
+          "recovered_pairs": 1,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::util::any_value::AnyValue::downcast_into",
+          "positive_pairs": 15,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 6
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::util::flat_map::FlatMap<K,V>::extend_unchecked",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::util::flat_map::FlatMap<K,V>::insert",
+          "positive_pairs": 6,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 4
+        },
+        {
+          "exact_group": false,
+          "origin": "rustc_demangle::v0::Printer::in_binder",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "rustc_demangle::v0::Printer::print_backref",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "rustc_demangle::v0::Printer::print_sep_list",
+          "positive_pairs": 15,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 6
+        },
+        {
+          "exact_group": false,
+          "origin": "zoxide::import::autojump::Iter<R>::parse_line::{{closure}}",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "zoxide::import::run",
+          "positive_pairs": 15,
+          "recall": 0.6666666666666666,
+          "recovered_pairs": 10,
+          "target_members": 6
+        },
+        {
+          "exact_group": false,
+          "origin": "zoxide::import::z::Iter<R>::parse_line::{{closure}}",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        }
+      ],
+      "positive_first_outcome": {
+        "not_retrieved_or_requested": 460,
+        "observation_ineligible": 186,
+        "recovered": 19,
+        "slot_policy_failed": 336,
+        "structure_failed": 241
+      },
+      "positive_pairs": 1242,
+      "precision": 0.5,
+      "recall": 0.015297906602254429,
+      "scored_pairs": 224074,
+      "target_count": 674
+    },
+    "name": "body2-k16"
+  },
+  {
+    "case": "zoxide",
+    "evaluator_sha256": "4cb96c09aee6f060d4fbea4003253273e0e5e098fd20de458743ac78a5ced5d7",
+    "metadata": {
+      "address_space_limit_bytes": 12884901888,
+      "base_commit": "3c20fff2796199071d888c39438d79e270112a02",
+      "body_evidence_sha256": "e1776d94199d13d2f995097f191ac78f5de3a5f5c00df80bd7dd78dd42a182cd",
+      "candidate_sha256": "3723da3d84dbce3994f727e8eb127e8cc3894181eefec9c2f19209448eabad9a",
+      "case": "zoxide",
+      "code_commit": "8d5375c19578cd67aa8abfdcf0d46c9cec897a83",
+      "comparison_cost": {
+        "abstain_comparison_count": 1584,
+        "budget_blocked_merge_count": 0,
+        "budget_limited": false,
+        "cache_hit_count": 62,
+        "candidate_alignment_cells": 226938687,
+        "candidate_detailed_comparison_count": 3781,
+        "on_demand_alignment_cells": 9,
+        "on_demand_comparison_count": 1,
+        "remaining_alignment_cells": 273061304,
+        "remaining_comparisons": 6218,
+        "total_alignment_cells": 226938696,
+        "total_detailed_comparisons": 3782
+      },
+      "config_sha256": "01c6148c0c8dbb8955300d5579bbd3b62a081f13c0958af0f5dd3cb63786d70f",
+      "demand": {
+        "alignment_cells": 226938687,
+        "candidate_pairs": 5365,
+        "comparisons": 3781,
+        "fits": true
+      },
+      "inference_seconds": 381.1157745849996,
+      "input_manifest_sha256": "4dca828168b64167ab7aa3b594b132821fc4171ccf3d034d9fd64db52dbf78b3",
+      "k": 32,
+      "load_seconds": 1.6537847430008696,
+      "max_rss": 267204,
+      "max_rss_unit": "KiB",
+      "method": "body2",
+      "prediction_sha256": "dbd70600ca1a489450a93e0f30fcc40f2218c50104803e5a9a721008106c4c19",
+      "protocol_sha256": "093cd266119162ced2dd54cc374208a5d8080275c72e5465f5de676d8c58092e",
+      "python": "3.12.3",
+      "resource_limit_kind": "virtual-address-space",
+      "runner_sha256": "666573fb408a65e893d404856d6905c7de195d011fc0b4752e8737e449d8717a",
+      "started_at": "2026-09-08T01:24:46.930249+00:00",
+      "status": "completed",
+      "wall_seconds": 383.11815066500094,
+      "wall_time_limit_seconds": 1800
+    },
+    "metrics": {
+      "FN": 1223,
+      "FP": 19,
+      "TN": 222813,
+      "TP": 19,
+      "audit_purposeful": {
+        "macro_origin_recall": 0.0,
+        "positive_groups": 1,
+        "sampled_groups": 6
+      },
+      "audit_random": {
+        "macro_origin_recall": 0.0,
+        "positive_groups": 6,
+        "sampled_groups": 10
+      },
+      "candidate_positive_pairs": 863,
+      "candidate_positive_recall": 0.6948470209339774,
+      "comparison_cost": {
+        "abstain_comparison_count": 1584,
+        "budget_blocked_merge_count": 0,
+        "budget_limited": false,
+        "cache_hit_count": 62,
+        "candidate_alignment_cells": 226938687,
+        "candidate_detailed_comparison_count": 3781,
+        "on_demand_alignment_cells": 9,
+        "on_demand_comparison_count": 1,
+        "remaining_alignment_cells": 273061304,
+        "remaining_comparisons": 6218,
+        "total_alignment_cells": 226938696,
+        "total_detailed_comparisons": 3782
+      },
+      "exact_group_rate": 0.05660377358490566,
+      "f1": 0.0296875,
+      "macro_origin_recall": 0.08418688230008985,
+      "neutral_pairs": {
+        "ambiguous-neutral": 2686,
+        "duplicate-neutral": 41,
+        "unresolved-neutral": 0
+      },
+      "on_demand_positive_compared": 1,
+      "per_origin": [
+        {
+          "exact_group": false,
+          "origin": "<E as anyhow::context::ext::StdError>::ext_context",
+          "positive_pairs": 21,
+          "recall": 0.047619047619047616,
+          "recovered_pairs": 1,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::clone_any",
+          "positive_pairs": 28,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref",
+          "positive_pairs": 28,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref_",
+          "positive_pairs": 28,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::possible_values",
+          "positive_pairs": 15,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 6
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::type_id",
+          "positive_pairs": 35,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 9
+        },
+        {
+          "exact_group": false,
+          "origin": "<anyhow::context::Quoted<C> as core::fmt::Debug>::fmt",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "<anyhow::wrapper::MessageError<M> as core::fmt::Debug>::fmt",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "<clap_builder::builder::value_parser::EnumValueParser<E> as clap_builder::builder::value_parser::TypedValueParser>::parse_ref",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "<clap_builder::util::flat_set::FlatSet<T> as core::iter::traits::collect::FromIterator<T>>::from_iter",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anstream::auto::AutoStream<S>::new",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::context::impl_for=anyhow::error::ContextError<C,E>::fmt",
+          "positive_pairs": 91,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 14
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::context::impl_for=anyhow::error::ContextError<C,E>::source",
+          "positive_pairs": 21,
+          "recall": 0.047619047619047616,
+          "recovered_pairs": 1,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::context::impl_for=anyhow::error::ContextError<C,anyhow::Error>::source",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_backtrace",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_chain_downcast",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_chain_drop_rest",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_downcast",
+          "positive_pairs": 21,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_drop_rest",
+          "positive_pairs": 21,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl=anyhow::Error::construct",
+          "positive_pairs": 171,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 19
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl=anyhow::Error::msg",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl_for=anyhow::Error::fmt",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl_for=anyhow::Error::from",
+          "positive_pairs": 10,
+          "recall": 0.2,
+          "recovered_pairs": 2,
+          "target_members": 5
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_boxed",
+          "positive_pairs": 171,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 19
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_downcast",
+          "positive_pairs": 28,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_drop",
+          "positive_pairs": 91,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 14
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_drop_front",
+          "positive_pairs": 6,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 4
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_reallocate_boxed",
+          "positive_pairs": 171,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 19
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_ref",
+          "positive_pairs": 171,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 19
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::kind::Adhoc::new",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "bincode::internal::deserialize_seed",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": true,
+          "origin": "clap_builder::builder::arg::Arg::value_names",
+          "positive_pairs": 1,
+          "recall": 1.0,
+          "recovered_pairs": 1,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::builder::arg::Arg::value_parser",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::builder::arg_group::ArgGroup::args",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::builder::command::Command::unroll_arg_requires",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::error::Error<F>::extend_context_unchecked",
+          "positive_pairs": 3,
+          "recall": 0.3333333333333333,
+          "recovered_pairs": 1,
+          "target_members": 3
+        },
+        {
+          "exact_group": true,
+          "origin": "clap_builder::error::Error<F>::invalid_value",
+          "positive_pairs": 1,
+          "recall": 1.0,
+          "recovered_pairs": 1,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::error::Error<F>::raw",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::error::Error<F>::with_cmd",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::mkeymap::MKeyMap::get",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::parser::error::MatchesError::unwrap",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::parser::features::suggestions::did_you_mean",
+          "positive_pairs": 6,
+          "recall": 0.16666666666666666,
+          "recovered_pairs": 1,
+          "target_members": 4
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::parser::matches::arg_matches::ArgMatches::try_remove_one",
+          "positive_pairs": 10,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 5
+        },
+        {
+          "exact_group": true,
+          "origin": "clap_builder::parser::matches::arg_matches::unwrap_downcast_into{{reify.shim}}",
+          "positive_pairs": 1,
+          "recall": 1.0,
+          "recovered_pairs": 1,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::util::any_value::AnyValue::downcast_into",
+          "positive_pairs": 15,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 6
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::util::flat_map::FlatMap<K,V>::extend_unchecked",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::util::flat_map::FlatMap<K,V>::insert",
+          "positive_pairs": 6,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 4
+        },
+        {
+          "exact_group": false,
+          "origin": "rustc_demangle::v0::Printer::in_binder",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "rustc_demangle::v0::Printer::print_backref",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "rustc_demangle::v0::Printer::print_sep_list",
+          "positive_pairs": 15,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 6
+        },
+        {
+          "exact_group": false,
+          "origin": "zoxide::import::autojump::Iter<R>::parse_line::{{closure}}",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "zoxide::import::run",
+          "positive_pairs": 15,
+          "recall": 0.6666666666666666,
+          "recovered_pairs": 10,
+          "target_members": 6
+        },
+        {
+          "exact_group": false,
+          "origin": "zoxide::import::z::Iter<R>::parse_line::{{closure}}",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        }
+      ],
+      "positive_first_outcome": {
+        "not_retrieved_or_requested": 253,
+        "observation_ineligible": 186,
+        "recovered": 19,
+        "slot_policy_failed": 492,
+        "structure_failed": 292
+      },
+      "positive_pairs": 1242,
+      "precision": 0.5,
+      "recall": 0.015297906602254429,
+      "scored_pairs": 224074,
+      "target_count": 674
+    },
+    "name": "body2-k32"
+  },
+  {
+    "case": "zoxide",
+    "evaluator_sha256": "4cb96c09aee6f060d4fbea4003253273e0e5e098fd20de458743ac78a5ced5d7",
+    "metadata": {
+      "address_space_limit_bytes": 12884901888,
+      "base_commit": "3c20fff2796199071d888c39438d79e270112a02",
+      "body_evidence_sha256": "e1776d94199d13d2f995097f191ac78f5de3a5f5c00df80bd7dd78dd42a182cd",
+      "candidate_sha256": "b1e543718d2e77c5587c0cf0744c1ee6f2c7c7e9221e993084ada12ba2483057",
+      "case": "zoxide",
+      "code_commit": "8d5375c19578cd67aa8abfdcf0d46c9cec897a83",
+      "comparison_cost": {
+        "abstain_comparison_count": 322,
+        "budget_blocked_merge_count": 0,
+        "budget_limited": false,
+        "cache_hit_count": 59,
+        "candidate_alignment_cells": 43520756,
+        "candidate_detailed_comparison_count": 936,
+        "on_demand_alignment_cells": 0,
+        "on_demand_comparison_count": 0,
+        "remaining_alignment_cells": 456479244,
+        "remaining_comparisons": 9064,
+        "total_alignment_cells": 43520756,
+        "total_detailed_comparisons": 936
+      },
+      "config_sha256": "01c6148c0c8dbb8955300d5579bbd3b62a081f13c0958af0f5dd3cb63786d70f",
+      "demand": {
+        "alignment_cells": 43520756,
+        "candidate_pairs": 1258,
+        "comparisons": 936,
+        "fits": true
+      },
+      "inference_seconds": 71.04175057499924,
+      "input_manifest_sha256": "4dca828168b64167ab7aa3b594b132821fc4171ccf3d034d9fd64db52dbf78b3",
+      "k": 8,
+      "load_seconds": 1.5957034490002115,
+      "max_rss": 267104,
+      "max_rss_unit": "KiB",
+      "method": "body2",
+      "prediction_sha256": "b928e6e889ce7a545d112fba06562fdc2547839b811d763f23cc6da517a40d7e",
+      "protocol_sha256": "093cd266119162ced2dd54cc374208a5d8080275c72e5465f5de676d8c58092e",
+      "python": "3.12.3",
+      "resource_limit_kind": "virtual-address-space",
+      "runner_sha256": "666573fb408a65e893d404856d6905c7de195d011fc0b4752e8737e449d8717a",
+      "started_at": "2026-09-08T01:21:32.108032+00:00",
+      "status": "completed",
+      "wall_seconds": 72.70116474299903,
+      "wall_time_limit_seconds": 1800
+    },
+    "metrics": {
+      "FN": 1224,
+      "FP": 16,
+      "TN": 222816,
+      "TP": 18,
+      "audit_purposeful": {
+        "macro_origin_recall": 0.0,
+        "positive_groups": 1,
+        "sampled_groups": 6
+      },
+      "audit_random": {
+        "macro_origin_recall": 0.0,
+        "positive_groups": 6,
+        "sampled_groups": 10
+      },
+      "candidate_positive_pairs": 503,
+      "candidate_positive_recall": 0.40499194847020936,
+      "comparison_cost": {
+        "abstain_comparison_count": 322,
+        "budget_blocked_merge_count": 0,
+        "budget_limited": false,
+        "cache_hit_count": 59,
+        "candidate_alignment_cells": 43520756,
+        "candidate_detailed_comparison_count": 936,
+        "on_demand_alignment_cells": 0,
+        "on_demand_comparison_count": 0,
+        "remaining_alignment_cells": 456479244,
+        "remaining_comparisons": 9064,
+        "total_alignment_cells": 43520756,
+        "total_detailed_comparisons": 936
+      },
+      "exact_group_rate": 0.05660377358490566,
+      "f1": 0.02821316614420063,
+      "macro_origin_recall": 0.08328840970350405,
+      "neutral_pairs": {
+        "ambiguous-neutral": 2686,
+        "duplicate-neutral": 41,
+        "unresolved-neutral": 0
+      },
+      "on_demand_positive_compared": 0,
+      "per_origin": [
+        {
+          "exact_group": false,
+          "origin": "<E as anyhow::context::ext::StdError>::ext_context",
+          "positive_pairs": 21,
+          "recall": 0.047619047619047616,
+          "recovered_pairs": 1,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::clone_any",
+          "positive_pairs": 28,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref",
+          "positive_pairs": 28,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref_",
+          "positive_pairs": 28,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::possible_values",
+          "positive_pairs": 15,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 6
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::type_id",
+          "positive_pairs": 35,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 9
+        },
+        {
+          "exact_group": false,
+          "origin": "<anyhow::context::Quoted<C> as core::fmt::Debug>::fmt",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "<anyhow::wrapper::MessageError<M> as core::fmt::Debug>::fmt",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "<clap_builder::builder::value_parser::EnumValueParser<E> as clap_builder::builder::value_parser::TypedValueParser>::parse_ref",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "<clap_builder::util::flat_set::FlatSet<T> as core::iter::traits::collect::FromIterator<T>>::from_iter",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anstream::auto::AutoStream<S>::new",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::context::impl_for=anyhow::error::ContextError<C,E>::fmt",
+          "positive_pairs": 91,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 14
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::context::impl_for=anyhow::error::ContextError<C,E>::source",
+          "positive_pairs": 21,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::context::impl_for=anyhow::error::ContextError<C,anyhow::Error>::source",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_backtrace",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_chain_downcast",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_chain_drop_rest",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_downcast",
+          "positive_pairs": 21,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_drop_rest",
+          "positive_pairs": 21,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl=anyhow::Error::construct",
+          "positive_pairs": 171,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 19
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl=anyhow::Error::msg",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl_for=anyhow::Error::fmt",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl_for=anyhow::Error::from",
+          "positive_pairs": 10,
+          "recall": 0.2,
+          "recovered_pairs": 2,
+          "target_members": 5
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_boxed",
+          "positive_pairs": 171,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 19
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_downcast",
+          "positive_pairs": 28,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_drop",
+          "positive_pairs": 91,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 14
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_drop_front",
+          "positive_pairs": 6,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 4
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_reallocate_boxed",
+          "positive_pairs": 171,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 19
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_ref",
+          "positive_pairs": 171,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 19
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::kind::Adhoc::new",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "bincode::internal::deserialize_seed",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": true,
+          "origin": "clap_builder::builder::arg::Arg::value_names",
+          "positive_pairs": 1,
+          "recall": 1.0,
+          "recovered_pairs": 1,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::builder::arg::Arg::value_parser",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::builder::arg_group::ArgGroup::args",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::builder::command::Command::unroll_arg_requires",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::error::Error<F>::extend_context_unchecked",
+          "positive_pairs": 3,
+          "recall": 0.3333333333333333,
+          "recovered_pairs": 1,
+          "target_members": 3
+        },
+        {
+          "exact_group": true,
+          "origin": "clap_builder::error::Error<F>::invalid_value",
+          "positive_pairs": 1,
+          "recall": 1.0,
+          "recovered_pairs": 1,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::error::Error<F>::raw",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::error::Error<F>::with_cmd",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::mkeymap::MKeyMap::get",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::parser::error::MatchesError::unwrap",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::parser::features::suggestions::did_you_mean",
+          "positive_pairs": 6,
+          "recall": 0.16666666666666666,
+          "recovered_pairs": 1,
+          "target_members": 4
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::parser::matches::arg_matches::ArgMatches::try_remove_one",
+          "positive_pairs": 10,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 5
+        },
+        {
+          "exact_group": true,
+          "origin": "clap_builder::parser::matches::arg_matches::unwrap_downcast_into{{reify.shim}}",
+          "positive_pairs": 1,
+          "recall": 1.0,
+          "recovered_pairs": 1,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::util::any_value::AnyValue::downcast_into",
+          "positive_pairs": 15,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 6
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::util::flat_map::FlatMap<K,V>::extend_unchecked",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::util::flat_map::FlatMap<K,V>::insert",
+          "positive_pairs": 6,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 4
+        },
+        {
+          "exact_group": false,
+          "origin": "rustc_demangle::v0::Printer::in_binder",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "rustc_demangle::v0::Printer::print_backref",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "rustc_demangle::v0::Printer::print_sep_list",
+          "positive_pairs": 15,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 6
+        },
+        {
+          "exact_group": false,
+          "origin": "zoxide::import::autojump::Iter<R>::parse_line::{{closure}}",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "zoxide::import::run",
+          "positive_pairs": 15,
+          "recall": 0.6666666666666666,
+          "recovered_pairs": 10,
+          "target_members": 6
+        },
+        {
+          "exact_group": false,
+          "origin": "zoxide::import::z::Iter<R>::parse_line::{{closure}}",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        }
+      ],
+      "positive_first_outcome": {
+        "not_retrieved_or_requested": 610,
+        "observation_ineligible": 186,
+        "recovered": 18,
+        "slot_policy_failed": 276,
+        "structure_failed": 152
+      },
+      "positive_pairs": 1242,
+      "precision": 0.5294117647058824,
+      "recall": 0.014492753623188406,
+      "scored_pairs": 224074,
+      "target_count": 674
+    },
+    "name": "body2-k8"
+  },
+  {
+    "case": "zoxide",
+    "evaluator_sha256": "4cb96c09aee6f060d4fbea4003253273e0e5e098fd20de458743ac78a5ced5d7",
+    "metadata": {
+      "address_space_limit_bytes": 12884901888,
+      "base_commit": "3c20fff2796199071d888c39438d79e270112a02",
+      "body_evidence_sha256": "e1776d94199d13d2f995097f191ac78f5de3a5f5c00df80bd7dd78dd42a182cd",
+      "candidate_sha256": "e84a336012f42a75f63f19ae0d211ad5f3923c62747541ecc0a3414010d5c240",
+      "case": "zoxide",
+      "code_commit": "8d5375c19578cd67aa8abfdcf0d46c9cec897a83",
+      "comparison_cost": {
+        "abstain_comparison_count": 185,
+        "budget_blocked_merge_count": 0,
+        "budget_limited": false,
+        "cache_hit_count": 57,
+        "candidate_alignment_cells": 33679941,
+        "candidate_detailed_comparison_count": 471,
+        "on_demand_alignment_cells": 0,
+        "on_demand_comparison_count": 0,
+        "remaining_alignment_cells": 466320059,
+        "remaining_comparisons": 9529,
+        "total_alignment_cells": 33679941,
+        "total_detailed_comparisons": 471
+      },
+      "config_sha256": "01c6148c0c8dbb8955300d5579bbd3b62a081f13c0958af0f5dd3cb63786d70f",
+      "demand": {
+        "alignment_cells": 33679941,
+        "candidate_pairs": 656,
+        "comparisons": 471,
+        "fits": true
+      },
+      "historical_partition_check": {
+        "historical_reproduction_claim": "partition-reproduced",
+        "partition_delta": {
+          "reference_only": [],
+          "regenerated_only": []
+        },
+        "partition_match": true,
+        "reference_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/v0-engine-py-frozen/results/zoxide/plain/zoxide.O3S.v1.consensus3.k16.formal.families.json",
+        "reference_sha256": "9cf218e2a04965ab3e4c1924464da841ebfcab9df1580595af0546d008e91264"
+      },
+      "inference_seconds": 50.90948700199988,
+      "input_manifest_sha256": "4dca828168b64167ab7aa3b594b132821fc4171ccf3d034d9fd64db52dbf78b3",
+      "k": 16,
+      "load_seconds": 1.613830975999008,
+      "max_rss": 267148,
+      "max_rss_unit": "KiB",
+      "method": "combined3",
+      "prediction_sha256": "d2c6ccdde1cdd484b132d34c932365836d05293981462c6ae3fd98db64a5ff3c",
+      "protocol_sha256": "093cd266119162ced2dd54cc374208a5d8080275c72e5465f5de676d8c58092e",
+      "python": "3.12.3",
+      "resource_limit_kind": "virtual-address-space",
+      "runner_sha256": "666573fb408a65e893d404856d6905c7de195d011fc0b4752e8737e449d8717a",
+      "started_at": "2026-09-08T01:17:16.827042+00:00",
+      "status": "completed",
+      "wall_seconds": 52.57396022199828,
+      "wall_time_limit_seconds": 1800
+    },
+    "metrics": {
+      "FN": 1224,
+      "FP": 15,
+      "TN": 222817,
+      "TP": 18,
+      "audit_purposeful": {
+        "macro_origin_recall": 0.0,
+        "positive_groups": 1,
+        "sampled_groups": 6
+      },
+      "audit_random": {
+        "macro_origin_recall": 0.0,
+        "positive_groups": 6,
+        "sampled_groups": 10
+      },
+      "candidate_positive_pairs": 293,
+      "candidate_positive_recall": 0.2359098228663446,
+      "comparison_cost": {
+        "abstain_comparison_count": 185,
+        "budget_blocked_merge_count": 0,
+        "budget_limited": false,
+        "cache_hit_count": 57,
+        "candidate_alignment_cells": 33679941,
+        "candidate_detailed_comparison_count": 471,
+        "on_demand_alignment_cells": 0,
+        "on_demand_comparison_count": 0,
+        "remaining_alignment_cells": 466320059,
+        "remaining_comparisons": 9529,
+        "total_alignment_cells": 33679941,
+        "total_detailed_comparisons": 471
+      },
+      "exact_group_rate": 0.05660377358490566,
+      "f1": 0.02823529411764706,
+      "macro_origin_recall": 0.08328840970350405,
+      "neutral_pairs": {
+        "ambiguous-neutral": 2686,
+        "duplicate-neutral": 41,
+        "unresolved-neutral": 0
+      },
+      "on_demand_positive_compared": 0,
+      "per_origin": [
+        {
+          "exact_group": false,
+          "origin": "<E as anyhow::context::ext::StdError>::ext_context",
+          "positive_pairs": 21,
+          "recall": 0.047619047619047616,
+          "recovered_pairs": 1,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::clone_any",
+          "positive_pairs": 28,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref",
+          "positive_pairs": 28,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref_",
+          "positive_pairs": 28,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::possible_values",
+          "positive_pairs": 15,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 6
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::type_id",
+          "positive_pairs": 35,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 9
+        },
+        {
+          "exact_group": false,
+          "origin": "<anyhow::context::Quoted<C> as core::fmt::Debug>::fmt",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "<anyhow::wrapper::MessageError<M> as core::fmt::Debug>::fmt",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "<clap_builder::builder::value_parser::EnumValueParser<E> as clap_builder::builder::value_parser::TypedValueParser>::parse_ref",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "<clap_builder::util::flat_set::FlatSet<T> as core::iter::traits::collect::FromIterator<T>>::from_iter",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anstream::auto::AutoStream<S>::new",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::context::impl_for=anyhow::error::ContextError<C,E>::fmt",
+          "positive_pairs": 91,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 14
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::context::impl_for=anyhow::error::ContextError<C,E>::source",
+          "positive_pairs": 21,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::context::impl_for=anyhow::error::ContextError<C,anyhow::Error>::source",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_backtrace",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_chain_downcast",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_chain_drop_rest",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_downcast",
+          "positive_pairs": 21,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_drop_rest",
+          "positive_pairs": 21,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl=anyhow::Error::construct",
+          "positive_pairs": 171,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 19
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl=anyhow::Error::msg",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl_for=anyhow::Error::fmt",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl_for=anyhow::Error::from",
+          "positive_pairs": 10,
+          "recall": 0.2,
+          "recovered_pairs": 2,
+          "target_members": 5
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_boxed",
+          "positive_pairs": 171,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 19
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_downcast",
+          "positive_pairs": 28,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_drop",
+          "positive_pairs": 91,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 14
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_drop_front",
+          "positive_pairs": 6,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 4
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_reallocate_boxed",
+          "positive_pairs": 171,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 19
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_ref",
+          "positive_pairs": 171,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 19
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::kind::Adhoc::new",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "bincode::internal::deserialize_seed",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": true,
+          "origin": "clap_builder::builder::arg::Arg::value_names",
+          "positive_pairs": 1,
+          "recall": 1.0,
+          "recovered_pairs": 1,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::builder::arg::Arg::value_parser",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::builder::arg_group::ArgGroup::args",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::builder::command::Command::unroll_arg_requires",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::error::Error<F>::extend_context_unchecked",
+          "positive_pairs": 3,
+          "recall": 0.3333333333333333,
+          "recovered_pairs": 1,
+          "target_members": 3
+        },
+        {
+          "exact_group": true,
+          "origin": "clap_builder::error::Error<F>::invalid_value",
+          "positive_pairs": 1,
+          "recall": 1.0,
+          "recovered_pairs": 1,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::error::Error<F>::raw",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::error::Error<F>::with_cmd",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::mkeymap::MKeyMap::get",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::parser::error::MatchesError::unwrap",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::parser::features::suggestions::did_you_mean",
+          "positive_pairs": 6,
+          "recall": 0.16666666666666666,
+          "recovered_pairs": 1,
+          "target_members": 4
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::parser::matches::arg_matches::ArgMatches::try_remove_one",
+          "positive_pairs": 10,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 5
+        },
+        {
+          "exact_group": true,
+          "origin": "clap_builder::parser::matches::arg_matches::unwrap_downcast_into{{reify.shim}}",
+          "positive_pairs": 1,
+          "recall": 1.0,
+          "recovered_pairs": 1,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::util::any_value::AnyValue::downcast_into",
+          "positive_pairs": 15,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 6
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::util::flat_map::FlatMap<K,V>::extend_unchecked",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::util::flat_map::FlatMap<K,V>::insert",
+          "positive_pairs": 6,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 4
+        },
+        {
+          "exact_group": false,
+          "origin": "rustc_demangle::v0::Printer::in_binder",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "rustc_demangle::v0::Printer::print_backref",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "rustc_demangle::v0::Printer::print_sep_list",
+          "positive_pairs": 15,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 6
+        },
+        {
+          "exact_group": false,
+          "origin": "zoxide::import::autojump::Iter<R>::parse_line::{{closure}}",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "zoxide::import::run",
+          "positive_pairs": 15,
+          "recall": 0.6666666666666666,
+          "recovered_pairs": 10,
+          "target_members": 6
+        },
+        {
+          "exact_group": false,
+          "origin": "zoxide::import::z::Iter<R>::parse_line::{{closure}}",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        }
+      ],
+      "positive_first_outcome": {
+        "not_retrieved_or_requested": 801,
+        "observation_ineligible": 186,
+        "recovered": 18,
+        "slot_policy_failed": 76,
+        "structure_failed": 161
+      },
+      "positive_pairs": 1242,
+      "precision": 0.5454545454545454,
+      "recall": 0.014492753623188406,
+      "scored_pairs": 224074,
+      "target_count": 674
+    },
+    "name": "combined3-k16"
+  },
+  {
+    "case": "zoxide",
+    "evaluator_sha256": "4cb96c09aee6f060d4fbea4003253273e0e5e098fd20de458743ac78a5ced5d7",
+    "metadata": {
+      "address_space_limit_bytes": 12884901888,
+      "base_commit": "3c20fff2796199071d888c39438d79e270112a02",
+      "body_evidence_sha256": "e1776d94199d13d2f995097f191ac78f5de3a5f5c00df80bd7dd78dd42a182cd",
+      "candidate_sha256": "6956bbac8407d0ca8780c1fcc266a566b9a136d06b484ae22450ce1ab4c21b5c",
+      "case": "zoxide",
+      "code_commit": "8d5375c19578cd67aa8abfdcf0d46c9cec897a83",
+      "comparison_cost": {
+        "abstain_comparison_count": 348,
+        "budget_blocked_merge_count": 0,
+        "budget_limited": false,
+        "cache_hit_count": 57,
+        "candidate_alignment_cells": 73776436,
+        "candidate_detailed_comparison_count": 719,
+        "on_demand_alignment_cells": 0,
+        "on_demand_comparison_count": 0,
+        "remaining_alignment_cells": 426223564,
+        "remaining_comparisons": 9281,
+        "total_alignment_cells": 73776436,
+        "total_detailed_comparisons": 719
+      },
+      "config_sha256": "01c6148c0c8dbb8955300d5579bbd3b62a081f13c0958af0f5dd3cb63786d70f",
+      "demand": {
+        "alignment_cells": 73776436,
+        "candidate_pairs": 1067,
+        "comparisons": 719,
+        "fits": true
+      },
+      "inference_seconds": 116.9747226010004,
+      "input_manifest_sha256": "4dca828168b64167ab7aa3b594b132821fc4171ccf3d034d9fd64db52dbf78b3",
+      "k": 32,
+      "load_seconds": 1.887918581998747,
+      "max_rss": 267280,
+      "max_rss_unit": "KiB",
+      "method": "combined3",
+      "prediction_sha256": "a75592e9ec41ddd72512c4d03c55ce5e1d767a5af56967e839265d861a88f9d8",
+      "protocol_sha256": "093cd266119162ced2dd54cc374208a5d8080275c72e5465f5de676d8c58092e",
+      "python": "3.12.3",
+      "resource_limit_kind": "virtual-address-space",
+      "runner_sha256": "666573fb408a65e893d404856d6905c7de195d011fc0b4752e8737e449d8717a",
+      "started_at": "2026-09-08T01:22:46.395635+00:00",
+      "status": "completed",
+      "wall_seconds": 118.92423643700022,
+      "wall_time_limit_seconds": 1800
+    },
+    "metrics": {
+      "FN": 1224,
+      "FP": 15,
+      "TN": 222817,
+      "TP": 18,
+      "audit_purposeful": {
+        "macro_origin_recall": 0.0,
+        "positive_groups": 1,
+        "sampled_groups": 6
+      },
+      "audit_random": {
+        "macro_origin_recall": 0.0,
+        "positive_groups": 6,
+        "sampled_groups": 10
+      },
+      "candidate_positive_pairs": 329,
+      "candidate_positive_recall": 0.2648953301127214,
+      "comparison_cost": {
+        "abstain_comparison_count": 348,
+        "budget_blocked_merge_count": 0,
+        "budget_limited": false,
+        "cache_hit_count": 57,
+        "candidate_alignment_cells": 73776436,
+        "candidate_detailed_comparison_count": 719,
+        "on_demand_alignment_cells": 0,
+        "on_demand_comparison_count": 0,
+        "remaining_alignment_cells": 426223564,
+        "remaining_comparisons": 9281,
+        "total_alignment_cells": 73776436,
+        "total_detailed_comparisons": 719
+      },
+      "exact_group_rate": 0.05660377358490566,
+      "f1": 0.02823529411764706,
+      "macro_origin_recall": 0.08328840970350405,
+      "neutral_pairs": {
+        "ambiguous-neutral": 2686,
+        "duplicate-neutral": 41,
+        "unresolved-neutral": 0
+      },
+      "on_demand_positive_compared": 0,
+      "per_origin": [
+        {
+          "exact_group": false,
+          "origin": "<E as anyhow::context::ext::StdError>::ext_context",
+          "positive_pairs": 21,
+          "recall": 0.047619047619047616,
+          "recovered_pairs": 1,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::clone_any",
+          "positive_pairs": 28,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref",
+          "positive_pairs": 28,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref_",
+          "positive_pairs": 28,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::possible_values",
+          "positive_pairs": 15,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 6
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::type_id",
+          "positive_pairs": 35,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 9
+        },
+        {
+          "exact_group": false,
+          "origin": "<anyhow::context::Quoted<C> as core::fmt::Debug>::fmt",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "<anyhow::wrapper::MessageError<M> as core::fmt::Debug>::fmt",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "<clap_builder::builder::value_parser::EnumValueParser<E> as clap_builder::builder::value_parser::TypedValueParser>::parse_ref",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "<clap_builder::util::flat_set::FlatSet<T> as core::iter::traits::collect::FromIterator<T>>::from_iter",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anstream::auto::AutoStream<S>::new",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::context::impl_for=anyhow::error::ContextError<C,E>::fmt",
+          "positive_pairs": 91,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 14
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::context::impl_for=anyhow::error::ContextError<C,E>::source",
+          "positive_pairs": 21,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::context::impl_for=anyhow::error::ContextError<C,anyhow::Error>::source",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_backtrace",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_chain_downcast",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_chain_drop_rest",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_downcast",
+          "positive_pairs": 21,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_drop_rest",
+          "positive_pairs": 21,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl=anyhow::Error::construct",
+          "positive_pairs": 171,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 19
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl=anyhow::Error::msg",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl_for=anyhow::Error::fmt",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl_for=anyhow::Error::from",
+          "positive_pairs": 10,
+          "recall": 0.2,
+          "recovered_pairs": 2,
+          "target_members": 5
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_boxed",
+          "positive_pairs": 171,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 19
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_downcast",
+          "positive_pairs": 28,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_drop",
+          "positive_pairs": 91,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 14
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_drop_front",
+          "positive_pairs": 6,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 4
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_reallocate_boxed",
+          "positive_pairs": 171,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 19
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_ref",
+          "positive_pairs": 171,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 19
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::kind::Adhoc::new",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "bincode::internal::deserialize_seed",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": true,
+          "origin": "clap_builder::builder::arg::Arg::value_names",
+          "positive_pairs": 1,
+          "recall": 1.0,
+          "recovered_pairs": 1,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::builder::arg::Arg::value_parser",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::builder::arg_group::ArgGroup::args",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::builder::command::Command::unroll_arg_requires",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::error::Error<F>::extend_context_unchecked",
+          "positive_pairs": 3,
+          "recall": 0.3333333333333333,
+          "recovered_pairs": 1,
+          "target_members": 3
+        },
+        {
+          "exact_group": true,
+          "origin": "clap_builder::error::Error<F>::invalid_value",
+          "positive_pairs": 1,
+          "recall": 1.0,
+          "recovered_pairs": 1,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::error::Error<F>::raw",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::error::Error<F>::with_cmd",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::mkeymap::MKeyMap::get",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::parser::error::MatchesError::unwrap",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::parser::features::suggestions::did_you_mean",
+          "positive_pairs": 6,
+          "recall": 0.16666666666666666,
+          "recovered_pairs": 1,
+          "target_members": 4
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::parser::matches::arg_matches::ArgMatches::try_remove_one",
+          "positive_pairs": 10,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 5
+        },
+        {
+          "exact_group": true,
+          "origin": "clap_builder::parser::matches::arg_matches::unwrap_downcast_into{{reify.shim}}",
+          "positive_pairs": 1,
+          "recall": 1.0,
+          "recovered_pairs": 1,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::util::any_value::AnyValue::downcast_into",
+          "positive_pairs": 15,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 6
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::util::flat_map::FlatMap<K,V>::extend_unchecked",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::util::flat_map::FlatMap<K,V>::insert",
+          "positive_pairs": 6,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 4
+        },
+        {
+          "exact_group": false,
+          "origin": "rustc_demangle::v0::Printer::in_binder",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "rustc_demangle::v0::Printer::print_backref",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "rustc_demangle::v0::Printer::print_sep_list",
+          "positive_pairs": 15,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 6
+        },
+        {
+          "exact_group": false,
+          "origin": "zoxide::import::autojump::Iter<R>::parse_line::{{closure}}",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "zoxide::import::run",
+          "positive_pairs": 15,
+          "recall": 0.6666666666666666,
+          "recovered_pairs": 10,
+          "target_members": 6
+        },
+        {
+          "exact_group": false,
+          "origin": "zoxide::import::z::Iter<R>::parse_line::{{closure}}",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        }
+      ],
+      "positive_first_outcome": {
+        "not_retrieved_or_requested": 766,
+        "observation_ineligible": 186,
+        "recovered": 18,
+        "slot_policy_failed": 78,
+        "structure_failed": 194
+      },
+      "positive_pairs": 1242,
+      "precision": 0.5454545454545454,
+      "recall": 0.014492753623188406,
+      "scored_pairs": 224074,
+      "target_count": 674
+    },
+    "name": "combined3-k32"
+  },
+  {
+    "case": "zoxide",
+    "evaluator_sha256": "4cb96c09aee6f060d4fbea4003253273e0e5e098fd20de458743ac78a5ced5d7",
+    "metadata": {
+      "address_space_limit_bytes": 12884901888,
+      "base_commit": "3c20fff2796199071d888c39438d79e270112a02",
+      "body_evidence_sha256": "e1776d94199d13d2f995097f191ac78f5de3a5f5c00df80bd7dd78dd42a182cd",
+      "candidate_sha256": "a7104dbc40d5a159577cd23fa8d71617312166e63e432e57bf381ddf2dfaa464",
+      "case": "zoxide",
+      "code_commit": "8d5375c19578cd67aa8abfdcf0d46c9cec897a83",
+      "comparison_cost": {
+        "abstain_comparison_count": 104,
+        "budget_blocked_merge_count": 0,
+        "budget_limited": false,
+        "cache_hit_count": 57,
+        "candidate_alignment_cells": 9260733,
+        "candidate_detailed_comparison_count": 345,
+        "on_demand_alignment_cells": 0,
+        "on_demand_comparison_count": 0,
+        "remaining_alignment_cells": 490739267,
+        "remaining_comparisons": 9655,
+        "total_alignment_cells": 9260733,
+        "total_detailed_comparisons": 345
+      },
+      "config_sha256": "01c6148c0c8dbb8955300d5579bbd3b62a081f13c0958af0f5dd3cb63786d70f",
+      "demand": {
+        "alignment_cells": 9260733,
+        "candidate_pairs": 449,
+        "comparisons": 345,
+        "fits": true
+      },
+      "inference_seconds": 11.434348507000323,
+      "input_manifest_sha256": "4dca828168b64167ab7aa3b594b132821fc4171ccf3d034d9fd64db52dbf78b3",
+      "k": 8,
+      "load_seconds": 1.6764497080002911,
+      "max_rss": 267092,
+      "max_rss_unit": "KiB",
+      "method": "combined3",
+      "prediction_sha256": "6aa98b3f90d3c54c9fef8f954c667294725dc4f52790b45f93de334b8179e71e",
+      "protocol_sha256": "093cd266119162ced2dd54cc374208a5d8080275c72e5465f5de676d8c58092e",
+      "python": "3.12.3",
+      "resource_limit_kind": "virtual-address-space",
+      "runner_sha256": "666573fb408a65e893d404856d6905c7de195d011fc0b4752e8737e449d8717a",
+      "started_at": "2026-09-08T01:21:17.370096+00:00",
+      "status": "completed",
+      "wall_seconds": 13.149706333000722,
+      "wall_time_limit_seconds": 1800
+    },
+    "metrics": {
+      "FN": 1224,
+      "FP": 15,
+      "TN": 222817,
+      "TP": 18,
+      "audit_purposeful": {
+        "macro_origin_recall": 0.0,
+        "positive_groups": 1,
+        "sampled_groups": 6
+      },
+      "audit_random": {
+        "macro_origin_recall": 0.0,
+        "positive_groups": 6,
+        "sampled_groups": 10
+      },
+      "candidate_positive_pairs": 234,
+      "candidate_positive_recall": 0.18840579710144928,
+      "comparison_cost": {
+        "abstain_comparison_count": 104,
+        "budget_blocked_merge_count": 0,
+        "budget_limited": false,
+        "cache_hit_count": 57,
+        "candidate_alignment_cells": 9260733,
+        "candidate_detailed_comparison_count": 345,
+        "on_demand_alignment_cells": 0,
+        "on_demand_comparison_count": 0,
+        "remaining_alignment_cells": 490739267,
+        "remaining_comparisons": 9655,
+        "total_alignment_cells": 9260733,
+        "total_detailed_comparisons": 345
+      },
+      "exact_group_rate": 0.05660377358490566,
+      "f1": 0.02823529411764706,
+      "macro_origin_recall": 0.08328840970350405,
+      "neutral_pairs": {
+        "ambiguous-neutral": 2686,
+        "duplicate-neutral": 41,
+        "unresolved-neutral": 0
+      },
+      "on_demand_positive_compared": 0,
+      "per_origin": [
+        {
+          "exact_group": false,
+          "origin": "<E as anyhow::context::ext::StdError>::ext_context",
+          "positive_pairs": 21,
+          "recall": 0.047619047619047616,
+          "recovered_pairs": 1,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::clone_any",
+          "positive_pairs": 28,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref",
+          "positive_pairs": 28,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref_",
+          "positive_pairs": 28,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::possible_values",
+          "positive_pairs": 15,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 6
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::type_id",
+          "positive_pairs": 35,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 9
+        },
+        {
+          "exact_group": false,
+          "origin": "<anyhow::context::Quoted<C> as core::fmt::Debug>::fmt",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "<anyhow::wrapper::MessageError<M> as core::fmt::Debug>::fmt",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "<clap_builder::builder::value_parser::EnumValueParser<E> as clap_builder::builder::value_parser::TypedValueParser>::parse_ref",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "<clap_builder::util::flat_set::FlatSet<T> as core::iter::traits::collect::FromIterator<T>>::from_iter",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anstream::auto::AutoStream<S>::new",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::context::impl_for=anyhow::error::ContextError<C,E>::fmt",
+          "positive_pairs": 91,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 14
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::context::impl_for=anyhow::error::ContextError<C,E>::source",
+          "positive_pairs": 21,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::context::impl_for=anyhow::error::ContextError<C,anyhow::Error>::source",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_backtrace",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_chain_downcast",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_chain_drop_rest",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_downcast",
+          "positive_pairs": 21,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_drop_rest",
+          "positive_pairs": 21,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl=anyhow::Error::construct",
+          "positive_pairs": 171,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 19
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl=anyhow::Error::msg",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl_for=anyhow::Error::fmt",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl_for=anyhow::Error::from",
+          "positive_pairs": 10,
+          "recall": 0.2,
+          "recovered_pairs": 2,
+          "target_members": 5
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_boxed",
+          "positive_pairs": 171,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 19
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_downcast",
+          "positive_pairs": 28,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_drop",
+          "positive_pairs": 91,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 14
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_drop_front",
+          "positive_pairs": 6,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 4
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_reallocate_boxed",
+          "positive_pairs": 171,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 19
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_ref",
+          "positive_pairs": 171,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 19
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::kind::Adhoc::new",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "bincode::internal::deserialize_seed",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": true,
+          "origin": "clap_builder::builder::arg::Arg::value_names",
+          "positive_pairs": 1,
+          "recall": 1.0,
+          "recovered_pairs": 1,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::builder::arg::Arg::value_parser",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::builder::arg_group::ArgGroup::args",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::builder::command::Command::unroll_arg_requires",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::error::Error<F>::extend_context_unchecked",
+          "positive_pairs": 3,
+          "recall": 0.3333333333333333,
+          "recovered_pairs": 1,
+          "target_members": 3
+        },
+        {
+          "exact_group": true,
+          "origin": "clap_builder::error::Error<F>::invalid_value",
+          "positive_pairs": 1,
+          "recall": 1.0,
+          "recovered_pairs": 1,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::error::Error<F>::raw",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::error::Error<F>::with_cmd",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::mkeymap::MKeyMap::get",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::parser::error::MatchesError::unwrap",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::parser::features::suggestions::did_you_mean",
+          "positive_pairs": 6,
+          "recall": 0.16666666666666666,
+          "recovered_pairs": 1,
+          "target_members": 4
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::parser::matches::arg_matches::ArgMatches::try_remove_one",
+          "positive_pairs": 10,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 5
+        },
+        {
+          "exact_group": true,
+          "origin": "clap_builder::parser::matches::arg_matches::unwrap_downcast_into{{reify.shim}}",
+          "positive_pairs": 1,
+          "recall": 1.0,
+          "recovered_pairs": 1,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::util::any_value::AnyValue::downcast_into",
+          "positive_pairs": 15,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 6
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::util::flat_map::FlatMap<K,V>::extend_unchecked",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::util::flat_map::FlatMap<K,V>::insert",
+          "positive_pairs": 6,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 4
+        },
+        {
+          "exact_group": false,
+          "origin": "rustc_demangle::v0::Printer::in_binder",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "rustc_demangle::v0::Printer::print_backref",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "rustc_demangle::v0::Printer::print_sep_list",
+          "positive_pairs": 15,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 6
+        },
+        {
+          "exact_group": false,
+          "origin": "zoxide::import::autojump::Iter<R>::parse_line::{{closure}}",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "zoxide::import::run",
+          "positive_pairs": 15,
+          "recall": 0.6666666666666666,
+          "recovered_pairs": 10,
+          "target_members": 6
+        },
+        {
+          "exact_group": false,
+          "origin": "zoxide::import::z::Iter<R>::parse_line::{{closure}}",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        }
+      ],
+      "positive_first_outcome": {
+        "not_retrieved_or_requested": 858,
+        "observation_ineligible": 186,
+        "recovered": 18,
+        "slot_policy_failed": 72,
+        "structure_failed": 108
+      },
+      "positive_pairs": 1242,
+      "precision": 0.5454545454545454,
+      "recall": 0.014492753623188406,
+      "scored_pairs": 224074,
+      "target_count": 674
+    },
+    "name": "combined3-k8"
+  },
+  {
+    "case": "zoxide",
+    "evaluator_sha256": "4cb96c09aee6f060d4fbea4003253273e0e5e098fd20de458743ac78a5ced5d7",
+    "metadata": {
+      "address_space_limit_bytes": 12884901888,
+      "base_commit": "3c20fff2796199071d888c39438d79e270112a02",
+      "body_evidence_sha256": "e1776d94199d13d2f995097f191ac78f5de3a5f5c00df80bd7dd78dd42a182cd",
+      "case": "zoxide",
+      "code_commit": "8d5375c19578cd67aa8abfdcf0d46c9cec897a83",
+      "config_sha256": "01c6148c0c8dbb8955300d5579bbd3b62a081f13c0958af0f5dd3cb63786d70f",
+      "inference_seconds": 0.49949884599845973,
+      "input_manifest_sha256": "4dca828168b64167ab7aa3b594b132821fc4171ccf3d034d9fd64db52dbf78b3",
+      "k": 16,
+      "load_seconds": 1.6472257180012093,
+      "max_rss": 267024,
+      "max_rss_unit": "KiB",
+      "method": "exact",
+      "prediction_sha256": "5baffb76a904f5a73f8a3e5977c3930377d308adc5d581d084dc057032edac23",
+      "protocol_sha256": "093cd266119162ced2dd54cc374208a5d8080275c72e5465f5de676d8c58092e",
+      "python": "3.12.3",
+      "resource_limit_kind": "virtual-address-space",
+      "runner_sha256": "666573fb408a65e893d404856d6905c7de195d011fc0b4752e8737e449d8717a",
+      "started_at": "2026-09-08T01:21:05.154109+00:00",
+      "status": "completed",
+      "wall_seconds": 2.1714440760006255,
+      "wall_time_limit_seconds": 1800
+    },
+    "metrics": {
+      "FN": 680,
+      "FP": 167,
+      "TN": 222665,
+      "TP": 562,
+      "audit_purposeful": {
+        "macro_origin_recall": 0.09941520467836257,
+        "positive_groups": 1,
+        "sampled_groups": 6
+      },
+      "audit_random": {
+        "macro_origin_recall": 0.0,
+        "positive_groups": 6,
+        "sampled_groups": 10
+      },
+      "exact_group_rate": 0.1509433962264151,
+      "f1": 0.5702688990360223,
+      "macro_origin_recall": 0.2680599054481875,
+      "neutral_pairs": {
+        "ambiguous-neutral": 2686,
+        "duplicate-neutral": 41,
+        "unresolved-neutral": 0
+      },
+      "per_origin": [
+        {
+          "exact_group": false,
+          "origin": "<E as anyhow::context::ext::StdError>::ext_context",
+          "positive_pairs": 21,
+          "recall": 0.047619047619047616,
+          "recovered_pairs": 1,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::clone_any",
+          "positive_pairs": 28,
+          "recall": 0.5357142857142857,
+          "recovered_pairs": 15,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref",
+          "positive_pairs": 28,
+          "recall": 0.07142857142857142,
+          "recovered_pairs": 2,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref_",
+          "positive_pairs": 28,
+          "recall": 0.07142857142857142,
+          "recovered_pairs": 2,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::possible_values",
+          "positive_pairs": 15,
+          "recall": 0.4,
+          "recovered_pairs": 6,
+          "target_members": 6
+        },
+        {
+          "exact_group": true,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::type_id",
+          "positive_pairs": 35,
+          "recall": 1.0,
+          "recovered_pairs": 35,
+          "target_members": 9
+        },
+        {
+          "exact_group": true,
+          "origin": "<anyhow::context::Quoted<C> as core::fmt::Debug>::fmt",
+          "positive_pairs": 1,
+          "recall": 1.0,
+          "recovered_pairs": 1,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "<anyhow::wrapper::MessageError<M> as core::fmt::Debug>::fmt",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "<clap_builder::builder::value_parser::EnumValueParser<E> as clap_builder::builder::value_parser::TypedValueParser>::parse_ref",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "<clap_builder::util::flat_set::FlatSet<T> as core::iter::traits::collect::FromIterator<T>>::from_iter",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anstream::auto::AutoStream<S>::new",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::context::impl_for=anyhow::error::ContextError<C,E>::fmt",
+          "positive_pairs": 91,
+          "recall": 0.3956043956043956,
+          "recovered_pairs": 36,
+          "target_members": 14
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::context::impl_for=anyhow::error::ContextError<C,E>::source",
+          "positive_pairs": 21,
+          "recall": 1.0,
+          "recovered_pairs": 21,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::context::impl_for=anyhow::error::ContextError<C,anyhow::Error>::source",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_backtrace",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_chain_downcast",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_chain_drop_rest",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": true,
+          "origin": "anyhow::error::context_downcast",
+          "positive_pairs": 21,
+          "recall": 1.0,
+          "recovered_pairs": 21,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_drop_rest",
+          "positive_pairs": 21,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl=anyhow::Error::construct",
+          "positive_pairs": 171,
+          "recall": 0.09941520467836257,
+          "recovered_pairs": 17,
+          "target_members": 19
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl=anyhow::Error::msg",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl_for=anyhow::Error::fmt",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl_for=anyhow::Error::from",
+          "positive_pairs": 10,
+          "recall": 0.2,
+          "recovered_pairs": 2,
+          "target_members": 5
+        },
+        {
+          "exact_group": true,
+          "origin": "anyhow::error::object_boxed",
+          "positive_pairs": 171,
+          "recall": 1.0,
+          "recovered_pairs": 171,
+          "target_members": 19
+        },
+        {
+          "exact_group": true,
+          "origin": "anyhow::error::object_downcast",
+          "positive_pairs": 28,
+          "recall": 1.0,
+          "recovered_pairs": 28,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_drop",
+          "positive_pairs": 91,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 14
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_drop_front",
+          "positive_pairs": 6,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 4
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_reallocate_boxed",
+          "positive_pairs": 171,
+          "recall": 0.05263157894736842,
+          "recovered_pairs": 9,
+          "target_members": 19
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_ref",
+          "positive_pairs": 171,
+          "recall": 1.0,
+          "recovered_pairs": 171,
+          "target_members": 19
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::kind::Adhoc::new",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "bincode::internal::deserialize_seed",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": true,
+          "origin": "clap_builder::builder::arg::Arg::value_names",
+          "positive_pairs": 1,
+          "recall": 1.0,
+          "recovered_pairs": 1,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::builder::arg::Arg::value_parser",
+          "positive_pairs": 3,
+          "recall": 0.3333333333333333,
+          "recovered_pairs": 1,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::builder::arg_group::ArgGroup::args",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::builder::command::Command::unroll_arg_requires",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::error::Error<F>::extend_context_unchecked",
+          "positive_pairs": 3,
+          "recall": 0.3333333333333333,
+          "recovered_pairs": 1,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::error::Error<F>::invalid_value",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::error::Error<F>::raw",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": true,
+          "origin": "clap_builder::error::Error<F>::with_cmd",
+          "positive_pairs": 1,
+          "recall": 1.0,
+          "recovered_pairs": 1,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::mkeymap::MKeyMap::get",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::parser::error::MatchesError::unwrap",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::parser::features::suggestions::did_you_mean",
+          "positive_pairs": 6,
+          "recall": 0.16666666666666666,
+          "recovered_pairs": 1,
+          "target_members": 4
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::parser::matches::arg_matches::ArgMatches::try_remove_one",
+          "positive_pairs": 10,
+          "recall": 0.3,
+          "recovered_pairs": 3,
+          "target_members": 5
+        },
+        {
+          "exact_group": true,
+          "origin": "clap_builder::parser::matches::arg_matches::unwrap_downcast_into{{reify.shim}}",
+          "positive_pairs": 1,
+          "recall": 1.0,
+          "recovered_pairs": 1,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::util::any_value::AnyValue::downcast_into",
+          "positive_pairs": 15,
+          "recall": 0.2,
+          "recovered_pairs": 3,
+          "target_members": 6
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::util::flat_map::FlatMap<K,V>::extend_unchecked",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::util::flat_map::FlatMap<K,V>::insert",
+          "positive_pairs": 6,
+          "recall": 0.3333333333333333,
+          "recovered_pairs": 2,
+          "target_members": 4
+        },
+        {
+          "exact_group": false,
+          "origin": "rustc_demangle::v0::Printer::in_binder",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "rustc_demangle::v0::Printer::print_backref",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "rustc_demangle::v0::Printer::print_sep_list",
+          "positive_pairs": 15,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 6
+        },
+        {
+          "exact_group": false,
+          "origin": "zoxide::import::autojump::Iter<R>::parse_line::{{closure}}",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "zoxide::import::run",
+          "positive_pairs": 15,
+          "recall": 0.6666666666666666,
+          "recovered_pairs": 10,
+          "target_members": 6
+        },
+        {
+          "exact_group": false,
+          "origin": "zoxide::import::z::Iter<R>::parse_line::{{closure}}",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        }
+      ],
+      "positive_pairs": 1242,
+      "precision": 0.7709190672153635,
+      "recall": 0.4524959742351047,
+      "scored_pairs": 224074,
+      "target_count": 674
+    },
+    "name": "exact"
+  },
+  {
+    "case": "zoxide",
+    "evaluator_sha256": "4cb96c09aee6f060d4fbea4003253273e0e5e098fd20de458743ac78a5ced5d7",
+    "metadata": {
+      "address_space_limit_bytes": 12884901888,
+      "base_commit": "3c20fff2796199071d888c39438d79e270112a02",
+      "body_evidence_sha256": "e1776d94199d13d2f995097f191ac78f5de3a5f5c00df80bd7dd78dd42a182cd",
+      "candidate_sha256": "a9676cb6cd7f558782b6666235bac737af3a217af789a1267b06627bc2b3a550",
+      "case": "zoxide",
+      "code_commit": "8d5375c19578cd67aa8abfdcf0d46c9cec897a83",
+      "config_sha256": "01c6148c0c8dbb8955300d5579bbd3b62a081f13c0958af0f5dd3cb63786d70f",
+      "inference_seconds": 0.7051421559990558,
+      "input_manifest_sha256": "4dca828168b64167ab7aa3b594b132821fc4171ccf3d034d9fd64db52dbf78b3",
+      "k": 16,
+      "load_seconds": 1.6949407379997865,
+      "max_rss": 267056,
+      "max_rss_unit": "KiB",
+      "method": "rescue",
+      "prediction_sha256": "309a98167af3751b8ea9139c0a7d535296d08ee1e41a6ceb602bbfebfbd3d255",
+      "protocol_sha256": "093cd266119162ced2dd54cc374208a5d8080275c72e5465f5de676d8c58092e",
+      "python": "3.12.3",
+      "rescue_artifact_sha256": "d11930a7ef4da50fe44991227c36dd2050b0988ed9628ef64ea393e95640c421",
+      "rescue_cost": {
+        "reserved_alignment_cells": 372856,
+        "reserved_comparisons": 155
+      },
+      "resource_limit_kind": "virtual-address-space",
+      "runner_sha256": "666573fb408a65e893d404856d6905c7de195d011fc0b4752e8737e449d8717a",
+      "started_at": "2026-09-08T01:21:12.395251+00:00",
+      "status": "completed",
+      "strict_baseline_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/runs/zoxide/combined3-k16/prediction.json",
+      "strict_baseline_sha256": "d2c6ccdde1cdd484b132d34c932365836d05293981462c6ae3fd98db64a5ff3c",
+      "wall_seconds": 2.427132349999738,
+      "wall_time_limit_seconds": 1800
+    },
+    "metrics": {
+      "FN": 1224,
+      "FP": 15,
+      "TN": 222817,
+      "TP": 18,
+      "audit_purposeful": {
+        "macro_origin_recall": 0.0,
+        "positive_groups": 1,
+        "sampled_groups": 6
+      },
+      "audit_random": {
+        "macro_origin_recall": 0.0,
+        "positive_groups": 6,
+        "sampled_groups": 10
+      },
+      "candidate_positive_pairs": 741,
+      "candidate_positive_recall": 0.5966183574879227,
+      "exact_group_rate": 0.05660377358490566,
+      "f1": 0.02823529411764706,
+      "macro_origin_recall": 0.08328840970350405,
+      "neutral_pairs": {
+        "ambiguous-neutral": 2686,
+        "duplicate-neutral": 41,
+        "unresolved-neutral": 0
+      },
+      "per_origin": [
+        {
+          "exact_group": false,
+          "origin": "<E as anyhow::context::ext::StdError>::ext_context",
+          "positive_pairs": 21,
+          "recall": 0.047619047619047616,
+          "recovered_pairs": 1,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::clone_any",
+          "positive_pairs": 28,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref",
+          "positive_pairs": 28,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref_",
+          "positive_pairs": 28,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::possible_values",
+          "positive_pairs": 15,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 6
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::type_id",
+          "positive_pairs": 35,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 9
+        },
+        {
+          "exact_group": false,
+          "origin": "<anyhow::context::Quoted<C> as core::fmt::Debug>::fmt",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "<anyhow::wrapper::MessageError<M> as core::fmt::Debug>::fmt",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "<clap_builder::builder::value_parser::EnumValueParser<E> as clap_builder::builder::value_parser::TypedValueParser>::parse_ref",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "<clap_builder::util::flat_set::FlatSet<T> as core::iter::traits::collect::FromIterator<T>>::from_iter",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anstream::auto::AutoStream<S>::new",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::context::impl_for=anyhow::error::ContextError<C,E>::fmt",
+          "positive_pairs": 91,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 14
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::context::impl_for=anyhow::error::ContextError<C,E>::source",
+          "positive_pairs": 21,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::context::impl_for=anyhow::error::ContextError<C,anyhow::Error>::source",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_backtrace",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_chain_downcast",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_chain_drop_rest",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_downcast",
+          "positive_pairs": 21,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_drop_rest",
+          "positive_pairs": 21,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl=anyhow::Error::construct",
+          "positive_pairs": 171,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 19
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl=anyhow::Error::msg",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl_for=anyhow::Error::fmt",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl_for=anyhow::Error::from",
+          "positive_pairs": 10,
+          "recall": 0.2,
+          "recovered_pairs": 2,
+          "target_members": 5
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_boxed",
+          "positive_pairs": 171,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 19
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_downcast",
+          "positive_pairs": 28,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_drop",
+          "positive_pairs": 91,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 14
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_drop_front",
+          "positive_pairs": 6,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 4
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_reallocate_boxed",
+          "positive_pairs": 171,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 19
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_ref",
+          "positive_pairs": 171,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 19
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::kind::Adhoc::new",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "bincode::internal::deserialize_seed",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": true,
+          "origin": "clap_builder::builder::arg::Arg::value_names",
+          "positive_pairs": 1,
+          "recall": 1.0,
+          "recovered_pairs": 1,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::builder::arg::Arg::value_parser",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::builder::arg_group::ArgGroup::args",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::builder::command::Command::unroll_arg_requires",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::error::Error<F>::extend_context_unchecked",
+          "positive_pairs": 3,
+          "recall": 0.3333333333333333,
+          "recovered_pairs": 1,
+          "target_members": 3
+        },
+        {
+          "exact_group": true,
+          "origin": "clap_builder::error::Error<F>::invalid_value",
+          "positive_pairs": 1,
+          "recall": 1.0,
+          "recovered_pairs": 1,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::error::Error<F>::raw",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::error::Error<F>::with_cmd",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::mkeymap::MKeyMap::get",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::parser::error::MatchesError::unwrap",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::parser::features::suggestions::did_you_mean",
+          "positive_pairs": 6,
+          "recall": 0.16666666666666666,
+          "recovered_pairs": 1,
+          "target_members": 4
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::parser::matches::arg_matches::ArgMatches::try_remove_one",
+          "positive_pairs": 10,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 5
+        },
+        {
+          "exact_group": true,
+          "origin": "clap_builder::parser::matches::arg_matches::unwrap_downcast_into{{reify.shim}}",
+          "positive_pairs": 1,
+          "recall": 1.0,
+          "recovered_pairs": 1,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::util::any_value::AnyValue::downcast_into",
+          "positive_pairs": 15,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 6
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::util::flat_map::FlatMap<K,V>::extend_unchecked",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::util::flat_map::FlatMap<K,V>::insert",
+          "positive_pairs": 6,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 4
+        },
+        {
+          "exact_group": false,
+          "origin": "rustc_demangle::v0::Printer::in_binder",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "rustc_demangle::v0::Printer::print_backref",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "rustc_demangle::v0::Printer::print_sep_list",
+          "positive_pairs": 15,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 6
+        },
+        {
+          "exact_group": false,
+          "origin": "zoxide::import::autojump::Iter<R>::parse_line::{{closure}}",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "zoxide::import::run",
+          "positive_pairs": 15,
+          "recall": 0.6666666666666666,
+          "recovered_pairs": 10,
+          "target_members": 6
+        },
+        {
+          "exact_group": false,
+          "origin": "zoxide::import::z::Iter<R>::parse_line::{{closure}}",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        }
+      ],
+      "positive_pairs": 1242,
+      "precision": 0.5454545454545454,
+      "recall": 0.014492753623188406,
+      "scored_pairs": 224074,
+      "target_count": 674
+    },
+    "name": "rescue-k16"
+  },
+  {
+    "case": "zoxide",
+    "evaluator_sha256": "4cb96c09aee6f060d4fbea4003253273e0e5e098fd20de458743ac78a5ced5d7",
+    "metadata": {
+      "address_space_limit_bytes": 12884901888,
+      "base_commit": "3c20fff2796199071d888c39438d79e270112a02",
+      "body_evidence_sha256": "e1776d94199d13d2f995097f191ac78f5de3a5f5c00df80bd7dd78dd42a182cd",
+      "case": "zoxide",
+      "code_commit": "8d5375c19578cd67aa8abfdcf0d46c9cec897a83",
+      "config_sha256": "01c6148c0c8dbb8955300d5579bbd3b62a081f13c0958af0f5dd3cb63786d70f",
+      "fixture_sha256": "e8fd22ceb63f7a659b8e329ae88278dd7b1bfe348aec23df008568d32ca099bb",
+      "inference_seconds": 0.08116881100067985,
+      "input_manifest_sha256": "4dca828168b64167ab7aa3b594b132821fc4171ccf3d034d9fd64db52dbf78b3",
+      "k": 16,
+      "load_seconds": 1.7284475440010283,
+      "max_rss": 267156,
+      "max_rss_unit": "KiB",
+      "method": "v0",
+      "prediction_sha256": "169f4368e01bca6146cdc3ea455eb538922e37643911ba23aeaab1b4c2f17505",
+      "protocol_sha256": "093cd266119162ced2dd54cc374208a5d8080275c72e5465f5de676d8c58092e",
+      "python": "3.12.3",
+      "resource_limit_kind": "virtual-address-space",
+      "runner_sha256": "666573fb408a65e893d404856d6905c7de195d011fc0b4752e8737e449d8717a",
+      "started_at": "2026-09-08T01:21:09.014169+00:00",
+      "status": "completed",
+      "wall_seconds": 1.83030124600009,
+      "wall_time_limit_seconds": 1800
+    },
+    "metrics": {
+      "FN": 1081,
+      "FP": 221,
+      "TN": 222611,
+      "TP": 161,
+      "audit_purposeful": {
+        "macro_origin_recall": 0.1695906432748538,
+        "positive_groups": 1,
+        "sampled_groups": 6
+      },
+      "audit_random": {
+        "macro_origin_recall": 0.007936507936507936,
+        "positive_groups": 6,
+        "sampled_groups": 10
+      },
+      "exact_group_rate": 0.11320754716981132,
+      "f1": 0.19827586206896552,
+      "macro_origin_recall": 0.28673346404230216,
+      "neutral_pairs": {
+        "ambiguous-neutral": 2686,
+        "duplicate-neutral": 41,
+        "unresolved-neutral": 0
+      },
+      "per_origin": [
+        {
+          "exact_group": false,
+          "origin": "<E as anyhow::context::ext::StdError>::ext_context",
+          "positive_pairs": 21,
+          "recall": 0.047619047619047616,
+          "recovered_pairs": 1,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::clone_any",
+          "positive_pairs": 28,
+          "recall": 0.03571428571428571,
+          "recovered_pairs": 1,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref",
+          "positive_pairs": 28,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::parse_ref_",
+          "positive_pairs": 28,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::possible_values",
+          "positive_pairs": 15,
+          "recall": 0.2,
+          "recovered_pairs": 3,
+          "target_members": 6
+        },
+        {
+          "exact_group": false,
+          "origin": "<P as clap_builder::builder::value_parser::AnyValueParser>::type_id",
+          "positive_pairs": 35,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 9
+        },
+        {
+          "exact_group": true,
+          "origin": "<anyhow::context::Quoted<C> as core::fmt::Debug>::fmt",
+          "positive_pairs": 1,
+          "recall": 1.0,
+          "recovered_pairs": 1,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "<anyhow::wrapper::MessageError<M> as core::fmt::Debug>::fmt",
+          "positive_pairs": 3,
+          "recall": 0.3333333333333333,
+          "recovered_pairs": 1,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "<clap_builder::builder::value_parser::EnumValueParser<E> as clap_builder::builder::value_parser::TypedValueParser>::parse_ref",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "<clap_builder::util::flat_set::FlatSet<T> as core::iter::traits::collect::FromIterator<T>>::from_iter",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": true,
+          "origin": "anstream::auto::AutoStream<S>::new",
+          "positive_pairs": 1,
+          "recall": 1.0,
+          "recovered_pairs": 1,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::context::impl_for=anyhow::error::ContextError<C,E>::fmt",
+          "positive_pairs": 91,
+          "recall": 0.5054945054945055,
+          "recovered_pairs": 46,
+          "target_members": 14
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::context::impl_for=anyhow::error::ContextError<C,E>::source",
+          "positive_pairs": 21,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::context::impl_for=anyhow::error::ContextError<C,anyhow::Error>::source",
+          "positive_pairs": 1,
+          "recall": 1.0,
+          "recovered_pairs": 1,
+          "target_members": 2
+        },
+        {
+          "exact_group": true,
+          "origin": "anyhow::error::context_backtrace",
+          "positive_pairs": 1,
+          "recall": 1.0,
+          "recovered_pairs": 1,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_chain_downcast",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_chain_drop_rest",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_downcast",
+          "positive_pairs": 21,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::context_drop_rest",
+          "positive_pairs": 21,
+          "recall": 0.047619047619047616,
+          "recovered_pairs": 1,
+          "target_members": 7
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl=anyhow::Error::construct",
+          "positive_pairs": 171,
+          "recall": 0.1695906432748538,
+          "recovered_pairs": 29,
+          "target_members": 19
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl=anyhow::Error::msg",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl_for=anyhow::Error::fmt",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::impl_for=anyhow::Error::from",
+          "positive_pairs": 10,
+          "recall": 0.3,
+          "recovered_pairs": 3,
+          "target_members": 5
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_boxed",
+          "positive_pairs": 171,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 19
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_downcast",
+          "positive_pairs": 28,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 8
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_drop",
+          "positive_pairs": 91,
+          "recall": 0.08791208791208792,
+          "recovered_pairs": 8,
+          "target_members": 14
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_drop_front",
+          "positive_pairs": 6,
+          "recall": 1.0,
+          "recovered_pairs": 6,
+          "target_members": 4
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_reallocate_boxed",
+          "positive_pairs": 171,
+          "recall": 0.1695906432748538,
+          "recovered_pairs": 29,
+          "target_members": 19
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::error::object_ref",
+          "positive_pairs": 171,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 19
+        },
+        {
+          "exact_group": false,
+          "origin": "anyhow::kind::Adhoc::new",
+          "positive_pairs": 1,
+          "recall": 1.0,
+          "recovered_pairs": 1,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "bincode::internal::deserialize_seed",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": true,
+          "origin": "clap_builder::builder::arg::Arg::value_names",
+          "positive_pairs": 1,
+          "recall": 1.0,
+          "recovered_pairs": 1,
+          "target_members": 2
+        },
+        {
+          "exact_group": true,
+          "origin": "clap_builder::builder::arg::Arg::value_parser",
+          "positive_pairs": 3,
+          "recall": 1.0,
+          "recovered_pairs": 3,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::builder::arg_group::ArgGroup::args",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::builder::command::Command::unroll_arg_requires",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::error::Error<F>::extend_context_unchecked",
+          "positive_pairs": 3,
+          "recall": 0.3333333333333333,
+          "recovered_pairs": 1,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::error::Error<F>::invalid_value",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::error::Error<F>::raw",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": true,
+          "origin": "clap_builder::error::Error<F>::with_cmd",
+          "positive_pairs": 1,
+          "recall": 1.0,
+          "recovered_pairs": 1,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::mkeymap::MKeyMap::get",
+          "positive_pairs": 1,
+          "recall": 1.0,
+          "recovered_pairs": 1,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::parser::error::MatchesError::unwrap",
+          "positive_pairs": 3,
+          "recall": 1.0,
+          "recovered_pairs": 3,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::parser::features::suggestions::did_you_mean",
+          "positive_pairs": 6,
+          "recall": 0.16666666666666666,
+          "recovered_pairs": 1,
+          "target_members": 4
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::parser::matches::arg_matches::ArgMatches::try_remove_one",
+          "positive_pairs": 10,
+          "recall": 0.6,
+          "recovered_pairs": 6,
+          "target_members": 5
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::parser::matches::arg_matches::unwrap_downcast_into{{reify.shim}}",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::util::any_value::AnyValue::downcast_into",
+          "positive_pairs": 15,
+          "recall": 0.4,
+          "recovered_pairs": 6,
+          "target_members": 6
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::util::flat_map::FlatMap<K,V>::extend_unchecked",
+          "positive_pairs": 3,
+          "recall": 0.3333333333333333,
+          "recovered_pairs": 1,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "clap_builder::util::flat_map::FlatMap<K,V>::insert",
+          "positive_pairs": 6,
+          "recall": 0.3333333333333333,
+          "recovered_pairs": 2,
+          "target_members": 4
+        },
+        {
+          "exact_group": false,
+          "origin": "rustc_demangle::v0::Printer::in_binder",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        },
+        {
+          "exact_group": false,
+          "origin": "rustc_demangle::v0::Printer::print_backref",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "rustc_demangle::v0::Printer::print_sep_list",
+          "positive_pairs": 15,
+          "recall": 0.06666666666666667,
+          "recovered_pairs": 1,
+          "target_members": 6
+        },
+        {
+          "exact_group": false,
+          "origin": "zoxide::import::autojump::Iter<R>::parse_line::{{closure}}",
+          "positive_pairs": 3,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 3
+        },
+        {
+          "exact_group": false,
+          "origin": "zoxide::import::run",
+          "positive_pairs": 15,
+          "recall": 0.06666666666666667,
+          "recovered_pairs": 1,
+          "target_members": 6
+        },
+        {
+          "exact_group": false,
+          "origin": "zoxide::import::z::Iter<R>::parse_line::{{closure}}",
+          "positive_pairs": 1,
+          "recall": 0.0,
+          "recovered_pairs": 0,
+          "target_members": 2
+        }
+      ],
+      "positive_pairs": 1242,
+      "precision": 0.4214659685863874,
+      "recall": 0.12962962962962962,
+      "scored_pairs": 224074,
+      "target_count": 674
+    },
+    "name": "v0"
+  }
+]

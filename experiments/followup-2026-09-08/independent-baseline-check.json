@@ -1,0 +1,255 @@
+{
+  "schema_version": 1,
+  "check_id": "zoxide-exact-baseline-independent-check-2026-09-08",
+  "scope": "Internal sanity verification; not external or independent-human validation",
+  "prohibited_component_used": false,
+  "prohibited_component": "score_followup.metrics",
+  "inputs": {
+    "body": {
+      "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/v0-engine-py-frozen/body_evidence/plain/zoxide.O3S.body.json",
+      "sha256": "e1776d94199d13d2f995097f191ac78f5de3a5f5c00df80bd7dd78dd42a182cd",
+      "matches_inputs_json": true
+    },
+    "ground_truth": {
+      "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/ground_truth/rust-nonstd/plain/zoxide.O3S.gt.json",
+      "sha256": "b5e641338cd098ead94ea299b7dccd3a4ca2b8242743656762cf8f01617d967d",
+      "matches_inputs_json": true
+    },
+    "linkage": {
+      "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/v0-engine-py-frozen/results/zoxide/plain/zoxide.O3S.gt-mangled-audit.json",
+      "sha256": "aea76c11cb78074695ea2ac4acc8f08026f61d81fa747d9d42948bf82f3da579",
+      "matches_inputs_json": true
+    },
+    "archived_prediction": {
+      "path": "archive/attempt1-before-retrieval-drift/runs/zoxide/exact/prediction.json",
+      "sha256": "5baffb76a904f5a73f8a3e5977c3930377d308adc5d581d084dc057032edac23"
+    }
+  },
+  "code_hashes": {
+    "body_similarity.py": "569f462255deea580387c799f43bfea357cdca90dd3369c7c7388bbfb0b278fb",
+    "v1_retrieval_views.py": "c833d5acaca969f319590701e7ca06ba6e9b415c4de79afd5bdb84f14c4a96ff",
+    "linkage_overlay.py": "0d5f97eab89ac5fc9fd2753357de73556289232df7e66f64fbd50025523cfa57",
+    "run_followup.py": "666573fb408a65e893d404856d6905c7de195d011fc0b4752e8737e449d8717a"
+  },
+  "universe": {
+    "ground_truth_ids": 674,
+    "body_ids": 674,
+    "linkage_ids": 674,
+    "id_sets_equal": true,
+    "all_unordered_pairs": 226801,
+    "primary_label_counts": {
+      "positive": 1242,
+      "negative": 222832,
+      "duplicate-neutral": 41,
+      "ambiguous-neutral": 2686,
+      "unresolved-neutral": 0
+    },
+    "primary_scored_pairs": 224074
+  },
+  "eligibility": {
+    "rule": "complete_decode=true, opaque_indirect_jumps=0, and nonempty normalized instruction sequence",
+    "eligible": 535,
+    "excluded": {
+      "opaque_indirect_jumps": 139,
+      "incomplete_decode": 0,
+      "empty_instruction_sequence": 0,
+      "missing_body": 0
+    }
+  },
+  "narrow_mnemonic_operand_sensitivity": {
+    "status": "Sensitivity check suggested by the independent-verification prompt; not the frozen primary baseline",
+    "token_definition": "body_similarity._instruction_token: mnemonic_class joined with normalized operands; constants, slots, branch offsets, control-flow field, symbols, and labels are excluded",
+    "equality_groups_size_at_least_2": 66,
+    "predicted_pairs": 765,
+    "predicted_neutral_pairs": 33,
+    "primary": {
+      "TP": 562,
+      "FP": 170,
+      "FN": 680,
+      "TN": 222662,
+      "precision": 0.76775956284153,
+      "recall": 0.4524959742351047,
+      "F1": 0.5694022289766971
+    }
+  },
+  "archived_prediction_check": {
+    "accepted_clusters": 63,
+    "predicted_pairs": 762,
+    "predicted_neutral_pairs": 33,
+    "primary": {
+      "TP": 562,
+      "FP": 167,
+      "FN": 680,
+      "TN": 222665,
+      "precision": 0.7709190672153635,
+      "recall": 0.4524959742351047,
+      "F1": 0.5702688990360224
+    },
+    "matches_reported_attempt1_counts": true,
+    "pairwise_match_to_current_build_token_profiles_exact_token_hash": true,
+    "pairwise_match_to_narrow_mnemonic_operand_sensitivity": false,
+    "missing_from_archive_relative_to_narrow_sensitivity": 3,
+    "extra_in_archive_relative_to_narrow_sensitivity": 0
+  },
+  "token_definition_specificity": {
+    "frozen_protocol_wording": "Exact equality of nonempty normalized instruction tokens; symbols, answers, and F6 slot conditions are excluded",
+    "missing_specificity": "protocol.md does not enumerate which normalized instruction fields constitute a token",
+    "frozen_implementation_commit": "06c905a",
+    "archived_implementation": "The pre-results frozen run_followup.py groups build_token_profiles(...).exact_token_hash",
+    "archived_token_fields": [
+      "uppercased mnemonic",
+      "operand shapes",
+      "constant shapes",
+      "control-flow shape"
+    ],
+    "narrow_sensitivity_token_fields": [
+      "mnemonic_class",
+      "normalized operands"
+    ],
+    "effect": "The frozen baseline uses the richer token definition and splits three two-member groups whose mnemonic/operand sequences are equal but whose constant values have different shape classes. The narrow sensitivity adds three primary negatives, so only FP/TN/F1/precision change.",
+    "finding": "The baseline token definition was insufficiently explicit in the protocol; the frozen implementation is not a post-results change."
+  },
+  "three_omitted_negative_pairs": [
+    {
+      "pair": ["FUN_001bb770", "FUN_001bc560"],
+      "origins": [
+        "clap_builder::error::Error<F>::argument_conflict",
+        "clap_builder::error::Error<F>::subcommand_conflict"
+      ],
+      "differing_instruction_index": 97,
+      "narrow_sensitivity_tokens_equal": true,
+      "archived_tokens": [
+        "MOV|stack8,imm_small|int:one|fallthrough",
+        "MOV|stack8,imm_small|int:zero|fallthrough"
+      ],
+      "raw_constants": [[1], [0]]
+    },
+    {
+      "pair": ["FUN_001bd230", "FUN_001be020"],
+      "origins": [
+        "clap_builder::error::Error<F>::unrecognized_subcommand",
+        "clap_builder::error::Error<F>::no_equals"
+      ],
+      "differing_instruction_index": 75,
+      "narrow_sensitivity_tokens_equal": true,
+      "archived_tokens": [
+        "MOV|stack8,imm_small|int:zero|fallthrough",
+        "MOV|stack8,imm_small|int:one|fallthrough"
+      ],
+      "raw_constants": [[0], [1]]
+    },
+    {
+      "pair": ["FUN_001bfe90", "FUN_001bfeb0"],
+      "origins": [
+        "<std::io::stdio::StderrLock as anstream::stream::IsTerminal>::is_terminal",
+        "<std::io::stdio::StdoutLock as anstream::stream::IsTerminal>::is_terminal"
+      ],
+      "differing_instruction_index": 1,
+      "narrow_sensitivity_tokens_equal": true,
+      "archived_tokens": [
+        "MOV|reg32,imm_small|int:small|fallthrough",
+        "MOV|reg32,imm_small|int:one|fallthrough"
+      ],
+      "raw_constants": [[2], [1]]
+    }
+  ],
+  "largest_contributors": [
+    {
+      "representative": "FUN_0016b2f0",
+      "members": 26,
+      "token_length": 3,
+      "normalized_tokens": [
+        "LEA reg64 general_pointer64",
+        "LEA reg64 ip_data_slot64",
+        "RET"
+      ],
+      "origin_counts": {
+        "anyhow::error::object_ref": 19,
+        "anyhow::context::impl_for=anyhow::error::ContextError<C,E>::source": 7
+      },
+      "predicted_pairs": 325,
+      "TP": 192,
+      "FP": 133,
+      "neutral": 0,
+      "share_of_all_archived_predicted_pairs": 0.42650918635170605,
+      "share_of_archived_FP": 0.7964071856287425
+    },
+    {
+      "representative": "FUN_0016b430",
+      "members": 19,
+      "token_length": 3,
+      "origin_counts": {
+        "anyhow::error::object_boxed": 19
+      },
+      "predicted_pairs": 171,
+      "TP": 171,
+      "FP": 0,
+      "neutral": 0,
+      "share_of_archived_TP": 0.30427046263345197
+    },
+    {
+      "representative": "FUN_0015f4b0",
+      "members": 9,
+      "token_length": 4,
+      "origin_counts": {
+        "<P as clap_builder::builder::value_parser::AnyValueParser>::type_id": 9
+      },
+      "predicted_pairs": 36,
+      "TP": 35,
+      "FP": 0,
+      "neutral": 1
+    },
+    {
+      "representative": "FUN_0016f7a0",
+      "members": 9,
+      "token_length": 32,
+      "origin_counts": {
+        "anyhow::context::impl_for=anyhow::error::ContextError<C,E>::fmt": 9
+      },
+      "predicted_pairs": 36,
+      "TP": 36,
+      "FP": 0,
+      "neutral": 0
+    },
+    {
+      "representative": "FUN_0015c620",
+      "members": 6,
+      "token_length": 2,
+      "normalized_tokens": ["XOR reg32 reg32", "RET"],
+      "origin_count": 4,
+      "predicted_pairs": 15,
+      "TP": 3,
+      "FP": 12,
+      "neutral": 0,
+      "share_of_archived_FP": 0.0718562874251497
+    }
+  ],
+  "leakage_check": {
+    "body_function_record_keys": [
+      "address",
+      "blocks",
+      "byte_sha256",
+      "cfg_edges",
+      "id",
+      "instructions",
+      "normalized_instructions",
+      "quality",
+      "size",
+      "summary"
+    ],
+    "body_contains_symbol_or_origin_fields": false,
+    "group_constructor_inputs": "Function ID, completeness/opaque eligibility, and normalized instruction records only",
+    "ground_truth_or_linkage_used_for_group_construction": false,
+    "ground_truth_or_linkage_use": "Scoring and contributor diagnosis after predictions were fixed",
+    "archived_pair_set_reconstructed_without_ground_truth_or_linkage": true,
+    "finding": "No evidence of symbol or ground-truth leakage into the archived baseline grouping."
+  },
+  "strict_comparison_from_request": {
+    "TP": 18,
+    "FP": 15,
+    "FN": 1224,
+    "independently_recomputed": false,
+    "interpretation": "The exact baseline's much larger TP count is explained mainly by large exact-body groups of generic helpers; it is not evidence by itself of leakage."
+  },
+  "conclusion": "The reported archived score is internally reproducible and matches the pre-results frozen constant/control-flow-aware TokenProfile baseline. The protocol did not enumerate the token fields, so its baseline definition was insufficiently explicit. A narrower mnemonic/operand-only sensitivity check has three additional false positives and F1 0.5694022289766971. No symbol or ground-truth leakage was found."
+}

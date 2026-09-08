@@ -1,0 +1,49 @@
+sample_id,case,stratum,origin,member_count,assessment,evidence_file
+zoxide-01,zoxide,random,anyhow::error::context_drop_rest,7,source-consistent,audit-zoxide.json
+zoxide-02,zoxide,random,<time::error::try_from_parsed::TryFromParsed as core::fmt::Display>::fmt,2,source-consistent,audit-zoxide.json
+zoxide-03,zoxide,random,<clap_builder::builder::value_parser::EnumValueParser<E> as clap_builder::builder::value_parser::TypedValueParser>::parse_ref,2,source-consistent,audit-zoxide.json
+zoxide-04,zoxide,random,<time::error::try_from_parsed::TryFromParsed as core::error::Error>::source,2,source-consistent,audit-zoxide.json
+zoxide-05,zoxide,random,anyhow::error::context_chain_drop_rest,2,source-consistent,audit-zoxide.json
+zoxide-06,zoxide,random,<askama::error::Error as core::error::Error>::source,2,source-consistent,audit-zoxide.json
+zoxide-07,zoxide,random,<clap_builder::util::flat_set::FlatSet<T> as core::iter::traits::collect::FromIterator<T>>::from_iter,2,source-consistent,audit-zoxide.json
+zoxide-08,zoxide,random,<time::error::parse::Parse as core::fmt::Display>::fmt,2,source-consistent,audit-zoxide.json
+zoxide-09,zoxide,random,bincode::internal::deserialize_seed,2,source-consistent,audit-zoxide.json
+zoxide-10,zoxide,random,zoxide::import::autojump::Iter<R>::parse_line::{{closure}},3,source-conflict,audit-zoxide.json
+zoxide-11,zoxide,purposeful,shared-address@FUN_00188200,1,unresolved,audit-zoxide.json
+zoxide-12,zoxide,purposeful,<&[u8] as object::read::read_ref::ReadRef>::read_bytes_at_until,1,source-consistent,audit-zoxide.json
+zoxide-13,zoxide,purposeful,addr2line::unit::ResUnit<R>::find_function_or_location::{{closure}},1,source-consistent,audit-zoxide.json
+zoxide-14,zoxide,purposeful,<zoxide::db::ouroboros_impl_database::Database as core::ops::drop::Drop>::drop,1,source-consistent,audit-zoxide.json
+zoxide-15,zoxide,purposeful,<aliasable::boxed::AliasableBox<T> as core::ops::drop::Drop>::drop,1,source-consistent,audit-zoxide.json
+zoxide-16,zoxide,purposeful,anyhow::error::impl=anyhow::Error::construct,19,source-consistent,audit-zoxide.json
+fd-01,fd,random,<aho_corasick::nfa::contiguous::NFA as aho_corasick::automaton::Automaton>::prefilter,5,source-consistent,audit-fd.json
+fd-02,fd,random,<aho_corasick::dfa::DFA as aho_corasick::automaton::Automaton>::next_state,5,source-consistent,audit-fd.json
+fd-03,fd,random,<aho_corasick::nfa::contiguous::NFA as aho_corasick::automaton::Automaton>::min_pattern_len,5,source-consistent,audit-fd.json
+fd-04,fd,random,<clap_builder::parser::matches::arg_matches::Values<T> as core::iter::traits::iterator::Iterator>::next,3,source-consistent,audit-fd.json
+fd-05,fd,random,clap_builder::error::Error<F>::value_validation,2,source-consistent,audit-fd.json
+fd-06,fd,random,<regex_automata::util::prefilter::memchr::Memchr2 as core::fmt::Debug>::fmt,2,source-consistent,audit-fd.json
+fd-07,fd,random,anyhow::error::object_reallocate_boxed,6,source-consistent,audit-fd.json
+fd-08,fd,random,"hashbrown::map::HashMap<K,V,S,A>::insert",6,source-consistent,audit-fd.json
+fd-09,fd,random,fd::walk::WorkerState::build_overrides::{{closure}},2,source-conflict,audit-fd.json
+fd-10,fd,random,clap_builder::error::Error<F>::extend_context_unchecked,3,source-consistent,audit-fd.json
+fd-11,fd,purposeful,shared-address@FUN_00335b90,1,source-consistent,audit-fd.json
+fd-12,fd,purposeful,<&[u8] as object::read::read_ref::ReadRef>::read_bytes_at_until,1,source-consistent,audit-fd.json
+fd-13,fd,purposeful,"<core::result::Result<T,E> as jiff::error::ErrorContext<T,E>>::context::{{closure}}",10,source-consistent,audit-fd.json
+fd-14,fd,purposeful,clap_builder::parser::matches::arg_matches::unwrap_downcast_into{{reify.shim}},4,source-consistent,audit-fd.json
+fd-15,fd,purposeful,<T as crossbeam_epoch::atomic::Pointable>::drop,1,source-consistent,audit-fd.json
+fd-16,fd,purposeful,<jiff::util::b::RawBoundsError<B> as core::fmt::Display>::fmt,52,source-consistent,audit-fd.json
+ripgrep-main-01,ripgrep-main,random,<rg::flags::defs::Passthru as core::fmt::Debug>::fmt,3,source-consistent,audit-ripgrep-main.json
+ripgrep-main-02,ripgrep-main,random,"grep_searcher::searcher::glue::SliceByLine<M,S>::run",6,source-consistent,audit-ripgrep-main.json
+ripgrep-main-03,ripgrep-main,random,ignore::Error::with_path,4,source-consistent,audit-ripgrep-main.json
+ripgrep-main-04,ripgrep-main,random,<rg::flags::defs::DfaSizeLimit as rg::flags::Flag>::doc_long,3,source-consistent,audit-ripgrep-main.json
+ripgrep-main-05,ripgrep-main,random,<rg::flags::defs::ContextSeparator as core::fmt::Debug>::fmt,3,source-consistent,audit-ripgrep-main.json
+ripgrep-main-06,ripgrep-main,random,<rg::flags::defs::IncludeZero as rg::flags::Flag>::name_negated,3,source-consistent,audit-ripgrep-main.json
+ripgrep-main-07,ripgrep-main,random,<rg::flags::defs::DfaSizeLimit as rg::flags::Flag>::doc_short,3,source-consistent,audit-ripgrep-main.json
+ripgrep-main-08,ripgrep-main,random,<rg::flags::defs::PreGlob as rg::flags::Flag>::doc_long,3,source-consistent,audit-ripgrep-main.json
+ripgrep-main-09,ripgrep-main,random,<aho_corasick::nfa::noncontiguous::NFA as aho_corasick::automaton::Automaton>::patterns_len,2,source-consistent,audit-ripgrep-main.json
+ripgrep-main-10,ripgrep-main,random,<rg::flags::defs::NoUnicode as rg::flags::Flag>::doc_short,3,source-consistent,audit-ripgrep-main.json
+ripgrep-main-11,ripgrep-main,purposeful,shared-address@FUN_00306c40,1,source-consistent,audit-ripgrep-main.json
+ripgrep-main-12,ripgrep-main,purposeful,<&A as regex_automata::dfa::automaton::Automaton>::accelerator,1,source-consistent,audit-ripgrep-main.json
+ripgrep-main-13,ripgrep-main,purposeful,<walkdir::DirList as core::iter::traits::iterator::Iterator>::next::{{closure}},1,source-consistent,audit-ripgrep-main.json
+ripgrep-main-14,ripgrep-main,purposeful,<&A as regex_automata::dfa::automaton::Automaton>::match_pattern,2,source-consistent,audit-ripgrep-main.json
+ripgrep-main-15,ripgrep-main,purposeful,<T as crossbeam_epoch::atomic::Pointable>::drop,1,source-consistent,audit-ripgrep-main.json
+ripgrep-main-16,ripgrep-main,purposeful,serde_core::ser::SerializeMap::serialize_entry,62,source-consistent,audit-ripgrep-main.json

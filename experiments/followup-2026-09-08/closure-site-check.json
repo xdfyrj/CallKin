@@ -1,0 +1,98 @@
+{
+  "zoxide": {
+    "binary_sha256": "a37ccf63601b2012ba0edbc2ab63d9442f4830fbb41e6b87f1c43a16f32dba7c",
+    "members": [
+      {
+        "member": "FUN_00191360",
+        "elf_address": "0x91360",
+        "size": 247,
+        "raw_symbols": [
+          "_ZN6zoxide6import8autojump13Iter$LT$R$GT$10parse_line28_$u7b$$u7b$closure$u7d$$u7d$17h2429bb82563ad62eE"
+        ],
+        "source_line": 42,
+        "expected_message": "invalid utf-8",
+        "message_references": [
+          {
+            "via": "direct-rip",
+            "address": "0x1cd97"
+          }
+        ]
+      },
+      {
+        "member": "FUN_00191460",
+        "elf_address": "0x91460",
+        "size": 316,
+        "raw_symbols": [
+          "_ZN6zoxide6import8autojump13Iter$LT$R$GT$10parse_line28_$u7b$$u7b$closure$u7d$$u7d$17h3bc09c508947c4e3E"
+        ],
+        "source_line": 48,
+        "expected_message": "invalid rank",
+        "message_references": [
+          {
+            "via": "direct-rip",
+            "address": "0x10d1d"
+          }
+        ]
+      },
+      {
+        "member": "FUN_001915a0",
+        "elf_address": "0x915a0",
+        "size": 210,
+        "raw_symbols": [
+          "_ZN6zoxide6import8autojump13Iter$LT$R$GT$10parse_line28_$u7b$$u7b$closure$u7d$$u7d$17hd1c51497fea92d1eE"
+        ],
+        "source_line": 45,
+        "expected_message": "invalid entry",
+        "message_references": [
+          {
+            "via": "direct-helper-rip",
+            "helper": "0x91310",
+            "address": "0x120a6"
+          },
+          {
+            "via": "direct-helper-rip",
+            "helper": "0x91310",
+            "address": "0x120a6"
+          }
+        ]
+      }
+    ]
+  },
+  "fd": {
+    "binary_sha256": "61d845af2b2f394c7439603f198e8439efdfdfcb80b189a40c55b754e3ee8fa9",
+    "members": [
+      {
+        "member": "FUN_0027a400",
+        "elf_address": "0x17a400",
+        "size": 104,
+        "raw_symbols": [
+          "_ZN2fd4walk11WorkerState15build_overrides28_$u7b$$u7b$closure$u7d$$u7d$17h3cecadc898b595f3E"
+        ],
+        "source_line": 339,
+        "expected_message": "Malformed exclude pattern",
+        "message_references": [
+          {
+            "via": "direct-rip",
+            "address": "0x857ac"
+          }
+        ]
+      },
+      {
+        "member": "FUN_0027a470",
+        "elf_address": "0x17a470",
+        "size": 71,
+        "raw_symbols": [
+          "_ZN2fd4walk11WorkerState15build_overrides28_$u7b$$u7b$closure$u7d$$u7d$17h8b14bbfbb7203613E"
+        ],
+        "source_line": 344,
+        "expected_message": "Mismatch in exclude patterns",
+        "message_references": [
+          {
+            "via": "direct-rip",
+            "address": "0x918d1"
+          }
+        ]
+      }
+    ]
+  }
+}

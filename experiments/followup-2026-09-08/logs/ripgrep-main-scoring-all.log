@@ -1,0 +1,9 @@
+ripgrep-main body2-k16 budget-refused {'TP': None, 'FP': None, 'FN': None, 'f1': None}
+ripgrep-main body2-k32 budget-refused {'TP': None, 'FP': None, 'FN': None, 'f1': None}
+ripgrep-main body2-k8 budget-refused {'TP': None, 'FP': None, 'FN': None, 'f1': None}
+ripgrep-main combined3-k16 completed {'TP': 428, 'FP': 425, 'FN': 3429, 'f1': 0.18174097664543523}
+ripgrep-main combined3-k32 budget-refused {'TP': None, 'FP': None, 'FN': None, 'f1': None}
+ripgrep-main combined3-k8 completed {'TP': 421, 'FP': 424, 'FN': 3436, 'f1': 0.17907273500638027}
+ripgrep-main exact completed {'TP': 795, 'FP': 431270, 'FN': 3062, 'f1': 0.003647441514766403}
+ripgrep-main rescue-k16 completed {'TP': 753, 'FP': 425, 'FN': 3104, 'f1': 0.2991062562065541}
+ripgrep-main v0 completed {'TP': 302, 'FP': 57162, 'FN': 3555, 'f1': 0.009849806754619135}
