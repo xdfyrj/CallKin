@@ -39,6 +39,9 @@ from novel_common import (
     write_json_once,
 )
 
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
 
 def _config_path() -> Path:
     return HERE / "config.json"

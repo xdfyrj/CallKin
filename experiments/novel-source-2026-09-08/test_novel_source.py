@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+import os
+import subprocess
+import sys
+from pathlib import Path
 from unittest.mock import patch
 
 from infer_novel_source import (
@@ -128,12 +132,51 @@ def test_default_paths_follow_frozen_output_templates():
     assert paths["score_dir"].name == "hexyl-v0170"
 
 
+def test_observe_imports_core_from_outside_repo_without_pythonpath():
+    study = Path(__file__).resolve().parent
+    code = f"""
+import sys
+sys.path.insert(0, {str(study)!r})
+import observe_novel_source as observe
+import os
+os.chdir(observe.REPO_ROOT)
+from build_manifest import BUILD_TARGET, load_and_verify_manifest
+from novel_common import case_paths
+
+config = observe.read_json(observe._config_path())
+paths = case_paths(config, "hexyl-v0170")
+manifest = observe._manifest_path(config, "hexyl-v0170", paths)
+verified = load_and_verify_manifest(
+    manifest,
+    expected_case="hexyl-v0170",
+    expected_build="O3S",
+    expected_profile="plain",
+    expected_target=BUILD_TARGET,
+)
+observe._verify_build_pins(config, "hexyl-v0170", manifest, verified)
+assert str(observe.REPO_ROOT) in __import__("sys").path
+print("core import/build pin PASS")
+"""
+    environment = dict(os.environ)
+    environment.pop("PYTHONPATH", None)
+    result = subprocess.run(
+        [sys.executable, "-B", "-c", code],
+        cwd="/tmp",
+        env=environment,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    assert "core import/build pin PASS" in result.stdout
+
+
 def main() -> int:
     test_arm_order_is_frozen()
     test_simple_prediction_canonicalizes_and_drops_singletons()
     test_clip_prediction_reports_out_of_mask_members()
     test_write_json_once_is_idempotent_and_refuses_drift()
     test_default_paths_follow_frozen_output_templates()
+    test_observe_imports_core_from_outside_repo_without_pythonpath()
     print("novel-source orchestration PASS")
     return 0
 
