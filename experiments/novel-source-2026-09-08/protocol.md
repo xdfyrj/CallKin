@@ -75,11 +75,11 @@ records contain no symbols, GT, extraction, observation, metrics, or quality
 result.
 
 Extraction uses Sage's Python 3.10.14 environment with angr 9.2.165, r2pipe
-1.9.8, Capstone 5.0.3, pycparser 2.22, and radare2 5.5.0. Inference uses
-Python 3.12.3. Address-space protection is 12 GiB, maximum extraction wall
-time is 3,600 seconds, and inference is limited to 1,800 seconds and 12 GiB
-per arm. At most two heavy cases may run concurrently. Cache time is not a
-latency fairness measure.
+1.9.8, Capstone 5.0.3, pycparser 2.22, pyelftools 0.31, and radare2 5.5.0.
+Inference uses Python 3.12.3. Address-space protection is 12 GiB, maximum
+extraction wall time is 3,600 seconds, and inference is limited to 1,800
+seconds and 12 GiB per arm. At most two heavy cases may run concurrently.
+Cache time is not a latency fairness measure.
 
 ## Data flow and label separation
 
