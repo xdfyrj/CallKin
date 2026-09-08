@@ -1,6 +1,6 @@
 """Concrete Null Test의 byte-identical 반례를 고정하는 회귀 테스트.
 
-기술보고서 3.3절이 주장하는 두 대응쌍을 검증한다.
+논문 3.3절이 주장하는 두 대응쌍을 검증한다.
 
     largest::<u8>  / largest_u8    78 bytes  fdbf50b9...
     largest::<i32> / largest_i32  166 bytes  2917f606...
@@ -32,7 +32,7 @@ GENERIC_O3S = ROOT / "artifacts" / "O3S" / "func_largest" / "func_largest.bin"
 CONCRETE_O3 = ROOT / "artifacts" / "concrete" / "O3" / "func_largest" / "func_largest.bin"
 CONCRETE_O3S = ROOT / "artifacts" / "concrete" / "O3S" / "func_largest" / "func_largest.bin"
 
-# 기술보고서 3.3절 표에 실린 값. rustc 1.93.1, LLVM 21.1.8,
+# 논문 3.3절 표에 실린 값. rustc 1.93.1, LLVM 21.1.8,
 # x86_64-unknown-linux-gnu, O3 후 strip --strip-all, 네 함수 모두 #[inline(never)].
 PUBLISHED = {
     78: "fdbf50b9d3efe56d20c2d0392f780e73b179cc7d88255321138c887cbe563b40",
@@ -135,7 +135,7 @@ def test_pairs_are_byte_identical():
         )
         assert generic == concrete, (
             f"{g_name}와 {c_name}가 더 이상 같지 않다. "
-            f"기술보고서 3.3절의 반례가 이 툴체인에서 재현되지 않는다."
+            f"논문 3.3절의 반례가 이 툴체인에서 재현되지 않는다."
         )
 
 
@@ -169,7 +169,7 @@ def main():
         print(f"  sha256    {digest}")
         print(f"  바이트 동일 {same} / 보고서 값 일치 {digest == PUBLISHED[size]}")
         assert ok
-    print("\n전부 통과. 기술보고서 3.3절의 반례가 재현된다.")
+    print("\n전부 통과. 논문 3.3절의 반례가 재현된다.")
 
 
 if __name__ == "__main__":
