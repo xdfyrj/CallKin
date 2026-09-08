@@ -1,0 +1,7 @@
+{
+  "reference_study": "../followup-2026-09-08",
+  "reference_inputs": "../followup-2026-09-08/inputs.json",
+  "candidate_pool": "../followup-2026-09-08/cache/<case>/body2-k16.candidates.json",
+  "treatment": "../followup-2026-09-08/cache/<case>/combined3-k16.candidates.json",
+  "body_evidence": "resolved from reference inputs.json"
+}

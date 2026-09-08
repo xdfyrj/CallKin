@@ -1,0 +1,125 @@
+{
+  "base_commit": "7277f7e7d1d2fa5ee781b0f0c0d6626618f3a1bf",
+  "config_sha256": "4de776f611c807b0021e356b668d4e1bcd1f19d01504f6fe7b5d1562a29f0cb1",
+  "controls": {
+    "fd": {
+      "B2-body-score": "484135fba48f6d2dee03e14a6e079686442d92d1e0b70fef782319d7861e3bf6",
+      "random-0": "bdfaeb1c782915c3ea8939ca3ffaeabd3c6a11c44f94e349761b279c805443d5",
+      "random-1": "d7f1b2d94e9cba4a5e081cac36ccdc3b3b1c98a14961fc0c6f25c53241e8f711",
+      "random-2": "1bd97a5bee1e42361ff7cb30c62312cf440f06e3445fa7f343ec80020cad1480",
+      "random-3": "51d441710f8e49ed16fade86593f118211fa62d591151d954d84a814c69bf924",
+      "random-4": "bb79584a3a8c666894e0d9450275025522a21e276337896f44d1d563ebc36a69"
+    },
+    "ripgrep-main": {
+      "B2-body-score": "34e32b333e2c0c5775180dddcd6336802264fded958977147e6b60761b9d78ba",
+      "random-0": "7069b460cfbd67dd7290d5b49733232dc295e098645074c7f5b205523f98bb09",
+      "random-1": "379a9f5d93196145254a8323f91a882b102808d1021e4db425d8d515897cd849",
+      "random-2": "558019e9d6625997b573aefbbf7e52d29616339f22213edcb13c1a7b5adbc72d",
+      "random-3": "14e2b0441566978165eb12e3747cc8b655e63c8045d298979913f64905646868",
+      "random-4": "55af18a6c499ad7544193259df6a1dfd6a0bef9654cd1bca2bee37cdb4c8d95b"
+    },
+    "zoxide": {
+      "B2-body-score": "44d881cfb0614f5ff66f6cd3475d3afb7c2cd861f3375d9d5c958a0e03588c32",
+      "random-0": "ff3963adefbd5bf83f86ee0337d41a33a03152a11ae9634ffa74021efada22e2",
+      "random-1": "4a88330ab0b98214d56dbfb902630ddb549bb65aa4cd4024820b8a26f7fe2828",
+      "random-2": "d07835c39a65a2999f52a0b9f98b7a05001016841b63e210612de0afe3640342",
+      "random-3": "41e1a0dbcddfcbbab47196530e42a861b4ff7429461884dfa08d6c128910aee5",
+      "random-4": "23acf045a0b821d7bab8e2f09e2bd342af13b97e8c353efe0dd2d8efc67f2576"
+    }
+  },
+  "implementation": {
+    "prepare_relation_control.py": {
+      "bytes": 13159,
+      "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/relation-control-2026-09-08/prepare_relation_control.py",
+      "sha256": "e50b0302a83e826c0cb17d7c73c07c0a2d2a9ed0b75cae95b9e5007e064ef607"
+    },
+    "relation_control.py": {
+      "bytes": 27416,
+      "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/relation-control-2026-09-08/relation_control.py",
+      "sha256": "6eecc1f2bcb9f7aa378d2b9239352f2a1124c8d4d5d044a34b80801c42707f2d"
+    },
+    "run_relation_control.py": {
+      "bytes": 21392,
+      "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/relation-control-2026-09-08/run_relation_control.py",
+      "sha256": "74ec5b3c3a2ee20519f85083391ad9febe92850f8cbf5de44ed46ea0040d9b28"
+    }
+  },
+  "protocol_sha256": "40b976a652a639c28bdd1705ebbe4230ad2877d7fcaaef159b6e4a09190fb53e",
+  "reference": {
+    "cases": {
+      "fd": {
+        "body": {
+          "bytes": 242759756,
+          "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/v0-engine-py-f1/body_evidence/rust-nonstd/plain/fd.O3S.body.json",
+          "sha256": "ebed20a449a0d758a3e134b985ffb8764455d75d56682415fe5b393d57ec0743"
+        },
+        "body2_candidates": {
+          "bytes": 3825926,
+          "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/cache/fd/body2-k16.candidates.json",
+          "sha256": "f6bad44d6b21422a4d8ef3909ba6fd141dd4d82756abc5032f74de6e933bab62"
+        },
+        "combined3_candidates": {
+          "bytes": 1876347,
+          "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/cache/fd/combined3-k16.candidates.json",
+          "sha256": "ab6d70c83d6fc7a83719b8f90b6e731b51ac04b228127bebccbe986f982a6b35"
+        }
+      },
+      "ripgrep-main": {
+        "body": {
+          "bytes": 266959163,
+          "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/v0-engine-py-f1/body_evidence/rust-nonstd/plain/ripgrep-main.O3S.body.json",
+          "sha256": "4bcc861d59b8e28064184d69b471314e6486e6ce5d23f04cfbcef84eac79d8db"
+        },
+        "body2_candidates": {
+          "bytes": 11965172,
+          "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/cache/ripgrep-main/body2-k16.candidates.json",
+          "sha256": "caa2e277725ce819fc97b340ae2009f32899510cdffb1ae0dbc52bbeec4fc6ea"
+        },
+        "combined3_candidates": {
+          "bytes": 5421853,
+          "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/cache/ripgrep-main/combined3-k16.candidates.json",
+          "sha256": "65b3cad4fcb97a8ec3675f142bbf0d18afdbf3bb83ab8fd3e52e5c2a13aeb5f0"
+        }
+      },
+      "zoxide": {
+        "body": {
+          "bytes": 71163797,
+          "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/v0-engine-py-frozen/body_evidence/plain/zoxide.O3S.body.json",
+          "sha256": "e1776d94199d13d2f995097f191ac78f5de3a5f5c00df80bd7dd78dd42a182cd"
+        },
+        "body2_candidates": {
+          "bytes": 1349301,
+          "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/cache/zoxide/body2-k16.candidates.json",
+          "sha256": "28bb267c4cb4636e624346497ac3401f2f2020984018f0433267b1f9e185e373"
+        },
+        "combined3_candidates": {
+          "bytes": 463684,
+          "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/cache/zoxide/combined3-k16.candidates.json",
+          "sha256": "e84a336012f42a75f63f19ae0d211ad5f3923c62747541ecc0a3414010d5c240"
+        }
+      }
+    },
+    "reference_config": {
+      "bytes": 789,
+      "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/config.json",
+      "sha256": "01c6148c0c8dbb8955300d5579bbd3b62a081f13c0958af0f5dd3cb63786d70f"
+    },
+    "reference_inputs": {
+      "bytes": 5652,
+      "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/inputs.json",
+      "sha256": "4dca828168b64167ab7aa3b594b132821fc4171ccf3d034d9fd64db52dbf78b3"
+    },
+    "reference_protocol": {
+      "bytes": 5641,
+      "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/protocol.md",
+      "sha256": "093cd266119162ced2dd54cc374208a5d8080275c72e5465f5de676d8c58092e"
+    }
+  },
+  "selection_sha256": {
+    "fd": "d2bd315550d70901facfccdf0d8609f0120340bff32401af9d303c64846f6477",
+    "ripgrep-main": "68ef1310798f984142b7c9561df8112fd24ee0265a6e8e685dc5a2d05847224e",
+    "zoxide": "fae4bf911da02c43b56f8cd8b4e2cad452d078aa4f7d30db7a0b63a0a423aaf6"
+  },
+  "status": "controls-hashed",
+  "study": "callkin-relation-control-2026-09-08"
+}
