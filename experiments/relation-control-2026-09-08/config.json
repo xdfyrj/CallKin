@@ -1,0 +1,387 @@
+{
+  "study": "callkin-relation-control-2026-09-08",
+  "status": "FROZEN-DESIGN",
+  "reference_study": "../followup-2026-09-08",
+  "base_commit": "7277f7e7d1d2fa5ee781b0f0c0d6626618f3a1bf",
+  "protocol_sha256": "40b976a652a639c28bdd1705ebbe4230ad2877d7fcaaef159b6e4a09190fb53e",
+  "protocol_sha256_note": "Frozen design hash; update both protocol and config only through Root review before any outcome rerun.",
+  "reference_protocol_sha256": "093cd266119162ced2dd54cc374208a5d8080275c72e5465f5de676d8c58092e",
+  "cases": [
+    "zoxide",
+    "fd",
+    "ripgrep-main"
+  ],
+  "primary_k": 16,
+  "data_mode": {
+    "build": "O3S",
+    "profile": "plain",
+    "candidate_mode": "out-in",
+    "status": "previously exposed development programs",
+    "new_extraction": false,
+    "new_candidate_search": false
+  },
+  "candidate_sources": {
+    "pool": "cache/<case>/body2-k16.candidates.json",
+    "pool_views": [
+      "token",
+      "cfg"
+    ],
+    "treatment": "cache/<case>/combined3-k16.candidates.json",
+    "treatment_views": [
+      "token",
+      "cfg",
+      "relation"
+    ],
+    "treatment_must_be_subset_of_pool": true,
+    "source_study_inputs": "inputs.json"
+  },
+  "candidate_sha256": {
+    "zoxide": {
+      "body2": "28bb267c4cb4636e624346497ac3401f2f2020984018f0433267b1f9e185e373",
+      "c3": "e84a336012f42a75f63f19ae0d211ad5f3923c62747541ecc0a3414010d5c240"
+    },
+    "fd": {
+      "body2": "f6bad44d6b21422a4d8ef3909ba6fd141dd4d82756abc5032f74de6e933bab62",
+      "c3": "ab6d70c83d6fc7a83719b8f90b6e731b51ac04b228127bebccbe986f982a6b35"
+    },
+    "ripgrep-main": {
+      "body2": "caa2e277725ce819fc97b340ae2009f32899510cdffb1ae0dbc52bbeec4fc6ea",
+      "c3": "65b3cad4fcb97a8ec3675f142bbf0d18afdbf3bb83ab8fd3e52e5c2a13aeb5f0"
+    }
+  },
+  "arms": {
+    "treatment": "C3-k16",
+    "controls": [
+      "B2-body-score",
+      "random-0",
+      "random-1",
+      "random-2",
+      "random-3",
+      "random-4"
+    ],
+    "random_output_key": "random",
+    "body_score_output_key": "body-score",
+    "random_summary": [
+      "mean",
+      "min",
+      "max"
+    ],
+    "random_inference": "descriptive only"
+  },
+  "seeds": [
+    "relation-control-2026-09-08/0",
+    "relation-control-2026-09-08/1",
+    "relation-control-2026-09-08/2",
+    "relation-control-2026-09-08/3",
+    "relation-control-2026-09-08/4"
+  ],
+  "stratification": {
+    "endpoint_reason_tokens": [
+      "missing",
+      "incomplete",
+      "opaque"
+    ],
+    "pair_reason_rule": "deduplicated union of all endpoint reasons, stored as deterministic sorted tuple",
+    "eligible_label": "complete/noopaque",
+    "ineligible_label": "abstain",
+    "cost_zero_bin": "cost0",
+    "ineligible_cost": 0,
+    "positive_cost": "c = len(instructions_left) * len(instructions_right)",
+    "positive_cost_exponent": "e = c.bit_length() - 1",
+    "positive_cost_subdivision": "sub = ((c - 2**e) * 16) // 2**e",
+    "positive_cost_stratum": [
+      "complete/noopaque",
+      "e",
+      "sub"
+    ],
+    "stratum_json": {
+      "sort_keys": true,
+      "separators": [
+        ",",
+        ":"
+      ]
+    },
+    "nominal_cost_relative_bound": 0.0625,
+    "nominal_cost_note": "Equal counts within a 16-way octave subdivision imply an expected absolute aggregate deviation of at most about 6.25 percent. Report observed values and do not resample for cost."
+  },
+  "selection": {
+    "quota_source": "C3-k16 count per case and stratum",
+    "pool": "B2-k16",
+    "within_arm_replacement": false,
+    "between_arm_overlap_allowed": true,
+    "c3_overlap_allowed": true,
+    "pool_shortfall": "selection failure; no replacement, bin merge, or quota relaxation",
+    "body_score_distribution_matching": false,
+    "selection_reads": [
+      "pair IDs",
+      "token score",
+      "cfg score",
+      "body instruction lengths",
+      "F6 eligibility"
+    ],
+    "selection_does_not_read": [
+      "GT",
+      "linkage",
+      "origin",
+      "source audit",
+      "relation flags",
+      "old decisions",
+      "old clusters"
+    ],
+    "freeze_before_f4_cache_open": true,
+    "freeze_outputs_before_old_prediction_cache_open": true,
+    "per_stratum_assertions": [
+      "selected control count == C3 quota",
+      "selected control eligible count == C3 eligible count",
+      "selected control ineligible reason count == C3 reason count"
+    ],
+    "sha256_rank": {
+      "algorithm": "SHA-256",
+      "encoding": "UTF-8",
+      "key": "seed + NUL + case + NUL + canonical stratum label + NUL + pair.left + NUL + pair.right",
+      "sort": [
+        "digest ascending",
+        "pair.left ascending",
+        "pair.right ascending"
+      ]
+    },
+    "body_score": {
+      "min": "min(token_score,cfg_score)",
+      "mean": "(token_score+cfg_score)/2",
+      "sort": [
+        "min descending",
+        "mean descending",
+        "pair.left ascending",
+        "pair.right ascending"
+      ],
+      "rounding": false
+    }
+  },
+  "policy": {
+    "structure_match_threshold": 0.95,
+    "slot_match_threshold": 1.0,
+    "structure_reject_threshold": null,
+    "require_informative_slot": true,
+    "abstain_on_opaque_indirect": true,
+    "max_comparison_count": 10000,
+    "max_alignment_cell_budget": 500000000,
+    "rescue": "off",
+    "align_decide_complete_link": "unchanged"
+  },
+  "budget_and_cache": {
+    "budget_scope": "independent per case and arm",
+    "candidate_queue_priced_first": true,
+    "candidate_queue_over_budget": "whole arm budget-refused; no prefix quality",
+    "on_demand_over_remaining_budget": "retain existing F6 comparison_budget blocked merge and continue",
+    "shared_deterministic_f4_cache": "permitted for physical work",
+    "cache_hit_reduces_logical_cost": false,
+    "wall_time_win_claim": false,
+    "logical_cost_fields": [
+      "candidate_comparisons",
+      "candidate_alignment_cells",
+      "on_demand_comparisons",
+      "on_demand_alignment_cells",
+      "total_comparisons",
+      "total_alignment_cells"
+    ],
+    "physical_cache_fields": [
+      "physical_cache_comparisons",
+      "physical_cache_alignment_cells",
+      "cache_hit_count"
+    ]
+  },
+  "labels": {
+    "primary": {
+      "fd": {
+        "ground_truth": "../followup-2026-09-08/audit-corrections/fd.gt.v1.json",
+        "linkage": "../followup-2026-09-08/audit-corrections/fd.linkage.v1.json",
+        "kind": "source-audit corrected",
+        "ground_truth_sha256": "06deeee7f149e13e794cca8a35f8ff3cb332a7b864dfa1a1f551ff8342cda8ce",
+        "linkage_sha256": "18d43ea7380e641d5bcd7e15084203efc90f4461d04c9ff97589562241f7fe01"
+      },
+      "zoxide": {
+        "ground_truth": "../followup-2026-09-08/audit-corrections/zoxide.gt.v1.json",
+        "linkage": "../followup-2026-09-08/audit-corrections/zoxide.linkage.v1.json",
+        "kind": "source-audit corrected",
+        "ground_truth_sha256": "93f84e1b4dd8775731b87d7502d47ea5b7e5ff48451eaf9a47e641eba05c8f5a",
+        "linkage_sha256": "14805b8efdb789bbe307da2fa9e7e2a8b412ec31e7f849a18a675decaa470a8f"
+      },
+      "ripgrep-main": {
+        "ground_truth_from_source_manifest": "ground_truth/rust-nonstd/plain/ripgrep-main.O3S.gt.json",
+        "linkage_from_source_manifest": "worktrees/v0-engine-py-f1/results/ripgrep-main/plain/ripgrep-main.O3S.gt-mangled-audit.json",
+        "kind": "original; no corrected audit pair"
+      }
+    },
+    "secondary_original": {
+      "fd": {
+        "ground_truth_from_source_manifest": "ground_truth/rust-nonstd/plain/fd.O3S.gt.json",
+        "linkage_from_source_manifest": "worktrees/v0-engine-py-f1/results/fd/plain/fd.O3S.gt-mangled-audit.json"
+      },
+      "zoxide": {
+        "ground_truth_from_source_manifest": "ground_truth/rust-nonstd/plain/zoxide.O3S.gt.json",
+        "linkage_from_source_manifest": "worktrees/v0-engine-py-frozen/results/zoxide/plain/zoxide.O3S.gt-mangled-audit.json"
+      },
+      "ripgrep-main": {
+        "same_as_primary": true
+      }
+    }
+  },
+  "quality_metrics": {
+    "reusable_scorer_fields": [
+      "TP",
+      "FP",
+      "FN",
+      "TN",
+      "precision",
+      "recall",
+      "f1",
+      "macro_origin_recall",
+      "exact_group_rate",
+      "positive_pairs",
+      "scored_pairs",
+      "neutral_pairs",
+      "per_origin",
+      "positive_first_outcome",
+      "on_demand_positive_compared",
+      "comparison_cost"
+    ],
+    "comparison_cost_raw_fields": [
+      "candidate_detailed_comparison_count",
+      "on_demand_comparison_count",
+      "candidate_alignment_cells",
+      "on_demand_alignment_cells",
+      "total_detailed_comparisons",
+      "total_alignment_cells",
+      "abstain_comparison_count",
+      "budget_blocked_merge_count",
+      "budget_limited",
+      "remaining_comparisons",
+      "remaining_alignment_cells",
+      "cache_hit_count"
+    ],
+    "display_alias": {
+      "macro_origin_recall": "macro_R"
+    },
+    "source_corrected_sensitivity": {
+      "cases": [
+        "fd",
+        "zoxide"
+      ],
+      "same_prediction_for_both_labels": true,
+      "original_is_secondary": true,
+      "fields": [
+        "TP",
+        "FP",
+        "FN",
+        "TN",
+        "precision",
+        "recall",
+        "f1",
+        "macro_R",
+        "exact_group_rate",
+        "primary_minus_secondary"
+      ]
+    },
+    "random5": {
+      "statistics": [
+        "mean",
+        "min",
+        "max",
+        "per_seed_values"
+      ],
+      "inferential_tests": false,
+      "generalization_claim": false
+    }
+  },
+  "runtime": {
+    "python": "3.12.3",
+    "address_space_limit_bytes": 12884901888,
+    "address_space_limit_gib": 12,
+    "wall_time_limit_seconds_per_arm": 1800,
+    "max_rss_recorded": true,
+    "budget_refusal_quality": "NA",
+    "resource_incomplete_quality": "NA"
+  },
+  "expected_outputs": {
+    "selection_manifest": "selection/<case>.json",
+    "snapshot": "snapshot.json",
+    "candidate_artifacts": [
+      "candidates/<case>/random-0.candidates.json",
+      "candidates/<case>/random-1.candidates.json",
+      "candidates/<case>/random-2.candidates.json",
+      "candidates/<case>/random-3.candidates.json",
+      "candidates/<case>/random-4.candidates.json",
+      "candidates/<case>/body-score.candidates.json"
+    ],
+    "run_artifacts": [
+      "runs/<case>/<arm>/prediction.json",
+      "runs/<case>/<arm>/replay.prediction.json",
+      "runs/<case>/<arm>/metadata.json",
+      "run-summary.json"
+    ],
+    "evaluation_artifacts": "scorer-defined evaluation records may be bundled; required fields are in quality_metrics",
+    "selection_fields": [
+      "seed_or_body_score_rule",
+      "source_pool_sha256",
+      "treatment_sha256",
+      "stratum_quota_pool_selected",
+      "eligibility_reason_counts",
+      "nominal_cost_by_stratum",
+      "nominal_cost_deviation_by_stratum",
+      "forced_selection_strata_count",
+      "forced_selection_pair_count",
+      "forced_selection_pair_fraction",
+      "c3_overlap_count",
+      "c3_overlap_fraction",
+      "candidate_graph_summary",
+      "selection_frozen_before_f4_cache",
+      "gt_used_for_selection",
+      "relation_flags_used_for_selection"
+    ],
+    "summary_csv_fields": [
+      "case",
+      "arm",
+      "status",
+      "candidate_pair_count",
+      "eligible_pair_count",
+      "ineligible_pair_count",
+      "candidate_comparisons",
+      "candidate_alignment_cells",
+      "on_demand_comparisons",
+      "on_demand_alignment_cells",
+      "total_comparisons",
+      "total_alignment_cells",
+      "TP",
+      "FP",
+      "FN",
+      "TN",
+      "precision",
+      "recall",
+      "f1",
+      "macro_R",
+      "exact_group_rate"
+    ]
+  },
+  "interpretation": {
+    "primary": "C3-k16 versus B2-body-score per case",
+    "primary_endpoint": "pairwise F1 under the case label plan",
+    "secondary_descriptive": [
+      "precision",
+      "recall",
+      "macro_R",
+      "exact_group_rate"
+    ],
+    "c3_win": "selection-specific effect beyond this quota-matched thinning design",
+    "c3_win_does_not_prove": [
+      "semantic relation information independent of geometry",
+      "generalization to unseen Rust programs"
+    ],
+    "body_score_win_does_not_prove": "a deployable body-only rule because its C3 quotas are inherited",
+    "random5": "descriptive variability only; no p-value or significance claim"
+  },
+  "freeze_gate": {
+    "requires_root_confirmation": true,
+    "run_before_confirmation": false,
+    "protocol_sha256_set_after_confirmation": true
+  }
+}
