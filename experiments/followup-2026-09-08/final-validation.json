@@ -1,0 +1,11 @@
+{
+  "tested_git_commit": "70071d583cbe4664610993a6b301ba2d7d5f9cbd",
+  "configurations": 27,
+  "completed_predictions": 22,
+  "budget_refusals": 5,
+  "audit_records": 48,
+  "git_byte_pinned_inputs": 8,
+  "clean_archive_minimal_replay": "cached-observation multiview replay PASS (Linux, Python 3.12.3)\nbody2: candidates=172 comparisons=172 cells=9159 TP=26 FP=0 FN=0 TN=164 F1=1.0 exact_families=3\ncombined3: candidates=113 comparisons=113 cells=7242 TP=26 FP=0 FN=0 TN=164 F1=1.0 exact_families=3\nsha256 body2-evaluation.json e80ad92084421ee8dc7dc3f92c98858a967acd201bb26e0d9db22918269acbff\nsha256 body2-f5.json 580342283f9b66fb10248b6878d6ee3f3bea6fca28bc0895c51c8713b3074465\nsha256 body2-f6.json 44a00ed256176866405bc68a7f91bb75da63208d7e3c0bfee89a844b06bed684\nsha256 body2-multiview-union.json b557f97f200a9e7ac12d3020015b1ecb3ec1902c1ca3df29bf06840e1a37a203\nsha256 combined3-evaluation.json b99bfb44edcbb479a5334f5f6125d588125973a476b6121f7b72ab088bafd170\nsha256 combined3-f5.json 8e8dec1f232c90a447eacd8641ccfe30445394e95d6ba9a13cb23c9ff6b62983\nsha256 combined3-f6.json 3bf8d015e96408f7ae46ccfd8bd4bcb3f447e145ddda44800e5d5f648f5d05d1\nsha256 combined3-multiview-union.json 3f8fa0e62e806a0ae1011ccb5774b3d0609f2f42a2c047400dfc543629da4d17\n",
+  "isolated_bundle_rescore": "PASS: 22 retained predictions rescored; 5 budget-refused configurations remain NA.\nPASS: source-correction sensitivity counts also match.\n",
+  "scope": "same-machine clean Git archive and isolated rescore; not external-human or source rebuild"
+}
