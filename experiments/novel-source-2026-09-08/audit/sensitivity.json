@@ -1,0 +1,1195 @@
+{
+  "arms": {
+    "B2-body-score": {
+      "after_ambiguity_v2": {
+        "F1": 0.04346513733776034,
+        "FN": 3105,
+        "FP": 64,
+        "N": 2443941,
+        "P": 3177,
+        "TN": 2443877,
+        "TP": 72,
+        "candidate_positive_pairs": 830,
+        "candidate_positive_recall": 0.2612527541706012,
+        "exact_group_rate": 0.04201680672268908,
+        "macro_R": 0.06820854215812198,
+        "neutral_pairs": {
+          "ambiguous-neutral": 19953,
+          "duplicate-neutral": 460,
+          "unresolved-neutral": 0
+        },
+        "neutral_total": 20413,
+        "positive_first_outcome": {
+          "not_retrieved_or_requested": 2192,
+          "observation_ineligible": 229,
+          "recovered": 72,
+          "slot_policy_failed": 377,
+          "structure_failed": 307
+        },
+        "precision": 0.5294117647058824,
+        "recall": 0.0226628895184136,
+        "scored_pairs": 2447118
+      },
+      "baseline_primary_v1": {
+        "F1": 0.04461863129333735,
+        "FN": 3105,
+        "FP": 64,
+        "N": 2446152,
+        "P": 3179,
+        "TN": 2446088,
+        "TP": 74,
+        "candidate_positive_pairs": 831,
+        "candidate_positive_recall": 0.261402956904687,
+        "exact_group_rate": 0.04201680672268908,
+        "macro_R": 0.06820854215812198,
+        "neutral_pairs": {
+          "ambiguous-neutral": 17740,
+          "duplicate-neutral": 460,
+          "unresolved-neutral": 0
+        },
+        "neutral_total": 18200,
+        "positive_first_outcome": {
+          "not_retrieved_or_requested": 2192,
+          "observation_ineligible": 229,
+          "recovered": 74,
+          "slot_policy_failed": 377,
+          "structure_failed": 307
+        },
+        "precision": 0.5362318840579711,
+        "recall": 0.023277760301981754,
+        "scored_pairs": 2449331
+      },
+      "delta_after_minus_before": {
+        "F1": -0.0011534939555770118,
+        "FN": 0,
+        "FP": 0,
+        "N": -2211,
+        "P": -2,
+        "TN": -2211,
+        "TP": -2,
+        "exact_group_rate": 0.0,
+        "macro_R": 0.0,
+        "neutral_total": 2213,
+        "precision": -0.006820119352088705,
+        "recall": -0.0006148707835681548,
+        "scored_pairs": -2213
+      },
+      "original_v1": {
+        "F1": 0.04460518384569018,
+        "FN": 3106,
+        "FP": 64,
+        "N": 2446151,
+        "P": 3180,
+        "TN": 2446087,
+        "TP": 74,
+        "candidate_positive_pairs": 832,
+        "candidate_positive_recall": 0.26163522012578616,
+        "exact_group_rate": 0.041666666666666664,
+        "macro_R": 0.06764013764013764,
+        "neutral_pairs": {
+          "ambiguous-neutral": 17740,
+          "duplicate-neutral": 460,
+          "unresolved-neutral": 0
+        },
+        "neutral_total": 18200,
+        "positive_first_outcome": {
+          "not_retrieved_or_requested": 2192,
+          "observation_ineligible": 229,
+          "recovered": 74,
+          "slot_policy_failed": 377,
+          "structure_failed": 308
+        },
+        "precision": 0.5362318840579711,
+        "recall": 0.023270440251572325,
+        "scored_pairs": 2449331
+      },
+      "original_v1_verification": {
+        "fields": [
+          "TP",
+          "FP",
+          "FN",
+          "TN",
+          "precision",
+          "recall",
+          "f1",
+          "macro_origin_recall",
+          "exact_group_rate",
+          "positive_pairs",
+          "scored_pairs",
+          "neutral_pairs",
+          "positive_first_outcome"
+        ],
+        "status": "matched-frozen-fd-results-secondary_metrics"
+      },
+      "prediction": {
+        "candidate_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/relation-control-2026-09-08/candidates/fd/B2-body-score.candidates.json",
+        "candidate_sha256": "484135fba48f6d2dee03e14a6e079686442d92d1e0b70fef782319d7861e3bf6",
+        "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/relation-control-2026-09-08/runs/fd/B2-body-score/prediction.json",
+        "sha256": "b73ef467fe750528a1033b653743d97cb1fe6455662e6e84cc6653c4417ebf8a"
+      }
+    },
+    "C3-k16": {
+      "after_ambiguity_v2": {
+        "F1": 0.05240963855421687,
+        "FN": 3090,
+        "FP": 56,
+        "N": 2443941,
+        "P": 3177,
+        "TN": 2443885,
+        "TP": 87,
+        "candidate_positive_pairs": 845,
+        "candidate_positive_recall": 0.26597418948693735,
+        "exact_group_rate": 0.04201680672268908,
+        "macro_R": 0.061282694896140265,
+        "neutral_pairs": {
+          "ambiguous-neutral": 19953,
+          "duplicate-neutral": 460,
+          "unresolved-neutral": 0
+        },
+        "neutral_total": 20413,
+        "positive_first_outcome": {
+          "not_retrieved_or_requested": 2180,
+          "observation_ineligible": 229,
+          "recovered": 87,
+          "slot_policy_failed": 323,
+          "structure_failed": 358
+        },
+        "precision": 0.6083916083916084,
+        "recall": 0.027384324834749764,
+        "scored_pairs": 2447118
+      },
+      "baseline_primary_v1": {
+        "F1": 0.052378085490668275,
+        "FN": 3092,
+        "FP": 56,
+        "N": 2446152,
+        "P": 3179,
+        "TN": 2446096,
+        "TP": 87,
+        "candidate_positive_pairs": 845,
+        "candidate_positive_recall": 0.2658068575023592,
+        "exact_group_rate": 0.04201680672268908,
+        "macro_R": 0.061282694896140265,
+        "neutral_pairs": {
+          "ambiguous-neutral": 17740,
+          "duplicate-neutral": 460,
+          "unresolved-neutral": 0
+        },
+        "neutral_total": 18200,
+        "positive_first_outcome": {
+          "not_retrieved_or_requested": 2182,
+          "observation_ineligible": 229,
+          "recovered": 87,
+          "slot_policy_failed": 323,
+          "structure_failed": 358
+        },
+        "precision": 0.6083916083916084,
+        "recall": 0.02736709657124882,
+        "scored_pairs": 2449331
+      },
+      "delta_after_minus_before": {
+        "F1": 3.155306354859361e-05,
+        "FN": -2,
+        "FP": 0,
+        "N": -2211,
+        "P": -2,
+        "TN": -2211,
+        "TP": 0,
+        "exact_group_rate": 0.0,
+        "macro_R": 0.0,
+        "neutral_total": 2213,
+        "precision": 0.0,
+        "recall": 1.7228263500944363e-05,
+        "scored_pairs": -2213
+      },
+      "original_v1": {
+        "F1": 0.05236232320192597,
+        "FN": 3093,
+        "FP": 56,
+        "N": 2446151,
+        "P": 3180,
+        "TN": 2446095,
+        "TP": 87,
+        "candidate_positive_pairs": 846,
+        "candidate_positive_recall": 0.2660377358490566,
+        "exact_group_rate": 0.041666666666666664,
+        "macro_R": 0.06077200577200577,
+        "neutral_pairs": {
+          "ambiguous-neutral": 17740,
+          "duplicate-neutral": 460,
+          "unresolved-neutral": 0
+        },
+        "neutral_total": 18200,
+        "positive_first_outcome": {
+          "not_retrieved_or_requested": 2182,
+          "observation_ineligible": 229,
+          "recovered": 87,
+          "slot_policy_failed": 323,
+          "structure_failed": 359
+        },
+        "precision": 0.6083916083916084,
+        "recall": 0.027358490566037737,
+        "scored_pairs": 2449331
+      },
+      "original_v1_verification": {
+        "fields": [
+          "TP",
+          "FP",
+          "FN",
+          "TN",
+          "precision",
+          "recall",
+          "f1",
+          "macro_origin_recall",
+          "exact_group_rate",
+          "positive_pairs",
+          "scored_pairs",
+          "neutral_pairs",
+          "positive_first_outcome"
+        ],
+        "status": "matched-frozen-fd-results-secondary_metrics"
+      },
+      "prediction": {
+        "candidate_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/cache/fd/combined3-k16.candidates.json",
+        "candidate_sha256": "ab6d70c83d6fc7a83719b8f90b6e731b51ac04b228127bebccbe986f982a6b35",
+        "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/relation-control-2026-09-08/runs/fd/C3-k16/prediction.json",
+        "sha256": "7f4a02d833e3053d33159a4a7a318b06f2aba9ca5bf2896cf8c36b36934676cc"
+      }
+    },
+    "random-0": {
+      "after_ambiguity_v2": {
+        "F1": 0.03228754188242461,
+        "FN": 3124,
+        "FP": 53,
+        "N": 2443941,
+        "P": 3177,
+        "TN": 2443888,
+        "TP": 53,
+        "candidate_positive_pairs": 684,
+        "candidate_positive_recall": 0.21529745042492918,
+        "exact_group_rate": 0.01680672268907563,
+        "macro_R": 0.035689800395682744,
+        "neutral_pairs": {
+          "ambiguous-neutral": 19953,
+          "duplicate-neutral": 460,
+          "unresolved-neutral": 0
+        },
+        "neutral_total": 20413,
+        "positive_first_outcome": {
+          "not_retrieved_or_requested": 2296,
+          "observation_ineligible": 229,
+          "recovered": 53,
+          "slot_policy_failed": 303,
+          "structure_failed": 296
+        },
+        "precision": 0.5,
+        "recall": 0.01668240478438779,
+        "scored_pairs": 2447118
+      },
+      "baseline_primary_v1": {
+        "F1": 0.032866707242848445,
+        "FN": 3125,
+        "FP": 53,
+        "N": 2446152,
+        "P": 3179,
+        "TN": 2446099,
+        "TP": 54,
+        "candidate_positive_pairs": 685,
+        "candidate_positive_recall": 0.2154765649575338,
+        "exact_group_rate": 0.01680672268907563,
+        "macro_R": 0.03849092084386202,
+        "neutral_pairs": {
+          "ambiguous-neutral": 17740,
+          "duplicate-neutral": 460,
+          "unresolved-neutral": 0
+        },
+        "neutral_total": 18200,
+        "positive_first_outcome": {
+          "not_retrieved_or_requested": 2297,
+          "observation_ineligible": 229,
+          "recovered": 54,
+          "slot_policy_failed": 303,
+          "structure_failed": 296
+        },
+        "precision": 0.5046728971962616,
+        "recall": 0.016986473733878578,
+        "scored_pairs": 2449331
+      },
+      "delta_after_minus_before": {
+        "F1": -0.0005791653604238362,
+        "FN": -1,
+        "FP": 0,
+        "N": -2211,
+        "P": -2,
+        "TN": -2211,
+        "TP": -1,
+        "exact_group_rate": 0.0,
+        "macro_R": -0.0028011204481792756,
+        "neutral_total": 2213,
+        "precision": -0.004672897196261627,
+        "recall": -0.00030406894949078916,
+        "scored_pairs": -2213
+      },
+      "original_v1": {
+        "F1": 0.032856708244599936,
+        "FN": 3126,
+        "FP": 53,
+        "N": 2446151,
+        "P": 3180,
+        "TN": 2446098,
+        "TP": 54,
+        "candidate_positive_pairs": 685,
+        "candidate_positive_recall": 0.21540880503144655,
+        "exact_group_rate": 0.016666666666666666,
+        "macro_R": 0.03817016317016317,
+        "neutral_pairs": {
+          "ambiguous-neutral": 17740,
+          "duplicate-neutral": 460,
+          "unresolved-neutral": 0
+        },
+        "neutral_total": 18200,
+        "positive_first_outcome": {
+          "not_retrieved_or_requested": 2298,
+          "observation_ineligible": 229,
+          "recovered": 54,
+          "slot_policy_failed": 303,
+          "structure_failed": 296
+        },
+        "precision": 0.5046728971962616,
+        "recall": 0.016981132075471698,
+        "scored_pairs": 2449331
+      },
+      "original_v1_verification": {
+        "fields": [
+          "TP",
+          "FP",
+          "FN",
+          "TN",
+          "precision",
+          "recall",
+          "f1",
+          "macro_origin_recall",
+          "exact_group_rate",
+          "positive_pairs",
+          "scored_pairs",
+          "neutral_pairs",
+          "positive_first_outcome"
+        ],
+        "status": "matched-frozen-fd-results-secondary_metrics"
+      },
+      "prediction": {
+        "candidate_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/relation-control-2026-09-08/candidates/fd/random-0.candidates.json",
+        "candidate_sha256": "bdfaeb1c782915c3ea8939ca3ffaeabd3c6a11c44f94e349761b279c805443d5",
+        "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/relation-control-2026-09-08/runs/fd/random-0/prediction.json",
+        "sha256": "c4c4be5d2ece0cba4a89cfcc0d51ffbcbdc9ea25ecec134cc8e6924103902aed"
+      }
+    },
+    "random-1": {
+      "after_ambiguity_v2": {
+        "F1": 0.03163979312442957,
+        "FN": 3125,
+        "FP": 58,
+        "N": 2443941,
+        "P": 3177,
+        "TN": 2443883,
+        "TP": 52,
+        "candidate_positive_pairs": 663,
+        "candidate_positive_recall": 0.20868744098205855,
+        "exact_group_rate": 0.03361344537815126,
+        "macro_R": 0.056707718052255864,
+        "neutral_pairs": {
+          "ambiguous-neutral": 19953,
+          "duplicate-neutral": 460,
+          "unresolved-neutral": 0
+        },
+        "neutral_total": 20413,
+        "positive_first_outcome": {
+          "not_retrieved_or_requested": 2323,
+          "observation_ineligible": 229,
+          "recovered": 52,
+          "slot_policy_failed": 285,
+          "structure_failed": 288
+        },
+        "precision": 0.4727272727272727,
+        "recall": 0.016367642429965377,
+        "scored_pairs": 2447118
+      },
+      "baseline_primary_v1": {
+        "F1": 0.03162055335968379,
+        "FN": 3127,
+        "FP": 58,
+        "N": 2446152,
+        "P": 3179,
+        "TN": 2446094,
+        "TP": 52,
+        "candidate_positive_pairs": 663,
+        "candidate_positive_recall": 0.20855614973262032,
+        "exact_group_rate": 0.03361344537815126,
+        "macro_R": 0.05110547715589732,
+        "neutral_pairs": {
+          "ambiguous-neutral": 17740,
+          "duplicate-neutral": 460,
+          "unresolved-neutral": 0
+        },
+        "neutral_total": 18200,
+        "positive_first_outcome": {
+          "not_retrieved_or_requested": 2325,
+          "observation_ineligible": 229,
+          "recovered": 52,
+          "slot_policy_failed": 285,
+          "structure_failed": 288
+        },
+        "precision": 0.4727272727272727,
+        "recall": 0.01635734507706826,
+        "scored_pairs": 2449331
+      },
+      "delta_after_minus_before": {
+        "F1": 1.9239764745777876e-05,
+        "FN": -2,
+        "FP": 0,
+        "N": -2211,
+        "P": -2,
+        "TN": -2211,
+        "TP": 0,
+        "exact_group_rate": 0.0,
+        "macro_R": 0.005602240896358544,
+        "neutral_total": 2213,
+        "precision": 0.0,
+        "recall": 1.0297352897117168e-05,
+        "scored_pairs": -2213
+      },
+      "original_v1": {
+        "F1": 0.031610942249240125,
+        "FN": 3128,
+        "FP": 58,
+        "N": 2446151,
+        "P": 3180,
+        "TN": 2446093,
+        "TP": 52,
+        "candidate_positive_pairs": 663,
+        "candidate_positive_recall": 0.20849056603773586,
+        "exact_group_rate": 0.03333333333333333,
+        "macro_R": 0.050679598179598176,
+        "neutral_pairs": {
+          "ambiguous-neutral": 17740,
+          "duplicate-neutral": 460,
+          "unresolved-neutral": 0
+        },
+        "neutral_total": 18200,
+        "positive_first_outcome": {
+          "not_retrieved_or_requested": 2326,
+          "observation_ineligible": 229,
+          "recovered": 52,
+          "slot_policy_failed": 285,
+          "structure_failed": 288
+        },
+        "precision": 0.4727272727272727,
+        "recall": 0.016352201257861635,
+        "scored_pairs": 2449331
+      },
+      "original_v1_verification": {
+        "fields": [
+          "TP",
+          "FP",
+          "FN",
+          "TN",
+          "precision",
+          "recall",
+          "f1",
+          "macro_origin_recall",
+          "exact_group_rate",
+          "positive_pairs",
+          "scored_pairs",
+          "neutral_pairs",
+          "positive_first_outcome"
+        ],
+        "status": "matched-frozen-fd-results-secondary_metrics"
+      },
+      "prediction": {
+        "candidate_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/relation-control-2026-09-08/candidates/fd/random-1.candidates.json",
+        "candidate_sha256": "d7f1b2d94e9cba4a5e081cac36ccdc3b3b1c98a14961fc0c6f25c53241e8f711",
+        "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/relation-control-2026-09-08/runs/fd/random-1/prediction.json",
+        "sha256": "e3a3ef941468226116840138b66e6611698b953737c6edd55f9cbe111dab9766"
+      }
+    },
+    "random-2": {
+      "after_ambiguity_v2": {
+        "F1": 0.02982349360925137,
+        "FN": 3128,
+        "FP": 60,
+        "N": 2443941,
+        "P": 3177,
+        "TN": 2443881,
+        "TP": 49,
+        "candidate_positive_pairs": 668,
+        "candidate_positive_recall": 0.2102612527541706,
+        "exact_group_rate": 0.025210084033613446,
+        "macro_R": 0.05007401562023411,
+        "neutral_pairs": {
+          "ambiguous-neutral": 19953,
+          "duplicate-neutral": 460,
+          "unresolved-neutral": 0
+        },
+        "neutral_total": 20413,
+        "positive_first_outcome": {
+          "not_retrieved_or_requested": 2310,
+          "observation_ineligible": 229,
+          "recovered": 49,
+          "slot_policy_failed": 286,
+          "structure_failed": 303
+        },
+        "precision": 0.44954128440366975,
+        "recall": 0.015423355366698142,
+        "scored_pairs": 2447118
+      },
+      "baseline_primary_v1": {
+        "F1": 0.029805352798053526,
+        "FN": 3130,
+        "FP": 60,
+        "N": 2446152,
+        "P": 3179,
+        "TN": 2446092,
+        "TP": 49,
+        "candidate_positive_pairs": 668,
+        "candidate_positive_recall": 0.21012897137464612,
+        "exact_group_rate": 0.025210084033613446,
+        "macro_R": 0.04447177472387556,
+        "neutral_pairs": {
+          "ambiguous-neutral": 17740,
+          "duplicate-neutral": 460,
+          "unresolved-neutral": 0
+        },
+        "neutral_total": 18200,
+        "positive_first_outcome": {
+          "not_retrieved_or_requested": 2312,
+          "observation_ineligible": 229,
+          "recovered": 49,
+          "slot_policy_failed": 286,
+          "structure_failed": 303
+        },
+        "precision": 0.44954128440366975,
+        "recall": 0.015413652091852784,
+        "scored_pairs": 2449331
+      },
+      "delta_after_minus_before": {
+        "F1": 1.814081119784483e-05,
+        "FN": -2,
+        "FP": 0,
+        "N": -2211,
+        "P": -2,
+        "TN": -2211,
+        "TP": 0,
+        "exact_group_rate": 0.0,
+        "macro_R": 0.005602240896358544,
+        "neutral_total": 2213,
+        "precision": 0.0,
+        "recall": 9.703274845358073e-06,
+        "scored_pairs": -2213
+      },
+      "original_v1": {
+        "F1": 0.029796290665855884,
+        "FN": 3131,
+        "FP": 60,
+        "N": 2446151,
+        "P": 3180,
+        "TN": 2446091,
+        "TP": 49,
+        "candidate_positive_pairs": 668,
+        "candidate_positive_recall": 0.21006289308176102,
+        "exact_group_rate": 0.025,
+        "macro_R": 0.0441011766011766,
+        "neutral_pairs": {
+          "ambiguous-neutral": 17740,
+          "duplicate-neutral": 460,
+          "unresolved-neutral": 0
+        },
+        "neutral_total": 18200,
+        "positive_first_outcome": {
+          "not_retrieved_or_requested": 2313,
+          "observation_ineligible": 229,
+          "recovered": 49,
+          "slot_policy_failed": 286,
+          "structure_failed": 303
+        },
+        "precision": 0.44954128440366975,
+        "recall": 0.015408805031446541,
+        "scored_pairs": 2449331
+      },
+      "original_v1_verification": {
+        "fields": [
+          "TP",
+          "FP",
+          "FN",
+          "TN",
+          "precision",
+          "recall",
+          "f1",
+          "macro_origin_recall",
+          "exact_group_rate",
+          "positive_pairs",
+          "scored_pairs",
+          "neutral_pairs",
+          "positive_first_outcome"
+        ],
+        "status": "matched-frozen-fd-results-secondary_metrics"
+      },
+      "prediction": {
+        "candidate_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/relation-control-2026-09-08/candidates/fd/random-2.candidates.json",
+        "candidate_sha256": "1bd97a5bee1e42361ff7cb30c62312cf440f06e3445fa7f343ec80020cad1480",
+        "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/relation-control-2026-09-08/runs/fd/random-2/prediction.json",
+        "sha256": "abc190e7a9f5bc2af331d6b1c586abe5a9a41688e10e139c950e7b4cbbfb95ca"
+      }
+    },
+    "random-3": {
+      "after_ambiguity_v2": {
+        "F1": 0.0274641440341776,
+        "FN": 3132,
+        "FP": 55,
+        "N": 2443941,
+        "P": 3177,
+        "TN": 2443886,
+        "TP": 45,
+        "candidate_positive_pairs": 660,
+        "candidate_positive_recall": 0.2077431539187913,
+        "exact_group_rate": 0.01680672268907563,
+        "macro_R": 0.03479825496632219,
+        "neutral_pairs": {
+          "ambiguous-neutral": 19953,
+          "duplicate-neutral": 460,
+          "unresolved-neutral": 0
+        },
+        "neutral_total": 20413,
+        "positive_first_outcome": {
+          "not_retrieved_or_requested": 2314,
+          "observation_ineligible": 229,
+          "recovered": 45,
+          "slot_policy_failed": 298,
+          "structure_failed": 291
+        },
+        "precision": 0.45,
+        "recall": 0.014164305949008499,
+        "scored_pairs": 2447118
+      },
+      "baseline_primary_v1": {
+        "F1": 0.02804878048780488,
+        "FN": 3133,
+        "FP": 55,
+        "N": 2446152,
+        "P": 3179,
+        "TN": 2446097,
+        "TP": 46,
+        "candidate_positive_pairs": 661,
+        "candidate_positive_recall": 0.20792702107581001,
+        "exact_group_rate": 0.01680672268907563,
+        "macro_R": 0.03759937541450145,
+        "neutral_pairs": {
+          "ambiguous-neutral": 17740,
+          "duplicate-neutral": 460,
+          "unresolved-neutral": 0
+        },
+        "neutral_total": 18200,
+        "positive_first_outcome": {
+          "not_retrieved_or_requested": 2315,
+          "observation_ineligible": 229,
+          "recovered": 46,
+          "slot_policy_failed": 298,
+          "structure_failed": 291
+        },
+        "precision": 0.45544554455445546,
+        "recall": 0.014469959106637308,
+        "scored_pairs": 2449331
+      },
+      "delta_after_minus_before": {
+        "F1": -0.0005846364536272776,
+        "FN": -1,
+        "FP": 0,
+        "N": -2211,
+        "P": -2,
+        "TN": -2211,
+        "TP": -1,
+        "exact_group_rate": 0.0,
+        "macro_R": -0.0028011204481792618,
+        "neutral_total": 2213,
+        "precision": -0.00544554455445545,
+        "recall": -0.0003056531576288088,
+        "scored_pairs": -2213
+      },
+      "original_v1": {
+        "F1": 0.02804023163669613,
+        "FN": 3134,
+        "FP": 55,
+        "N": 2446151,
+        "P": 3180,
+        "TN": 2446096,
+        "TP": 46,
+        "candidate_positive_pairs": 661,
+        "candidate_positive_recall": 0.2078616352201258,
+        "exact_group_rate": 0.016666666666666666,
+        "macro_R": 0.03728604728604727,
+        "neutral_pairs": {
+          "ambiguous-neutral": 17740,
+          "duplicate-neutral": 460,
+          "unresolved-neutral": 0
+        },
+        "neutral_total": 18200,
+        "positive_first_outcome": {
+          "not_retrieved_or_requested": 2316,
+          "observation_ineligible": 229,
+          "recovered": 46,
+          "slot_policy_failed": 298,
+          "structure_failed": 291
+        },
+        "precision": 0.45544554455445546,
+        "recall": 0.014465408805031447,
+        "scored_pairs": 2449331
+      },
+      "original_v1_verification": {
+        "fields": [
+          "TP",
+          "FP",
+          "FN",
+          "TN",
+          "precision",
+          "recall",
+          "f1",
+          "macro_origin_recall",
+          "exact_group_rate",
+          "positive_pairs",
+          "scored_pairs",
+          "neutral_pairs",
+          "positive_first_outcome"
+        ],
+        "status": "matched-frozen-fd-results-secondary_metrics"
+      },
+      "prediction": {
+        "candidate_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/relation-control-2026-09-08/candidates/fd/random-3.candidates.json",
+        "candidate_sha256": "51d441710f8e49ed16fade86593f118211fa62d591151d954d84a814c69bf924",
+        "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/relation-control-2026-09-08/runs/fd/random-3/prediction.json",
+        "sha256": "8d8e33882f73caa4ba77b56e6657b01fdfe586713558b83efaef2248593bdcb1"
+      }
+    },
+    "random-4": {
+      "after_ambiguity_v2": {
+        "F1": 0.028100183262064753,
+        "FN": 3131,
+        "FP": 51,
+        "N": 2443941,
+        "P": 3177,
+        "TN": 2443890,
+        "TP": 46,
+        "candidate_positive_pairs": 692,
+        "candidate_positive_recall": 0.21781554926030847,
+        "exact_group_rate": 0.025210084033613446,
+        "macro_R": 0.040925740925740924,
+        "neutral_pairs": {
+          "ambiguous-neutral": 19953,
+          "duplicate-neutral": 460,
+          "unresolved-neutral": 0
+        },
+        "neutral_total": 20413,
+        "positive_first_outcome": {
+          "not_retrieved_or_requested": 2293,
+          "observation_ineligible": 229,
+          "recovered": 46,
+          "slot_policy_failed": 303,
+          "structure_failed": 306
+        },
+        "precision": 0.4742268041237113,
+        "recall": 0.01447906830343091,
+        "scored_pairs": 2447118
+      },
+      "baseline_primary_v1": {
+        "F1": 0.028684772657918828,
+        "FN": 3132,
+        "FP": 51,
+        "N": 2446152,
+        "P": 3179,
+        "TN": 2446101,
+        "TP": 47,
+        "candidate_positive_pairs": 693,
+        "candidate_positive_recall": 0.2179930795847751,
+        "exact_group_rate": 0.025210084033613446,
+        "macro_R": 0.04372686137392019,
+        "neutral_pairs": {
+          "ambiguous-neutral": 17740,
+          "duplicate-neutral": 460,
+          "unresolved-neutral": 0
+        },
+        "neutral_total": 18200,
+        "positive_first_outcome": {
+          "not_retrieved_or_requested": 2294,
+          "observation_ineligible": 229,
+          "recovered": 47,
+          "slot_policy_failed": 303,
+          "structure_failed": 306
+        },
+        "precision": 0.47959183673469385,
+        "recall": 0.014784523435042466,
+        "scored_pairs": 2449331
+      },
+      "delta_after_minus_before": {
+        "F1": -0.0005845893958540752,
+        "FN": -1,
+        "FP": 0,
+        "N": -2211,
+        "P": -2,
+        "TN": -2211,
+        "TP": -1,
+        "exact_group_rate": 0.0,
+        "macro_R": -0.0028011204481792687,
+        "neutral_total": 2213,
+        "precision": -0.005365032610982534,
+        "recall": -0.00030545513161155634,
+        "scored_pairs": -2213
+      },
+      "original_v1": {
+        "F1": 0.02867602196461257,
+        "FN": 3133,
+        "FP": 51,
+        "N": 2446151,
+        "P": 3180,
+        "TN": 2446100,
+        "TP": 47,
+        "candidate_positive_pairs": 694,
+        "candidate_positive_recall": 0.21823899371069183,
+        "exact_group_rate": 0.025,
+        "macro_R": 0.04336247086247085,
+        "neutral_pairs": {
+          "ambiguous-neutral": 17740,
+          "duplicate-neutral": 460,
+          "unresolved-neutral": 0
+        },
+        "neutral_total": 18200,
+        "positive_first_outcome": {
+          "not_retrieved_or_requested": 2294,
+          "observation_ineligible": 229,
+          "recovered": 47,
+          "slot_policy_failed": 303,
+          "structure_failed": 307
+        },
+        "precision": 0.47959183673469385,
+        "recall": 0.014779874213836478,
+        "scored_pairs": 2449331
+      },
+      "original_v1_verification": {
+        "fields": [
+          "TP",
+          "FP",
+          "FN",
+          "TN",
+          "precision",
+          "recall",
+          "f1",
+          "macro_origin_recall",
+          "exact_group_rate",
+          "positive_pairs",
+          "scored_pairs",
+          "neutral_pairs",
+          "positive_first_outcome"
+        ],
+        "status": "matched-frozen-fd-results-secondary_metrics"
+      },
+      "prediction": {
+        "candidate_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/relation-control-2026-09-08/candidates/fd/random-4.candidates.json",
+        "candidate_sha256": "bb79584a3a8c666894e0d9450275025522a21e276337896f44d1d563ebc36a69",
+        "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/relation-control-2026-09-08/runs/fd/random-4/prediction.json",
+        "sha256": "e9e365d4c47df96b5db89f6000c94c3d36f77ac04c2c7824d5bc6d5f1d85d45a"
+      }
+    }
+  },
+  "case": "fd",
+  "interpretation": {
+    "identity_limit": "Remaining raw mangled identities and differing codegen locations are operational linkage proxies; this sensitivity does not assert semantic MonoItem distinctness.",
+    "pairs_touching_FUN_003b0160": "ambiguous-neutral under the authorized overlay, including negative pairs that were scored before",
+    "remaining_positive_pair": "FUN_00347e80__FUN_003804f0"
+  },
+  "new_defid_oracle_used": false,
+  "overlay_record": {
+    "elf_address": "0x2b0160",
+    "identities_preserved": true,
+    "member": "FUN_003b0160",
+    "origins_after": [
+      "regex_automata::meta::regex::Builder::build_many_from_hir::{{closure}}",
+      "<regex_automata::meta::regex::Regex as core::clone::Clone>::clone::{{closure}}"
+    ],
+    "origins_before": [
+      "regex_automata::meta::regex::Builder::build_many_from_hir::{{closure}}"
+    ],
+    "raw_mangled_identity_is_operational_only": true,
+    "semantic_monomorphization_claim": false
+  },
+  "primary_results_immutable": true,
+  "provenance": {
+    "evidence": {
+      "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/novel-source-2026-09-08/audit/evidence.json",
+      "sha256": "6e5711137af5842915b08e26f44affe36026218b543be60083bcf20a570a27b5"
+    },
+    "frozen_fd_results": {
+      "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/relation-control-2026-09-08/fd-results.json",
+      "sha256": "b3520b4ed0e02699b5093f47e89f80cde7ea7a8919d67db241df766852487750"
+    },
+    "overlay": {
+      "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/novel-source-2026-09-08/audit/fd.source-ambiguity.v2.linkage.json",
+      "sha256": "11c4ac616e60a1d0f7f50ff89b35eb6662e7b5c50a4e628e1ac7c0c1be0ee62e"
+    },
+    "parent_linkage": {
+      "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/audit-corrections/fd.linkage.v1.json",
+      "sha256": "18d43ea7380e641d5bcd7e15084203efc90f4461d04c9ff97589562241f7fe01"
+    },
+    "parent_linkage_provenance_parent_sha256": "d30d5389c7f09c830962f26110f2f65ca1d46f429005c37e7357d1784331aaf6",
+    "predictions": {
+      "B2-body-score": {
+        "candidate_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/relation-control-2026-09-08/candidates/fd/B2-body-score.candidates.json",
+        "candidate_sha256": "484135fba48f6d2dee03e14a6e079686442d92d1e0b70fef782319d7861e3bf6",
+        "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/relation-control-2026-09-08/runs/fd/B2-body-score/prediction.json",
+        "sha256": "b73ef467fe750528a1033b653743d97cb1fe6455662e6e84cc6653c4417ebf8a"
+      },
+      "C3-k16": {
+        "candidate_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/cache/fd/combined3-k16.candidates.json",
+        "candidate_sha256": "ab6d70c83d6fc7a83719b8f90b6e731b51ac04b228127bebccbe986f982a6b35",
+        "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/relation-control-2026-09-08/runs/fd/C3-k16/prediction.json",
+        "sha256": "7f4a02d833e3053d33159a4a7a318b06f2aba9ca5bf2896cf8c36b36934676cc"
+      },
+      "random-0": {
+        "candidate_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/relation-control-2026-09-08/candidates/fd/random-0.candidates.json",
+        "candidate_sha256": "bdfaeb1c782915c3ea8939ca3ffaeabd3c6a11c44f94e349761b279c805443d5",
+        "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/relation-control-2026-09-08/runs/fd/random-0/prediction.json",
+        "sha256": "c4c4be5d2ece0cba4a89cfcc0d51ffbcbdc9ea25ecec134cc8e6924103902aed"
+      },
+      "random-1": {
+        "candidate_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/relation-control-2026-09-08/candidates/fd/random-1.candidates.json",
+        "candidate_sha256": "d7f1b2d94e9cba4a5e081cac36ccdc3b3b1c98a14961fc0c6f25c53241e8f711",
+        "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/relation-control-2026-09-08/runs/fd/random-1/prediction.json",
+        "sha256": "e3a3ef941468226116840138b66e6611698b953737c6edd55f9cbe111dab9766"
+      },
+      "random-2": {
+        "candidate_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/relation-control-2026-09-08/candidates/fd/random-2.candidates.json",
+        "candidate_sha256": "1bd97a5bee1e42361ff7cb30c62312cf440f06e3445fa7f343ec80020cad1480",
+        "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/relation-control-2026-09-08/runs/fd/random-2/prediction.json",
+        "sha256": "abc190e7a9f5bc2af331d6b1c586abe5a9a41688e10e139c950e7b4cbbfb95ca"
+      },
+      "random-3": {
+        "candidate_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/relation-control-2026-09-08/candidates/fd/random-3.candidates.json",
+        "candidate_sha256": "51d441710f8e49ed16fade86593f118211fa62d591151d954d84a814c69bf924",
+        "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/relation-control-2026-09-08/runs/fd/random-3/prediction.json",
+        "sha256": "8d8e33882f73caa4ba77b56e6657b01fdfe586713558b83efaef2248593bdcb1"
+      },
+      "random-4": {
+        "candidate_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/relation-control-2026-09-08/candidates/fd/random-4.candidates.json",
+        "candidate_sha256": "bb79584a3a8c666894e0d9450275025522a21e276337896f44d1d563ebc36a69",
+        "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/relation-control-2026-09-08/runs/fd/random-4/prediction.json",
+        "sha256": "e9e365d4c47df96b5db89f6000c94c3d36f77ac04c2c7824d5bc6d5f1d85d45a"
+      }
+    },
+    "source_file": {
+      "path": "/home/xdfyrj/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/regex-automata-0.4.14/src/meta/regex.rs",
+      "sha256": "92295ff6a6b1e0e6d19fc1fe29679fa5681973160ee61e043d29bf29f44a65b5"
+    }
+  },
+  "rank_direction": {
+    "F1": {
+      "after_order": [
+        "C3-k16",
+        "B2-body-score",
+        "random-0",
+        "random-1",
+        "random-2",
+        "random-4",
+        "random-3"
+      ],
+      "all_arm_order_changed": false,
+      "before_order": [
+        "C3-k16",
+        "B2-body-score",
+        "random-0",
+        "random-1",
+        "random-2",
+        "random-4",
+        "random-3"
+      ],
+      "c3_vs_b2_after": "C3>B2",
+      "c3_vs_b2_before": "C3>B2",
+      "c3_vs_b2_direction_changed": false
+    },
+    "exact_group_rate": {
+      "after_order": [
+        "B2-body-score",
+        "C3-k16",
+        "random-1",
+        "random-2",
+        "random-4",
+        "random-0",
+        "random-3"
+      ],
+      "all_arm_order_changed": false,
+      "before_order": [
+        "B2-body-score",
+        "C3-k16",
+        "random-1",
+        "random-2",
+        "random-4",
+        "random-0",
+        "random-3"
+      ],
+      "c3_vs_b2_after": "equal",
+      "c3_vs_b2_before": "equal",
+      "c3_vs_b2_direction_changed": false
+    },
+    "macro_R": {
+      "after_order": [
+        "B2-body-score",
+        "C3-k16",
+        "random-1",
+        "random-2",
+        "random-4",
+        "random-0",
+        "random-3"
+      ],
+      "all_arm_order_changed": false,
+      "before_order": [
+        "B2-body-score",
+        "C3-k16",
+        "random-1",
+        "random-2",
+        "random-4",
+        "random-0",
+        "random-3"
+      ],
+      "c3_vs_b2_after": "C3<B2",
+      "c3_vs_b2_before": "C3<B2",
+      "c3_vs_b2_direction_changed": false
+    },
+    "precision": {
+      "after_order": [
+        "C3-k16",
+        "B2-body-score",
+        "random-0",
+        "random-4",
+        "random-1",
+        "random-3",
+        "random-2"
+      ],
+      "all_arm_order_changed": false,
+      "before_order": [
+        "C3-k16",
+        "B2-body-score",
+        "random-0",
+        "random-4",
+        "random-1",
+        "random-3",
+        "random-2"
+      ],
+      "c3_vs_b2_after": "C3>B2",
+      "c3_vs_b2_before": "C3>B2",
+      "c3_vs_b2_direction_changed": false
+    },
+    "recall": {
+      "after_order": [
+        "C3-k16",
+        "B2-body-score",
+        "random-0",
+        "random-1",
+        "random-2",
+        "random-4",
+        "random-3"
+      ],
+      "all_arm_order_changed": false,
+      "before_order": [
+        "C3-k16",
+        "B2-body-score",
+        "random-0",
+        "random-1",
+        "random-2",
+        "random-4",
+        "random-3"
+      ],
+      "c3_vs_b2_after": "C3>B2",
+      "c3_vs_b2_before": "C3>B2",
+      "c3_vs_b2_direction_changed": false
+    }
+  },
+  "schema_version": 2,
+  "scored_universe": {
+    "after": {
+      "N": 2443941,
+      "P": 3177,
+      "all_pair_count": 2467531,
+      "conserved": true,
+      "neutral_pairs": {
+        "ambiguous-neutral": 19953,
+        "duplicate-neutral": 460,
+        "unresolved-neutral": 0
+      },
+      "neutral_total": 20413,
+      "scored_pairs": 2447118,
+      "target_count": 2222
+    },
+    "before": {
+      "N": 2446152,
+      "P": 3179,
+      "all_pair_count": 2467531,
+      "conserved": true,
+      "neutral_pairs": {
+        "ambiguous-neutral": 17740,
+        "duplicate-neutral": 460,
+        "unresolved-neutral": 0
+      },
+      "neutral_total": 18200,
+      "scored_pairs": 2449331,
+      "target_count": 2222
+    },
+    "delta": {
+      "N": -2211,
+      "P": -2,
+      "ambiguous_neutral": 2213,
+      "neutral_total": 2213,
+      "scored_pairs": -2213
+    },
+    "pairs_touching_ambiguous_address": {
+      "after": {
+        "address": "FUN_003b0160",
+        "label_counts": {
+          "ambiguous-neutral": 2221,
+          "duplicate-neutral": 0,
+          "negative": 0,
+          "positive": 0,
+          "unresolved-neutral": 0
+        },
+        "pair_count": 2221,
+        "scored_other_endpoint_count": 0
+      },
+      "before": {
+        "address": "FUN_003b0160",
+        "label_counts": {
+          "ambiguous-neutral": 8,
+          "duplicate-neutral": 0,
+          "negative": 2211,
+          "positive": 2,
+          "unresolved-neutral": 0
+        },
+        "pair_count": 2221,
+        "scored_other_endpoint_count": 2213
+      },
+      "newly_added_ambiguous_neutral": 2213,
+      "newly_removed_negative": 2211,
+      "newly_removed_positive": 2
+    }
+  },
+  "scorer": {
+    "arms": [
+      "C3-k16",
+      "B2-body-score",
+      "random-0",
+      "random-1",
+      "random-2",
+      "random-3",
+      "random-4"
+    ],
+    "exact_conditional": "label_pair returns ambiguous-neutral when len(origins[left]) > 1 or len(origins[right]) > 1; truth_index excludes non-clean addresses from positive/negative and counts their pairs as ambiguous-neutral.",
+    "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/followup-2026-09-08/score_followup.py",
+    "prediction_count": 7,
+    "sha256": "4cb96c09aee6f060d4fbea4003253273e0e5e098fd20de458743ac78a5ced5d7"
+  },
+  "status": "posthoc-source-ambiguity-sensitivity",
+  "study": "callkin-relation-control-2026-09-08"
+}

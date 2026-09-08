@@ -11,6 +11,7 @@ import json
 import platform
 import subprocess
 import sys
+from collections import defaultdict
 from pathlib import Path
 from typing import Any, Iterable, Mapping
 
@@ -204,19 +205,31 @@ def _prediction_metadata(
 
 def _validate_prediction(
     prediction: Mapping[str, Any], config: Mapping[str, Any], case: str, arm: str,
-    body_sha256: str | None,
+    body_sha256: str | None, candidate_sha256: str | None = None,
 ) -> tuple[str, ...]:
     identity = case_identity(config, case)
-    for key, expected in (("case", case), ("arm", arm), ("build", identity["build"]),
+    for key, expected in (("case", case), ("build", identity["build"]),
                           ("profile", identity["profile"]), ("scope", identity["candidate_scope"])):
         if prediction.get(key) != expected:
             raise ValueError(f"prediction {case}/{arm} {key} mismatch")
+    if prediction.get("artifact") == "novel-source-prediction":
+        if prediction.get("arm") != arm:
+            raise ValueError(f"prediction {case}/{arm} arm mismatch")
+    elif "arm" in prediction and prediction.get("arm") != arm:
+        raise ValueError(f"prediction {case}/{arm} arm mismatch")
     target = _target_ids(prediction)
     if body_sha256:
         provenance = prediction.get("provenance", {})
         for record in (provenance, prediction):
             if isinstance(record, Mapping) and record.get("body_evidence_sha256") not in (None, body_sha256):
                 raise ValueError(f"prediction {case}/{arm} body provenance mismatch")
+        if candidate_sha256 and prediction.get("artifact") != "novel-source-prediction":
+            if not isinstance(provenance, Mapping) or provenance.get("candidate_artifact_sha256") != candidate_sha256:
+                raise ValueError(f"prediction {case}/{arm} candidate provenance mismatch")
+    elif candidate_sha256:
+        provenance = prediction.get("provenance", {})
+        if isinstance(provenance, Mapping) and provenance.get("candidate_artifact_sha256") not in (None, candidate_sha256):
+            raise ValueError(f"prediction {case}/{arm} candidate provenance mismatch")
     return target
 
 
@@ -619,6 +632,7 @@ def _refusal_counts(metadata: Mapping[str, Any]) -> Mapping[str, Any]:
 
 
 def score_case(config: Mapping[str, Any], case: str) -> dict[str, Any]:
+    scoring_python = _verify_runtime(config)
     if str(config.get("status", "")).upper() not in {"FROZEN", "FROZEN-DESIGN", "APPROVED"}:
         raise ValueError("config status is not frozen; refusing scoring")
     if config.get("protocol_sha256") != sha256_file(_protocol_path()):
@@ -664,7 +678,7 @@ def score_case(config: Mapping[str, Any], case: str) -> dict[str, Any]:
             prediction = read_json(prediction_path)
             if not isinstance(prediction, Mapping):
                 raise ValueError(f"prediction is invalid: {prediction_path}")
-            target_sets.append(_validate_prediction(prediction, config, case, arm, body_sha))
+            target_sets.append(_validate_prediction(prediction, config, case, arm, body_sha, candidate_sha))
             prediction_data[arm] = dict(prediction)
 
     if target_sets and any(target != target_sets[0] for target in target_sets[1:]):
@@ -682,6 +696,11 @@ def score_case(config: Mapping[str, Any], case: str) -> dict[str, Any]:
     gt, linkage, label_records = _label_pair_inputs(config, case, target)
     masks = _secondary_masks(config, case, gt, linkage, target)
     outputs: dict[str, Any] = {}
+    eligible = {
+        function_id
+        for function_id, body in bodies.items()
+        if body.complete and not body.quality.get("opaque_indirect_jumps", 0)
+    }
     for arm in ARMS:
         metadata = prediction_meta[arm]
         record: dict[str, Any] = {
@@ -695,6 +714,7 @@ def score_case(config: Mapping[str, Any], case: str) -> dict[str, Any]:
             ),
             "cost": _logical_cost(metadata, prediction_data.get(arm)),
             "refusal_counts": _refusal_counts(metadata),
+            "scoring_python": scoring_python,
             "candidate": _candidate_summary(
                 candidate_artifacts.get(F6_CANDIDATE_KEYS.get(arm, "")), bodies
             ),
@@ -712,20 +732,21 @@ def score_case(config: Mapping[str, Any], case: str) -> dict[str, Any]:
             )
             for view, mask in masks.items():
                 clipped, contamination = _clip_prediction(prediction, mask)
-                metrics = _primary_metrics(clipped, gt, linkage, bodies, None)
-                if metrics["positive_pairs"] == 0:
-                    metrics["recall"] = None
-                    metrics["macro_origin_recall"] = None
-                    metrics["exact_group_rate"] = None
+                secondary_metrics = metrics(clipped, gt, linkage, eligible=eligible & mask)
+                if secondary_metrics["positive_pairs"] == 0:
+                    secondary_metrics["recall"] = None
+                    secondary_metrics["macro_origin_recall"] = None
+                    secondary_metrics["exact_group_rate"] = None
                 diagnostics = _mask_diagnostics(prediction, mask)
                 contamination.update(diagnostics)
-                metrics["mask_size"] = len(mask)
-                metrics["mask_positive_pairs"] = metrics["positive_pairs"]
-                metrics.update(diagnostics)
-                metrics["exact_group_interpretation"] = "subset-completeness only under clipped target universe"
+                secondary_metrics["mask_size"] = len(mask)
+                secondary_metrics["mask_positive_pairs"] = secondary_metrics["positive_pairs"]
+                secondary_metrics.update(diagnostics)
+                secondary_metrics["exact_group_interpretation"] = "subset-completeness only under clipped target universe"
+                secondary_metrics["precision_interpretation"] = "masked-target precision; not full-target discovery precision"
                 record.setdefault("secondary", {})[view] = {
                     "target_count": len(mask),
-                    "metrics": metrics,
+                    "metrics": secondary_metrics,
                     "contamination": contamination,
                 }
         else:
@@ -744,7 +765,7 @@ def score_case(config: Mapping[str, Any], case: str) -> dict[str, Any]:
         "protocol_sha256": sha256_file(_protocol_path()),
         "arms": {arm: {"status": outputs[arm]["status"], "metrics": outputs[arm].get("metrics"), "secondary": outputs[arm].get("secondary"), "cost": outputs[arm]["cost"], "refusal_counts": outputs[arm]["refusal_counts"]} for arm in ARMS},
     }
-    write_json_once(paths["score_dir"] / "scores.json", {"case": case, "status": "scored", "provenance": {"config_sha256": sha256_file(_config_path()), "protocol_sha256": sha256_file(_protocol_path()), "observation_metadata_sha256": sha256_file(paths["observation_metadata"]), "ground_truth_sha256": label_records["ground_truth"]["sha256"], "linkage_sha256": label_records["linkage"]["sha256"]}, "arms": outputs})
+    write_json_once(paths["score_dir"] / "scores.json", {"case": case, "status": "scored", "provenance": {"config_sha256": sha256_file(_config_path()), "protocol_sha256": sha256_file(_protocol_path()), "observation_metadata_sha256": sha256_file(paths["observation_metadata"]), "ground_truth_sha256": label_records["ground_truth"]["sha256"], "linkage_sha256": label_records["linkage"]["sha256"], "scoring_python": scoring_python}, "arms": outputs})
     rows = []
     for arm in ARMS:
         for view, value in [("primary", outputs[arm].get("metrics")), *outputs[arm].get("secondary", {}).items()]:

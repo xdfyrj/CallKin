@@ -1,0 +1,30 @@
+CallKin-Real stripped-only hexyl run
+status: authorized; awaiting completion
+study_commit: aa119815c94c3d307d57cb6f4d339617971ff6a6
+callkin_real_head: 68ffa8dc1285546a1db52096a905a36fec094bd6
+callkin_real_worktree: /mnt/c/Users/sumyr/playground/REV/CallKin-Real/worktrees/novel-source-2026-09-08
+interpreter: /mnt/c/Users/sumyr/playground/REV/CallKin/workspace/novel-source-real-venv/bin/python
+target: /mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/novel-source-2026-09-08/build/hexyl-v0170/hexyl-v0170.O3S.fixture.bin
+target_sha256: b067e03a3c6911409d64eff3027b11a05f5364c33f08e1bbb777b343b142594a
+output_dir: /mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/novel-source-2026-09-08/real/hexyl-v0170
+environment_guard: CALLKIN_REAL_TEST_BINARY, CALLKIN_OXIDIZER_DIR, CALLKIN_V1_INPUT_ROOT, CALLKIN_FROZEN_INPUT_ROOT, CALLKIN_V0_INPUT_ROOT, PYTHONPATH unset; PYTHONNOUSERSITE=1
+resource_envelope: prlimit --as=12884901888; timeout 3600s; kill-after 120s
+analysis_flags: --case hexyl-v0170 --no-flirt --component-budgeted-v1 (top_k=16 default)
+wrapper: real-run.sh
+
+Exact command executed by `real-run.sh`:
+
+```bash
+env -u CALLKIN_REAL_TEST_BINARY -u CALLKIN_OXIDIZER_DIR \
+  -u CALLKIN_V1_INPUT_ROOT -u CALLKIN_FROZEN_INPUT_ROOT \
+  -u CALLKIN_V0_INPUT_ROOT -u PYTHONPATH PYTHONNOUSERSITE=1 \
+  /usr/bin/time -v -o /mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/novel-source-2026-09-08/real/hexyl-v0170/real-run.resource.txt \
+  /usr/bin/prlimit --as=12884901888 -- \
+  /usr/bin/timeout --signal=TERM --kill-after=120s 3600s \
+  /mnt/c/Users/sumyr/playground/REV/CallKin/workspace/novel-source-real-venv/bin/python \
+  -u analyze.py \
+  /mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/novel-source-2026-09-08/build/hexyl-v0170/hexyl-v0170.O3S.fixture.bin \
+  --case hexyl-v0170 \
+  --output-dir /mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/novel-source-2026-09-08/real/hexyl-v0170 \
+  --no-flirt --component-budgeted-v1
+```

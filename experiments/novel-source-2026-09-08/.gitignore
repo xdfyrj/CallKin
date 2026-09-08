@@ -1,2 +1,15 @@
 /build/
 /logs/
+/verification-bundle/
+/candidates/
+/observations/
+/predictions/
+/reproduction/
+/real/**/run*.json
+/real/**/real-run.stdout.log
+/real/**/real-run.stderr.log
+/real/**/real-score.stdout.log
+/real/**/real-score.stderr.log
+/real/**/real-run.sh
+/real/**/real-score.sh
+/real/**/*.resource.txt

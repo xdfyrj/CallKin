@@ -1,0 +1,235 @@
+{
+  "schema_version": 1,
+  "case": "hexyl-v0170",
+  "status": "source-origin-conflict-confirmed",
+  "scope": "bounded source-site audit; frozen labels and scores unchanged",
+  "normalized_origin_under_audit": "hexyl::run::{{closure}}",
+  "conclusion": {
+    "old_gt_membership": "Both addresses are currently labeled as one origin, but that normalized origin conflates two distinct closure definitions in the non-generic run function.",
+    "source_aware_status": "false-positive-ground-truth-pair",
+    "primary_change": "none",
+    "secondary_correction": "proposed-versioned-split-only",
+    "source_independence_claim": false
+  },
+  "provenance": {
+    "scores": {
+      "path": "experiments/novel-source-2026-09-08/scores/hexyl-v0170/scores.json",
+      "sha256": "bc046a81267cf5763922ca72785a30a2d1d23c745133e09610454778667078ad"
+    },
+    "ground_truth": {
+      "path": "experiments/novel-source-2026-09-08/observations/hexyl-v0170/hexyl-v0170.O3S.gt.json",
+      "sha256": "ad1edcc7bb20afe3175bf8e8f6c70120e2edc2f834e6ffa27a283e88d100c4b0"
+    },
+    "linkage": {
+      "path": "experiments/novel-source-2026-09-08/observations/hexyl-v0170/hexyl-v0170.O3S.linkage.json",
+      "sha256": "ef5ca656b05660bdd77a1fd1ff6e59e9a9a78af08fcea05dadf5e1fda6976fa4"
+    },
+    "body": {
+      "path": "experiments/novel-source-2026-09-08/observations/hexyl-v0170/hexyl-v0170.O3S.body.json",
+      "sha256": "000486be76d8fede231be28325962ea91bc92579eb4247ff8bc1bdd00f9d837b"
+    },
+    "binary": {
+      "path": "experiments/novel-source-2026-09-08/build/hexyl-v0170/hexyl-v0170.O3S.gt.bin",
+      "sha256": "5a659a2bd5e57feaf8ef6bcfb2b2973625f45f5e239e2a323cb8cf28a943d48e"
+    },
+    "source": {
+      "repository": "sharkdp/hexyl",
+      "tag": "v0.17.0",
+      "commit": "8eb6d4771ce1ec7af65d06bd335457783b77d557",
+      "source_root": "/mnt/c/Users/sumyr/playground/REV/CallKin/workspace/relation-control-2026-09-08/sources/hexyl",
+      "cargo_toml_sha256": "da6100d14c9d19c5c9659ac7d050149156c063cedc83b50c2f11e74dccdb6ddb",
+      "cargo_lock_sha256": "8ea5d9783696026e5ca55d669dd91b38d8613e9fe4f5a5ad701281142adf291d",
+      "cargo_inputs_sha256": "0e0785df51a78ca453206c35f17778187ac5cd1c0be9e41bdfe358c25aa7ac42",
+      "main_rs_sha256": "4d3712519f131f826ab0b45d8bdb6d1c773d4e9ec6e54b86e3331e1bbbebb5a1"
+    }
+  },
+  "source_definitions": [
+    {
+      "proposed_origin": "hexyl::run::{{closure}}@src/main.rs:342",
+      "source_file": "src/main.rs",
+      "source_lines": "342-348",
+      "source_text": "reader.seek(...).map_err(|_| { anyhow!(\"Failed to jump to the desired input position. This could be caused by a negative offset that is too large or by an input that is not seek-able (e.g. if the input comes from a pipe).\") })?",
+      "role": "map_err error conversion for reader.seek",
+      "binary_member": "FUN_0015b260",
+      "binary_address": "0x5b260",
+      "raw_symbol": "_ZN5hexyl3run28_$u7b$$u7b$closure$u7d$$u7d$17hf563f413744f3c21E",
+      "body_size": 208,
+      "body_sha256": "97b07c297e08540e5455a482620405ce978039fbb9ee9cb298509507c074bd8a",
+      "body_evidence": {
+        "direct_string_address": "0x117ac",
+        "direct_string_length": 181,
+        "direct_string_sha256": "317f826e9bb8dd752699e47238f489ae0f70ede613ed6a91519858cd552b7a6e",
+        "anyhow_error_msg_callee": "0x72fa0"
+      },
+      "caller": {
+        "function": "hexyl::run",
+        "address": "0x577c0",
+        "size": 14810,
+        "callsite": "0x58df9",
+        "call_bytes": "e862240000",
+        "call_target": "0x5b260"
+      },
+      "site_confidence": "high"
+    },
+    {
+      "proposed_origin": "hexyl::run::{{closure}}@src/main.rs:353",
+      "source_file": "src/main.rs",
+      "source_lines": "353-357",
+      "source_text": "let parse_byte_count = |s| -> Result<u64> { Ok(parse_byte_offset(s, block_size)?.assume_forward_offset_from_start()?.into()) };",
+      "role": "byte-count parser closure, capturing block_size",
+      "binary_member": "FUN_0015b1a0",
+      "binary_address": "0x5b1a0",
+      "raw_symbol": "_ZN5hexyl3run28_$u7b$$u7b$closure$u7d$$u7d$17hb19f14efc322a3acE",
+      "body_size": 187,
+      "body_sha256": "682b79dced9e117f97fa36d3baec5a2dcb5151022a82d5832fd3b196059fcdab",
+      "body_evidence": {
+        "parse_byte_offset_callee": "0x56bb0",
+        "returns": "validated ByteOffset value or anyhow-converted parse failure"
+      },
+      "caller": {
+        "function": "hexyl::run",
+        "address": "0x577c0",
+        "size": 14810,
+        "callsite": "0x58e23",
+        "call_bytes": "e878230000",
+        "call_target": "0x5b1a0",
+        "source_context": "parse_byte_count(&opt.display_offset) at src/main.rs:393"
+      },
+      "site_confidence": "high"
+    }
+  ],
+  "source_function_context": {
+    "function": "hexyl::run",
+    "source_signature": "fn run() -> Result<()>",
+    "source_line": 269,
+    "generic": false,
+    "closure_uses": {
+      "parse_byte_count": [
+        "src/main.rs:360",
+        "src/main.rs:393"
+      ],
+      "skip_map_err": "src/main.rs:342"
+    },
+    "reasoning": [
+      "run is non-generic, so the two closure bodies are not different run<T> instantiations.",
+      "The two source expressions are distinct closure definitions at lines 342 and 353.",
+      "The line-342 body embeds the retained 'Failed to jump...' string and calls anyhow::Error::msg.",
+      "The line-353 body calls hexyl::parse_byte_offset and performs ByteOffset validation.",
+      "hexyl::run directly calls 0x5b260 at 0x58df9 and 0x5b1a0 at 0x58e23 in the corresponding source-order paths."
+    ]
+  },
+  "old_positive_pair": {
+    "origin": "hexyl::run::{{closure}}",
+    "addresses": [
+      "FUN_0015b1a0",
+      "FUN_0015b260"
+    ],
+    "raw_mangled_identities": {
+      "FUN_0015b1a0": "_ZN5hexyl3run28_$u7b$$u7b$closure$u7d$$u7d$17hb19f14efc322a3acE",
+      "FUN_0015b260": "_ZN5hexyl3run28_$u7b$$u7b$closure$u7d$$u7d$17hf563f413744f3c21E"
+    },
+    "source_aware_label": "distinct-source-sites",
+    "predicted_pair_presence": {
+      "V0-relation": false,
+      "exact-token-hash": false,
+      "B2-token-cfg": false,
+      "C3-token-cfg-relation": false,
+      "B2-body-score": false,
+      "C3-rescue": false
+    },
+    "projected_split_effect_for_frozen_predictions": {
+      "TP": 0,
+      "FP": 0,
+      "FN": -1,
+      "TN": 1,
+      "positive_pairs": -1,
+      "scored_pairs": 0,
+      "note": "The pair is currently unpredicted in every arm; this is a label-universe sensitivity projection, not a rerun."
+    }
+  },
+  "proposed_secondary_correction": {
+    "status": "written-versioned-secondary-sensitivity",
+    "ground_truth": {
+      "old_origin": "hexyl::run::{{closure}}",
+      "replacement_groups": [
+        {
+          "origin": "hexyl::run::{{closure}}@src/main.rs:342",
+          "members": [
+            "FUN_0015b260"
+          ]
+        },
+        {
+          "origin": "hexyl::run::{{closure}}@src/main.rs:353",
+          "members": [
+            "FUN_0015b1a0"
+          ]
+        }
+      ]
+    },
+    "linkage": {
+      "FUN_0015b260": [
+        "hexyl::run::{{closure}}@src/main.rs:342"
+      ],
+      "FUN_0015b1a0": [
+        "hexyl::run::{{closure}}@src/main.rs:353"
+      ],
+      "identities_preserved": true
+    },
+    "primary_files_unchanged": true,
+    "reason": "The current normalized closure label drops the closure-site ordinal; the retained bodies and direct caller paths identify two distinct source expressions."
+  },
+  "anyhow_pair_plausibility": {
+    "origin": "anyhow::context::impl_for=core::result::Result<T,E>::context",
+    "addresses": [
+      "FUN_00173730",
+      "FUN_001737d0"
+    ],
+    "raw_mangled_identities": {
+      "FUN_00173730": "_ZN6anyhow7context92_$LT$impl$u20$anyhow..Context$LT$T$C$E$GT$$u20$for$u20$core..result..Result$LT$T$C$E$GT$$GT$7context17h743901afa107e80aE",
+      "FUN_001737d0": "_ZN6anyhow7context92_$LT$impl$u20$anyhow..Context$LT$T$C$E$GT$$u20$for$u20$core..result..Result$LT$T$C$E$GT$$GT$7context17hcaaf3712da522aacE"
+    },
+    "source_package": {
+      "crate": "anyhow",
+      "version": "1.0.91",
+      "cargo_checksum": "c042108f3ed77fd83760a5fd79b53be043192bb3b9dba91d8c574c0ada7850c8",
+      "source_file": "/home/xdfyrj/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/anyhow-1.0.91/src/context.rs",
+      "source_file_sha256": "1be432c32752778041e8acf0e7d98d4f6291ce53fd7df5bbb0167824bbea57f7",
+      "source_lines": "42-56",
+      "source_text": "impl<T, E> Context<T, E> for Result<T, E> { ... fn context<C>(self, context: C) -> Result<T, Error> { ... } }"
+    },
+    "caller_context": [
+      {
+        "callsite": "0x58e94",
+        "call_target": "0x737d0",
+        "source_context": "src/main.rs:360 context for --length parse",
+        "format_string_address": "0xe033"
+      },
+      {
+        "callsite": "0x5a208",
+        "call_target": "0x73730",
+        "source_context": "src/main.rs:393 context for --display-offset parse",
+        "format_string_address": "0xf30e"
+      }
+    ],
+    "body_evidence": {
+      "FUN_00173730": {
+        "size": 148,
+        "byte_sha256": "153a1ce7a99386a64b98a7f958ef6f084184de8c2153e4e2f9da2fc99993b14e",
+        "complete_decode": true,
+        "opaque_indirect_jumps": 0
+      },
+      "FUN_001737d0": {
+        "size": 86,
+        "byte_sha256": "b53161a3ff2acc4b933248b156c4f0d7368a8cdcad7d95b3dfe372b4612272d4",
+        "complete_decode": true,
+        "opaque_indirect_jumps": 0
+      }
+    },
+    "conclusion": "Both addresses are plausible generic instantiations/callsite copies of the same anyhow Context::context source definition. This bounded check finds no distinct source closure definitions requiring a split correction."
+  },
+  "limitations": [
+    "The build uses debuginfo=0, so source-line attribution relies on pinned source text, raw symbols, source-specific literals, direct callsites, and function semantics.",
+    "Raw disambiguator hashes distinguish emitted identities operationally; they are not treated as proof of distinct source sites or semantic MonoItems.",
+    "The proposed split is a versioned sensitivity only. No GT/linkage overwrite, score rerun, new F4, rebuild, or core change was performed."
+  ]
+}

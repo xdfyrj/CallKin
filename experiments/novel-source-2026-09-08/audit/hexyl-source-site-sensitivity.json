@@ -1,0 +1,1198 @@
+{
+  "arms": {
+    "B2-body-score": {
+      "after": {
+        "FN": 718,
+        "FP": 17,
+        "N": 159711,
+        "P": 726,
+        "TN": 159694,
+        "TP": 8,
+        "exact_group_rate": 0.075,
+        "f1": 0.02130492676431425,
+        "macro_origin_recall": 0.10535714285714286,
+        "neutral_pairs": {
+          "ambiguous-neutral": 567,
+          "duplicate-neutral": 24,
+          "unresolved-neutral": 0
+        },
+        "positive_first_outcome": {
+          "not_retrieved_or_requested": 412,
+          "observation_ineligible": 53,
+          "recovered": 8,
+          "slot_policy_failed": 169,
+          "structure_failed": 84
+        },
+        "positive_pairs": 726,
+        "precision": 0.32,
+        "recall": 0.011019283746556474,
+        "scored_pairs": 160437
+      },
+      "before": {
+        "FN": 719,
+        "FP": 17,
+        "N": 159710,
+        "P": 727,
+        "TN": 159693,
+        "TP": 8,
+        "exact_group_rate": 0.07317073170731707,
+        "f1": 0.02127659574468085,
+        "macro_origin_recall": 0.10278745644599303,
+        "neutral_pairs": {
+          "ambiguous-neutral": 567,
+          "duplicate-neutral": 24,
+          "unresolved-neutral": 0
+        },
+        "positive_first_outcome": {
+          "not_retrieved_or_requested": 413,
+          "observation_ineligible": 53,
+          "recovered": 8,
+          "slot_policy_failed": 169,
+          "structure_failed": 84
+        },
+        "positive_pairs": 727,
+        "precision": 0.32,
+        "recall": 0.011004126547455296,
+        "scored_pairs": 160437
+      },
+      "prediction": {
+        "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/novel-source-2026-09-08/predictions/hexyl-v0170/B2-body-score/prediction.json",
+        "sha256": "205763b8810dce82a14dffd622d8a07357cad1cb0353b9c0571b1f4b52530ddb"
+      },
+      "primary_delta": {
+        "FN": -1,
+        "FP": 0,
+        "TN": 1,
+        "TP": 0,
+        "positive_pairs": -1,
+        "scored_pairs": 0
+      },
+      "views_after": {
+        "previously_unobserved_normalized_origin": {
+          "mask_size": 49,
+          "metrics": {
+            "FN": 1,
+            "FP": 0,
+            "N": 1173,
+            "P": 1,
+            "TN": 1173,
+            "TP": 0,
+            "exact_group_rate": 0.0,
+            "f1": 0.0,
+            "macro_origin_recall": 0.0,
+            "neutral_pairs": {
+              "ambiguous-neutral": 0,
+              "duplicate-neutral": 2,
+              "unresolved-neutral": 0
+            },
+            "positive_first_outcome": {
+              "not_retrieved_or_requested": 1
+            },
+            "positive_pairs": 1,
+            "precision": null,
+            "recall": 0.0,
+            "scored_pairs": 1174
+          }
+        },
+        "project_owned": {
+          "mask_size": 37,
+          "metrics": {
+            "FN": 0,
+            "FP": 0,
+            "N": 664,
+            "P": 0,
+            "TN": 664,
+            "TP": 0,
+            "exact_group_rate": null,
+            "f1": null,
+            "macro_origin_recall": null,
+            "neutral_pairs": {
+              "ambiguous-neutral": 0,
+              "duplicate-neutral": 2,
+              "unresolved-neutral": 0
+            },
+            "positive_first_outcome": {},
+            "positive_pairs": 0,
+            "precision": null,
+            "recall": null,
+            "scored_pairs": 664
+          }
+        }
+      },
+      "views_before": {
+        "previously_unobserved_normalized_origin": {
+          "mask_size": 49,
+          "metrics": {
+            "FN": 2,
+            "FP": 0,
+            "N": 1172,
+            "P": 2,
+            "TN": 1172,
+            "TP": 0,
+            "exact_group_rate": 0.0,
+            "f1": 0.0,
+            "macro_origin_recall": 0.0,
+            "neutral_pairs": {
+              "ambiguous-neutral": 0,
+              "duplicate-neutral": 2,
+              "unresolved-neutral": 0
+            },
+            "positive_first_outcome": {
+              "not_retrieved_or_requested": 2
+            },
+            "positive_pairs": 2,
+            "precision": null,
+            "recall": 0.0,
+            "scored_pairs": 1174
+          }
+        },
+        "project_owned": {
+          "mask_size": 37,
+          "metrics": {
+            "FN": 1,
+            "FP": 0,
+            "N": 663,
+            "P": 1,
+            "TN": 663,
+            "TP": 0,
+            "exact_group_rate": 0.0,
+            "f1": 0.0,
+            "macro_origin_recall": 0.0,
+            "neutral_pairs": {
+              "ambiguous-neutral": 0,
+              "duplicate-neutral": 2,
+              "unresolved-neutral": 0
+            },
+            "positive_first_outcome": {
+              "not_retrieved_or_requested": 1
+            },
+            "positive_pairs": 1,
+            "precision": null,
+            "recall": 0.0,
+            "scored_pairs": 664
+          }
+        }
+      }
+    },
+    "B2-token-cfg": {
+      "after": {
+        "FN": 718,
+        "FP": 19,
+        "N": 159711,
+        "P": 726,
+        "TN": 159692,
+        "TP": 8,
+        "exact_group_rate": 0.075,
+        "f1": 0.021248339973439574,
+        "macro_origin_recall": 0.10535714285714286,
+        "neutral_pairs": {
+          "ambiguous-neutral": 567,
+          "duplicate-neutral": 24,
+          "unresolved-neutral": 0
+        },
+        "positive_first_outcome": {
+          "not_retrieved_or_requested": 187,
+          "observation_ineligible": 53,
+          "recovered": 8,
+          "slot_policy_failed": 345,
+          "structure_failed": 133
+        },
+        "positive_pairs": 726,
+        "precision": 0.2962962962962963,
+        "recall": 0.011019283746556474,
+        "scored_pairs": 160437
+      },
+      "before": {
+        "FN": 719,
+        "FP": 19,
+        "N": 159710,
+        "P": 727,
+        "TN": 159691,
+        "TP": 8,
+        "exact_group_rate": 0.07317073170731707,
+        "f1": 0.021220159151193633,
+        "macro_origin_recall": 0.10278745644599303,
+        "neutral_pairs": {
+          "ambiguous-neutral": 567,
+          "duplicate-neutral": 24,
+          "unresolved-neutral": 0
+        },
+        "positive_first_outcome": {
+          "not_retrieved_or_requested": 188,
+          "observation_ineligible": 53,
+          "recovered": 8,
+          "slot_policy_failed": 345,
+          "structure_failed": 133
+        },
+        "positive_pairs": 727,
+        "precision": 0.2962962962962963,
+        "recall": 0.011004126547455296,
+        "scored_pairs": 160437
+      },
+      "prediction": {
+        "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/novel-source-2026-09-08/predictions/hexyl-v0170/B2-token-cfg/prediction.json",
+        "sha256": "0f8750ac8a2ea3d51987dabc90548e5527ddefa75ae1feacca167226864c8737"
+      },
+      "primary_delta": {
+        "FN": -1,
+        "FP": 0,
+        "TN": 1,
+        "TP": 0,
+        "positive_pairs": -1,
+        "scored_pairs": 0
+      },
+      "views_after": {
+        "previously_unobserved_normalized_origin": {
+          "mask_size": 49,
+          "metrics": {
+            "FN": 1,
+            "FP": 0,
+            "N": 1173,
+            "P": 1,
+            "TN": 1173,
+            "TP": 0,
+            "exact_group_rate": 0.0,
+            "f1": 0.0,
+            "macro_origin_recall": 0.0,
+            "neutral_pairs": {
+              "ambiguous-neutral": 0,
+              "duplicate-neutral": 2,
+              "unresolved-neutral": 0
+            },
+            "positive_first_outcome": {
+              "not_retrieved_or_requested": 1
+            },
+            "positive_pairs": 1,
+            "precision": null,
+            "recall": 0.0,
+            "scored_pairs": 1174
+          }
+        },
+        "project_owned": {
+          "mask_size": 37,
+          "metrics": {
+            "FN": 0,
+            "FP": 0,
+            "N": 664,
+            "P": 0,
+            "TN": 664,
+            "TP": 0,
+            "exact_group_rate": null,
+            "f1": null,
+            "macro_origin_recall": null,
+            "neutral_pairs": {
+              "ambiguous-neutral": 0,
+              "duplicate-neutral": 2,
+              "unresolved-neutral": 0
+            },
+            "positive_first_outcome": {},
+            "positive_pairs": 0,
+            "precision": null,
+            "recall": null,
+            "scored_pairs": 664
+          }
+        }
+      },
+      "views_before": {
+        "previously_unobserved_normalized_origin": {
+          "mask_size": 49,
+          "metrics": {
+            "FN": 2,
+            "FP": 0,
+            "N": 1172,
+            "P": 2,
+            "TN": 1172,
+            "TP": 0,
+            "exact_group_rate": 0.0,
+            "f1": 0.0,
+            "macro_origin_recall": 0.0,
+            "neutral_pairs": {
+              "ambiguous-neutral": 0,
+              "duplicate-neutral": 2,
+              "unresolved-neutral": 0
+            },
+            "positive_first_outcome": {
+              "not_retrieved_or_requested": 2
+            },
+            "positive_pairs": 2,
+            "precision": null,
+            "recall": 0.0,
+            "scored_pairs": 1174
+          }
+        },
+        "project_owned": {
+          "mask_size": 37,
+          "metrics": {
+            "FN": 1,
+            "FP": 0,
+            "N": 663,
+            "P": 1,
+            "TN": 663,
+            "TP": 0,
+            "exact_group_rate": 0.0,
+            "f1": 0.0,
+            "macro_origin_recall": 0.0,
+            "neutral_pairs": {
+              "ambiguous-neutral": 0,
+              "duplicate-neutral": 2,
+              "unresolved-neutral": 0
+            },
+            "positive_first_outcome": {
+              "not_retrieved_or_requested": 1
+            },
+            "positive_pairs": 1,
+            "precision": null,
+            "recall": 0.0,
+            "scored_pairs": 664
+          }
+        }
+      }
+    },
+    "C3-rescue": {
+      "after": {
+        "FN": 718,
+        "FP": 17,
+        "N": 159711,
+        "P": 726,
+        "TN": 159694,
+        "TP": 8,
+        "exact_group_rate": 0.075,
+        "f1": 0.02130492676431425,
+        "macro_origin_recall": 0.10535714285714286,
+        "neutral_pairs": {
+          "ambiguous-neutral": 567,
+          "duplicate-neutral": 24,
+          "unresolved-neutral": 0
+        },
+        "positive_first_outcome": null,
+        "positive_pairs": 726,
+        "precision": 0.32,
+        "recall": 0.011019283746556474,
+        "scored_pairs": 160437
+      },
+      "before": {
+        "FN": 719,
+        "FP": 17,
+        "N": 159710,
+        "P": 727,
+        "TN": 159693,
+        "TP": 8,
+        "exact_group_rate": 0.07317073170731707,
+        "f1": 0.02127659574468085,
+        "macro_origin_recall": 0.10278745644599303,
+        "neutral_pairs": {
+          "ambiguous-neutral": 567,
+          "duplicate-neutral": 24,
+          "unresolved-neutral": 0
+        },
+        "positive_first_outcome": null,
+        "positive_pairs": 727,
+        "precision": 0.32,
+        "recall": 0.011004126547455296,
+        "scored_pairs": 160437
+      },
+      "prediction": {
+        "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/novel-source-2026-09-08/predictions/hexyl-v0170/C3-rescue/prediction.json",
+        "sha256": "a4cf65539e6505e8aa62ddc590c86487dc53344bbca5db0f98847f5c0840f458"
+      },
+      "primary_delta": {
+        "FN": -1,
+        "FP": 0,
+        "TN": 1,
+        "TP": 0,
+        "positive_pairs": -1,
+        "scored_pairs": 0
+      },
+      "views_after": {
+        "previously_unobserved_normalized_origin": {
+          "mask_size": 49,
+          "metrics": {
+            "FN": 1,
+            "FP": 0,
+            "N": 1173,
+            "P": 1,
+            "TN": 1173,
+            "TP": 0,
+            "exact_group_rate": 0.0,
+            "f1": 0.0,
+            "macro_origin_recall": 0.0,
+            "neutral_pairs": {
+              "ambiguous-neutral": 0,
+              "duplicate-neutral": 2,
+              "unresolved-neutral": 0
+            },
+            "positive_first_outcome": null,
+            "positive_pairs": 1,
+            "precision": null,
+            "recall": 0.0,
+            "scored_pairs": 1174
+          }
+        },
+        "project_owned": {
+          "mask_size": 37,
+          "metrics": {
+            "FN": 0,
+            "FP": 0,
+            "N": 664,
+            "P": 0,
+            "TN": 664,
+            "TP": 0,
+            "exact_group_rate": null,
+            "f1": null,
+            "macro_origin_recall": null,
+            "neutral_pairs": {
+              "ambiguous-neutral": 0,
+              "duplicate-neutral": 2,
+              "unresolved-neutral": 0
+            },
+            "positive_first_outcome": null,
+            "positive_pairs": 0,
+            "precision": null,
+            "recall": null,
+            "scored_pairs": 664
+          }
+        }
+      },
+      "views_before": {
+        "previously_unobserved_normalized_origin": {
+          "mask_size": 49,
+          "metrics": {
+            "FN": 2,
+            "FP": 0,
+            "N": 1172,
+            "P": 2,
+            "TN": 1172,
+            "TP": 0,
+            "exact_group_rate": 0.0,
+            "f1": 0.0,
+            "macro_origin_recall": 0.0,
+            "neutral_pairs": {
+              "ambiguous-neutral": 0,
+              "duplicate-neutral": 2,
+              "unresolved-neutral": 0
+            },
+            "positive_first_outcome": null,
+            "positive_pairs": 2,
+            "precision": null,
+            "recall": 0.0,
+            "scored_pairs": 1174
+          }
+        },
+        "project_owned": {
+          "mask_size": 37,
+          "metrics": {
+            "FN": 1,
+            "FP": 0,
+            "N": 663,
+            "P": 1,
+            "TN": 663,
+            "TP": 0,
+            "exact_group_rate": 0.0,
+            "f1": 0.0,
+            "macro_origin_recall": 0.0,
+            "neutral_pairs": {
+              "ambiguous-neutral": 0,
+              "duplicate-neutral": 2,
+              "unresolved-neutral": 0
+            },
+            "positive_first_outcome": null,
+            "positive_pairs": 1,
+            "precision": null,
+            "recall": 0.0,
+            "scored_pairs": 664
+          }
+        }
+      }
+    },
+    "C3-token-cfg-relation": {
+      "after": {
+        "FN": 718,
+        "FP": 17,
+        "N": 159711,
+        "P": 726,
+        "TN": 159694,
+        "TP": 8,
+        "exact_group_rate": 0.075,
+        "f1": 0.02130492676431425,
+        "macro_origin_recall": 0.10535714285714286,
+        "neutral_pairs": {
+          "ambiguous-neutral": 567,
+          "duplicate-neutral": 24,
+          "unresolved-neutral": 0
+        },
+        "positive_first_outcome": {
+          "not_retrieved_or_requested": 412,
+          "observation_ineligible": 53,
+          "recovered": 8,
+          "slot_policy_failed": 160,
+          "structure_failed": 93
+        },
+        "positive_pairs": 726,
+        "precision": 0.32,
+        "recall": 0.011019283746556474,
+        "scored_pairs": 160437
+      },
+      "before": {
+        "FN": 719,
+        "FP": 17,
+        "N": 159710,
+        "P": 727,
+        "TN": 159693,
+        "TP": 8,
+        "exact_group_rate": 0.07317073170731707,
+        "f1": 0.02127659574468085,
+        "macro_origin_recall": 0.10278745644599303,
+        "neutral_pairs": {
+          "ambiguous-neutral": 567,
+          "duplicate-neutral": 24,
+          "unresolved-neutral": 0
+        },
+        "positive_first_outcome": {
+          "not_retrieved_or_requested": 413,
+          "observation_ineligible": 53,
+          "recovered": 8,
+          "slot_policy_failed": 160,
+          "structure_failed": 93
+        },
+        "positive_pairs": 727,
+        "precision": 0.32,
+        "recall": 0.011004126547455296,
+        "scored_pairs": 160437
+      },
+      "prediction": {
+        "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/novel-source-2026-09-08/predictions/hexyl-v0170/C3-token-cfg-relation/prediction.json",
+        "sha256": "5896e5cda19e99fa8498cced728c445e7b18790d56fcd6aea67d89eb36337837"
+      },
+      "primary_delta": {
+        "FN": -1,
+        "FP": 0,
+        "TN": 1,
+        "TP": 0,
+        "positive_pairs": -1,
+        "scored_pairs": 0
+      },
+      "views_after": {
+        "previously_unobserved_normalized_origin": {
+          "mask_size": 49,
+          "metrics": {
+            "FN": 1,
+            "FP": 0,
+            "N": 1173,
+            "P": 1,
+            "TN": 1173,
+            "TP": 0,
+            "exact_group_rate": 0.0,
+            "f1": 0.0,
+            "macro_origin_recall": 0.0,
+            "neutral_pairs": {
+              "ambiguous-neutral": 0,
+              "duplicate-neutral": 2,
+              "unresolved-neutral": 0
+            },
+            "positive_first_outcome": {
+              "not_retrieved_or_requested": 1
+            },
+            "positive_pairs": 1,
+            "precision": null,
+            "recall": 0.0,
+            "scored_pairs": 1174
+          }
+        },
+        "project_owned": {
+          "mask_size": 37,
+          "metrics": {
+            "FN": 0,
+            "FP": 0,
+            "N": 664,
+            "P": 0,
+            "TN": 664,
+            "TP": 0,
+            "exact_group_rate": null,
+            "f1": null,
+            "macro_origin_recall": null,
+            "neutral_pairs": {
+              "ambiguous-neutral": 0,
+              "duplicate-neutral": 2,
+              "unresolved-neutral": 0
+            },
+            "positive_first_outcome": {},
+            "positive_pairs": 0,
+            "precision": null,
+            "recall": null,
+            "scored_pairs": 664
+          }
+        }
+      },
+      "views_before": {
+        "previously_unobserved_normalized_origin": {
+          "mask_size": 49,
+          "metrics": {
+            "FN": 2,
+            "FP": 0,
+            "N": 1172,
+            "P": 2,
+            "TN": 1172,
+            "TP": 0,
+            "exact_group_rate": 0.0,
+            "f1": 0.0,
+            "macro_origin_recall": 0.0,
+            "neutral_pairs": {
+              "ambiguous-neutral": 0,
+              "duplicate-neutral": 2,
+              "unresolved-neutral": 0
+            },
+            "positive_first_outcome": {
+              "not_retrieved_or_requested": 2
+            },
+            "positive_pairs": 2,
+            "precision": null,
+            "recall": 0.0,
+            "scored_pairs": 1174
+          }
+        },
+        "project_owned": {
+          "mask_size": 37,
+          "metrics": {
+            "FN": 1,
+            "FP": 0,
+            "N": 663,
+            "P": 1,
+            "TN": 663,
+            "TP": 0,
+            "exact_group_rate": 0.0,
+            "f1": 0.0,
+            "macro_origin_recall": 0.0,
+            "neutral_pairs": {
+              "ambiguous-neutral": 0,
+              "duplicate-neutral": 2,
+              "unresolved-neutral": 0
+            },
+            "positive_first_outcome": {
+              "not_retrieved_or_requested": 1
+            },
+            "positive_pairs": 1,
+            "precision": null,
+            "recall": 0.0,
+            "scored_pairs": 664
+          }
+        }
+      }
+    },
+    "V0-relation": {
+      "after": {
+        "FN": 558,
+        "FP": 168,
+        "N": 159711,
+        "P": 726,
+        "TN": 159543,
+        "TP": 168,
+        "exact_group_rate": 0.25,
+        "f1": 0.3163841807909605,
+        "macro_origin_recall": 0.3712237762237762,
+        "neutral_pairs": {
+          "ambiguous-neutral": 567,
+          "duplicate-neutral": 24,
+          "unresolved-neutral": 0
+        },
+        "positive_first_outcome": null,
+        "positive_pairs": 726,
+        "precision": 0.5,
+        "recall": 0.23140495867768596,
+        "scored_pairs": 160437
+      },
+      "before": {
+        "FN": 559,
+        "FP": 168,
+        "N": 159710,
+        "P": 727,
+        "TN": 159542,
+        "TP": 168,
+        "exact_group_rate": 0.24390243902439024,
+        "f1": 0.3160865475070555,
+        "macro_origin_recall": 0.3621695377792939,
+        "neutral_pairs": {
+          "ambiguous-neutral": 567,
+          "duplicate-neutral": 24,
+          "unresolved-neutral": 0
+        },
+        "positive_first_outcome": null,
+        "positive_pairs": 727,
+        "precision": 0.5,
+        "recall": 0.2310866574965612,
+        "scored_pairs": 160437
+      },
+      "prediction": {
+        "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/novel-source-2026-09-08/predictions/hexyl-v0170/V0-relation/prediction.json",
+        "sha256": "fac18e92a9389802efadb47fa8369956e0e060336cc05ea3866a53acd09def07"
+      },
+      "primary_delta": {
+        "FN": -1,
+        "FP": 0,
+        "TN": 1,
+        "TP": 0,
+        "positive_pairs": -1,
+        "scored_pairs": 0
+      },
+      "views_after": {
+        "previously_unobserved_normalized_origin": {
+          "mask_size": 49,
+          "metrics": {
+            "FN": 1,
+            "FP": 8,
+            "N": 1173,
+            "P": 1,
+            "TN": 1165,
+            "TP": 0,
+            "exact_group_rate": 0.0,
+            "f1": 0.0,
+            "macro_origin_recall": 0.0,
+            "neutral_pairs": {
+              "ambiguous-neutral": 0,
+              "duplicate-neutral": 2,
+              "unresolved-neutral": 0
+            },
+            "positive_first_outcome": null,
+            "positive_pairs": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "scored_pairs": 1174
+          }
+        },
+        "project_owned": {
+          "mask_size": 37,
+          "metrics": {
+            "FN": 0,
+            "FP": 3,
+            "N": 664,
+            "P": 0,
+            "TN": 661,
+            "TP": 0,
+            "exact_group_rate": null,
+            "f1": 0.0,
+            "macro_origin_recall": null,
+            "neutral_pairs": {
+              "ambiguous-neutral": 0,
+              "duplicate-neutral": 2,
+              "unresolved-neutral": 0
+            },
+            "positive_first_outcome": null,
+            "positive_pairs": 0,
+            "precision": 0.0,
+            "recall": null,
+            "scored_pairs": 664
+          }
+        }
+      },
+      "views_before": {
+        "previously_unobserved_normalized_origin": {
+          "mask_size": 49,
+          "metrics": {
+            "FN": 2,
+            "FP": 8,
+            "N": 1172,
+            "P": 2,
+            "TN": 1164,
+            "TP": 0,
+            "exact_group_rate": 0.0,
+            "f1": 0.0,
+            "macro_origin_recall": 0.0,
+            "neutral_pairs": {
+              "ambiguous-neutral": 0,
+              "duplicate-neutral": 2,
+              "unresolved-neutral": 0
+            },
+            "positive_first_outcome": null,
+            "positive_pairs": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "scored_pairs": 1174
+          }
+        },
+        "project_owned": {
+          "mask_size": 37,
+          "metrics": {
+            "FN": 1,
+            "FP": 3,
+            "N": 663,
+            "P": 1,
+            "TN": 660,
+            "TP": 0,
+            "exact_group_rate": 0.0,
+            "f1": 0.0,
+            "macro_origin_recall": 0.0,
+            "neutral_pairs": {
+              "ambiguous-neutral": 0,
+              "duplicate-neutral": 2,
+              "unresolved-neutral": 0
+            },
+            "positive_first_outcome": null,
+            "positive_pairs": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "scored_pairs": 664
+          }
+        }
+      }
+    },
+    "exact-token-hash": {
+      "after": {
+        "FN": 357,
+        "FP": 84,
+        "N": 159711,
+        "P": 726,
+        "TN": 159627,
+        "TP": 369,
+        "exact_group_rate": 0.15,
+        "f1": 0.6259541984732825,
+        "macro_origin_recall": 0.3461950549450549,
+        "neutral_pairs": {
+          "ambiguous-neutral": 567,
+          "duplicate-neutral": 24,
+          "unresolved-neutral": 0
+        },
+        "positive_first_outcome": null,
+        "positive_pairs": 726,
+        "precision": 0.8145695364238411,
+        "recall": 0.5082644628099173,
+        "scored_pairs": 160437
+      },
+      "before": {
+        "FN": 358,
+        "FP": 84,
+        "N": 159710,
+        "P": 727,
+        "TN": 159626,
+        "TP": 369,
+        "exact_group_rate": 0.14634146341463414,
+        "f1": 0.6254237288135593,
+        "macro_origin_recall": 0.33775127311712677,
+        "neutral_pairs": {
+          "ambiguous-neutral": 567,
+          "duplicate-neutral": 24,
+          "unresolved-neutral": 0
+        },
+        "positive_first_outcome": null,
+        "positive_pairs": 727,
+        "precision": 0.8145695364238411,
+        "recall": 0.5075653370013755,
+        "scored_pairs": 160437
+      },
+      "prediction": {
+        "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/novel-source-2026-09-08/predictions/hexyl-v0170/exact-token-hash/prediction.json",
+        "sha256": "b2c7902aa2bea4aa5da0501686a7601f81d1109369da9200a9d020e3ca09660c"
+      },
+      "primary_delta": {
+        "FN": -1,
+        "FP": 0,
+        "TN": 1,
+        "TP": 0,
+        "positive_pairs": -1,
+        "scored_pairs": 0
+      },
+      "views_after": {
+        "previously_unobserved_normalized_origin": {
+          "mask_size": 49,
+          "metrics": {
+            "FN": 1,
+            "FP": 1,
+            "N": 1173,
+            "P": 1,
+            "TN": 1172,
+            "TP": 0,
+            "exact_group_rate": 0.0,
+            "f1": 0.0,
+            "macro_origin_recall": 0.0,
+            "neutral_pairs": {
+              "ambiguous-neutral": 0,
+              "duplicate-neutral": 2,
+              "unresolved-neutral": 0
+            },
+            "positive_first_outcome": null,
+            "positive_pairs": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "scored_pairs": 1174
+          }
+        },
+        "project_owned": {
+          "mask_size": 37,
+          "metrics": {
+            "FN": 0,
+            "FP": 1,
+            "N": 664,
+            "P": 0,
+            "TN": 663,
+            "TP": 0,
+            "exact_group_rate": null,
+            "f1": 0.0,
+            "macro_origin_recall": null,
+            "neutral_pairs": {
+              "ambiguous-neutral": 0,
+              "duplicate-neutral": 2,
+              "unresolved-neutral": 0
+            },
+            "positive_first_outcome": null,
+            "positive_pairs": 0,
+            "precision": 0.0,
+            "recall": null,
+            "scored_pairs": 664
+          }
+        }
+      },
+      "views_before": {
+        "previously_unobserved_normalized_origin": {
+          "mask_size": 49,
+          "metrics": {
+            "FN": 2,
+            "FP": 1,
+            "N": 1172,
+            "P": 2,
+            "TN": 1171,
+            "TP": 0,
+            "exact_group_rate": 0.0,
+            "f1": 0.0,
+            "macro_origin_recall": 0.0,
+            "neutral_pairs": {
+              "ambiguous-neutral": 0,
+              "duplicate-neutral": 2,
+              "unresolved-neutral": 0
+            },
+            "positive_first_outcome": null,
+            "positive_pairs": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "scored_pairs": 1174
+          }
+        },
+        "project_owned": {
+          "mask_size": 37,
+          "metrics": {
+            "FN": 1,
+            "FP": 1,
+            "N": 663,
+            "P": 1,
+            "TN": 662,
+            "TP": 0,
+            "exact_group_rate": 0.0,
+            "f1": 0.0,
+            "macro_origin_recall": 0.0,
+            "neutral_pairs": {
+              "ambiguous-neutral": 0,
+              "duplicate-neutral": 2,
+              "unresolved-neutral": 0
+            },
+            "positive_first_outcome": null,
+            "positive_pairs": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "scored_pairs": 664
+          }
+        }
+      }
+    }
+  },
+  "case": "hexyl-v0170",
+  "interpretation": {
+    "anyhow": "The Anyhow pair remains a normalized origin with a plausible single dependency-method location; this audit makes no source-definition confirmation or correction for it.",
+    "identity_limit": "Mangled identities and addresses remain operational linkage evidence; no semantic MonoItem or DefId claim is made."
+  },
+  "new_defid_oracle_used": false,
+  "primary_results_immutable": true,
+  "provenance": {
+    "exposed_origins": {
+      "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/novel-source-2026-09-08/exposed-origins.json",
+      "sha256": "73f6879dc40fb3e4ddaddd2bb06942ff01ec503388051901294abdab3580a557"
+    },
+    "ground_truth_v2": {
+      "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/novel-source-2026-09-08/audit/hexyl.gt.v2.json",
+      "sha256": "4db563465635b49b96bda9c7891b610897c4090f1596662d2bcdd592fa1d5bfe"
+    },
+    "linkage_v2": {
+      "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/novel-source-2026-09-08/audit/hexyl.linkage.v2.json",
+      "sha256": "7a4e033455a395e8bf83740937bd3e4e681035412c2b35b5b215535386cc4091"
+    },
+    "parent_ground_truth": {
+      "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/novel-source-2026-09-08/observations/hexyl-v0170/hexyl-v0170.O3S.gt.json",
+      "sha256": "ad1edcc7bb20afe3175bf8e8f6c70120e2edc2f834e6ffa27a283e88d100c4b0"
+    },
+    "parent_linkage": {
+      "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/novel-source-2026-09-08/observations/hexyl-v0170/hexyl-v0170.O3S.linkage.json",
+      "sha256": "ef5ca656b05660bdd77a1fd1ff6e59e9a9a78af08fcea05dadf5e1fda6976fa4"
+    },
+    "scores": {
+      "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/novel-source-2026-09-08/scores/hexyl-v0170/scores.json",
+      "sha256": "bc046a81267cf5763922ca72785a30a2d1d23c745133e09610454778667078ad"
+    },
+    "source_audit": {
+      "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/novel-source-2026-09-08/audit/hexyl-source-audit.json",
+      "sha256": "9f3380c6695b1edaf32858d5231ad021a1b474deb854dce71a402b373c208033"
+    },
+    "verifier": {
+      "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/novel-source-2026-09-08/audit/verify_hexyl_source_site.py",
+      "sha256": "793b8f3b3482f29395dbe832e854b6e7b4cc339d31b379953299891196d1c2d9"
+    }
+  },
+  "rank_changes": {
+    "exact_group_rate": {
+      "after": [
+        "V0-relation",
+        "exact-token-hash",
+        "B2-body-score",
+        "B2-token-cfg",
+        "C3-rescue",
+        "C3-token-cfg-relation"
+      ],
+      "before": [
+        "V0-relation",
+        "exact-token-hash",
+        "B2-body-score",
+        "B2-token-cfg",
+        "C3-rescue",
+        "C3-token-cfg-relation"
+      ],
+      "changed": false
+    },
+    "f1": {
+      "after": [
+        "exact-token-hash",
+        "V0-relation",
+        "B2-body-score",
+        "C3-rescue",
+        "C3-token-cfg-relation",
+        "B2-token-cfg"
+      ],
+      "before": [
+        "exact-token-hash",
+        "V0-relation",
+        "B2-body-score",
+        "C3-rescue",
+        "C3-token-cfg-relation",
+        "B2-token-cfg"
+      ],
+      "changed": false
+    },
+    "macro_origin_recall": {
+      "after": [
+        "V0-relation",
+        "exact-token-hash",
+        "B2-body-score",
+        "B2-token-cfg",
+        "C3-rescue",
+        "C3-token-cfg-relation"
+      ],
+      "before": [
+        "V0-relation",
+        "exact-token-hash",
+        "B2-body-score",
+        "B2-token-cfg",
+        "C3-rescue",
+        "C3-token-cfg-relation"
+      ],
+      "changed": false
+    },
+    "precision": {
+      "after": [
+        "exact-token-hash",
+        "V0-relation",
+        "B2-body-score",
+        "C3-rescue",
+        "C3-token-cfg-relation",
+        "B2-token-cfg"
+      ],
+      "before": [
+        "exact-token-hash",
+        "V0-relation",
+        "B2-body-score",
+        "C3-rescue",
+        "C3-token-cfg-relation",
+        "B2-token-cfg"
+      ],
+      "changed": false
+    },
+    "recall": {
+      "after": [
+        "exact-token-hash",
+        "V0-relation",
+        "B2-body-score",
+        "B2-token-cfg",
+        "C3-rescue",
+        "C3-token-cfg-relation"
+      ],
+      "before": [
+        "exact-token-hash",
+        "V0-relation",
+        "B2-body-score",
+        "B2-token-cfg",
+        "C3-rescue",
+        "C3-token-cfg-relation"
+      ],
+      "changed": false
+    }
+  },
+  "schema_version": 2,
+  "scored_universe": {
+    "after": {
+      "N": 159711,
+      "P": 726,
+      "all_pairs": 161028,
+      "conserved": true,
+      "neutral_pairs": {
+        "ambiguous-neutral": 567,
+        "duplicate-neutral": 24,
+        "unresolved-neutral": 0
+      },
+      "scored_pairs": 160437,
+      "target_count": 568
+    },
+    "before": {
+      "N": 159710,
+      "P": 727,
+      "all_pairs": 161028,
+      "conserved": true,
+      "neutral_pairs": {
+        "ambiguous-neutral": 567,
+        "duplicate-neutral": 24,
+        "unresolved-neutral": 0
+      },
+      "scored_pairs": 160437,
+      "target_count": 568
+    },
+    "label_pair_effect": "The split removes the old one-pair closure positive and creates one negative pair; all frozen predictions leave that pair unpredicted."
+  },
+  "scoring_python": "3.12.3",
+  "source_site_split": {
+    "identities_preserved": true,
+    "mask_sizes": {
+      "previously_unobserved_normalized_origin": {
+        "after": 49,
+        "before": 49
+      },
+      "project_owned": {
+        "after": 37,
+        "before": 37
+      }
+    },
+    "old_origin": "hexyl::run::{{closure}}",
+    "site342": {
+      "address": "FUN_0015b260",
+      "in_frozen_exposed_origin_inventory": false,
+      "origin": "hexyl::run::{{closure}}@src/main.rs:342",
+      "project_owned_by_prefix": true
+    },
+    "site353": {
+      "address": "FUN_0015b1a0",
+      "in_frozen_exposed_origin_inventory": false,
+      "origin": "hexyl::run::{{closure}}@src/main.rs:353",
+      "project_owned_by_prefix": true
+    },
+    "split_pair": {
+      "addresses": [
+        "FUN_0015b1a0",
+        "FUN_0015b260"
+      ],
+      "new_label_pair": "negative",
+      "old_label_pair": "positive"
+    }
+  },
+  "status": "source-site-secondary-sensitivity"
+}

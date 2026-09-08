@@ -1,0 +1,154 @@
+{
+  "artifact": "callkin-real-evaluation",
+  "discovery": {
+    "address_only_count": 903,
+    "analysis_status_counts": {
+      "address-only": 903,
+      "complete": 5515,
+      "external": 2,
+      "incomplete": 636
+    },
+    "complete_body_count": 509,
+    "complete_body_coverage": 0.8961,
+    "discovered_count": 567,
+    "discovered_with_failed_decode_count": 39,
+    "ground_truth_function_count": 568,
+    "incomplete_count": 636,
+    "missed_count": 1,
+    "note": "boundary recovery is scored on its own; it is never combined with the grouping score, because one number cannot say whether the tool missed functions or mis-grouped the ones it found"
+  },
+  "ground_truth": {
+    "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/novel-source-2026-09-08/observations/hexyl-v0170/hexyl-v0170.O3S.gt.json",
+    "sha256": "ad1edcc7bb20afe3175bf8e8f6c70120e2edc2f834e6ffa27a283e88d100c4b0",
+    "used_for": "scoring only"
+  },
+  "grouping": {
+    "methods": {
+      "v0_relation_only": {
+        "cluster_count": 1613,
+        "f1": 0.2828,
+        "false_negative": 559,
+        "false_positive": 278,
+        "neutral_pair_counts": {
+          "ambiguous-neutral": 508,
+          "duplicate-neutral": 24,
+          "unresolved-neutral": 0
+        },
+        "neutral_pair_total": 532,
+        "precision": 0.3725,
+        "recall": 0.2279,
+        "scored_member_count": 509,
+        "true_negative": 127752,
+        "true_positive": 165
+      },
+      "v1_relaxed_provisional": {
+        "alignment_cell_count": null,
+        "ambiguous_member_count": 0,
+        "attachment_count": 0,
+        "budget_limited": null,
+        "comparison_count": null,
+        "f1": 0.019,
+        "false_negative": 717,
+        "false_positive": 7,
+        "neutral_pair_counts": {
+          "ambiguous-neutral": 508,
+          "duplicate-neutral": 24,
+          "unresolved-neutral": 0
+        },
+        "neutral_pair_total": 532,
+        "note": "experimental provisional attachments; not accepted families and never used for FLIRT propagation",
+        "partition": "strict-core",
+        "precision": 0.5,
+        "provenance": {
+          "body_evidence_sha256": "e3895ca6745fc433236ea7b6aa50ffddfa9d6b7ce3110647694d7aa6d82747fe",
+          "candidate_artifact_sha256": "9e771da89cb01ffd59f0d649969bfb36c5112c9924f642fce10ae5dc4d2ef726",
+          "family_artifact_sha256": "80de45b66daff06a2c4d09327a541dba95d8e6084c11298d33bc1d9ef649a1bf",
+          "stripped_sha256": "b067e03a3c6911409d64eff3027b11a05f5364c33f08e1bbb777b343b142594a"
+        },
+        "recall": 0.0097,
+        "scored_member_count": 509,
+        "true_negative": 128023,
+        "true_positive": 7,
+        "vetoed_hypothesis_count": 0
+      },
+      "v1_strict": {
+        "abstain_coverage": 0.1094,
+        "accepted_family_count": 106,
+        "accepted_member_coverage": 0.0627,
+        "alignment_cell_count": 2512526,
+        "budget_limited": false,
+        "comparison_count": 2882,
+        "f1": 0.019,
+        "false_negative": 717,
+        "false_positive": 7,
+        "neutral_pair_counts": {
+          "ambiguous-neutral": 508,
+          "duplicate-neutral": 24,
+          "unresolved-neutral": 0
+        },
+        "neutral_pair_total": 532,
+        "precision": 0.5,
+        "recall": 0.0097,
+        "scored_member_count": 509,
+        "true_negative": 128023,
+        "true_positive": 7
+      },
+      "v1_strict_rescue": {
+        "alignment_cell_count": 1077296,
+        "comparison_count": 1807,
+        "f1": 0.019,
+        "false_negative": 717,
+        "false_positive": 7,
+        "final_family_count": 106,
+        "neutral_pair_counts": {
+          "ambiguous-neutral": 508,
+          "duplicate-neutral": 24,
+          "unresolved-neutral": 0
+        },
+        "neutral_pair_total": 532,
+        "precision": 0.5,
+        "recall": 0.0097,
+        "rescued_family_count": 0,
+        "scored_member_count": 509,
+        "true_negative": 128023,
+        "true_positive": 7
+      },
+      "v1_strict_rescue_relaxed_provisional": {
+        "status": "not produced"
+      }
+    },
+    "universe_member_count": 5514
+  },
+  "label": {
+    "status": "unavailable"
+  },
+  "runtime_seconds": 558.688,
+  "schema_version": 1,
+  "scored": {
+    "binary_sha256": "b067e03a3c6911409d64eff3027b11a05f5364c33f08e1bbb777b343b142594a",
+    "families_relaxed_sha256": "0e34f0cd24fbbf1748f201bfcb2071f738188edc08ba83514addced9ed379b08",
+    "families_rescue_relaxed_sha256": null,
+    "families_rescue_sha256": "11cb45785cb156aacabc96e03e0f5034bcc76a6901e87b79e64bd8b26e19a274",
+    "families_strict_sha256": "80de45b66daff06a2c4d09327a541dba95d8e6084c11298d33bc1d9ef649a1bf",
+    "label_propagation_sha256": null,
+    "labels_direct_sha256": null,
+    "linkage_audit_sha256": "ef5ca656b05660bdd77a1fd1ff6e59e9a9a78af08fcea05dadf5e1fda6976fa4",
+    "run_manifest_sha256": "e8eb9eb6476ddd74e8aefa9bfde0b6f4532d4cb82977ec56a8154018799d2c19",
+    "stage_sha256": {
+      "body": "e3895ca6745fc433236ea7b6aa50ffddfa9d6b7ce3110647694d7aa6d82747fe",
+      "discovery": "e83f5a4fb730aa6e0f08934ce83a1285793a7a6cf4c2f181e58685850286c280",
+      "relation": "50af7c206f6613276040bc1c09104e0ff0f77d3fd6190fa403f91210bdab67a2",
+      "universe": "5b57849bf8ffce59d8e4213ad400199dbca8dbd1599bf1df5d6891ec140b2eb6"
+    }
+  },
+  "toolchain": {
+    "angr": "9.2.165",
+    "capstone": "5.0.3",
+    "machine": "x86_64",
+    "pefile": "2024.8.26",
+    "platform": "Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "python": "3.12.3",
+    "r2pipe": "1.9.8",
+    "radare2": "radare2 5.5.0 0 @ linux-x86-64 git.5.5.0"
+  }
+}

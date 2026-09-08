@@ -1,0 +1,7 @@
+start_utc=2026-09-08T14:09:05Z
+end_utc=2026-09-08T14:23:39Z
+elapsed_wall_seconds=874
+exit_status=0
+target_sha256=b067e03a3c6911409d64eff3027b11a05f5364c33f08e1bbb777b343b142594a
+study_commit=aa119815c94c3d307d57cb6f4d339617971ff6a6
+callkin_real_head=68ffa8dc1285546a1db52096a905a36fec094bd6

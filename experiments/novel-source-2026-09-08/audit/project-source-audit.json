@@ -1,0 +1,178 @@
+{
+  "schema_version": 1,
+  "status": "bounded-project-positive-source-audit",
+  "scope": "Three named project-positive GT groups only; frozen GT, linkage, predictions, scores, and primary interpretation unchanged.",
+  "primary_results_immutable": true,
+  "new_defid_oracle_used": false,
+  "provenance": {
+    "hyperfine-v1200": {
+      "repository": "sharkdp/hyperfine",
+      "commit": "975fe108c4ee7bd2600d10758207b44ca3dae738",
+      "source_root": "/mnt/c/Users/sumyr/playground/REV/CallKin/workspace/relation-control-2026-09-08/sources/hyperfine",
+      "source_tree_sha256": "2fa13b0357e24bf845533b481a7143e139bd4f358f1fe59f4642a522508d0592",
+      "cargo_toml_sha256": "f8cb3b04244c3832bff112d3bb0b6a1b2845b641dafa35e9c85c2518af1c2f78",
+      "cargo_lock_sha256": "f3b341ae4c03197e61ee9e9b157c3a8669ea0cce23da68ded1e085fcbca8b9ba",
+      "non_stripped_binary": {
+        "path": "experiments/novel-source-2026-09-08/build/hyperfine-v1200/hyperfine-v1200.O3S.gt.bin",
+        "sha256": "e48f054453eb8335663518b54806cc9cca0e08f7a866a120f3a1eccee463067b"
+      },
+      "stripped_fixture": {
+        "path": "experiments/novel-source-2026-09-08/build/hyperfine-v1200/hyperfine-v1200.O3S.fixture.bin",
+        "sha256": "afb8dcfdf50ff95071c9b0b7a169b48e7b37d305de6b073749e8b6a558da9291"
+      },
+      "artifacts": {
+        "gt": "3c83d346b9e75275fb2afa948650c6b3aa539617790d74c5e90b1b54f96388fc",
+        "linkage": "459473713316622874a4cc419b3ad8ef3b3f910f08f4569650bfcd07f095e553",
+        "body": "7105e3f5f90900a88934d5edff0416d211fcdda9ed39524a7e3366e970ed3b11",
+        "raw": "6e35405a03bc397035cf6297deb8474008607063d35ed5acb1270c5a38387e93"
+      }
+    },
+    "tokei-v1500": {
+      "repository": "XAMPPRocky/tokei",
+      "commit": "c14f744716272fadeb27a74443cdffa0af35f82f",
+      "source_root": "/mnt/c/Users/sumyr/playground/REV/CallKin/workspace/relation-control-2026-09-08/sources/tokei",
+      "source_tree_sha256": "8aa20aefef3b9ee563a3002fdb443f10cd43daed5bec9066909d0642e6f79141",
+      "cargo_toml_sha256": "696414e46ee5d591d361e9162b7b7b5890a2955778bb1b427c322cf926dfd234",
+      "cargo_lock_sha256": "99552aa36b2763e9662aa36a783e6a010f90dae794f796659eeb721d2cb99000",
+      "non_stripped_binary": {
+        "path": "experiments/novel-source-2026-09-08/build/tokei-v1500/tokei-v1500.O3S.gt.bin",
+        "sha256": "9b3c9bdaa272ed88b2035f3cc3f26bef6267b41b3c542cd9a4d98fb889cbe67e"
+      },
+      "stripped_fixture": {
+        "path": "experiments/novel-source-2026-09-08/build/tokei-v1500/tokei-v1500.O3S.fixture.bin",
+        "sha256": "b8b946729494dce45751955bf655f842ff6c2a68950679d972ceab53b5e66f5f"
+      },
+      "artifacts": {
+        "gt": "de0db9deffd799399590acf4638964538a818265eebff7e731067f23feb8e048",
+        "linkage": "ba58d3fa6a60b362e1cbbc9a1a5f428f54a9855846e71b63ba21b70b52d25a8c",
+        "body": "cc8df30b4870e4c4d1e56c70a7293993ac0a76b7dcd106fa9e305ea3dc450d21",
+        "raw": "3f7d9466ffac3311dab2b3cd4ce26e528846811028079cad08ad02de6e57e5f7"
+      }
+    }
+  },
+  "groups": [
+    {
+      "case": "hyperfine-v1200",
+      "origin": "hyperfine::export::markup::impl_for=T::serialize",
+      "members": ["FUN_00177190", "FUN_0018b930", "FUN_00192790"],
+      "verdict": "source-consistent-generic-definition",
+      "confidence": "high",
+      "source": {
+        "files": [
+          {"path": "src/export/markup.rs", "sha256": "3f38c5fcfc794e3464ae310cbbeff72b98fe2ba437477ede1822c8fd5e07d68e", "lines": "15-96,108-121", "evidence": "MarkupExporter default methods and one impl<T: MarkupExporter> Exporter for T::serialize definition."},
+          {"path": "src/export/mod.rs", "sha256": "8571ec7ac45e7c0a7827a1ce9a3d0bd0968fe93c6d34fd8ece3119f15978eed4", "lines": "45-54,103-110,132-151", "evidence": "Exporter trait, concrete Asciidoc/JSON/CSV/Markdown/Orgmode construction, and dynamic serialize dispatch."},
+          {"path": "src/export/asciidoc.rs", "sha256": "97ff42a68ffdebf620f9f6fa99b9fe2692a00f5b28a6acd09121a167dd843648", "lines": "5-37"},
+          {"path": "src/export/markdown.rs", "sha256": "b7586d33a8c9b9a7e5f24c687b7a79ac1bf82d0038508e6bf2f13c6c93d35e43", "lines": "6-29"},
+          {"path": "src/export/orgmode.rs", "sha256": "87f1894bece4602abc7820843c0b4b2b49e1eb4ec90516adce6b72a91a806f52", "lines": "5-23"}
+        ],
+        "definition": "impl<T: MarkupExporter> Exporter for T { fn serialize(...) { determine unit; relative_speed::compute; self.table_results; return bytes } }"
+      },
+      "members_evidence": [
+        {"address_id": "FUN_00177190", "binary_address": "0x77190", "raw_symbol": "_ZN9hyperfine6export6markup59_$LT$impl$u20$hyperfine..export..Exporter$u20$for$u20$T$GT$9serialize17hd9fe311af72f04d5E", "size": 6650, "body_sha256": "58fccf4e7e547a12e29b9bf1f8a545ccd4ace08cdd3b6fd1f7ba68ea7c615776", "instruction_count": 1302, "block_count": 283, "complete_decode": true, "opaque_indirect_jumps": 0},
+        {"address_id": "FUN_0018b930", "binary_address": "0x8b930", "raw_symbol": "_ZN9hyperfine6export6markup59_$LT$impl$u20$hyperfine..export..Exporter$u20$for$u20$T$GT$9serialize17h2f5c0469747e7195E", "size": 6425, "body_sha256": "748d0aaf201849385c3f2d4bc59538d0d75392849738bd4fb7a27373952f9589", "instruction_count": 1270, "block_count": 277, "complete_decode": true, "opaque_indirect_jumps": 0},
+        {"address_id": "FUN_00192790", "binary_address": "0x92790", "raw_symbol": "_ZN9hyperfine6export6markup59_$LT$impl$u20$hyperfine..export..Exporter$u20$for$u20$T$GT$9serialize17h12ef478667528c2bE", "size": 5970, "body_sha256": "3558fbe2aa39382573b9f166c11b4c998b3e1a5a8abb38d0df75ba50f8dd0e0d", "instruction_count": 1180, "block_count": 264, "complete_decode": true, "opaque_indirect_jumps": 0}
+      ],
+      "caller_evidence": [
+        {"source": "src/export/mod.rs:103-110", "detail": "AsciidocExporter, MarkdownExporter, and OrgmodeExporter are the three concrete MarkupExporter types constructed for Exporter trait objects."},
+        {"source": "src/export/mod.rs:132-151", "binary_function": "ExportManager::write_results", "binary_address": "0x90080", "dynamic_callsite": "0x90145", "instruction": "call qword ptr [rax + 0x18]", "resolution": "unresolved indirect vtable call in retained transfer evidence"},
+        {"binary_address": "0x92790", "callsite": "0x92a40", "target": "0x91950", "target_symbol": "<hyperfine::export::orgmode::OrgmodeExporter as hyperfine::export::markup::MarkupExporter>::table_row", "detail": "Concrete type-specific tail is consistent with the generic method."}
+      ],
+      "reasoning": [
+        "All three raw mangled names normalize to the same generic impl path.",
+        "The source has one Exporter::serialize implementation for T: MarkupExporter; concrete markup types supply only trait formatting methods.",
+        "The three retained bodies are complete and share the generic determine-unit/relative-speed/table-building flow; differing sizes are expected after concrete trait-method instantiation and inlining.",
+        "Different raw disambiguator hashes are retained as operational identities only; they are not treated as proof of distinct semantic MonoItems."
+      ],
+      "conclusion": "No source conflict was found for this three-member positive group; it is a valid witness for one generic source definition, conditional on the pinned source and binary artifacts."
+    },
+    {
+      "case": "tokei-v1500",
+      "origin": "tokei::cli_utils::Printer<W>::print_results",
+      "members": ["FUN_002e71a0", "FUN_002e8150", "FUN_002e8ff0"],
+      "verdict": "source-consistent-generic-definition",
+      "confidence": "high",
+      "source": {
+        "files": [
+          {"path": "src/cli_utils.rs", "sha256": "0f04be73a054e62d1fc78e6e7cbad6e4cffdaae26ce1619d48176ff8f4ca146f", "lines": "122-151,317-397", "evidence": "One impl<W: Write> Printer<W> method print_results<'a, I>, generic over iterator I."},
+          {"path": "src/main.rs", "sha256": "7a6ed68eadf7fa572e2f0d4497f241100684f1b981f4e097b344125e1753fafc", "lines": "88-125", "evidence": "One Printer<BufWriter<Stdout>> and three print_results calls using three iterator expressions."}
+        ],
+        "definition": "pub fn print_results<'a, I>(...) where I: Iterator<Item = (&'a LanguageType, &'a Language)>"
+      },
+      "members_evidence": [
+        {"address_id": "FUN_002e71a0", "binary_address": "0x1e71a0", "raw_symbol": "_ZN5tokei9cli_utils16Printer$LT$W$GT$13print_results17h2dfc221e8a6e10d9E", "size": 4008, "body_sha256": "675e4b43a74ac1208b0b417a9679dad5507f8780a09910b91089f2be7f4aa3f6", "instruction_count": 793, "block_count": 174, "complete_decode": true, "opaque_indirect_jumps": 0},
+        {"address_id": "FUN_002e8150", "binary_address": "0x1e8150", "raw_symbol": "_ZN5tokei9cli_utils16Printer$LT$W$GT$13print_results17h69b0871a697137aaE", "size": 3741, "body_sha256": "4b4a13d7d6da5a19fc7fd638951d4cd9117e237371e455c89d870b0916cc02ef", "instruction_count": 756, "block_count": 169, "complete_decode": true, "opaque_indirect_jumps": 0},
+        {"address_id": "FUN_002e8ff0", "binary_address": "0x1e8ff0", "raw_symbol": "_ZN5tokei9cli_utils16Printer$LT$W$GT$13print_results17he2ac25d50385544dE", "size": 3850, "body_sha256": "8799c3ec77922898f10c931ca026393d4b55c7763dbeebd32b6b8777dbe84bf6", "instruction_count": 786, "block_count": 174, "complete_decode": true, "opaque_indirect_jumps": 0}
+      ],
+      "caller_evidence": [
+        {"source": "src/main.rs:117", "binary_caller": "tokei::main", "binary_address": "0x1d2740", "callsite": "0x1d3e45", "target": "0x1e8150", "instruction": "call 0x1e8150", "iterator": "languages.into_iter().rev()"},
+        {"source": "src/main.rs:119", "binary_caller": "tokei::main", "binary_address": "0x1d2740", "callsite": "0x1d3f79", "target": "0x1e8ff0", "instruction": "call 0x1e8ff0", "iterator": "languages.into_iter()"},
+        {"source": "src/main.rs:122", "binary_caller": "tokei::main", "binary_address": "0x1d2740", "callsite": "0x1d4008", "target": "0x1e71a0", "instruction": "call 0x1e71a0", "iterator": "languages.iter()"}
+      ],
+      "reasoning": [
+        "The source contains one print_results definition, generic over I as well as W.",
+        "The three direct retained callsites are the reverse-sorted, sorted, and unsorted branches in main, giving three legitimate instantiations of that one definition.",
+        "All three bodies decode completely with zero opaque indirect jumps.",
+        "Raw hashes distinguish emitted operational identities only; no semantic MonoItem claim is made."
+      ],
+      "conclusion": "No source conflict was found for this three-member positive group; it is a valid witness for one generic source method."
+    },
+    {
+      "case": "tokei-v1500",
+      "origin": "tokei::language::syntax::SyntaxCounter::parse_context::{{closure}}",
+      "members": ["FUN_0031a660", "FUN_0031a7e0"],
+      "verdict": "source-conflict-confirmed-cross-expression-with-site-uncertainty",
+      "confidence": {"cross_expression": "high", "exact_source_site_for_FUN_0031a660": "medium"},
+      "source": {
+        "file": "src/language/syntax.rs",
+        "sha256": "3bda9251c5b5ad7f36835e5fb5ca97340064963243763fe60f4db51917279e71",
+        "method_lines": "361-553",
+        "closure_expressions": [
+          {"site": "src/language/syntax.rs:476-479", "operation": "HTML script MIME capture: LanguageType::from_mime(String::from_utf8_lossy(...))"},
+          {"site": "src/language/syntax.rs:500-506", "operation": "HTML style capture: LanguageType::from_str(String::from_utf8_lossy(...).to_lowercase()).ok()"},
+          {"site": "src/language/syntax.rs:527-533", "operation": "HTML template capture: LanguageType::from_str(String::from_utf8_lossy(...).to_lowercase()).ok()"}
+        ]
+      },
+      "members_evidence": [
+        {"address_id": "FUN_0031a660", "binary_address": "0x21a660", "raw_symbol": "_ZN5tokei8language6syntax13SyntaxCounter13parse_context28_$u7b$$u7b$closure$u7d$$u7d$17h58da26e3110bd630E", "size": 372, "body_sha256": "d1e11b13424d4feb5f3d65d71343c2fcdb124c19464d808b30421d934179af13", "instruction_count": 98, "block_count": 24, "complete_decode": true, "opaque_indirect_jumps": 0, "semantic_path": "from_utf8_lossy -> to_lowercase -> LanguageType::from_str"},
+        {"address_id": "FUN_0031a7e0", "binary_address": "0x21a7e0", "raw_symbol": "_ZN5tokei8language6syntax13SyntaxCounter13parse_context28_$u7b$$u7b$closure$u7d$$u7d$17hfeb3fe6d1499779fE", "size": 270, "body_sha256": "19805804b349e4588c603bef01f9a4b018a7f6f481c779d0a87dde02f08a4a51", "instruction_count": 75, "block_count": 19, "complete_decode": true, "opaque_indirect_jumps": 0, "semantic_path": "from_utf8_lossy -> LanguageType::from_mime"}
+      ],
+      "parent_function": {"binary_address": "0x21acf0", "raw_symbol": "tokei::language::syntax::SyntaxCounter::perform_multi_line_analysis", "size": 8609, "body_sha256": "5cb78e8939c6ebb7e1a4eb3bf6ae11164d47e93390594383ba0fb33bfa874e1c", "complete_decode": true, "opaque_indirect_jumps": 1},
+      "call_evidence": {
+        "caller": "0x21acf0 (retained transfer symbol is perform_multi_line_analysis; source call chain invokes parse_context at syntax.rs:261)",
+        "direct_calls": [
+          {"callsite": "0x21bc16", "target": "0x21a660", "instruction": "call 0x21a660", "path": "from_str + lowercase (style/template expression)"},
+          {"callsite": "0x21bd1a", "target": "0x21a7e0", "instruction": "call 0x21a7e0", "path": "from_mime (script expression)"},
+          {"callsite": "0x21be22", "target": "0x21a660", "instruction": "call 0x21a660", "path": "from_str + lowercase (second style/template expression)"}
+        ],
+        "relocations": [
+          {"got": "0x48d590", "target": "0x427f80", "symbol": "alloc::string::String::from_utf8_lossy"},
+          {"got": "0x48d650", "target": "0x4270e0", "symbol": "alloc::str::<impl str>::to_lowercase"},
+          {"got": "0x48d7c8", "target": "0x20f020", "symbol": "<LanguageType as FromStr>::from_str"},
+          {"got": "0x48dbe8", "target": "0x20a790", "symbol": "LanguageType::from_mime"}
+        ]
+      },
+      "reasoning": [
+        "The two emitted bodies implement different source operations: from_mime for script and from_str after lowercase for style/template.",
+        "The from_str body at FUN_0031a660 is called from two retained callsites, matching the two source expressions at lines 500 and 527; its one raw identity does not prove those source closures are one semantic MonoItem.",
+        "Therefore the existing two-member positive is a confirmed cross-expression source-site conflict, while exact attribution of FUN_0031a660 to line 500 versus 527 is unresolved because one body is reused.",
+        "A source-aware sensitivity should split the script site from the shared style/template body, while retaining the latter's source-site ambiguity."
+      ],
+      "proposed_secondary_sensitivity": {
+        "status": "proposed-only-no-primary-change",
+        "groups": [
+          {"origin": "tokei::language::syntax::SyntaxCounter::parse_context::{{closure}}@src/language/syntax.rs:476", "members": ["FUN_0031a7e0"]},
+          {"origin": "tokei::language::syntax::SyntaxCounter::parse_context::{{closure}}@src/language/syntax.rs:500|527", "members": ["FUN_0031a660"], "site_note": "one emitted body is reused at both source callsites; exact per-line assignment is uncertain"}
+        ],
+        "old_pair_status": "positive under normalized origin; cross-expression source-site false positive under this bounded evidence",
+        "no_gt_linkage_written": true
+      },
+      "conclusion": "Flagged for source-site ambiguity sensitivity. The pair is wrong at the cross-expression level, but no primary GT/linkage correction was written because the shared FUN_0031a660 body cannot be assigned exclusively to one of the two from_str source sites."
+    }
+  ],
+  "limitations": [
+    "Debuginfo is absent; source-line attribution uses pinned source text, normalized/raw symbols, exact binary extents, retained direct callsites, and relocation targets.",
+    "Raw disambiguator hashes and code addresses are operational evidence and are not treated as semantic MonoItem or DefId proof.",
+    "Only the three requested groups were inspected. Other generated serde visitor and stat/serialize groups remain unaudited as requested.",
+    "No target execution, F4/build, primary-label edit, prediction edit, score rerun, or commit was performed."
+  ]
+}

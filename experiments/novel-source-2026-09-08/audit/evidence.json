@@ -1,0 +1,406 @@
+{
+  "schema_version": 1,
+  "audit": "fd-regex-automata-closure-site",
+  "case": "fd",
+  "build": "O3S",
+  "profile": "plain",
+  "offline": true,
+  "conclusion": {
+    "normalized_origin": "regex_automata::meta::regex::Builder::build_many_from_hir::{{closure}}",
+    "members": [
+      "FUN_00347e80",
+      "FUN_003804f0",
+      "FUN_003b0160"
+    ],
+    "normalized_origin_status": "symbol-label-consistent-but-source-ambiguous",
+    "source_site": "regex-automata/src/meta/regex.rs:3613 (move || strat.create_cache())",
+    "map_site_status": "not the target closure",
+    "source_site_exclusivity": "FUN_00347e80 and FUN_003804f0 are source-site consistent with line 3613; FUN_003b0160 is shared by the line-3613 Builder closure and the distinct Regex::clone closure at line 1916",
+    "source_origin_ambiguity": {
+      "address": "FUN_003b0160",
+      "elf_address": "0x2b0160",
+      "origins": [
+        "regex_automata::meta::regex::Builder::build_many_from_hir::{{closure}}",
+        "<regex_automata::meta::regex::Regex as core::clone::Clone>::clone::{{closure}}"
+      ],
+      "status": "confirmed-by-distinct-vtables",
+      "policy_effect": "If this origin set is supplied to label_pair, every pair involving FUN_003b0160 is ambiguous-neutral. Keep identities_by_address unchanged."
+    },
+    "correction": "frozen-labels-unchanged",
+    "correction_reason": "The retained Builder symbol membership is supported, but source-origin exclusivity is disproved for FUN_003b0160; use the authorized secondary ambiguity overlay without rewriting frozen GT/linkage.",
+    "secondary_overlay": {
+      "status": "written-authorized-secondary-sensitivity",
+      "path": "experiments/novel-source-2026-09-08/audit/fd.source-ambiguity.v2.linkage.json",
+      "sensitivity_path": "experiments/novel-source-2026-09-08/audit/sensitivity.json",
+      "operation": "add the Regex::clone closure origin to FUN_003b0160 origins_by_address; preserve the existing identity map and all frozen predictions/metrics",
+      "address_record": {
+        "member": "FUN_003b0160",
+        "origins": [
+          "regex_automata::meta::regex::Builder::build_many_from_hir::{{closure}}",
+          "<regex_automata::meta::regex::Regex as core::clone::Clone>::clone::{{closure}}"
+        ],
+        "classification": "ambiguous-source-address",
+        "source_lines": {
+          "regex_automata::meta::regex::Builder::build_many_from_hir::{{closure}}": 3613,
+          "<regex_automata::meta::regex::Regex as core::clone::Clone>::clone::{{closure}}": 1916
+        }
+      },
+      "label_pair_preview": {
+        "FUN_00347e80__FUN_003804f0": "positive",
+        "FUN_00347e80__FUN_003b0160": "ambiguous-neutral",
+        "FUN_003804f0__FUN_003b0160": "ambiguous-neutral"
+      }
+    },
+    "confidence": {
+      "normalized_origin": "high",
+      "line_3613_for_247e80": "high",
+      "line_3613_for_2804f0": "high",
+      "line_3613_for_2b0160_membership": "high",
+      "line_3613_for_2b0160_exclusivity": "none",
+      "clone_origin_for_2b0160": "high"
+    }
+  },
+  "inputs": {
+    "retained_non_stripped_elf": {
+      "path": "/mnt/c/Users/sumyr/playground/REV/CallKin/gt_bin/plain/fd.O3S.gt.bin",
+      "sha256": "61d845af2b2f394c7439603f198e8439efdfdfcb80b189a40c55b754e3ee8fa9"
+    },
+    "old_gt": {
+      "path": "experiments/followup-2026-09-08/audit-corrections/fd.gt.v1.json",
+      "sha256": "06deeee7f149e13e794cca8a35f8ff3cb332a7b864dfa1a1f551ff8342cda8ce",
+      "members_for_origin": [
+        "FUN_00347e80",
+        "FUN_003804f0",
+        "FUN_003b0160"
+      ],
+      "provenance": {
+        "build_id": "3b412a1cc5b44ddf8f0c7f73d7ef0893",
+        "source_sha256": "a01ffcf11c3e42ddcbade0a5453b25b676aa8b3cb410f044eae7a175a461c542",
+        "non_stripped_sha256": "61d845af2b2f394c7439603f198e8439efdfdfcb80b189a40c55b754e3ee8fa9",
+        "stripped_sha256": "0800f1254855a2254f9663fdff458cb0adf90019186a5e6bf85e922cd6d93076"
+      }
+    },
+    "old_linkage": {
+      "path": "experiments/followup-2026-09-08/audit-corrections/fd.linkage.v1.json",
+      "sha256": "18d43ea7380e641d5bcd7e15084203efc90f4461d04c9ff97589562241f7fe01",
+      "identities": {
+        "FUN_00347e80": "_ZN14regex_automata4meta5regex7Builder19build_many_from_hir28_$u7b$$u7b$closure$u7d$$u7d$17h30668a79ca13df47E",
+        "FUN_003804f0": "_ZN14regex_automata4meta5regex7Builder19build_many_from_hir28_$u7b$$u7b$closure$u7d$$u7d$17h06f6b6fd0870e0b2E",
+        "FUN_003b0160": "_ZN14regex_automata4meta5regex7Builder19build_many_from_hir28_$u7b$$u7b$closure$u7d$$u7d$17h3ef7a909220f4fa1E"
+      }
+    },
+    "input_manifest": {
+      "path": "experiments/followup-2026-09-08/inputs.json",
+      "sha256": "4dca828168b64167ab7aa3b594b132821fc4171ccf3d034d9fd64db52dbf78b3",
+      "body_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/v0-engine-py-f1/body_evidence/rust-nonstd/plain/fd.O3S.body.json",
+      "body_sha256": "ebed20a449a0d758a3e134b985ffb8764455d75d56682415fe5b393d57ec0743",
+      "body_provenance_stripped_sha256": "0800f1254855a2254f9663fdff458cb0adf90019186a5e6bf85e922cd6d93076"
+    },
+    "reference_checker": {
+      "path": "experiments/followup-2026-09-08/verify_closure_sites.py",
+      "sha256": "c9fa09e40df0c1618aaaff1d1267882d91f57148f2a87c7e0a33c91aa844dec0"
+    }
+  },
+  "pinned_source": {
+    "crate": "regex-automata",
+    "version": "0.4.14",
+    "cargo_lock_path": "/mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/v0-engine-py-f1/subjects/fd/Cargo.lock",
+    "cargo_lock_sha256": "ad1600fe99a6978ebd58ea8ac643896e6a8f1143da30e9aa4dff2e0753606736",
+    "cargo_package_checksum": "6e1dd4122fc1595e8162618945476892eefca7b88c52820e74af6262213cae8f",
+    "crate_archive_path": "/home/xdfyrj/.cargo/registry/cache/index.crates.io-1949cf8c6b5b557f/regex-automata-0.4.14.crate",
+    "crate_archive_sha256": "6e1dd4122fc1595e8162618945476892eefca7b88c52820e74af6262213cae8f",
+    "source_root": "/home/xdfyrj/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/regex-automata-0.4.14",
+    "source_vcs_sha1": "5e195de266e203441b2c8001d6ebefab1161a59e",
+    "source_file": "/home/xdfyrj/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/regex-automata-0.4.14/src/meta/regex.rs",
+    "source_file_sha256": "92295ff6a6b1e0e6d19fc1fe29679fa5681973160ee61e043d29bf29f44a65b5",
+    "source_file_bytes": 143910,
+    "source_range_3600_3617": {
+      "sha256": "f4a8475ea3bd1b76f7a9c324f015b144ce0e6a53d5ad28da9d224fa78d861a70",
+      "bytes": 771,
+      "lines": {
+        "3607": "let hirs: Vec<&Hir> = hirs.iter().map(|hir| hir.borrow()).collect();",
+        "3613": "let create: CachePoolFn = Box::new(move || strat.create_cache());"
+      }
+    },
+    "clone_site_1911_1918_sha256": "fec0ce05312ffbe2aa98a83e0901dd3c9e92bc89df857888ef5fa3df8d92f3d0"
+  },
+  "target_function_body": {
+    "size": 38,
+    "raw_bytes_hex": "534889fb488b06488b4e08488b511048ffca4883e2f0488d34104883c610ff51284889d85bc3",
+    "byte_sha256": "d43c9ffd1ef3d57cbcb4cbb376b63e52c593b118a35c1ba2d1be9aeb539a8c6d",
+    "disassembly": [
+      "+0x00 push rbx",
+      "+0x01 mov rbx, rdi",
+      "+0x04 mov rax, qword ptr [rsi]",
+      "+0x07 mov rcx, qword ptr [rsi + 8]",
+      "+0x0b mov rdx, qword ptr [rcx + 0x10]",
+      "+0x0f dec rdx",
+      "+0x12 and rdx, 0xfffffffffffffff0",
+      "+0x16 lea rsi, [rax + rdx]",
+      "+0x1a add rsi, 0x10",
+      "+0x1e call qword ptr [rcx + 0x28]",
+      "+0x21 mov rax, rbx",
+      "+0x24 pop rbx",
+      "+0x25 ret"
+    ],
+    "semantic_match": "The 16-byte closure environment is an Arc trait object; the body adjusts to the Arc allocation's object and calls the Strategy vtable at +0x28, matching strat.create_cache()."
+  },
+  "members": [
+    {
+      "member": "FUN_00347e80",
+      "elf_address": "0x247e80",
+      "elf_section": ".text",
+      "function_extent": {
+        "start": "0x247e80",
+        "end_exclusive": "0x247ea6",
+        "size": 38
+      },
+      "raw_symbol": "_ZN14regex_automata4meta5regex7Builder19build_many_from_hir28_$u7b$$u7b$closure$u7d$$u7d$17h30668a79ca13df47E",
+      "symbol_binding": "LOCAL",
+      "compile_unit": "globset.3e56a065902cbf-cgu.04",
+      "body_sha256": "d43c9ffd1ef3d57cbcb4cbb376b63e52c593b118a35c1ba2d1be9aeb539a8c6d",
+      "raw_bytes_hex": "534889fb488b06488b4e08488b511048ffca4883e2f0488d34104883c610ff51284889d85bc3",
+      "caller": {
+        "symbol": "_ZN14regex_automata4meta5regex7Builder10build_many17h0731a37f45d9f629E",
+        "elf_address": "0x246dd0",
+        "size": 4267,
+        "callsite_vtable": {
+          "instruction_address": "0x247908",
+          "instruction_bytes_hex": "488d1579b41e00",
+          "operation": "lea rdx, [rip + 0x1eb479]",
+          "computed_vtable_start": "0x432d88"
+        },
+        "pool_new_call": {
+          "instruction_address": "0x24791a",
+          "instruction_bytes_hex": "e851590000",
+          "operation": "call 0x24d270",
+          "callee_symbol": "_ZN14regex_automata4util4pool5inner17Pool$LT$T$C$F$GT$3new17h489f7e4e7ff3849bE"
+        }
+      },
+      "closure_vtable": {
+        "start": "0x432d88",
+        "drop_slot": {
+          "address": "0x432d88",
+          "relocation_target": "0x248250",
+          "symbol": "_ZN4core3ptr137drop_in_place$LT$regex_automata..meta..regex..Builder..build_many_from_hir$LT$regex_syntax..hir..Hir$GT$..$u7b$$u7b$closure$u7d$$u7d$$GT$17hd799e1b528667ccaE"
+        },
+        "size": 16,
+        "align": 8,
+        "fnonce_slot": {
+          "address": "0x432da0",
+          "relocation_target": "0x247eb0",
+          "symbol": "_ZN4core3ops8function6FnOnce40call_once$u7b$$u7b$vtable.shim$u7d$$u7d$17h5c60042f04874211E"
+        },
+        "fnmut_slot": {
+          "address": "0x432da8",
+          "relocation_target": "0x247e80"
+        },
+        "fn_slot": {
+          "address": "0x432db0",
+          "relocation_target": "0x247e80"
+        }
+      },
+      "site_mapping": {
+        "source_line": 3613,
+        "classification": "source-consistent",
+        "confidence": "high",
+        "reasoning": [
+          "Raw symbol has the exact build_many_from_hir closure path.",
+          "Drop glue names build_many_from_hir<Hir>, identifying the generic instantiation.",
+          "The closure body captures a 16-byte Arc trait object and calls a Strategy vtable, matching the move closure.",
+          "The map closure at line 3607 has no retained body/symbol and cannot explain this captured environment."
+        ]
+      }
+    },
+    {
+      "member": "FUN_003804f0",
+      "elf_address": "0x2804f0",
+      "elf_section": ".text",
+      "function_extent": {
+        "start": "0x2804f0",
+        "end_exclusive": "0x280516",
+        "size": 38
+      },
+      "raw_symbol": "_ZN14regex_automata4meta5regex7Builder19build_many_from_hir28_$u7b$$u7b$closure$u7d$$u7d$17h06f6b6fd0870e0b2E",
+      "symbol_binding": "LOCAL",
+      "compile_unit": "regex.4a346bf9ae010203-cgu.00",
+      "body_sha256": "d43c9ffd1ef3d57cbcb4cbb376b63e52c593b118a35c1ba2d1be9aeb539a8c6d",
+      "raw_bytes_hex": "534889fb488b06488b4e08488b511048ffca4883e2f0488d34104883c610ff51284889d85bc3",
+      "caller": {
+        "symbol": "_ZN14regex_automata4meta5regex7Builder10build_many17h10916b743ebf9088E",
+        "elf_address": "0x27f440",
+        "size": 4267,
+        "callsite_vtable": {
+          "instruction_address": "0x27ff78",
+          "instruction_bytes_hex": "488d1509771b00",
+          "operation": "lea rdx, [rip + 0x1b7709]",
+          "computed_vtable_start": "0x437688"
+        },
+        "pool_new_call": {
+          "instruction_address": "0x27ff8a",
+          "instruction_bytes_hex": "e8d1510000",
+          "operation": "call 0x285160",
+          "callee_symbol": "_ZN14regex_automata4util4pool5inner17Pool$LT$T$C$F$GT$3new17h577895bbde3886baE"
+        }
+      },
+      "closure_vtable": {
+        "start": "0x437688",
+        "drop_slot": {
+          "address": "0x437688",
+          "relocation_target": "0x2808c0",
+          "symbol": "_ZN4core3ptr137drop_in_place$LT$regex_automata..meta..regex..Builder..build_many_from_hir$LT$regex_syntax..hir..Hir$GT$..$u7b$$u7b$closure$u7d$$u7d$$GT$17hbf37f7cd2c90f796E"
+        },
+        "size": 16,
+        "align": 8,
+        "fnonce_slot": {
+          "address": "0x4376a0",
+          "relocation_target": "0x280520",
+          "symbol": "_ZN4core3ops8function6FnOnce40call_once$u7b$$u7b$vtable.shim$u7d$$u7d$17hebc1f4b5a205ab6fE"
+        },
+        "fnmut_slot": {
+          "address": "0x4376a8",
+          "relocation_target": "0x2804f0"
+        },
+        "fn_slot": {
+          "address": "0x4376b0",
+          "relocation_target": "0x2804f0"
+        }
+      },
+      "site_mapping": {
+        "source_line": 3613,
+        "classification": "source-consistent",
+        "confidence": "high",
+        "reasoning": [
+          "Raw symbol has the exact build_many_from_hir closure path.",
+          "Drop glue names build_many_from_hir<Hir>, identifying the generic instantiation.",
+          "The body is byte-identical to FUN_00347e80 and has the same captured-Arc/Strategy-vtable behavior.",
+          "The compilation unit is a separate regex downstream instantiation, explaining the distinct hash."
+        ]
+      }
+    },
+    {
+      "member": "FUN_003b0160",
+      "elf_address": "0x2b0160",
+      "elf_section": ".text",
+      "function_extent": {
+        "start": "0x2b0160",
+        "end_exclusive": "0x2b0186",
+        "size": 38
+      },
+      "raw_symbol": "_ZN14regex_automata4meta5regex7Builder19build_many_from_hir28_$u7b$$u7b$closure$u7d$$u7d$17h3ef7a909220f4fa1E",
+      "symbol_binding": "LOCAL",
+      "compile_unit": "regex_automata.91bedd4372f092d2-cgu.07",
+      "body_sha256": "d43c9ffd1ef3d57cbcb4cbb376b63e52c593b118a35c1ba2d1be9aeb539a8c6d",
+      "raw_bytes_hex": "534889fb488b06488b4e08488b511048ffca4883e2f0488d34104883c610ff51284889d85bc3",
+      "caller": {
+        "symbol": "_ZN14regex_automata4meta5regex7Builder5build17h915257ab9874a346E",
+        "elf_address": "0x2b0190",
+        "size": 4057,
+        "callsite_vtable": {
+          "instruction_address": "0x2b0c08",
+          "instruction_bytes_hex": "488d15e9901800",
+          "operation": "lea rdx, [rip + 0x1890e9]",
+          "computed_vtable_start": "0x439cf8"
+        },
+        "pool_new_call": {
+          "instruction_address": "0x2b0c1a",
+          "instruction_bytes_hex": "e8a10b0000",
+          "operation": "call 0x2b17c0",
+          "callee_symbol": "_ZN14regex_automata4util4pool5inner17Pool$LT$T$C$F$GT$3new17h2f1b068b7aa02d47E"
+        }
+      },
+      "closure_vtable": {
+        "start": "0x439cf8",
+        "distinct_from_clone_vtable_start": "0x439f68",
+        "drop_slot": {
+          "address": "0x439cf8",
+          "relocation_target": "0x2b30f0",
+          "symbol": "_ZN4core3ptr129drop_in_place$LT$$LT$regex_automata..meta..regex..Regex$u20$as$u20$core..clone..Clone$GT$..clone..$u7b$$u7b$closure$u7d$$u7d$$GT$17h0ab263f177ac274dE"
+        },
+        "size": 16,
+        "align": 8,
+        "fnonce_slot": {
+          "address": "0x439d10",
+          "relocation_target": "0x2b2cc0",
+          "symbol": "_ZN4core3ops8function6FnOnce40call_once$u7b$$u7b$vtable.shim$u7d$$u7d$17h30775d76e4584686E"
+        },
+        "fnmut_slot": {
+          "address": "0x439d18",
+          "relocation_target": "0x2b0160"
+        },
+        "fn_slot": {
+          "address": "0x439d20",
+          "relocation_target": "0x2b0160"
+        }
+      },
+      "site_mapping": {
+        "source_line": 3613,
+        "classification": "source-origin-ambiguous",
+        "confidence": "high-for-membership-medium-for-exclusivity",
+        "reasoning": [
+          "Raw symbol has the exact build_many_from_hir closure path.",
+          "Builder::build constructs the vtable that points to this body.",
+          "The body is byte-identical to the other two target members and has the same captured-Arc/Strategy-vtable behavior.",
+          "Regex::clone constructs a distinct vtable at 0x439f68 from callsite 0x2b522f, and its Fn/FnMut slots also relocate to 0x2b0160.",
+          "The build vtable's drop pointer and the clone vtable use clone-named merged glue, so this address is not source-site-exclusive."
+        ]
+      }
+    }
+  ],
+  "shared_body_evidence": {
+    "clone_source_site": {
+      "source_file": "/home/xdfyrj/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/regex-automata-0.4.14/src/meta/regex.rs",
+      "line": 1916,
+      "text": "let create: CachePoolFn = Box::new(move || strat.create_cache());",
+      "normalized_origin": "<regex_automata::meta::regex::Regex as core::clone::Clone>::clone::{{closure}}",
+      "source_range_1911_1918_sha256": "fec0ce05312ffbe2aa98a83e0901dd3c9e92bc89df857888ef5fa3df8d92f3d0"
+    },
+    "clone_function": {
+      "symbol": "_ZN73_$LT$regex_automata..meta..regex..Regex$u20$as$u20$core..clone..Clone$GT$5clone17h6b730ec5abd6a1baE",
+      "elf_address": "0x2b51d0",
+      "size": 304,
+      "vtable_callsite": {
+        "instruction_address": "0x2b522f",
+        "instruction_bytes_hex": "488d15324d1800",
+        "operation": "lea rdx, [rip + 0x184d32]",
+        "computed_vtable_start": "0x439f68"
+      },
+      "pool_new_call": {
+        "instruction_address": "0x2b523e",
+        "instruction_bytes_hex": "e87dc5ffff",
+        "operation": "call 0x2b17c0"
+      }
+    },
+    "clone_vtable": {
+      "start": "0x439f68",
+      "distinct_from_builder_vtable_start": "0x439cf8",
+      "drop_slot": {
+        "address": "0x439f68",
+        "relocation_target": "0x2b30f0",
+        "symbol": "_ZN4core3ptr129drop_in_place$LT$$LT$regex_automata..meta..regex..Regex$u20$as$u20$core..clone..Clone$GT$..clone..$u7b$$u7b$closure$u7d$$u7d$$GT$17h0ab263f177ac274dE"
+      },
+      "size": 16,
+      "align": 8,
+      "fnonce_slot": {
+        "address": "0x439f80",
+        "relocation_target": "0x2b2cc0"
+      },
+      "fnmut_slot": {
+        "address": "0x439f88",
+        "relocation_target": "0x2b0160"
+      },
+      "fn_slot": {
+        "address": "0x439f90",
+        "relocation_target": "0x2b0160"
+      }
+    },
+    "interpretation": "The owning regex_automata codegen unit retained one identical closure body symbol under the build_many_from_hir path, while a distinct Regex::clone source closure has its own vtable and reuses that body. The two source definitions therefore map to one code address. The normalized Builder symbol label remains a valid membership label, but FUN_003b0160 must be treated as source-origin ambiguous for label_pair sensitivity."
+  },
+  "limitations": [
+    "The retained build uses debuginfo=0; addr2line identifies compile units but not source line numbers. Line 3613 attribution is therefore based on the pinned source text, exact raw symbol path, closure ABI/body semantics, and vtable wiring.",
+    "The map(|hir| hir.borrow()) expression is a second source closure site in the same method, so source text alone would be insufficient. Its no-capture role and absence of a matching retained symbol/body, versus the target's captured Arc trait-object call, resolve that ambiguity for FUN_00347e80 and FUN_003804f0.",
+    "FUN_003b0160 is reused by the distinct Regex::clone vtable at 0x439f68; a single-origin label for that address would overclaim what the binary proves.",
+    "Different disambiguator hashes and compilation units for FUN_00347e80/FUN_003804f0/FUN_003b0160 identify emitted symbol/codegen copies, but do not by themselves prove distinct source definitions or distinct semantic monomorphizations.",
+    "No target execution, rebuild, vulnerability analysis, GT rewrite, linkage rewrite, primary-label change, or metrics/prediction mutation was performed. The authorized secondary overlay and post-hoc sensitivity artifact were written."
+  ]
+}

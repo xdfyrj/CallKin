@@ -1,0 +1,6 @@
+start_utc=2026-09-08T14:34:38Z
+end_utc=2026-09-08T14:35:17Z
+elapsed_wall_seconds=39
+exit_status=0
+study_commit=aa119815c94c3d307d57cb6f4d339617971ff6a6
+callkin_real_head=68ffa8dc1285546a1db52096a905a36fec094bd6

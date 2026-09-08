@@ -66,7 +66,44 @@ def test_join_rejects_universe_mismatch():
         raise AssertionError("universe mismatch was accepted")
 
 
+def test_prediction_universe_rejects_duplicate_ids():
+    try:
+        score._target_ids({"universe": {"target_ids": ["a", "a"]}})
+    except ValueError as exc:
+        assert "invalid" in str(exc)
+    else:
+        raise AssertionError("duplicate target IDs were accepted")
+
+
+def test_core_f6_shape_omits_arm_but_binds_candidate():
+    config = {
+        "build": {"build": "O3S", "profile": "plain"},
+        "cases": ["case"],
+        "candidate_scope": "rust-nonstd",
+        "sources": [{"id": "case", "namespaces": ["pkg"]}],
+    }
+    prediction = {
+        "artifact": "v1-family-grouping",
+        "case": "case",
+        "build": "O3S",
+        "profile": "plain",
+        "scope": "rust-nonstd",
+        "provenance": {"body_evidence_sha256": "body", "candidate_artifact_sha256": "candidate"},
+        "universe": {"target_ids": ["a"]},
+        "clusters": [],
+    }
+    assert "arm" not in prediction
+    assert score._validate_prediction(prediction, config, "case", "B2-token-cfg", "body", "candidate") == ("a",)
+    prediction["provenance"]["candidate_artifact_sha256"] = "wrong"
+    try:
+        score._validate_prediction(prediction, config, "case", "B2-token-cfg", "body", "candidate")
+    except ValueError as exc:
+        assert "candidate provenance" in str(exc)
+    else:
+        raise AssertionError("wrong candidate provenance was accepted")
+
+
 if __name__ == "__main__":
-    for name in ("test_linkage_neutral_counts_and_confusion", "test_clip_records_cross_boundary_and_zero_positive", "test_join_rejects_universe_mismatch"):
+    for name in ("test_linkage_neutral_counts_and_confusion", "test_clip_records_cross_boundary_and_zero_positive", "test_join_rejects_universe_mismatch", "test_prediction_universe_rejects_duplicate_ids", "test_core_f6_shape_omits_arm_but_binds_candidate"):
         globals()[name]()
     print("PASS: novel scorer checks")

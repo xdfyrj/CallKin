@@ -1,0 +1,145 @@
+{
+  "artifact": "callkin-real-postrun-supplementary",
+  "boundary_agreement": {
+    "gt_target_count": 568,
+    "gt_target_discovery_intersection_count": 567,
+    "gt_target_discovery_miss_count": 1,
+    "gt_target_exact_size_count": 238,
+    "gt_target_exact_size_examples": [
+      "0x56e20",
+      "0x5ba00",
+      "0x5ba10",
+      "0x5cd30",
+      "0x5d320",
+      "0x5d7d0",
+      "0x67660",
+      "0x67700",
+      "0x677a0",
+      "0x67840"
+    ],
+    "gt_target_size_mismatch_count": 329,
+    "provided_boundary_count": 2018,
+    "provided_boundary_exact_size_count": 1105,
+    "provided_boundary_found_count": 2015,
+    "provided_boundary_missing_count": 3,
+    "provided_boundary_size_mismatch_count": 910,
+    "provided_boundary_size_mismatch_examples": [
+      "0x4d340",
+      "0x4d5d0",
+      "0x4d7a0",
+      "0x4d850",
+      "0x4d900",
+      "0x4db10",
+      "0x4e0d0",
+      "0x4e1f0",
+      "0x4e7b0",
+      "0x4e860"
+    ],
+    "real_discovery_count": 7056,
+    "rule": "provided boundaries are posthoc diagnostics only; no boundary was passed to Real discovery/inference"
+  },
+  "methods": {
+    "v0_relation_only": {
+      "f1": 0.2821,
+      "false_negative": 562,
+      "false_positive": 278,
+      "full_gt_denominator": 568,
+      "missing_gt_as_unresolved": true,
+      "neutral_pair_counts": {
+        "ambiguous-neutral": 567,
+        "duplicate-neutral": 24,
+        "unresolved-neutral": 0
+      },
+      "neutral_pair_total": 591,
+      "outside_gt_members_ignored_not_fp": true,
+      "posthoc_only": true,
+      "precision": 0.3725,
+      "recall": 0.227,
+      "scored_member_count": 568,
+      "true_negative": 159432,
+      "true_positive": 165
+    },
+    "v1_relaxed_provisional": {
+      "f1": 0.0189,
+      "false_negative": 720,
+      "false_positive": 7,
+      "full_gt_denominator": 568,
+      "missing_gt_as_unresolved": true,
+      "neutral_pair_counts": {
+        "ambiguous-neutral": 567,
+        "duplicate-neutral": 24,
+        "unresolved-neutral": 0
+      },
+      "neutral_pair_total": 591,
+      "outside_gt_members_ignored_not_fp": true,
+      "posthoc_only": true,
+      "precision": 0.5,
+      "recall": 0.0096,
+      "scored_member_count": 568,
+      "true_negative": 159703,
+      "true_positive": 7
+    },
+    "v1_strict": {
+      "f1": 0.0189,
+      "false_negative": 720,
+      "false_positive": 7,
+      "full_gt_denominator": 568,
+      "missing_gt_as_unresolved": true,
+      "neutral_pair_counts": {
+        "ambiguous-neutral": 567,
+        "duplicate-neutral": 24,
+        "unresolved-neutral": 0
+      },
+      "neutral_pair_total": 591,
+      "outside_gt_members_ignored_not_fp": true,
+      "posthoc_only": true,
+      "precision": 0.5,
+      "recall": 0.0096,
+      "scored_member_count": 568,
+      "true_negative": 159703,
+      "true_positive": 7
+    },
+    "v1_strict_rescue": {
+      "f1": 0.0189,
+      "false_negative": 720,
+      "false_positive": 7,
+      "full_gt_denominator": 568,
+      "missing_gt_as_unresolved": true,
+      "neutral_pair_counts": {
+        "ambiguous-neutral": 567,
+        "duplicate-neutral": 24,
+        "unresolved-neutral": 0
+      },
+      "neutral_pair_total": 591,
+      "outside_gt_members_ignored_not_fp": true,
+      "posthoc_only": true,
+      "precision": 0.5,
+      "recall": 0.0096,
+      "scored_member_count": 568,
+      "true_negative": 159703,
+      "true_positive": 7
+    }
+  },
+  "provenance": {
+    "boundary_sha256": "ffd87b363f7684157f88f49bc903b10ecfeababe10bc19bf7fc667e87fcae33f",
+    "ground_truth_sha256": "ad1edcc7bb20afe3175bf8e8f6c70120e2edc2f834e6ffa27a283e88d100c4b0",
+    "linkage_sha256": "ef5ca656b05660bdd77a1fd1ff6e59e9a9a78af08fcea05dadf5e1fda6976fa4",
+    "run_manifest_sha256": "e8eb9eb6476ddd74e8aefa9bfde0b6f4532d4cb82977ec56a8154018799d2c19",
+    "validation_artifact": "real-run-validation.json"
+  },
+  "schema_version": 1,
+  "scope": {
+    "gt_linkage_neutral_pair_counts": {
+      "ambiguous-neutral": 567,
+      "duplicate-neutral": 24,
+      "unresolved-neutral": 0
+    },
+    "gt_linkage_neutral_pair_total": 591,
+    "gt_member_count": 568,
+    "missing_gt_as_unresolved": true,
+    "never_analysis_input": true,
+    "outside_gt_members_ignored_not_fp": true,
+    "posthoc_only": true
+  },
+  "status": "posthoc-diagnostic"
+}

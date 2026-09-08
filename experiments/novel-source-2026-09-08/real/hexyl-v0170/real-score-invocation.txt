@@ -1,0 +1,28 @@
+CallKin-Real standard scoring of the completed stripped-only run
+status: authorized post-run scoring
+study_commit: aa119815c94c3d307d57cb6f4d339617971ff6a6
+callkin_real_head: 68ffa8dc1285546a1db52096a905a36fec094bd6
+interpreter: /mnt/c/Users/sumyr/playground/REV/CallKin/workspace/novel-source-real-venv/bin/python
+run_manifest: /mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/novel-source-2026-09-08/real/hexyl-v0170/run.json
+ground_truth: /mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/novel-source-2026-09-08/observations/hexyl-v0170/hexyl-v0170.O3S.gt.json
+linkage_audit: /mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/novel-source-2026-09-08/observations/hexyl-v0170/hexyl-v0170.O3S.linkage.json
+output: /mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/novel-source-2026-09-08/real/hexyl-v0170/evaluation.json
+resource_envelope: prlimit --as=12884901888; timeout 3600s; kill-after 120s
+wrapper: real-score.sh
+
+Exact command executed by `real-score.sh`:
+
+```bash
+env -u CALLKIN_REAL_TEST_BINARY -u CALLKIN_OXIDIZER_DIR \
+  -u CALLKIN_V1_INPUT_ROOT -u CALLKIN_FROZEN_INPUT_ROOT \
+  -u CALLKIN_V0_INPUT_ROOT -u PYTHONPATH PYTHONNOUSERSITE=1 \
+  /usr/bin/time -v -o /mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/novel-source-2026-09-08/real/hexyl-v0170/real-score.resource.txt \
+  /usr/bin/prlimit --as=12884901888 -- \
+  /usr/bin/timeout --signal=TERM --kill-after=120s 3600s \
+  /mnt/c/Users/sumyr/playground/REV/CallKin/workspace/novel-source-real-venv/bin/python \
+  -u evaluate.py \
+  --run-manifest /mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/novel-source-2026-09-08/real/hexyl-v0170/run.json \
+  --ground-truth /mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/novel-source-2026-09-08/observations/hexyl-v0170/hexyl-v0170.O3S.gt.json \
+  --linkage-audit /mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/novel-source-2026-09-08/observations/hexyl-v0170/hexyl-v0170.O3S.linkage.json \
+  --output /mnt/c/Users/sumyr/playground/REV/CallKin/worktrees/followup-2026-09-08/experiments/novel-source-2026-09-08/real/hexyl-v0170/evaluation.json
+```
