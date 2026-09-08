@@ -1,0 +1,21 @@
+# Additional novel-source build record
+
+Build date: 2026-09-08. This record covers the two authorized builds completed after the already-present hexyl record in `BUILD-STATUS.md`. Both used the existing `compile.py`, Cargo `--locked`, `CARGO_BUILD_JOBS=2`, `rustc`/Cargo `1.93.1`, LLVM `21.1.8`, Linux target `x86_64-unknown-linux-gnu`, profile `plain`, build `O3S`, and the CallKin O3S profile override (opt-level 3, debuginfo 0, debug assertions off, overflow checks off, codegen-units 16, LTO false, panic unwind, `strip = "none"` before `strip --strip-all`). Source trees were clean before and after each build.
+
+## Hyperfine v1.20.0
+
+- Source `/mnt/c/Users/sumyr/playground/REV/CallKin/workspace/relation-control-2026-09-08/sources/hyperfine`, tag/commit `v1.20.0` / `975fe108c4ee7bd2600d10758207b44ca3dae738`; `Cargo.toml` SHA-256 `f8cb3b04244c3832bff112d3bb0b6a1b2845b641dafa35e9c85c2518af1c2f78`, `Cargo.lock` `f3b341ae4c03197e61ee9e9b157c3a8669ea0cce23da68ded1e085fcbca8b9ba`, CallKin Cargo-input `2fa13b0357e24bf845533b481a7143e139bd4f358f1fe59f4642a522508d0592`.
+- Command: `CARGO_BUILD_JOBS=2 timeout 1800s python3 compile.py /mnt/c/Users/sumyr/playground/REV/CallKin/workspace/relation-control-2026-09-08/sources/hyperfine subject --case hyperfine-v1200 --build O3S --profile plain --gt-binary experiments/novel-source-2026-09-08/build/hyperfine-v1200/hyperfine-v1200.O3S.gt.bin --fixture-binary experiments/novel-source-2026-09-08/build/hyperfine-v1200/hyperfine-v1200.O3S.fixture.bin --manifest experiments/novel-source-2026-09-08/build/hyperfine-v1200/hyperfine-v1200.O3S.build.json`; exit `0`.
+- Manifest build ID `782c927b28c84ec19b32bad30b21aa19`; compile log SHA-256 `270b25ac9d7cb095b3fcb0f0c3935f2939a206c1fbfd4235be59dfa5b1e9304d`.
+- Artifacts: GT `5,429,088` bytes, SHA-256 `e48f054453eb8335663518b54806cc9cca0e08f7a866a120f3a1eccee463067b`; stripped fixture `1,520,240` bytes, SHA-256 `afb8dcfdf50ff95071c9b0b7a169b48e7b37d305de6b073749e8b6a558da9291`; build manifest SHA-256 `2ed91db9e5bf36f350bd1f48d861dc947c2d2c0ce61883f8498b0b238ffc870e`.
+- `load_and_verify_manifest` passed. `pyelftools` found exact `SHF_EXECINSTR` name/address/raw-byte matches for `.text` @ `0x5e1d0` (1,092,944 bytes), `.init` @ `0x168f20` (27), `.fini` @ `0x168f3c` (13), and `.plt` @ `0x168f50` (64), totaling `1,093,048` bytes.
+
+## Tokei v15.0.0
+
+- Source `/mnt/c/Users/sumyr/playground/REV/CallKin/workspace/relation-control-2026-09-08/sources/tokei`, tag/commit `v15.0.0` / `c14f744716272fadeb27a74443cdffa0af35f82f`; `Cargo.toml` SHA-256 `696414e46ee5d591d361e9162b7b7b5890a2955778bb1b427c322cf926dfd234`, `Cargo.lock` `99552aa36b2763e9662aa36a783e6a010f90dae794f796659eeb721d2cb99000`, CallKin Cargo-input `8aa20aefef3b9ee563a3002fdb443f10cd43daed5bec9066909d0642e6f79141`.
+- Command: `CARGO_BUILD_JOBS=2 timeout 1800s python3 compile.py /mnt/c/Users/sumyr/playground/REV/CallKin/workspace/relation-control-2026-09-08/sources/tokei subject --case tokei-v1500 --build O3S --profile plain --gt-binary experiments/novel-source-2026-09-08/build/tokei-v1500/tokei-v1500.O3S.gt.bin --fixture-binary experiments/novel-source-2026-09-08/build/tokei-v1500/tokei-v1500.O3S.fixture.bin --manifest experiments/novel-source-2026-09-08/build/tokei-v1500/tokei-v1500.O3S.build.json`; exit `0`.
+- Manifest build ID `d59509be33a840a68d8fd7fae4582c0c`; compile log SHA-256 `da363f8452bc44326053fe8ca5d4741ce9ab3487327a7b641af25cdc4921a948`.
+- Artifacts: GT `9,679,496` bytes, SHA-256 `9b3c9bdaa272ed88b2035f3cc3f26bef6267b41b3c542cd9a4d98fb889cbe67e`; stripped fixture `4,779,640` bytes, SHA-256 `b8b946729494dce45751955bf655f842ff6c2a68950679d972ceab53b5e66f5f`; build manifest SHA-256 `ef66444eb797a4a09a3bbd5e3b195f4fa77eb0731abd27af93c4b8986c3f07c6`.
+- `load_and_verify_manifest` passed. `pyelftools` found exact `SHF_EXECINSTR` name/address/raw-byte matches for `.text` @ `0x1880d0` (2,812,422 bytes), `.init` @ `0x436ad8` (27), `.fini` @ `0x436af4` (13), and `.plt` @ `0x436b10` (48), totaling `2,812,510` bytes.
+
+No produced binary was executed and no run, extraction, symbol inspection, GT, metrics, or observation output was created. All generated files remain under the ignored `build/<case>/` directories; the per-case status records are alongside each build.

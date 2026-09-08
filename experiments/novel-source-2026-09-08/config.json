@@ -1,0 +1,405 @@
+{
+  "study": "callkin-novel-source-2026-09-08",
+  "status": "FROZEN-DESIGN",
+  "date": "2026-09-08",
+  "main_input_root": "/mnt/c/Users/sumyr/playground/REV/CallKin",
+  "protocol": "protocol.md",
+  "protocol_sha256": "68e1ec8b8bb56795934425cd2244dddf0a2a030b569fc9ad1bd9c940025750fd",
+  "hash_manifest": "hash-manifest.json",
+  "track": "angr",
+  "anchor_policy": "role",
+  "candidate_scope": "rust-nonstd",
+  "mode": "out-in",
+  "reference": {
+    "core_base_commit": "28f84a1b355e40688c7f4c34b2a59f37fc7b60b6",
+    "relation_control_core_base_commit": "7277f7e7d1d2fa5ee781b0f0c0d6626618f3a1bf",
+    "relation_control": {
+      "protocol_sha256": "40b976a652a639c28bdd1705ebbe4230ad2877d7fcaaef159b6e4a09190fb53e",
+      "config_sha256": "4de776f611c807b0021e356b668d4e1bcd1f19d01504f6fe7b5d1562a29f0cb1"
+    },
+    "followup": {
+      "protocol_sha256": "093cd266119162ced2dd54cc374208a5d8080275c72e5465f5de676d8c58092e",
+      "config_sha256": "01c6148c0c8dbb8955300d5579bbd3b62a081f13c0958af0f5dd3cb63786d70f"
+    }
+  },
+  "cases": ["hexyl-v0170", "hyperfine-v1200", "tokei-v1500"],
+  "sources": [
+    {
+      "id": "hexyl-v0170",
+      "order": 1,
+      "repository": "sharkdp/hexyl",
+      "tag": "v0.17.0",
+      "commit": "8eb6d4771ce1ec7af65d06bd335457783b77d557",
+      "source": "workspace/relation-control-2026-09-08/sources/hexyl",
+      "package": "hexyl",
+      "binary": "hexyl",
+      "namespaces": ["hexyl"],
+      "cargo_toml_sha256": "da6100d14c9d19c5c9659ac7d050149156c063cedc83b50c2f11e74dccdb6ddb",
+      "cargo_lock_sha256": "8ea5d9783696026e5ca55d669dd91b38d8613e9fe4f5a5ad701281142adf291d",
+      "cargo_inputs_sha256": "0e0785df51a78ca453206c35f17778187ac5cd1c0be9e41bdfe358c25aa7ac42",
+      "git_archive_head_sha256": "71ee3a7f70f1d4423cac347cf9cc2542b766b5b734c215867fea7bfb58eff51c",
+      "build_state": "preprotocol-build-only",
+      "prebuilt": {
+        "manifest": "build/hexyl-v0170/hexyl-v0170.O3S.build.json",
+        "manifest_sha256": "9a267206423adc299d807fd3e113ce5906acb9733a4df1ac948ed199e24dbf62",
+        "non_stripped": "build/hexyl-v0170/hexyl-v0170.O3S.gt.bin",
+        "non_stripped_sha256": "5a659a2bd5e57feaf8ef6bcfb2b2973625f45f5e239e2a323cb8cf28a943d48e",
+        "fixture": "build/hexyl-v0170/hexyl-v0170.O3S.fixture.bin",
+        "fixture_sha256": "b067e03a3c6911409d64eff3027b11a05f5364c33f08e1bbb777b343b142594a",
+        "compile_log": "build/hexyl-v0170/compile.log",
+        "compile_log_sha256": "a46ab676d6042dc2304ad36f7b0a572a4160c15841632cf680d3fbabab5f8d68",
+        "symbols_gt_observation_quality": "pending"
+      }
+    },
+    {
+      "id": "hyperfine-v1200",
+      "order": 2,
+      "repository": "sharkdp/hyperfine",
+      "tag": "v1.20.0",
+      "commit": "975fe108c4ee7bd2600d10758207b44ca3dae738",
+      "source": "workspace/relation-control-2026-09-08/sources/hyperfine",
+      "package": "hyperfine",
+      "binary": "hyperfine",
+      "namespaces": ["hyperfine"],
+      "cargo_toml_sha256": "f8cb3b04244c3832bff112d3bb0b6a1b2845b641dafa35e9c85c2518af1c2f78",
+      "cargo_lock_sha256": "f3b341ae4c03197e61ee9e9b157c3a8669ea0cce23da68ded1e085fcbca8b9ba",
+      "cargo_inputs_sha256": "2fa13b0357e24bf845533b481a7143e139bd4f358f1fe59f4642a522508d0592",
+      "git_archive_head_sha256": "5136235c3b8288c227223139eb764f6687b84a6d3f6b9495cbd3ac89caa50951",
+      "build_state": "preprotocol-build-only",
+      "prebuilt": {
+        "manifest": "build/hyperfine-v1200/hyperfine-v1200.O3S.build.json",
+        "manifest_sha256": "2ed91db9e5bf36f350bd1f48d861dc947c2d2c0ce61883f8498b0b238ffc870e",
+        "non_stripped": "build/hyperfine-v1200/hyperfine-v1200.O3S.gt.bin",
+        "non_stripped_sha256": "e48f054453eb8335663518b54806cc9cca0e08f7a866a120f3a1eccee463067b",
+        "fixture": "build/hyperfine-v1200/hyperfine-v1200.O3S.fixture.bin",
+        "fixture_sha256": "afb8dcfdf50ff95071c9b0b7a169b48e7b37d305de6b073749e8b6a558da9291",
+        "compile_log": "build/hyperfine-v1200/compile.log",
+        "compile_log_sha256": "270b25ac9d7cb095b3fcb0f0c3935f2939a206c1fbfd4235be59dfa5b1e9304d",
+        "symbols_gt_observation_quality": "pending"
+      }
+    },
+    {
+      "id": "tokei-v1500",
+      "order": 3,
+      "repository": "XAMPPRocky/tokei",
+      "tag": "v15.0.0",
+      "commit": "c14f744716272fadeb27a74443cdffa0af35f82f",
+      "source": "workspace/relation-control-2026-09-08/sources/tokei",
+      "package": "tokei",
+      "binary": "tokei",
+      "namespaces": ["tokei"],
+      "cargo_toml_sha256": "696414e46ee5d591d361e9162b7b7b5890a2955778bb1b427c322cf926dfd234",
+      "cargo_lock_sha256": "99552aa36b2763e9662aa36a783e6a010f90dae794f796659eeb721d2cb99000",
+      "cargo_inputs_sha256": "8aa20aefef3b9ee563a3002fdb443f10cd43daed5bec9066909d0642e6f79141",
+      "git_archive_head_sha256": "25c4acb8a1385c73716c8fd9ba75bf150573488503ed685c53d12d09198a3d38",
+      "build_state": "preprotocol-build-only",
+      "prebuilt": {
+        "manifest": "build/tokei-v1500/tokei-v1500.O3S.build.json",
+        "manifest_sha256": "ef66444eb797a4a09a3bbd5e3b195f4fa77eb0731abd27af93c4b8986c3f07c6",
+        "non_stripped": "build/tokei-v1500/tokei-v1500.O3S.gt.bin",
+        "non_stripped_sha256": "9b3c9bdaa272ed88b2035f3cc3f26bef6267b41b3c542cd9a4d98fb889cbe67e",
+        "fixture": "build/tokei-v1500/tokei-v1500.O3S.fixture.bin",
+        "fixture_sha256": "b8b946729494dce45751955bf655f842ff6c2a68950679d972ceab53b5e66f5f",
+        "compile_log": "build/tokei-v1500/compile.log",
+        "compile_log_sha256": "da363f8452bc44326053fe8ca5d4741ce9ab3487327a7b641af25cdc4921a948",
+        "status_record": "build/tokei-v1500/status.md",
+        "status_record_sha256": "535a19117d3c58038108780854f425df49b8c8ecfd03a864f25813e7523f4cf6",
+        "symbols_gt_observation_quality": "pending"
+      }
+    }
+  ],
+  "build": {
+    "toolchain": {
+      "cargo": "1.93.1 (083ac5135 2025-12-15)",
+      "rustc": "1.93.1 (01f6ddf75 2026-02-11)",
+      "llvm": "21.1.8"
+    },
+    "target": "x86_64-unknown-linux-gnu",
+    "build": "O3S",
+    "profile": "plain",
+    "locked": true,
+    "jobs": 2,
+    "wall_time_seconds": 1800,
+    "profile_overrides": {
+      "opt_level": 3,
+      "debuginfo": 0,
+      "debug_assertions": false,
+      "overflow_checks": false,
+      "codegen_units": 16,
+      "lto": false,
+      "panic": "unwind",
+      "strip_before_fixture": "none"
+    }
+  },
+  "runtime": {
+    "extraction": {
+      "runtime": "sage",
+      "python": "3.10.14",
+      "angr": "9.2.165",
+      "r2pipe": "1.9.8",
+      "capstone": "5.0.3",
+      "pycparser": "2.22",
+      "radare2": "5.5.0",
+      "wall_time_seconds": 3600,
+      "address_space_limit_bytes": 12884901888
+    },
+    "inference": {
+      "python": "3.12.3",
+      "wall_time_seconds_per_arm": 1800,
+      "address_space_limit_bytes": 12884901888,
+      "max_heavy_cases": 2
+    }
+  },
+  "observation": {
+    "boundary_oracle": "provided-non-stripped-rust-symbol-extents",
+    "raw_source_gt_used_for": "boundaries-and-later-scoring",
+    "origin_labels_to_inference": false,
+    "prediction_inputs": ["body", "fixture", "named_candidate_input"]
+  },
+  "retrieval": {
+    "wall_time_seconds_per_case": 1800,
+    "address_space_limit_bytes": 12884901888,
+    "failure_status": "upstream-failure",
+    "downstream_quality": "NA",
+    "zero_quality_substitution": false
+  },
+  "exposure": {
+    "main_input_root": "/mnt/c/Users/sumyr/playground/REV/CallKin",
+    "source_file_hash_manifest": "hash-manifest.json",
+    "label_set_file": "exposed-origins.json",
+    "label_set_sha256": "73f6879dc40fb3e4ddaddd2bb06942ff01ec503388051901294abdab3580a557"
+  },
+  "arms": [
+    {
+      "id": "V0-relation",
+      "kind": "v0-partition",
+      "relation_mode": "out-in",
+      "f6": false,
+      "rescue": false
+    },
+    {
+      "id": "exact-token-hash",
+      "kind": "exact-token-profile",
+      "profile_field": "TokenProfile.exact_token_hash",
+      "eligibility": "complete-nonempty-noopaque",
+      "eligibility_checks": {
+        "complete": true,
+        "instruction_count_gt": 0,
+        "opaque_indirect_jumps": 0
+      },
+      "f6": false,
+      "rescue": false
+    },
+    {
+      "id": "B2-token-cfg",
+      "kind": "f6",
+      "views": ["token", "cfg"],
+      "intersection": true,
+      "min_view_count": 2,
+      "k": 16,
+      "f6": true,
+      "rescue": false
+    },
+    {
+      "id": "C3-token-cfg-relation",
+      "kind": "f6",
+      "views": ["token", "cfg", "relation"],
+      "intersection": true,
+      "min_view_count": 3,
+      "k": 16,
+      "f6": true,
+      "rescue": false
+    },
+    {
+      "id": "B2-body-score",
+      "kind": "f6",
+      "base_arm": "B2-token-cfg",
+      "quota_source_arm": "C3-token-cfg-relation",
+      "selection_rule": "body-score-min-mean-id",
+      "k": 16,
+      "f6": true,
+      "rescue": false
+    },
+    {
+      "id": "C3-rescue",
+      "kind": "f6-rescue",
+      "base_arm": "C3-token-cfg-relation",
+      "rescue_rule": "f7-rescue-v1",
+      "rescue_candidate_views": ["token", "cfg", "relation"],
+      "rescue_candidate_min_view_count": 2,
+      "rescue_candidate_k": 16,
+      "k": 16,
+      "f6": true,
+      "rescue": true
+    }
+  ],
+  "f6": {
+    "policy": {
+      "structure_match_threshold": 0.95,
+      "slot_match_threshold": 1.0,
+      "structure_reject_threshold": null,
+      "require_informative_slot": true,
+      "abstain_on_opaque_indirect": true
+    },
+    "budget": {
+      "max_comparison_count": 10000,
+      "max_alignment_cell_budget": 500000000,
+      "scope": "independent per case and arm",
+      "candidate_queue": "price-whole-queue-first",
+      "candidate_over_budget": "whole-arm-budget-refused-NA",
+      "on_demand_over_budget": "comparison_budget-blocked-merge-continue"
+    },
+    "cache": {
+      "fresh_f4_per_new_case": true,
+      "share_math_cache_within_case": true,
+      "share_old_case_f4": false,
+      "cache_hit_reduces_logical_cost": false,
+      "cache_time_is_latency_fairness": false
+    }
+  },
+  "rescue": {
+    "rule_version": "f7-rescue-v1",
+    "strict_input_arm": "C3-token-cfg-relation",
+    "enabled_arm": "C3-rescue",
+    "budget": {
+      "max_component_members": 64,
+      "max_comparisons": 4096,
+      "max_alignment_cells": 500000000
+    },
+    "cost_scope": "additional-to-strict-f6",
+    "budget_to_dict_required": true,
+    "equal_budget_claim": false
+  },
+  "selection": {
+    "k": 16,
+    "intersection_semantics": "pair-selected-by-every-named-view",
+    "endpoint_failure_reasons": ["missing", "incomplete", "opaque"],
+    "pair_reason_rule": "deduplicated-sorted-union-of-endpoint-reasons",
+    "eligible_label": "complete/noopaque",
+    "ineligible_label": "abstain",
+    "nominal_cost": "len(instructions_left) * len(instructions_right)",
+    "ineligible_cost": 0,
+    "cost_zero_bin": "cost0",
+    "positive_cost_bin": {
+      "exponent": "e = c.bit_length() - 1",
+      "subdivision": "sub = ((c - 2**e) * 16) // 2**e",
+      "ways": 16
+    },
+    "stratum_label_json": {
+      "sort_keys": true,
+      "separators": [",", ":"]
+    },
+    "body_score": {
+      "min": "min(token_score,cfg_score)",
+      "mean": "(token_score+cfg_score)/2",
+      "sort": ["min_desc", "mean_desc", "pair.left_asc", "pair.right_asc"],
+      "rounding": false
+    },
+    "body_control": {
+      "pool_arm": "B2-token-cfg",
+      "quota_arm": "C3-token-cfg-relation",
+      "quota_key": "case+stratum",
+      "preserve_count_and_eligibility": true,
+      "pool_shortfall": "selection-failure-no-replacement-no-bin-merge-no-relaxation",
+      "score_distribution_matching": false,
+      "between_arm_overlap_allowed": true
+    },
+    "selection_reads": ["pair_ids", "token_score", "cfg_score", "body_lengths", "f6_eligibility"],
+    "selection_forbids": ["ground_truth", "linkage", "origin", "source_audit", "relation_flags", "old_decisions", "old_clusters"],
+    "freeze_before_f4_cache": true,
+    "diagnostics": ["forced_strata", "forced_pairs", "c3_overlap", "nominal_cost_deviation", "candidate_graph_degree", "candidate_graph_components"],
+    "nominal_relative_cost_bound": 0.0625,
+    "match_degree_or_topology": false
+  },
+  "labels": {
+    "primary": {
+      "ground_truth": "observations/<case>/<case>.O3S.gt.json",
+      "linkage": "observations/<case>/<case>.O3S.linkage.json",
+      "kind": "original-symbol-normalization",
+      "universe": "all-targets",
+      "read_after_prediction_hash": true,
+      "neutral_rules": ["duplicate-neutral", "unresolved-neutral", "ambiguous-neutral"]
+    },
+    "audit_corrections": {
+      "allowed": true,
+      "role": "separately-versioned-sensitivity-only",
+      "retrofit_primary_after_outcomes": false
+    },
+    "secondary": {
+      "project_owned": {
+        "namespaces": "sources[case].namespaces",
+        "predicate": "gt_extractor.belongs_to_subject(origin,namespaces)",
+        "known_origin_count": 1,
+        "cluster_clipping": "clip-without-regrouping",
+        "primary": false
+      },
+      "previously_unobserved_normalized_origin": {
+        "definition": "not present in this inventoried normalized-origin-label set",
+        "inventory": "exposed-origins.json",
+        "inventory_sha256": "73f6879dc40fb3e4ddaddd2bb06942ff01ec503388051901294abdab3580a557",
+        "source_file_hash_manifest": "hash-manifest.json",
+        "known_origin_count": 1,
+        "cluster_clipping": "clip-without-regrouping",
+        "report_out_of_mask_contamination": true,
+        "no_source_unseen_claim": true,
+        "primary": false,
+        "no_positive_policy": {
+          "recall": "NA",
+          "macro_R": "NA",
+          "exact_group_rate": "NA",
+          "f1": "existing-formula",
+          "case_replacement": false
+        }
+      }
+    }
+  },
+  "metrics": {
+    "primary_endpoint": "F1",
+    "secondary": ["precision", "recall", "macro_R", "exact_group_rate", "stage_counts", "cost"],
+    "all_target_metrics_primary": true,
+    "aggregation": "per-case-only",
+    "pool_raw_pairs": false,
+    "inferential_tests": false,
+    "rust_generalization_claim": false,
+    "comparisons": [
+      {"left": "B2-token-cfg", "right": "C3-token-cfg-relation", "budget": "same-absolute-f6"},
+      {"left": "C3-token-cfg-relation", "right": "B2-body-score", "matching": "same-count-and-cost-strata"},
+      {"left": "C3-token-cfg-relation", "right": "C3-rescue", "budget": "rescue-additional"}
+    ]
+  },
+  "execution": {
+    "case_order": ["hexyl-v0170", "hyperfine-v1200", "tokei-v1500"],
+    "within_case_order": ["source", "build", "observation", "all_predictions", "prediction_hashes", "score"],
+    "first_case_gate": "hexyl-v0170-through-score",
+    "callkin_real": "separate-future-gate-and-run",
+    "external_human_reproduction": "pending-explicit-step"
+  },
+  "outputs": {
+    "build": "build/<case>/",
+    "observation": "observations/<case>/",
+    "candidates": "candidates/<case>/<arm>.candidates.json",
+    "predictions": "predictions/<case>/<arm>/prediction.json",
+    "run_metadata": "predictions/<case>/<arm>/metadata.json",
+    "labels": "observations/<case>/",
+    "scores": "scores/<case>/<arm>/<label-view>.json",
+    "hashes": "hashes/<case>/<arm>.json",
+    "summary": "run-summary.json",
+    "minimal_repro": "minimal-repro/"
+  },
+  "freeze_gate": {
+    "root_approval_required": true,
+    "run_before_approval": false,
+    "protocol_sha256_set_after_approval": true,
+    "config_sha256_set_after_approval": true,
+    "new_gt_or_observation_before_approval": false,
+    "required_checks": [
+      "source pins and clean trees",
+      "exposure file hashes and sorted label-set hash",
+      "six arm IDs and intersection semantics",
+      "quota and cost strata",
+      "label separation and neutral rules",
+      "resource ceilings and Rescue budget",
+      "output paths"
+    ]
+  }
+}
