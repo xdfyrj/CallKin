@@ -16,6 +16,19 @@ results/micro-corpus/min/*
 !results/micro-corpus/plain/all_modes.json
 !results/micro-corpus/min/all_modes.json
 subjects/**/target/
+
+# Unpublished local subjects and their generated artifacts.
+/subjects/delta-1275/
+/subjects/dust-282/
+/subjects/exewho2/
+/subjects/fd-1160/
+/subjects/ripgrep-2944/
+/subjects/ripgrep-main/
+delta-1275.*
+dust-282.*
+fd-1160.*
+ripgrep-2944.*
+ripgrep-main.*
 # PDB-derived evaluator catalog; keep symbol names out of the repository.
 evaluation/pe/
 
